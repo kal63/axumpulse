@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/auth-context';
 import { cn } from '@/lib/utils';
 import { NeumorphicCard } from './NeumorphicCard';
 import { 
@@ -21,16 +22,6 @@ interface NavItem {
   href: string;
 }
 
-const navItems: NavItem[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, href: '/user/dashboard' },
-  { id: 'videos', label: 'Videos', icon: Video, href: '/user/videos' },
-  { id: 'workouts', label: 'Workouts', icon: Target, href: '/user/workout-plans' },
-  { id: 'challenges', label: 'Challenges', icon: Trophy, href: '/user/challenges' },
-  { id: 'progress', label: 'Progress', icon: BarChart3, href: '/user/progress' },
-  { id: 'profile', label: 'Profile', icon: User, href: '/user/profile' },
-  { id: 'apply', label: 'Become a Trainer', icon: Award, href: '/user/apply' },
-];
-
 interface SidebarProps {
   className?: string;
 }
@@ -38,6 +29,25 @@ interface SidebarProps {
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { user } = useAuth();
+
+  // Base nav items
+  const baseNavItems: NavItem[] = [
+    { id: 'dashboard', label: 'Dashboard', icon: Home, href: '/user/dashboard' },
+    { id: 'videos', label: 'Videos', icon: Video, href: '/user/videos' },
+    { id: 'workouts', label: 'Workouts', icon: Target, href: '/user/workout-plans' },
+    { id: 'challenges', label: 'Challenges', icon: Trophy, href: '/user/challenges' },
+    { id: 'progress', label: 'Progress', icon: BarChart3, href: '/user/progress' },
+    { id: 'profile', label: 'Profile', icon: User, href: '/user/profile' },
+  ];
+
+  // Add trainer nav item based on user status
+  const navItems: NavItem[] = [
+    ...baseNavItems,
+    user?.isTrainer 
+      ? { id: 'trainer-view', label: 'Trainer View', icon: Award, href: '/trainer/dashboard' }
+      : { id: 'apply', label: 'Become a Trainer', icon: Award, href: '/user/apply' }
+  ];
 
   return (
     <nav className={cn('space-y-2', className)}>

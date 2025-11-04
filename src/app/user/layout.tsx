@@ -136,7 +136,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
           </main>
 
           {/* Mobile Trainer Promotion Banner */}
-          {showTrainerPromo && (
+          {showTrainerPromo && !user?.isTrainer && (
             <div className="fixed bottom-20 left-4 right-4 z-30">
               <NeumorphicCard variant="raised" size="sm" className="p-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">
                 <div className="flex items-center gap-3">
@@ -278,7 +278,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
               {children}
               
               {/* Desktop Trainer Promotion - Right Side */}
-              {showTrainerPromo && (
+              {showTrainerPromo && !user?.isTrainer && (
                 <div className="fixed top-20 right-6 z-30 w-80">
                   <NeumorphicCard variant="raised" size="sm" className="p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20">
                     <div className="flex items-start gap-3">

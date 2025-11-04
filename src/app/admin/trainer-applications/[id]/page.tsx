@@ -187,7 +187,11 @@ export default function TrainerApplicationDetailPage() {
     );
   }
 
-  const config = STATUS_CONFIG[application.status];
+  const config = STATUS_CONFIG[application.status] || {
+    label: 'Unknown Status',
+    color: 'bg-gray-100 text-gray-800 border-gray-300',
+    icon: AlertCircle
+  };
   const Icon = config.icon;
 
   return (

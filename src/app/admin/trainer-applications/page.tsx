@@ -21,7 +21,8 @@ import {
   XCircle, 
   Eye,
   Filter,
-  RefreshCw
+  RefreshCw,
+  AlertCircle
 } from 'lucide-react';
 import { apiClient, TrainerApplication } from '@/lib/api-client';
 import { toast } from 'sonner';
@@ -162,7 +163,11 @@ export default function TrainerApplicationsPage() {
       key: 'status',
       header: 'Status',
       render: (app: TrainerApplication) => {
-        const config = STATUS_CONFIG[app.status];
+        const config = STATUS_CONFIG[app.status] || {
+          label: 'Unknown Status',
+          color: 'bg-gray-100 text-gray-800 border-gray-300',
+          icon: AlertCircle
+        };
         const Icon = config.icon;
         return (
           <Badge className={`${config.color} border`}>

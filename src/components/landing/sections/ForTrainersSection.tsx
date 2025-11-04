@@ -326,9 +326,9 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
                 </svg>
               </div>
               <div>
-                <h4 className="text-lg font-semibold text-amber-800 mb-2">Important: Account Required</h4>
+                <h4 className="text-lg font-semibold text-amber-800 mb-2">Important: Subscription Required</h4>
                 <p className="text-amber-700 mb-3">
-                  To apply as a trainer, you must first <strong>create an account</strong> and <strong>subscribe to AxumPulse 360</strong>. 
+                  To apply as a trainer, you must first <strong>subscribe to AxumPulse 360</strong>. 
                   This ensures you have access to our platform and understand our community before joining as a trainer.
                 </p>
                 <div className="text-center">

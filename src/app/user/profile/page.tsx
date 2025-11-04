@@ -282,37 +282,39 @@ export default function ProfilePage() {
             </div>
           </NeumorphicCard>
 
-          {/* Become a Trainer Section */}
-          <NeumorphicCard variant="raised" className="p-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Award className="w-8 h-8 text-white" />
+          {/* Become a Trainer Section - Only show if user is not already a trainer */}
+          {!authUser?.isTrainer && (
+            <NeumorphicCard variant="raised" className="p-6">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Award className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-2">
+                  Become a Trainer
+                </h3>
+                <p className="text-[var(--neumorphic-muted)] mb-6">
+                  Share your fitness expertise and help others achieve their goals
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button 
+                    onClick={handleApplyTrainer}
+                    className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white"
+                  >
+                    <Award className="w-4 h-4 mr-2" />
+                    Apply Now
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    onClick={handleViewStatus}
+                    className="flex-1"
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    View Status
+                  </Button>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-2">
-                Become a Trainer
-              </h3>
-              <p className="text-[var(--neumorphic-muted)] mb-6">
-                Share your fitness expertise and help others achieve their goals
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button 
-                  onClick={handleApplyTrainer}
-                  className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white"
-                >
-                  <Award className="w-4 h-4 mr-2" />
-                  Apply Now
-                </Button>
-                <Button 
-                  variant="outline"
-                  onClick={handleViewStatus}
-                  className="flex-1"
-                >
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  View Status
-                </Button>
-              </div>
-            </div>
-          </NeumorphicCard>
+            </NeumorphicCard>
+          )}
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
