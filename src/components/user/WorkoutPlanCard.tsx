@@ -1,4 +1,4 @@
-import { Dumbbell, Clock, TrendingUp, PlayCircle, Star, Zap, Target, Users, Heart, Leaf, Bike, Shield, Flame, Activity } from 'lucide-react'
+import { Dumbbell, Clock, TrendingUp, PlayCircle, Star, Zap, Target, Users, Heart, Leaf, Bike, Shield, Flame, Activity, CheckCircle } from 'lucide-react'
 import { NeumorphicCard } from './NeumorphicCard'
 import type { WorkoutPlan } from '@/lib/api-client'
 
@@ -88,13 +88,27 @@ export function WorkoutPlanCard({
                 {/* Header */}
                 <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4 flex-1">
-                        <div className={`w-12 h-12 bg-gradient-to-br ${categoryGradient} rounded-xl flex items-center justify-center shadow-lg`}>
+                        <div className={`w-12 h-12 bg-gradient-to-br ${categoryGradient} rounded-xl flex items-center justify-center shadow-lg relative`}>
                             <CategoryIcon className="h-6 w-6 text-white" />
+                            {/* Completed Badge */}
+                            {userProgress?.status === 'completed' && (
+                                <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-white shadow-lg">
+                                    <CheckCircle className="h-4 w-4 text-white" />
+                                </div>
+                            )}
                         </div>
                         <div className="flex-1">
-                            <h3 className="font-bold text-xl text-[var(--neumorphic-text)] group-hover:text-[var(--neumorphic-accent)] transition-colors line-clamp-2">
-                                {workoutPlan.title}
-                            </h3>
+                            <div className="flex items-center gap-2">
+                                <h3 className="font-bold text-xl text-[var(--neumorphic-text)] group-hover:text-[var(--neumorphic-accent)] transition-colors line-clamp-2">
+                                    {workoutPlan.title}
+                                </h3>
+                                {/* Joined indicator */}
+                                {userProgress && !showProgress && (
+                                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+                                        Joined
+                                    </span>
+                                )}
+                            </div>
                             {workoutPlan.trainer && (
                                 <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
                                     by {(workoutPlan.trainer as any).User?.name || 'Unknown Trainer'}
@@ -181,14 +195,27 @@ export function WorkoutPlanCard({
                     
                     {userProgress ? (
                         <button 
-                            className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-full text-sm font-medium hover:from-cyan-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                            className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg ${
+                                userProgress.status === 'completed'
+                                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700'
+                                    : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700'
+                            }`}
                             onClick={(e) => {
                                 e.stopPropagation()
                                 onClick?.()
                             }}
                         >
-                            <PlayCircle className="h-4 w-4" />
-                            <span>Continue</span>
+                            {userProgress.status === 'completed' ? (
+                                <>
+                                    <CheckCircle className="h-4 w-4" />
+                                    <span>Completed</span>
+                                </>
+                            ) : (
+                                <>
+                                    <PlayCircle className="h-4 w-4" />
+                                    <span>Continue</span>
+                                </>
+                            )}
                         </button>
                     ) : (
                         <button 

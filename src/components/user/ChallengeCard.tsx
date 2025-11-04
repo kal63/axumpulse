@@ -14,8 +14,10 @@ interface ChallengeCardProps {
     category: string
     goalType: string
     goalValue: number
-    startDate: string
-    endDate: string
+    startTime?: string
+    endTime?: string
+    startDate?: string // legacy support
+    endDate?: string // legacy support
     xpReward: number
     userProgress?: Array<{
       status: string
@@ -40,8 +42,16 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
   const userProgress = challenge.userProgress?.[0]
   const hasJoined = !!userProgress
   const progressPercentage = userProgress ? (userProgress.progress / challenge.goalValue) * 100 : 0
-  const isActive = new Date(challenge.startDate) <= new Date() && new Date(challenge.endDate) >= new Date()
-  const isUpcoming = new Date(challenge.startDate) > new Date()
+  
+  // Use startTime/endTime (API fields) or fallback to startDate/endDate (legacy)
+  const startDate = challenge.startTime || challenge.startDate
+  const endDate = challenge.endTime || challenge.endDate
+  const startTime = startDate ? new Date(startDate) : null
+  const endTime = endDate ? new Date(endDate) : null
+  const now = new Date()
+  
+  const isActive = startTime && endTime ? startTime <= now && endTime >= now : false
+  const isUpcoming = startTime ? startTime > now : false
   const isCompleted = userProgress?.status === 'completed'
 
   const difficultyColors = {
@@ -106,10 +116,12 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
             <div className="flex items-center gap-2 text-xs text-[var(--neumorphic-muted)]">
               <Calendar className="h-4 w-4 text-[var(--color-lime-pulse)]" />
               <span>
-                {new Date(challenge.endDate).toLocaleDateString('en-US', { 
-                  month: 'short', 
-                  day: 'numeric' 
-                })}
+                {endDate 
+                  ? new Date(endDate).toLocaleDateString('en-US', { 
+                      month: 'short', 
+                      day: 'numeric' 
+                    })
+                  : 'Invalid date'}
               </span>
             </div>
 

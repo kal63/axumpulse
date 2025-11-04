@@ -2,6 +2,7 @@
 
 import { Trophy, Medal, Award, User as UserIcon } from 'lucide-react'
 import { NeumorphicCard } from './NeumorphicCard'
+import { getImageUrl } from '@/lib/upload-utils'
 
 interface LeaderboardEntry {
   rank: number
@@ -124,7 +125,7 @@ export function LeaderboardTable({
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   {entry.user.profilePicture ? (
                     <img
-                      src={entry.user.profilePicture}
+                      src={getImageUrl(entry.user.profilePicture)}
                       alt={entry.user.name}
                       className="w-10 h-10 rounded-full object-cover"
                     />
@@ -135,7 +136,7 @@ export function LeaderboardTable({
                   )}
                   
                   <div className="flex-1 min-w-0">
-                    <p className={`font-medium truncate ${isCurrentUser ? 'text-[var(--color-cyber-blue)] font-bold' : 'text-[var(--neumorphic-text)]'}`}>
+                    <p className={`font-medium truncate ${isCurrentUser ? 'text-black font-bold' : 'text-[var(--neumorphic-text)]'}`}>
                       {entry.user.name}
                       {isCurrentUser && ' (You)'}
                     </p>
@@ -146,7 +147,7 @@ export function LeaderboardTable({
                           style={{ width: `${Math.min(progressPercentage, 100)}%` }}
                         />
                       </div>
-                      <span className="text-xs text-[var(--neumorphic-muted)]">
+                      <span className={`text-xs ${isCurrentUser ? 'text-white/90' : 'text-[var(--neumorphic-muted)]'}`}>
                         {entry.progress}/{goalValue}
                       </span>
                     </div>
@@ -155,11 +156,11 @@ export function LeaderboardTable({
 
                 {/* Progress Score */}
                 <div className="text-right shrink-0">
-                  <div className="text-lg font-bold text-[var(--neumorphic-text)]">
+                  <div className={`text-lg font-bold ${isCurrentUser ? 'text-white' : 'text-[var(--neumorphic-text)]'}`}>
                     {entry.progress}
                   </div>
                   {entry.status === 'completed' && (
-                    <div className="text-xs text-green-600 dark:text-green-400 font-medium">
+                    <div className={`text-xs font-medium ${isCurrentUser ? 'text-white/90' : 'text-green-600 dark:text-green-400'}`}>
                       Completed
                     </div>
                   )}

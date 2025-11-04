@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Target, TrendingUp, Calendar, Plus, Minus } from 'lucide-react'
 import { NeumorphicCard } from './NeumorphicCard'
 import { Progress } from '@/components/ui/progress'
-import { Button } from '@/components/ui/button'
 
 interface ChallengeProgressProps {
   challengeId: number
@@ -121,13 +120,13 @@ export function ChallengeProgress({
                 disabled:opacity-50
               "
             />
-            <Button
+            <button
               onClick={handleCustomUpdate}
               disabled={isUpdating || !customValue}
-              className="bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white px-6"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 px-6 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg hover:from-cyan-600 hover:to-purple-700 disabled:pointer-events-none disabled:opacity-50"
             >
               {isUpdating ? 'Updating...' : 'Update'}
-            </Button>
+            </button>
           </div>
         </div>
 

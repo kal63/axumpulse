@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
 import { apiClient } from '@/lib/api-client'
 import {
-  DesktopLayout,
   MobileHeader,
   BottomNavigation,
   NeumorphicCard,
@@ -152,10 +151,18 @@ export default function ChallengeDetailPage() {
 
   const userProgress = challenge.userProgress?.[0]
   const hasJoined = !!userProgress
-  const isActive = new Date(challenge.startDate) <= new Date() && new Date(challenge.endDate) >= new Date()
-  const isUpcoming = new Date(challenge.startDate) > new Date()
+  const startTime = challenge.startTime ? new Date(challenge.startTime) : null
+  const endTime = challenge.endTime ? new Date(challenge.endTime) : null
+  const now = new Date()
+  const isActive = startTime && endTime ? startTime <= now && endTime >= now : false
+  const isUpcoming = startTime ? startTime > now : false
   const isCompleted = userProgress?.status === 'completed'
-  const progressPercentage = userProgress ? (userProgress.progress / challenge.goalValue) * 100 : 0
+  
+  // Extract goalValue and goalType from ruleJson or use defaults
+  const ruleJson = challenge.ruleJson || {}
+  const goalValue = (challenge as any).goalValue || ruleJson.amount || ruleJson.targetValue || 100
+  const goalType = (challenge as any).goalType || ruleJson.unit || ruleJson.target || 'units'
+  const progressPercentage = userProgress && goalValue ? (userProgress.progress / goalValue) * 100 : 0
 
   const difficultyColors = {
     beginner: 'text-green-600 dark:text-green-400',
@@ -204,7 +211,7 @@ export default function ChallengeDetailPage() {
               <div>
                 <p className="text-xs text-[var(--neumorphic-muted)]">Goal</p>
                 <p className="text-lg font-bold text-[var(--neumorphic-text)]">
-                  {challenge.goalValue} {challenge.goalType}
+                  {goalValue} {goalType}
                 </p>
               </div>
             </div>
@@ -228,11 +235,13 @@ export default function ChallengeDetailPage() {
               <div>
                 <p className="text-xs text-[var(--neumorphic-muted)]">Ends</p>
                 <p className="text-sm font-bold text-[var(--neumorphic-text)]">
-                  {new Date(challenge.endDate).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                  })}
+                  {challenge.endTime 
+                    ? new Date(challenge.endTime).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })
+                    : 'Invalid date'}
                 </p>
               </div>
             </div>
@@ -264,8 +273,8 @@ export default function ChallengeDetailPage() {
           <div className="flex flex-wrap gap-3">
             <div className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
               <span className="text-xs text-[var(--neumorphic-muted)]">Category: </span>
-              <span className="text-sm font-medium text-[var(--neumorphic-text)]">
-                {challenge.category}
+              <span className="text-sm font-medium text-[var(--neumorphic-text)] capitalize">
+                {(challenge as any).category || challenge.type || 'fitness'}
               </span>
             </div>
             <div className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
@@ -276,28 +285,53 @@ export default function ChallengeDetailPage() {
             </div>
           </div>
 
-          {/* Join Button */}
+          {/* Join Button - Show for active challenges if not joined */}
           {!hasJoined && isActive && (
-            <Button
+            <button
               onClick={handleJoinChallenge}
-              disabled={joining}
-              className="w-full bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white text-lg py-6"
+              disabled={joining || !user}
+              className="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg hover:from-cyan-600 hover:to-purple-700 disabled:pointer-events-none disabled:opacity-50"
             >
-              {joining ? 'Joining...' : 'Join Challenge'}
-            </Button>
+              {joining ? 'Joining...' : user ? 'Join Challenge' : 'Login to Join'}
+            </button>
           )}
 
-          {/* Upcoming Message */}
+          {/* Upcoming Message - Show join button but disabled */}
           {!hasJoined && isUpcoming && (
-            <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800">
-              <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
+            <div className="space-y-3">
+              <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800">
+                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-2">
+                  <Clock className="h-5 w-5" />
+                  <p className="font-medium">
+                    {challenge.startTime 
+                      ? `This challenge starts on ${new Date(challenge.startTime).toLocaleDateString('en-US', {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}`
+                      : 'Invalid start date'}
+                  </p>
+                </div>
+                <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">
+                  You'll be able to join once the challenge starts.
+                </p>
+              </div>
+              <button
+                disabled
+                className="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 px-6 py-3 bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed disabled:pointer-events-none disabled:opacity-50"
+              >
+                Join Challenge (Starts Soon)
+              </button>
+            </div>
+          )}
+
+          {/* Ended Challenge Message */}
+          {!hasJoined && !isActive && !isUpcoming && (
+            <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900/20 border-2 border-gray-200 dark:border-gray-800">
+              <div className="flex items-center gap-2 text-gray-700 dark:text-gray-400">
                 <Clock className="h-5 w-5" />
                 <p className="font-medium">
-                  This challenge starts on {new Date(challenge.startDate).toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric'
-                  })}
+                  This challenge has ended.
                 </p>
               </div>
             </div>
@@ -310,8 +344,8 @@ export default function ChallengeDetailPage() {
         <ChallengeProgress
           challengeId={challengeId}
           currentProgress={userProgress.progress}
-          goalValue={challenge.goalValue}
-          goalType={challenge.goalType}
+          goalValue={goalValue}
+          goalType={goalType}
           onProgressUpdate={handleProgressUpdate}
           isUpdating={updating}
         />
@@ -323,21 +357,23 @@ export default function ChallengeDetailPage() {
         currentUserId={user?.id}
         userRank={userRank}
         totalParticipants={participantCount}
-        goalValue={challenge.goalValue}
+        goalValue={goalValue}
       />
     </div>
   )
 
   return (
     <>
-      {/* Desktop Layout */}
+      {/* Desktop Layout - Already has sidebar from user layout */}
       <div className="hidden md:block">
-        <DesktopLayout>{content}</DesktopLayout>
+        <div className="p-6">
+          {content}
+        </div>
       </div>
 
       {/* Mobile Layout */}
       <div className="md:hidden">
-        <MobileHeader title={challenge.title} subtitle={challenge.category} />
+        <MobileHeader title={challenge.title} subtitle={(challenge as any).category || challenge.type || 'fitness'} />
         <div className="p-4 pb-24">{content}</div>
         <BottomNavigation />
       </div>

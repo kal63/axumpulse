@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/auth-context'
 import { apiClient } from '@/lib/api-client'
 import { 
     Dumbbell, Search, Filter, Flame, Star, Clock, Target, 
@@ -22,6 +23,7 @@ import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 
 export default function WorkoutPlansPage() {
     const router = useRouter()
+    const { user } = useAuth()
     const [plans, setPlans] = useState<WorkoutPlan[]>([])
     const [myPlans, setMyPlans] = useState<any[]>([])
     const [trendingPlans, setTrendingPlans] = useState<WorkoutPlan[]>([])
@@ -41,6 +43,13 @@ export default function WorkoutPlansPage() {
     const [totalPages, setTotalPages] = useState(1)
     const [totalItems, setTotalItems] = useState(0)
     const pageSize = 9
+
+    // Fetch my plans on mount if user is logged in (for tab count, don't show loading)
+    useEffect(() => {
+        if (user) {
+            fetchMyPlans(false) // Don't set loading state on initial mount
+        }
+    }, [user])
 
     useEffect(() => {
         if (activeTab === 'all') {
@@ -76,9 +85,28 @@ export default function WorkoutPlansPage() {
         }
     }
 
-    const fetchMyPlans = async () => {
+    // Create userProgressMap from plans for "All Plans" view
+    const allPlansProgressMap = new Map(
+        plans
+            .filter(plan => (plan as any).userProgress && (plan as any).userProgress.length > 0)
+            .map(plan => {
+                const progress = (plan as any).userProgress[0]
+                return [
+                    plan.id,
+                    {
+                        status: progress.status,
+                        completedExercises: progress.completedExercises,
+                        totalExercises: progress.totalExercises
+                    }
+                ]
+            })
+    )
+
+    const fetchMyPlans = async (setLoadingState = true) => {
         try {
-            setLoading(true)
+            if (setLoadingState) {
+                setLoading(true)
+            }
             const response = await apiClient.getMyWorkoutPlans()
 
             if (response.success && response.data) {
@@ -87,7 +115,9 @@ export default function WorkoutPlansPage() {
         } catch (error) {
             console.error('Error fetching my workout plans:', error)
         } finally {
-            setLoading(false)
+            if (setLoadingState) {
+                setLoading(false)
+            }
         }
     }
 
@@ -484,6 +514,7 @@ export default function WorkoutPlansPage() {
                                     plans={plans}
                                     onPlanClick={handlePlanClick}
                                     showProgress={false}
+                                    userProgressMap={allPlansProgressMap}
                                 />
                             )}
 
