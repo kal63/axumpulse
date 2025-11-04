@@ -32,12 +32,13 @@ import {
   Users,
   Trophy
 } from 'lucide-react'
+import { FeaturedBadge } from '@/components/user/FeaturedBadge'
 import type { ContentItem } from '@/lib/api-client'
 
 export default function VideosPage() {
   const router = useRouter()
   const [content, setContent] = useState<ContentItem[]>([])
-  const [trendingContent, setTrendingContent] = useState<ContentItem[]>([])
+  const [featuredContent, setFeaturedContent] = useState<ContentItem[]>([])
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState<string[]>([])
   const [sortBy, setSortBy] = useState<'newest' | 'popular' | 'trending'>('newest')
@@ -58,7 +59,6 @@ export default function VideosPage() {
   useEffect(() => {
     fetchContent()
     fetchCategories()
-    fetchTrendingContent()
   }, [currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery, sortBy])
 
   const fetchContent = async () => {
@@ -77,6 +77,10 @@ export default function VideosPage() {
         setContent(response.data.items)
         setTotalPages(response.data.pagination.totalPages)
         setTotalItems(response.data.pagination.totalItems)
+        
+        // Filter featured content
+        const featured = response.data.items.filter((item: ContentItem) => item.isFeatured === true)
+        setFeaturedContent(featured)
       }
     } catch (error) {
       console.error('Error fetching content:', error)
@@ -85,19 +89,6 @@ export default function VideosPage() {
     }
   }
 
-  const fetchTrendingContent = async () => {
-    try {
-      const response = await apiClient.getUserContent({
-        page: 1,
-        pageSize: 6
-      })
-      if (response.success && response.data) {
-        setTrendingContent(response.data.items)
-      }
-    } catch (error) {
-      console.error('Error fetching trending content:', error)
-    }
-  }
 
   const fetchCategories = async () => {
     try {
@@ -326,8 +317,8 @@ export default function VideosPage() {
         </div>
       </div>
 
-      {/* Trending Section */}
-      {trendingContent.length > 0 && (
+      {/* Featured Content Section */}
+      {featuredContent.length > 0 && (
         <div className={`px-4 md:px-8 py-8 transition-all duration-300 ease-in-out overflow-hidden ${
           selectedCategory || selectedDifficulty || selectedDuration || searchQuery
             ? 'max-h-0 opacity-0 py-0'
@@ -336,52 +327,41 @@ export default function VideosPage() {
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center">
-                  <Flame className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center">
+                  <Star className="w-4 h-4 text-white fill-current" />
                 </div>
                 <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">
-                  Trending Now
+                  Featured Content
                 </h2>
               </div>
-              <button className="flex items-center space-x-2 text-[var(--neumorphic-accent)] hover:text-[var(--neumorphic-accent-hover)] transition-colors">
-                <span>View All</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
+              {featuredContent.length > 3 && (
+                <button 
+                  onClick={() => router.push('/user/videos/featured')}
+                  className="flex items-center space-x-2 text-[var(--neumorphic-accent)] hover:text-[var(--neumorphic-accent-hover)] transition-colors"
+                >
+                  <span>View All</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              )}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {trendingContent.map((item, index) => (
-                <NeumorphicCard key={item.id} variant="raised" size="md" className="group cursor-pointer hover:scale-105 transition-all duration-300">
-                  <div className="relative">
-                    <div className="aspect-video bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-lg mb-4 flex items-center justify-center">
-                      <Play className="w-12 h-12 text-white opacity-80" />
-                    </div>
-                    <div className="absolute top-2 left-2">
-                      <div className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-2 py-1 rounded-full text-xs font-medium">
-                        #{index + 1} Trending
-                      </div>
-                    </div>
-                    <div className="absolute top-2 right-2">
-                      <div className="bg-black/50 text-white px-2 py-1 rounded-full text-xs">
-                        {item.duration}m
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-[var(--neumorphic-text)] mb-2 line-clamp-2">
-                      {item.title}
-                    </h3>
-                    <div className="flex items-center justify-between text-sm text-[var(--neumorphic-muted)]">
-                      <span>{item.trainer?.User?.name || `Trainer #${item.trainerId}`}</span>
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span>4.8</span>
-                      </div>
-                    </div>
-                  </div>
-                </NeumorphicCard>
-              ))}
-            </div>
+            {featuredContent.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredContent.slice(0, 3).map((item) => (
+                  <ContentCard
+                    key={item.id}
+                    content={item}
+                    onClick={() => handleContentClick(item)}
+                    showXP={true}
+                    xpAmount={50}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-[var(--neumorphic-muted)]">No featured content at the moment. Check back soon!</p>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -1,5 +1,6 @@
 import { Dumbbell, Clock, TrendingUp, PlayCircle, Star, Zap, Target, Users, Heart, Leaf, Bike, Shield, Flame, Activity, CheckCircle } from 'lucide-react'
 import { NeumorphicCard } from './NeumorphicCard'
+import { FeaturedBadge } from './FeaturedBadge'
 import type { WorkoutPlan } from '@/lib/api-client'
 
 interface WorkoutPlanCardProps {
@@ -81,9 +82,16 @@ export function WorkoutPlanCard({
     return (
         <NeumorphicCard 
             variant="raised" 
-            className="group cursor-pointer hover:scale-105 transition-all duration-300 overflow-hidden"
+            className="group cursor-pointer hover:scale-105 transition-all duration-300 overflow-hidden relative"
             onClick={onClick}
         >
+            {/* Featured Badge */}
+            {(workoutPlan as any).isFeatured && (
+                <div className="absolute bottom-4 right-4 z-10">
+                    <FeaturedBadge size="sm" />
+                </div>
+            )}
+            
             <div className="p-6 space-y-4">
                 {/* Header */}
                 <div className="flex items-start justify-between">

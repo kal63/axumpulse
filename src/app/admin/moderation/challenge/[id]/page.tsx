@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { ArrowLeft, Check, X, Trophy, User, Calendar, Clock, Target, Award, Users } from 'lucide-react'
+import { ArrowLeft, Check, X, Trophy, User, Calendar, Clock, Target, Award, Users, Star } from 'lucide-react'
 import { toast } from 'sonner'
 import { apiClient, type ModerationItemType } from '@/lib/api-client'
 
@@ -21,6 +21,7 @@ export default function ChallengeModerationDetailPage() {
   const [challenge, setChallenge] = useState<ModerationItemType | null>(null)
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
+  const [featuredLoading, setFeaturedLoading] = useState(false)
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
   const [rejectReason, setRejectReason] = useState('')
 
@@ -81,6 +82,24 @@ export default function ChallengeModerationDetailPage() {
       setActionLoading(false)
       setRejectDialogOpen(false)
       setRejectReason('')
+    }
+  }
+
+  const handleToggleFeatured = async () => {
+    if (!challenge) return
+
+    try {
+      setFeaturedLoading(true)
+      const response = await apiClient.toggleFeaturedStatus('challenge', challenge.id)
+      if (response.success && response.data) {
+        setChallenge({ ...challenge, ...response.data.item } as ModerationItemType)
+        toast.success(response.data.isFeatured ? 'Challenge marked as featured' : 'Challenge unmarked as featured')
+      }
+    } catch (error: any) {
+      console.error('Error toggling featured status:', error)
+      toast.error(error?.data?.error?.message || 'Failed to toggle featured status')
+    } finally {
+      setFeaturedLoading(false)
     }
   }
 
@@ -395,6 +414,40 @@ export default function ChallengeModerationDetailPage() {
                 >
                   <X className="h-4 w-4 mr-2" />
                   Reject Challenge
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Featured Toggle - Only show for approved challenges */}
+          {challenge.status === 'approved' && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Star className="h-5 w-5" />
+                  <span>Featured Status</span>
+                </CardTitle>
+                <CardDescription>
+                  Mark this challenge as featured to highlight it on the user pages
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  onClick={handleToggleFeatured}
+                  disabled={featuredLoading}
+                  variant={(challenge as any).isFeatured ? 'default' : 'outline'}
+                  className={`w-full ${
+                    (challenge as any).isFeatured
+                      ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white'
+                      : ''
+                  }`}
+                >
+                  <Star className={`h-4 w-4 mr-2 ${(challenge as any).isFeatured ? 'fill-current' : ''}`} />
+                  {featuredLoading
+                    ? 'Updating...'
+                    : (challenge as any).isFeatured
+                    ? 'Marked as Featured'
+                    : 'Mark as Featured'}
                 </Button>
               </CardContent>
             </Card>

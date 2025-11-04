@@ -516,6 +516,7 @@ export interface ContentItem {
   isPublic: boolean
   createdAt: string
   updatedAt: string
+  isFeatured: boolean
   trainer?: {
     userId: number
     bio?: string
@@ -947,6 +948,12 @@ class ApiClient {
     })
   }
 
+  async toggleFeaturedStatus(kind: 'content' | 'challenge' | 'workout-plan', id: number): Promise<ApiResponse<{ toggled: boolean; kind: string; id: number; isFeatured: boolean; item: ModerationItem }>> {
+    return this.request<{ toggled: boolean; kind: string; id: number; isFeatured: boolean; item: ModerationItem }>(`/admin/moderation/${kind}/${id}/toggle-featured`, {
+      method: 'POST',
+    })
+  }
+
   // Trainer Application functions
   // Submit trainer application (AUTHENTICATED - requires login)
   async submitTrainerApplication(formData: FormData): Promise<ApiResponse<TrainerApplication>> {
@@ -1092,6 +1099,15 @@ class ApiClient {
     return this.request<{ categories: string[] }>('/user/content/categories')
   }
 
+  // Get all featured content
+  async getFeaturedContent(params?: {
+    page?: number
+    pageSize?: number
+  }): Promise<ApiResponse<PaginatedResponse<ContentItem>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<ContentItem>>(`/user/content/featured${query}`)
+  }
+
   // Get all approved workout plans with filters
   async getUserWorkoutPlans(params?: {
     page?: number
@@ -1119,6 +1135,15 @@ class ApiClient {
   // Get available workout plan categories
   async getUserWorkoutPlanCategories(): Promise<ApiResponse<{ categories: string[] }>> {
     return this.request<{ categories: string[] }>('/user/workout-plans/categories')
+  }
+
+  // Get all featured workout plans
+  async getFeaturedWorkoutPlans(params?: {
+    page?: number
+    pageSize?: number
+  }): Promise<ApiResponse<PaginatedResponse<WorkoutPlan>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<WorkoutPlan>>(`/user/workout-plans/featured${query}`)
   }
 
   // Get all approved challenges with filters
@@ -1150,6 +1175,15 @@ class ApiClient {
   // Get available challenge categories
   async getUserChallengeCategories(): Promise<ApiResponse<{ categories: string[] }>> {
     return this.request<{ categories: string[] }>('/user/challenges/categories')
+  }
+
+  // Get all featured challenges
+  async getFeaturedChallenges(params?: {
+    page?: number
+    pageSize?: number
+  }): Promise<ApiResponse<PaginatedResponse<Challenge>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<Challenge>>(`/user/challenges/featured${query}`)
   }
 
   // Get challenge leaderboard

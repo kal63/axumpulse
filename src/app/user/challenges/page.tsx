@@ -26,6 +26,7 @@ import {
   Star,
   ChevronRight
 } from 'lucide-react'
+import { FeaturedBadge } from '@/components/user/FeaturedBadge'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
@@ -36,6 +37,7 @@ export default function ChallengesPage() {
   const router = useRouter()
   const { toast } = useToast()
   const [challenges, setChallenges] = useState<any[]>([])
+  const [featuredChallenges, setFeaturedChallenges] = useState<any[]>([])
   const [myChallenges, setMyChallenges] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -140,6 +142,10 @@ export default function ChallengesPage() {
       if (response.success && response.data) {
         setChallenges(response.data.items)
         setTotalPages(response.data.pagination?.totalPages || 1)
+        
+        // Filter featured challenges
+        const featured = response.data.items.filter((challenge: any) => challenge.isFeatured === true)
+        setFeaturedChallenges(featured)
       } else {
         setError('Failed to load challenges')
       }
@@ -375,28 +381,38 @@ export default function ChallengesPage() {
                   <Flame className="w-4 h-4 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">
-                  Trending Now
+                  Featured Challenges
                 </h2>
               </div>
-              <button className="flex items-center space-x-2 text-[var(--neumorphic-accent)] hover:text-[var(--neumorphic-accent-hover)] transition-colors">
-                <span>View All</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
+              {featuredChallenges.length > 3 && (
+                <button 
+                  onClick={() => router.push('/user/challenges/featured')}
+                  className="flex items-center space-x-2 text-[var(--neumorphic-accent)] hover:text-[var(--neumorphic-accent-hover)] transition-colors"
+                >
+                  <span>View All</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              )}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {challenges.slice(0, 3).map((challenge) => (
-                <NeumorphicCard key={challenge.id} variant="raised" className="p-6 cursor-pointer hover:scale-105 transition-all duration-200">
-                  <div className="space-y-4">
-                    <div className="flex items-start justify-between">
-                      <h3 className="text-xl font-bold text-[var(--neumorphic-text)] line-clamp-2">
-                        {challenge.title}
-                      </h3>
-                      <div className="flex items-center space-x-1 text-yellow-500">
-                        <Star className="w-4 h-4 fill-current" />
-                        <span className="text-sm font-semibold">4.8</span>
-                      </div>
+            {featuredChallenges.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredChallenges.slice(0, 3).map((challenge) => (
+                  <NeumorphicCard 
+                    key={challenge.id} 
+                    variant="raised" 
+                    className="p-6 cursor-pointer hover:scale-105 transition-all duration-200 relative"
+                    onClick={() => router.push(`/user/challenges/${challenge.id}`)}
+                  >
+                    <div className="absolute top-4 right-4 z-10">
+                      <FeaturedBadge size="sm" />
                     </div>
+                    <div className="space-y-4">
+                      <div className="flex items-start justify-between">
+                        <h3 className="text-xl font-bold text-[var(--neumorphic-text)] line-clamp-2">
+                          {challenge.title}
+                        </h3>
+                      </div>
                     
                     <p className="text-[var(--neumorphic-muted)] line-clamp-2">
                       {challenge.description}
@@ -423,6 +439,11 @@ export default function ChallengesPage() {
                 </NeumorphicCard>
               ))}
             </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-[var(--neumorphic-muted)]">No featured challenges at the moment. Check back soon!</p>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -443,14 +464,6 @@ export default function ChallengesPage() {
               </div>
             </div>
             
-            <div className="flex items-center space-x-2">
-              <div className="bg-[var(--neumorphic-surface)] px-4 py-2 rounded-full shadow-[var(--neumorphic-shadow)]">
-                <div className="flex items-center space-x-2">
-                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                  <span className="text-sm text-[var(--neumorphic-text)]">4.8 avg rating</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Beautiful Tabs with Sliding Background */}
@@ -537,11 +550,18 @@ export default function ChallengesPage() {
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {challenges.map((challenge) => (
-                  <NeumorphicCard key={challenge.id} variant="raised" className="group hover:scale-105 transition-all duration-300">
+                  <NeumorphicCard key={challenge.id} variant="raised" className="group hover:scale-105 transition-all duration-300 relative">
                     <div 
                       className="p-6 space-y-4 cursor-pointer"
                       onClick={() => router.push(`/user/challenges/${challenge.id}`)}
                     >
+                      {/* Featured Badge */}
+                      {challenge.isFeatured && (
+                        <div className="absolute top-4 right-4 z-10">
+                          <FeaturedBadge size="sm" />
+                        </div>
+                      )}
+                      
                       {/* Header */}
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3 flex-1">
@@ -556,11 +576,6 @@ export default function ChallengesPage() {
                               {challenge.category}
                             </p>
                           </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-1 text-yellow-500">
-                          <Star className="h-4 w-4 fill-current" />
-                          <span className="text-sm font-semibold">4.8</span>
                         </div>
                       </div>
 
@@ -715,11 +730,18 @@ export default function ChallengesPage() {
                     const progressPercentage = goalValue ? Math.min((progress / goalValue) * 100, 100) : 0
                     
                     return (
-                      <NeumorphicCard key={progressItem.id || challengeId} variant="raised" className="group hover:scale-105 transition-all duration-300">
+                      <NeumorphicCard key={progressItem.id || challengeId} variant="raised" className="group hover:scale-105 transition-all duration-300 relative">
                         <div 
                           className="p-6 space-y-4 cursor-pointer"
                           onClick={() => router.push(`/user/challenges/${challengeId}`)}
                         >
+                          {/* Featured Badge */}
+                          {challenge?.isFeatured && (
+                            <div className="absolute top-4 right-4 z-10">
+                              <FeaturedBadge size="sm" />
+                            </div>
+                          )}
+                          
                           {/* Header */}
                           <div className="flex items-start justify-between">
                             <div className="flex items-start gap-3 flex-1">

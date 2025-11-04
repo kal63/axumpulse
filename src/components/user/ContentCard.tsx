@@ -1,5 +1,6 @@
 import { Play, Heart, Clock, TrendingUp, Eye, Star, Zap, Award } from 'lucide-react'
 import { NeumorphicCard } from './NeumorphicCard'
+import { FeaturedBadge } from './FeaturedBadge'
 import { cn } from '@/lib/utils'
 import { getImageUrl } from '@/lib/upload-utils'
 import type { ContentItem } from '@/lib/api-client'
@@ -31,9 +32,16 @@ export function ContentCard({ content, onClick, showXP = true, xpAmount = 50 }: 
         <NeumorphicCard 
             variant="raised" 
             size="md" 
-            className="group cursor-pointer hover:scale-105 transition-all duration-300 overflow-hidden"
+            className="group cursor-pointer hover:scale-105 transition-all duration-300 overflow-hidden relative"
             onClick={onClick}
         >
+            {/* Featured Badge */}
+            {content.isFeatured && (
+                <div className="absolute bottom-4 right-4 z-10">
+                    <FeaturedBadge size="sm" />
+                </div>
+            )}
+            
             {/* Thumbnail */}
             <div className="relative aspect-video bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 overflow-hidden rounded-lg mb-4">
                 {content.thumbnailUrl ? (

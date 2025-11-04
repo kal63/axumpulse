@@ -6,9 +6,10 @@ import { useAuth } from '@/contexts/auth-context'
 import { apiClient } from '@/lib/api-client'
 import { 
     Dumbbell, Search, Filter, Flame, Star, Clock, Target, 
-    Users, TrendingUp, Zap, Award, ChevronDown, Play, 
+    Users, TrendingUp, Zap, Award, ChevronDown, ChevronRight, Play, 
     Calendar, MapPin, Sparkles, CheckCircle
 } from 'lucide-react'
+import { FeaturedBadge } from '@/components/user/FeaturedBadge'
 import type { WorkoutPlan } from '@/lib/api-client'
 import { 
     WorkoutPlanGrid, 
@@ -16,7 +17,8 @@ import {
     SearchBar, 
     PaginationControls, 
     EmptyState, 
-    LoadingGrid 
+    LoadingGrid,
+    WorkoutPlanCard
 } from '@/components/user'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
@@ -26,7 +28,7 @@ export default function WorkoutPlansPage() {
     const { user } = useAuth()
     const [plans, setPlans] = useState<WorkoutPlan[]>([])
     const [myPlans, setMyPlans] = useState<any[]>([])
-    const [trendingPlans, setTrendingPlans] = useState<WorkoutPlan[]>([])
+    const [featuredPlans, setFeaturedPlans] = useState<WorkoutPlan[]>([])
     const [loading, setLoading] = useState(true)
     const [categories, setCategories] = useState<string[]>([])
     const [activeTab, setActiveTab] = useState<'all' | 'active'>('all')
@@ -55,7 +57,6 @@ export default function WorkoutPlansPage() {
         if (activeTab === 'all') {
             fetchAllPlans()
             fetchCategories()
-            fetchTrendingPlans()
         } else {
             fetchMyPlans()
         }
@@ -77,6 +78,10 @@ export default function WorkoutPlansPage() {
                 setPlans(response.data.items)
                 setTotalPages(response.data.pagination.totalPages)
                 setTotalItems(response.data.pagination.totalItems)
+                
+                // Filter featured plans
+                const featured = response.data.items.filter((plan: WorkoutPlan) => (plan as any).isFeatured === true)
+                setFeaturedPlans(featured)
             }
         } catch (error) {
             console.error('Error fetching workout plans:', error)
@@ -132,45 +137,6 @@ export default function WorkoutPlansPage() {
         }
     }
 
-    const fetchTrendingPlans = async () => {
-        try {
-            // Mock trending data for now - replace with actual API call
-            setTrendingPlans([
-                {
-                    id: 1,
-                    title: "30-Day Strength Challenge",
-                    description: "Build muscle and strength with this comprehensive program",
-                    difficulty: "intermediate",
-                    estimatedDuration: 45,
-                    category: "strength",
-                    totalExercises: 30,
-                    tags: ["strength", "muscle-building"],
-                    isPublic: true,
-                    status: "approved",
-                    trainerId: 1,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                },
-                {
-                    id: 2,
-                    title: "HIIT Fat Burner",
-                    description: "High-intensity workouts to torch calories",
-                    difficulty: "advanced",
-                    estimatedDuration: 30,
-                    category: "cardio",
-                    totalExercises: 20,
-                    tags: ["hiit", "cardio", "fat-burning"],
-                    isPublic: true,
-                    status: "approved",
-                    trainerId: 1,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                }
-            ])
-        } catch (error) {
-            console.error('Error fetching trending plans:', error)
-        }
-    }
 
     const handlePlanClick = (plan: WorkoutPlan) => {
         router.push(`/user/workout-plans/${plan.id}`)
@@ -367,56 +333,43 @@ export default function WorkoutPlansPage() {
                 </div>
             </div>
 
-            {/* Trending Section */}
-            {!hasActiveFilters && trendingPlans.length > 0 && (
+            {/* Featured Plans Section */}
+            {!hasActiveFilters && featuredPlans.length > 0 && (
                 <div className="px-4 md:px-8 py-8">
                     <div className="max-w-7xl mx-auto">
-                        <div className="flex items-center space-x-3 mb-6">
-                            <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center">
-                                <Flame className="w-4 h-4 text-white" />
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center">
+                                    <Star className="w-4 h-4 text-white fill-current" />
+                                </div>
+                                <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Featured Plans</h2>
                             </div>
-                            <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Trending Now</h2>
+                            {featuredPlans.length > 3 && (
+                                <button 
+                                    onClick={() => router.push('/user/workout-plans/featured')}
+                                    className="flex items-center space-x-2 text-[var(--neumorphic-accent)] hover:text-[var(--neumorphic-accent-hover)] transition-colors"
+                                >
+                                    <span>View All</span>
+                                    <ChevronRight className="w-4 h-4" />
+                                </button>
+                            )}
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {trendingPlans.map((plan) => (
-                            <NeumorphicCard key={plan.id} variant="raised" className="p-6 cursor-pointer hover:scale-105 transition-all duration-200" onClick={() => handlePlanClick(plan)}>
-                                <div className="space-y-4">
-                                    <div className="flex items-start justify-between">
-                                        <h3 className="text-xl font-bold text-[var(--neumorphic-text)] line-clamp-2">
-                                            {plan.title}
-                                        </h3>
-                                        <div className="flex items-center space-x-1 text-yellow-500">
-                                            <Star className="w-4 h-4 fill-current" />
-                                            <span className="text-sm font-semibold">4.9</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <p className="text-[var(--neumorphic-muted)] line-clamp-2">
-                                        {plan.description}
-                                    </p>
-                                    
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4 text-sm text-[var(--neumorphic-muted)]">
-                                            <div className="flex items-center space-x-1">
-                                                <Target className="w-4 h-4" />
-                                                <span className="capitalize">{plan.difficulty}</span>
-                                            </div>
-                                            <div className="flex items-center space-x-1">
-                                                <Clock className="w-4 h-4" />
-                                                <span>{plan.estimatedDuration}min</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="flex items-center space-x-1 text-cyan-600">
-                                            <Zap className="w-4 h-4" />
-                                            <span className="text-sm font-semibold">+{(plan.totalExercises * 25 + 100)} XP</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </NeumorphicCard>
-                        ))}
-                        </div>
+                        {featuredPlans.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {featuredPlans.slice(0, 3).map((plan) => (
+                                    <WorkoutPlanCard
+                                        key={plan.id}
+                                        workoutPlan={plan}
+                                        onClick={() => handlePlanClick(plan)}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-12">
+                                <p className="text-[var(--neumorphic-muted)]">No featured plans at the moment. Check back soon!</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
