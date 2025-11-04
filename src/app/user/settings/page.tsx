@@ -54,10 +54,41 @@ export default function SettingsPage() {
   const [formData, setFormData] = useState<any>({})
   const [languages, setLanguages] = useState<any[]>([])
 
+  // Apply theme function
+  const applyTheme = (theme: string) => {
+    if (theme === 'system') {
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      if (systemPrefersDark) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    } else if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }
+
   useEffect(() => {
     fetchSettings()
     fetchLanguages()
   }, [])
+
+  // Apply theme when settings are loaded
+  useEffect(() => {
+    if (settings?.preferences?.theme) {
+      applyTheme(settings.preferences.theme)
+      
+      // Listen for system theme changes if theme is set to 'system'
+      if (settings.preferences.theme === 'system') {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+        const handleChange = () => applyTheme('system')
+        mediaQuery.addEventListener('change', handleChange)
+        return () => mediaQuery.removeEventListener('change', handleChange)
+      }
+    }
+  }, [settings])
 
   async function fetchSettings() {
     try {
@@ -178,6 +209,10 @@ export default function SettingsPage() {
       
       if (response.success) {
         setSettings(formData)
+        // Ensure theme is applied after save
+        if (formData.preferences?.theme) {
+          applyTheme(formData.preferences.theme)
+        }
         toast({
           title: 'Settings Updated!',
           description: 'Your settings have been saved successfully.',
@@ -271,7 +306,7 @@ export default function SettingsPage() {
         <div className="space-y-8">
           {/* Custom Tab Navigation with Sliding Background */}
           <div className="max-w-4xl mx-auto">
-            <div className="relative bg-white p-2 rounded-2xl shadow-lg">
+            <div className="relative bg-[var(--neumorphic-surface)] p-2 rounded-2xl shadow-lg dark:shadow-xl">
               {/* Sliding Background */}
               <div 
                 className={`absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 transition-all duration-500 ease-out ${
@@ -530,10 +565,14 @@ export default function SettingsPage() {
                   <Label htmlFor="theme">Theme</Label>
                   <Select
                     value={formData.preferences?.theme || 'system'}
-                    onValueChange={(value) => setFormData((prev: any) => ({
-                      ...prev,
-                      preferences: { ...prev.preferences, theme: value }
-                    }))}
+                    onValueChange={(value) => {
+                      setFormData((prev: any) => ({
+                        ...prev,
+                        preferences: { ...prev.preferences, theme: value }
+                      }))
+                      // Apply theme immediately when changed
+                      applyTheme(value)
+                    }}
                   >
                     <SelectTrigger>
                       <SelectValue />

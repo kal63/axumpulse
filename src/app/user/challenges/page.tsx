@@ -469,7 +469,7 @@ export default function ChallengesPage() {
           {/* Beautiful Tabs with Sliding Background */}
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'all' | 'active')} className="mb-8">
             <div className="flex justify-center mb-8">
-              <div className="relative bg-white p-2 rounded-2xl shadow-lg">
+              <div className="relative bg-[var(--neumorphic-surface)] p-2 rounded-2xl shadow-lg dark:shadow-xl">
                 {/* Sliding Background */}
                 <div 
                   className="absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 transition-all duration-500 ease-out"
