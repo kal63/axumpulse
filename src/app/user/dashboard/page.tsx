@@ -39,6 +39,40 @@ export default function UserDashboardPage() {
   const router = useRouter()
   const { user, isLoading: authLoading } = useAuth()
   const [loading, setLoading] = useState(true)
+  const [greeting, setGreeting] = useState({ text: 'Good morning', emoji: '☀️' })
+
+  // Get greeting based on Ethiopian timezone
+  const getGreeting = () => {
+    // Get current time in Ethiopian timezone (Africa/Addis_Ababa, UTC+3)
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Africa/Addis_Ababa',
+      hour: 'numeric',
+      hour12: false
+    })
+    const ethiopianHour = parseInt(formatter.format(new Date()))
+    
+    if (ethiopianHour >= 5 && ethiopianHour < 12) {
+      return { text: 'Good morning', emoji: '☀️' }
+    } else if (ethiopianHour >= 12 && ethiopianHour < 17) {
+      return { text: 'Good afternoon', emoji: '🌤️' }
+    } else if (ethiopianHour >= 17 && ethiopianHour < 21) {
+      return { text: 'Good evening', emoji: '🌆' }
+    } else {
+      return { text: 'Good night', emoji: '🌙' }
+    }
+  }
+
+  // Update greeting on mount and periodically
+  useEffect(() => {
+    setGreeting(getGreeting())
+    
+    // Update every hour to change greeting if needed
+    const interval = setInterval(() => {
+      setGreeting(getGreeting())
+    }, 3600000) // Check every hour
+    
+    return () => clearInterval(interval)
+  }, [])
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -91,7 +125,7 @@ export default function UserDashboardPage() {
                   <span>Welcome Back</span>
                 </div>
                 <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
-                  Good morning, {user.name?.split(' ')[0] || 'User'}! ☀️
+                  {greeting.text}, {user.name?.split(' ')[0] || 'User'}! {greeting.emoji}
                 </h1>
                 <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl">
                   Ready to level up your fitness journey? Let's make today count!
