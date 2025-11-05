@@ -7,9 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { NeumorphicCard } from '@/components/user/NeumorphicCard';
 import { toast } from 'sonner';
 import { apiClient, type Language } from '@/lib/api-client';
 import { 
@@ -404,15 +403,17 @@ export default function UserApplyPage() {
   const renderStep1 = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <Briefcase className="h-12 w-12 mx-auto text-green-600 mb-4" />
-        <h2 className="text-2xl font-bold">Professional Information</h2>
-        <p className="text-gray-600">Your fitness expertise and experience</p>
+        <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Briefcase className="h-8 w-8 text-white" />
+        </div>
+        <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Professional Information</h2>
+        <p className="text-[var(--neumorphic-muted)]">Your fitness expertise and experience</p>
       </div>
 
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label>Specialties *</Label>
-          <p className="text-sm text-gray-600">Select all that apply</p>
+          <Label className="text-[var(--neumorphic-text)]">Specialties *</Label>
+          <p className="text-sm text-[var(--neumorphic-muted)]">Select all that apply</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {SPECIALTY_OPTIONS.map((specialty) => (
               <div key={specialty} className="flex items-center space-x-2">
@@ -423,33 +424,34 @@ export default function UserApplyPage() {
                   onChange={() => handleArrayToggle('specialties', specialty)}
                   className="rounded border-gray-300"
                 />
-                <Label htmlFor={specialty} className="text-sm cursor-pointer">{specialty}</Label>
+                <Label htmlFor={specialty} className="text-sm cursor-pointer text-[var(--neumorphic-text)]">{specialty}</Label>
               </div>
             ))}
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="yearsOfExperience">Years of Experience</Label>
-          <Select value={formData.yearsOfExperience} onValueChange={(value) => handleInputChange('yearsOfExperience', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select experience level" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0-1">0-1 years</SelectItem>
-              <SelectItem value="2-3">2-3 years</SelectItem>
-              <SelectItem value="4-5">4-5 years</SelectItem>
-              <SelectItem value="6-10">6-10 years</SelectItem>
-              <SelectItem value="10+">10+ years</SelectItem>
-            </SelectContent>
-          </Select>
+          <Label htmlFor="yearsOfExperience" className="text-[var(--neumorphic-text)]">Years of Experience</Label>
+          <select
+            id="yearsOfExperience"
+            value={formData.yearsOfExperience}
+            onChange={(e) => handleInputChange('yearsOfExperience', e.target.value)}
+            className="w-full px-3 py-2 rounded-xl border border-[var(--neumorphic-border)] bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          >
+            <option value="">Select experience level</option>
+            <option value="0-1">0-1 years</option>
+            <option value="2-3">2-3 years</option>
+            <option value="4-5">4-5 years</option>
+            <option value="6-10">6-10 years</option>
+            <option value="10+">10+ years</option>
+          </select>
         </div>
 
         <div className="space-y-2">
-          <Label>Languages</Label>
-          <p className="text-sm text-gray-600">Select all languages you can communicate in</p>
+          <Label className="text-[var(--neumorphic-text)]">Languages</Label>
+          <p className="text-sm text-[var(--neumorphic-muted)]">Select all languages you can communicate in</p>
           {loadingLanguages ? (
-            <div className="text-sm text-gray-500">Loading languages...</div>
+            <div className="text-sm text-[var(--neumorphic-muted)]">Loading languages...</div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {languages.map((language) => (
@@ -461,7 +463,7 @@ export default function UserApplyPage() {
                     onChange={() => handleArrayToggle('languages', language.name)}
                     className="rounded border-gray-300"
                   />
-                  <Label htmlFor={language.name} className="text-sm cursor-pointer">
+                  <Label htmlFor={language.name} className="text-sm cursor-pointer text-[var(--neumorphic-text)]">
                     {language.nativeName || language.name}
                   </Label>
                 </div>
@@ -471,13 +473,14 @@ export default function UserApplyPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="bio">Bio</Label>
+          <Label htmlFor="bio" className="text-[var(--neumorphic-text)]">Bio</Label>
           <Textarea
             id="bio"
             placeholder="Tell us about your fitness journey and philosophy..."
             value={formData.bio}
             onChange={(e) => handleInputChange('bio', e.target.value)}
             rows={4}
+            className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
           />
         </div>
       </div>
@@ -488,53 +491,59 @@ export default function UserApplyPage() {
   const renderStep2 = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <FileText className="h-12 w-12 mx-auto text-purple-600 mb-4" />
-        <h2 className="text-2xl font-bold">Certifications & Portfolio</h2>
-        <p className="text-gray-600">Showcase your credentials and work</p>
+        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <FileText className="h-8 w-8 text-white" />
+        </div>
+        <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Certifications & Portfolio</h2>
+        <p className="text-[var(--neumorphic-muted)]">Showcase your credentials and work</p>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label>Certifications</Label>
-            <Button type="button" variant="outline" size="sm" onClick={addCertification}>
+            <Label className="text-[var(--neumorphic-text)]">Certifications</Label>
+            <Button type="button" variant="outline" size="sm" onClick={addCertification} className="border-[var(--neumorphic-border)]">
               Add Certification
             </Button>
           </div>
           
           {formData.certifications.map((cert, index) => (
-            <Card key={index} className="p-4">
+            <NeumorphicCard key={index} variant="raised" className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Certification Name</Label>
+                  <Label className="text-[var(--neumorphic-text)]">Certification Name</Label>
                   <Input
                     value={cert.name}
                     onChange={(e) => updateCertification(index, 'name', e.target.value)}
                     placeholder="e.g., NASM-CPT"
+                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Issuing Organization</Label>
+                  <Label className="text-[var(--neumorphic-text)]">Issuing Organization</Label>
                   <Input
                     value={cert.issuer}
                     onChange={(e) => updateCertification(index, 'issuer', e.target.value)}
                     placeholder="e.g., NASM"
+                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Issue Date</Label>
+                  <Label className="text-[var(--neumorphic-text)]">Issue Date</Label>
                   <Input
                     type="date"
                     value={cert.date}
                     onChange={(e) => updateCertification(index, 'date', e.target.value)}
+                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Expiry Date (if applicable)</Label>
+                  <Label className="text-[var(--neumorphic-text)]">Expiry Date (if applicable)</Label>
                   <Input
                     type="date"
                     value={cert.expiry || ''}
                     onChange={(e) => updateCertification(index, 'expiry', e.target.value)}
+                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
               </div>
@@ -548,44 +557,47 @@ export default function UserApplyPage() {
                 <X className="h-4 w-4 mr-2" />
                 Remove
               </Button>
-            </Card>
+            </NeumorphicCard>
           ))}
         </div>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label>Portfolio Items</Label>
-            <Button type="button" variant="outline" size="sm" onClick={addPortfolioItem}>
+            <Label className="text-[var(--neumorphic-text)]">Portfolio Items</Label>
+            <Button type="button" variant="outline" size="sm" onClick={addPortfolioItem} className="border-[var(--neumorphic-border)]">
               Add Portfolio Item
             </Button>
           </div>
           
           {formData.portfolio.map((item, index) => (
-            <Card key={index} className="p-4">
+            <NeumorphicCard key={index} variant="raised" className="p-4">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Title</Label>
+                  <Label className="text-[var(--neumorphic-text)]">Title</Label>
                   <Input
                     value={item.title}
                     onChange={(e) => updatePortfolioItem(index, 'title', e.target.value)}
                     placeholder="e.g., 30-Day Transformation Program"
+                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Description</Label>
+                  <Label className="text-[var(--neumorphic-text)]">Description</Label>
                   <Textarea
                     value={item.description}
                     onChange={(e) => updatePortfolioItem(index, 'description', e.target.value)}
                     placeholder="Describe your work..."
                     rows={3}
+                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>URL (optional)</Label>
+                  <Label className="text-[var(--neumorphic-text)]">URL (optional)</Label>
                   <Input
                     value={item.url || ''}
                     onChange={(e) => updatePortfolioItem(index, 'url', e.target.value)}
                     placeholder="https://example.com"
+                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
               </div>
@@ -599,20 +611,21 @@ export default function UserApplyPage() {
                 <X className="h-4 w-4 mr-2" />
                 Remove
               </Button>
-            </Card>
+            </NeumorphicCard>
           ))}
         </div>
 
         <div className="space-y-4">
-          <Label>Certification Files</Label>
-          <p className="text-sm text-gray-600">Upload copies of your certifications (PDF, JPG, PNG - max 10MB each)</p>
+          <Label className="text-[var(--neumorphic-text)]">Certification Files</Label>
+          <p className="text-sm text-[var(--neumorphic-muted)]">Upload copies of your certifications (PDF, JPG, PNG - max 10MB each)</p>
           
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-            <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
+          <NeumorphicCard variant="recessed" className="p-6 text-center border-2 border-dashed border-[var(--neumorphic-border)]">
+            <Upload className="h-8 w-8 mx-auto text-[var(--neumorphic-muted)] mb-2" />
             <Button
               type="button"
               variant="outline"
               onClick={() => fileInputRef.current?.click()}
+              className="border-[var(--neumorphic-border)]"
             >
               Choose Files
             </Button>
@@ -624,14 +637,14 @@ export default function UserApplyPage() {
               onChange={handleFileUpload}
               className="hidden"
             />
-          </div>
+          </NeumorphicCard>
 
           {uploadedFiles.length > 0 && (
             <div className="space-y-2">
-              <Label>Uploaded Files</Label>
+              <Label className="text-[var(--neumorphic-text)]">Uploaded Files</Label>
               {uploadedFiles.map((file, index) => (
-                <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                  <span className="text-sm">{file.name}</span>
+                <NeumorphicCard key={index} variant="raised" className="p-3 flex items-center justify-between">
+                  <span className="text-sm text-[var(--neumorphic-text)]">{file.name}</span>
                   <Button
                     type="button"
                     variant="ghost"
@@ -640,7 +653,7 @@ export default function UserApplyPage() {
                   >
                     <X className="h-4 w-4" />
                   </Button>
-                </div>
+                </NeumorphicCard>
               ))}
             </div>
           )}
@@ -653,59 +666,66 @@ export default function UserApplyPage() {
   const renderStep3 = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <Globe className="h-12 w-12 mx-auto text-blue-600 mb-4" />
-        <h2 className="text-2xl font-bold">Social Media & Online Presence</h2>
-        <p className="text-gray-600">Connect with members on social platforms</p>
+        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Globe className="h-8 w-8 text-white" />
+        </div>
+        <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Social Media & Online Presence</h2>
+        <p className="text-[var(--neumorphic-muted)]">Connect with members on social platforms</p>
       </div>
 
       <div className="space-y-4">
-        <p className="text-sm text-gray-600 text-center">
+        <p className="text-sm text-[var(--neumorphic-muted)] text-center">
           All fields are optional. Add your social media profiles so members can follow and connect with you.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="instagram">Instagram</Label>
+            <Label htmlFor="instagram" className="text-[var(--neumorphic-text)]">Instagram</Label>
             <Input
               id="instagram"
               placeholder="@username"
               value={formData.socialMedia.instagram || ''}
               onChange={(e) => handleNestedInputChange('socialMedia', 'instagram', e.target.value)}
+              className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="facebook">Facebook</Label>
+            <Label htmlFor="facebook" className="text-[var(--neumorphic-text)]">Facebook</Label>
             <Input
               id="facebook"
               placeholder="@username"
               value={formData.socialMedia.facebook || ''}
               onChange={(e) => handleNestedInputChange('socialMedia', 'facebook', e.target.value)}
+              className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="twitter">Twitter/X</Label>
+            <Label htmlFor="twitter" className="text-[var(--neumorphic-text)]">Twitter/X</Label>
             <Input
               id="twitter"
               placeholder="@username"
               value={formData.socialMedia.twitter || ''}
               onChange={(e) => handleNestedInputChange('socialMedia', 'twitter', e.target.value)}
+              className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="linkedin">LinkedIn</Label>
+            <Label htmlFor="linkedin" className="text-[var(--neumorphic-text)]">LinkedIn</Label>
             <Input
               id="linkedin"
               placeholder="linkedin.com/in/username"
               value={formData.socialMedia.linkedin || ''}
               onChange={(e) => handleNestedInputChange('socialMedia', 'linkedin', e.target.value)}
+              className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
             />
           </div>
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="website">Website</Label>
+            <Label htmlFor="website" className="text-[var(--neumorphic-text)]">Website</Label>
             <Input
               id="website"
               placeholder="https://yourwebsite.com"
               value={formData.socialMedia.website || ''}
               onChange={(e) => handleNestedInputChange('socialMedia', 'website', e.target.value)}
+              className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
             />
           </div>
         </div>
@@ -717,15 +737,17 @@ export default function UserApplyPage() {
   const renderStep4 = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <Target className="h-12 w-12 mx-auto text-pink-600 mb-4" />
-        <h2 className="text-2xl font-bold">Content Preferences</h2>
-        <p className="text-gray-600">What type of content will you create?</p>
+        <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Target className="h-8 w-8 text-white" />
+        </div>
+        <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Content Preferences</h2>
+        <p className="text-[var(--neumorphic-muted)]">What type of content will you create?</p>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label>Content Types *</Label>
-          <p className="text-sm text-gray-600">Select all types of content you plan to create</p>
+          <Label className="text-[var(--neumorphic-text)]">Content Types *</Label>
+          <p className="text-sm text-[var(--neumorphic-muted)]">Select all types of content you plan to create</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {CONTENT_TYPE_OPTIONS.map((type) => (
               <div key={type} className="flex items-center space-x-2">
@@ -743,15 +765,15 @@ export default function UserApplyPage() {
                   }}
                   className="rounded border-gray-300"
                 />
-                <Label htmlFor={type} className="text-sm cursor-pointer">{type}</Label>
+                <Label htmlFor={type} className="text-sm cursor-pointer text-[var(--neumorphic-text)]">{type}</Label>
               </div>
             ))}
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label>Target Audience</Label>
-          <p className="text-sm text-gray-600">Who will you be training?</p>
+          <Label className="text-[var(--neumorphic-text)]">Target Audience</Label>
+          <p className="text-sm text-[var(--neumorphic-muted)]">Who will you be training?</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {TARGET_AUDIENCE_OPTIONS.map((audience) => (
               <div key={audience} className="flex items-center space-x-2">
@@ -769,27 +791,25 @@ export default function UserApplyPage() {
                   }}
                   className="rounded border-gray-300"
                 />
-                <Label htmlFor={audience} className="text-sm cursor-pointer">{audience}</Label>
+                <Label htmlFor={audience} className="text-sm cursor-pointer text-[var(--neumorphic-text)]">{audience}</Label>
               </div>
             ))}
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="experienceLevel">Your Experience Level</Label>
-          <Select 
-            value={formData.preferences.experienceLevel} 
-            onValueChange={(value) => handleNestedInputChange('preferences', 'experienceLevel', value)}
+          <Label htmlFor="experienceLevel" className="text-[var(--neumorphic-text)]">Your Experience Level</Label>
+          <select
+            id="experienceLevel"
+            value={formData.preferences.experienceLevel}
+            onChange={(e) => handleNestedInputChange('preferences', 'experienceLevel', e.target.value)}
+            className="w-full px-3 py-2 rounded-xl border border-[var(--neumorphic-border)] bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] focus:outline-none focus:ring-2 focus:ring-cyan-500"
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Select your experience level" />
-            </SelectTrigger>
-            <SelectContent>
-              {EXPERIENCE_LEVEL_OPTIONS.map((level) => (
-                <SelectItem key={level} value={level}>{level}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <option value="">Select your experience level</option>
+            {EXPERIENCE_LEVEL_OPTIONS.map((level) => (
+              <option key={level} value={level}>{level}</option>
+            ))}
+          </select>
         </div>
       </div>
     </div>
@@ -808,128 +828,110 @@ export default function UserApplyPage() {
   // Loading states
   if (authLoading || checkingStatus) {
     return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400 mx-auto"></div>
-          <p className="mt-4 text-emerald-100">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto"></div>
+          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
         </div>
       </div>
     );
   }
 
-  // Authentication is handled by the user layout
-
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4">
-      <div className="w-full max-w-4xl">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="relative mx-auto w-24 h-24 mb-6">
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600 rounded-2xl rotate-3 animate-pulse"></div>
-            <div className="relative w-full h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-2xl">
-              <Award className="w-12 h-12 text-white" />
-            </div>
-            <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
-              <Sparkles className="w-3 h-3 text-yellow-800" />
-            </div>
-          </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-emerald-100 to-white bg-clip-text text-transparent mb-3">
-            Become a Trainer
-          </h1>
-          <p className="text-emerald-100/80 text-lg">
-            Join our community of <span className="font-semibold text-emerald-300">fitness professionals</span>
-          </p>
-          <div className="flex items-center justify-center space-x-2 mt-3">
-            <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30">
-              <Heart className="w-3 h-3 mr-1" />
-              Premium Fitness
-            </Badge>
-            <Badge variant="secondary" className="bg-blue-500/20 text-blue-200 border-blue-400/30">
-              <Users className="w-3 h-3 mr-1" />
-              Expert Community
-            </Badge>
-          </div>
-          
-          {/* User Info Badge */}
-          <div className="mt-4 inline-block">
-            <Badge variant="outline" className="bg-white/10 text-white border-emerald-400/50 px-4 py-2">
-              <User className="w-4 h-4 mr-2" />
-              Applying as: <strong className="ml-1">{user?.name || 'User'}</strong> ({user?.phone || 'N/A'})
-            </Badge>
-          </div>
-        </div>
-
-        {/* Progress Card */}
-        <Card className="relative shadow-2xl border-0 bg-white/95 backdrop-blur-xl overflow-hidden mb-8">
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-blue-500/10"></div>
-          
-          <CardHeader className="relative space-y-1 pb-6 pt-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-2xl font-bold text-gray-900 mb-2">Application Progress</CardTitle>
-                <CardDescription className="text-gray-600">Step {currentStep} of {totalSteps}</CardDescription>
+    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10" />
+        <div className="relative px-4 md:px-8 py-12">
+          <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <Award className="w-4 h-4" />
+                <span>Become a Trainer</span>
               </div>
-              <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-700 border-emerald-400/30">
-                {Math.round(progress)}% Complete
-              </Badge>
+              <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)] mb-4">
+                Join Our Trainer Community
+              </h1>
+              <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+                Share your expertise and help others achieve their fitness goals
+              </p>
+              
+              {/* User Info Badge */}
+              <div className="mt-4 inline-block">
+                <Badge variant="outline" className="bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border-[var(--neumorphic-border)] px-4 py-2">
+                  <User className="w-4 h-4 mr-2" />
+                  Applying as: <strong className="ml-1">{user?.name || 'User'}</strong> ({user?.phone || 'N/A'})
+                </Badge>
+              </div>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3 mt-4 overflow-hidden">
-              <div 
-                className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-3 rounded-full transition-all duration-500 shadow-lg"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
-          </CardHeader>
-        </Card>
 
-        {/* Form Card */}
-        <Card className="relative shadow-2xl border-0 bg-white/95 backdrop-blur-xl overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-blue-500/10"></div>
-          
-          <CardContent className="relative p-8">
-            {renderCurrentStep()}
-          </CardContent>
-        </Card>
+            {/* Progress Card */}
+            <NeumorphicCard variant="raised" size="lg" className="mb-8">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-1">Application Progress</h3>
+                    <p className="text-[var(--neumorphic-muted)]">Step {currentStep} of {totalSteps}</p>
+                  </div>
+                  <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">
+                    {Math.round(progress)}% Complete
+                  </Badge>
+                </div>
+                <div className="w-full bg-[var(--neumorphic-surface)] rounded-full h-3 overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-cyan-500 to-purple-600 h-3 rounded-full transition-all duration-500"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              </div>
+            </NeumorphicCard>
 
-        {/* Navigation Buttons */}
-        <div className="flex justify-between mt-8">
-          <Button
-            variant="outline"
-            onClick={prevStep}
-            disabled={currentStep === 1}
-            className="flex items-center h-12 px-6 bg-white/80 hover:bg-white border-2 border-gray-200 hover:border-emerald-500 text-gray-700 hover:text-emerald-700 transition-all duration-300 shadow-lg"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Previous
-          </Button>
+            {/* Form Card */}
+            <NeumorphicCard variant="raised" size="lg">
+              {renderCurrentStep()}
+            </NeumorphicCard>
 
-          {currentStep < totalSteps ? (
-            <Button 
-              onClick={nextStep}
-              className="flex items-center h-12 px-6 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Next
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-          ) : (
-            <Button 
-              onClick={handleSubmit} 
-              disabled={isSubmitting}
-              className="flex items-center h-12 px-6 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Submitting...
-                </>
+            {/* Navigation Buttons */}
+            <div className="flex justify-between mt-8">
+              <Button
+                variant="outline"
+                onClick={prevStep}
+                disabled={currentStep === 1}
+                className="flex items-center h-12 px-6 border-[var(--neumorphic-border)] bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] hover:bg-[var(--neumorphic-surface)]"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Previous
+              </Button>
+
+              {currentStep < totalSteps ? (
+                <Button 
+                  onClick={nextStep}
+                  className="flex items-center h-12 px-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+                >
+                  Next
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
               ) : (
-                <>
-                  <Check className="h-4 w-4 mr-2" />
-                  Submit Application
-                </>
+                <Button 
+                  onClick={handleSubmit} 
+                  disabled={isSubmitting}
+                  className="flex items-center h-12 px-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <Check className="h-4 w-4 mr-2" />
+                      Submit Application
+                    </>
+                  )}
+                </Button>
               )}
-            </Button>
-          )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
