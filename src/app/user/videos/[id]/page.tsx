@@ -29,7 +29,11 @@ export default function VideoPlayerPage() {
     const [liked, setLiked] = useState(false)
     const [saved, setSaved] = useState(false)
     const [completed, setCompleted] = useState(false)
-    const [watchTime, setWatchTime] = useState(0)
+    const [watchTime, setWatchTime] = useState(0) // Maximum timeline position reached through actual playback
+    const [maxWatchedTime, setMaxWatchedTime] = useState(0) // Track max time reached while playing (prevents seeking abuse)
+    const [effectiveWatchTime, setEffectiveWatchTime] = useState(0) // Total seconds actually played (excluding pauses)
+    const [playStartTime, setPlayStartTime] = useState<number | null>(null) // Timestamp when video started playing
+    const [lastSeekTime, setLastSeekTime] = useState<number | null>(null) // Track when seeking occurred to prevent counting seeks
     const [isPlaying, setIsPlaying] = useState(false)
     const [showControls, setShowControls] = useState(true)
     const [volume, setVolume] = useState(1)
@@ -38,29 +42,174 @@ export default function VideoPlayerPage() {
     const [currentTime, setCurrentTime] = useState(0)
     const [duration, setDuration] = useState(0)
     const [showRelated, setShowRelated] = useState(true)
+    const [completing, setCompleting] = useState(false) // Loading state for completion
+    const [watchPercentage, setWatchPercentage] = useState(0) // Watch percentage for display
+    const [effectiveWatchPercentage, setEffectiveWatchPercentage] = useState(0) // Effective watch percentage
+    const [userXP, setUserXP] = useState(0) // User's current XP
+    const [userLevel, setUserLevel] = useState(1) // User's current level
+    const [xpToNextLevel, setXpToNextLevel] = useState(50) // XP needed for next level
+    const [xpProgress, setXpProgress] = useState(0) // Current XP progress in current level
 
     const contentId = Number(params.id)
 
     useEffect(() => {
         if (contentId) {
             fetchContent()
+            fetchUserProfile()
+        }
+    }, [contentId])
+    
+    // Fetch user profile to get XP and level
+    const fetchUserProfile = async () => {
+        try {
+            const response = await apiClient.getUserStats()
+            if (response.success && response.data) {
+                const user = response.data.user
+                setUserXP(user.xp || 0)
+                setUserLevel(user.level || 1)
+                setXpToNextLevel(user.xpNeeded || 50)
+                setXpProgress(user.xpProgress || 0)
+            }
+        } catch (error) {
+            console.error('Error fetching user profile:', error)
+        }
+    }
+
+    // Track effective watch time (time video has been playing, excluding pauses)
+    useEffect(() => {
+        const video = videoRef.current
+        if (!video) return
+
+        let playStartTimestamp: number | null = null
+        
+        const handlePlay = () => {
+            playStartTimestamp = Date.now()
+            setPlayStartTime(playStartTimestamp)
+        }
+        
+        const handlePause = () => {
+            if (playStartTimestamp !== null) {
+                const playedDuration = Math.floor((Date.now() - playStartTimestamp) / 1000)
+                setEffectiveWatchTime(prev => prev + playedDuration)
+                playStartTimestamp = null
+                setPlayStartTime(null)
+            }
+        }
+        
+        const handleEnded = () => {
+            if (playStartTimestamp !== null) {
+                const playedDuration = Math.floor((Date.now() - playStartTimestamp) / 1000)
+                setEffectiveWatchTime(prev => prev + playedDuration)
+                playStartTimestamp = null
+                setPlayStartTime(null)
+            }
+        }
+        
+        const handleSeeked = () => {
+            // Video finished seeking - mark the seek time
+            setLastSeekTime(Date.now())
+        }
+
+        video.addEventListener('play', handlePlay)
+        video.addEventListener('pause', handlePause)
+        video.addEventListener('ended', handleEnded)
+        video.addEventListener('seeked', handleSeeked)
+
+        return () => {
+            video.removeEventListener('play', handlePlay)
+            video.removeEventListener('pause', handlePause)
+            video.removeEventListener('ended', handleEnded)
+            video.removeEventListener('seeked', handleSeeked)
         }
     }, [contentId])
 
     // Track watch progress every 5 seconds
     useEffect(() => {
-        const interval = setInterval(() => {
+        const interval = setInterval(async () => {
             if (videoRef.current && !videoRef.current.paused) {
                 const currentTime = Math.floor(videoRef.current.currentTime)
-                setWatchTime(currentTime)
                 
-                // Auto-save progress
-                apiClient.updateWatchProgress(contentId, currentTime, false).catch(console.error)
+                // Only update maxWatchedTime if video is playing and we haven't recently seeked
+                // This prevents seeking from instantly updating watch time
+                const now = Date.now()
+                const seekThreshold = 3000 // If we seeked within last 3 seconds, don't count this as watched
+                
+                if (!lastSeekTime || (now - lastSeekTime) > seekThreshold) {
+                    // Video is playing naturally (no recent seek), update max watched time
+                    // Only update if currentTime is greater than maxWatchedTime (moving forward naturally)
+                    if (currentTime > maxWatchedTime) {
+                        setMaxWatchedTime(currentTime)
+                        setWatchTime(currentTime) // Only update watchTime when actually playing forward
+                    }
+                } else {
+                    // Recent seek detected - don't update maxWatchedTime yet
+                    // Wait for video to actually play through the seeked position
+                    // Use maxWatchedTime (last known valid position) for now
+                    if (maxWatchedTime > 0) {
+                        setWatchTime(maxWatchedTime)
+                    }
+                }
+                
+                // Calculate current effective watch time (including current playing session)
+                let currentEffectiveTime = effectiveWatchTime
+                if (playStartTime !== null) {
+                    const playedDuration = Math.floor((Date.now() - playStartTime) / 1000)
+                    currentEffectiveTime = effectiveWatchTime + playedDuration
+                }
+                
+                // Use maxWatchedTime (not currentTime) for watch progress to prevent seeking abuse
+                const watchTimeToSend = maxWatchedTime > 0 ? maxWatchedTime : currentTime
+                
+                // Auto-save progress with effective watch time
+                try {
+                    const response = await apiClient.updateWatchProgress(contentId, watchTimeToSend, false, currentEffectiveTime)
+                    if (response.success && response.data) {
+                        // Update watch percentages for display
+                        setWatchPercentage(response.data.watchPercentage || 0)
+                        setEffectiveWatchPercentage(response.data.effectiveWatchPercentage || 0)
+                        
+                        // Handle auto-completion
+                        if (response.data.autoCompleted && !completed) {
+                            setCompleted(true)
+                            // Refresh user profile to get updated XP/level
+                            fetchUserProfile().catch(console.error)
+                            // Show gamified completion notification
+                            toast({
+                                title: '🎉 Video Completed!',
+                                description: (
+                                    <div className="flex flex-col gap-1">
+                                        <span className="font-semibold text-lg">+{response.data.xpEarned} XP Earned!</span>
+                                        <span className="text-sm opacity-90">Great job watching the video!</span>
+                                    </div>
+                                ),
+                                duration: 6000,
+                                className: "bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 shadow-2xl",
+                            })
+                        }
+                        // Handle milestone notifications
+                        if (response.data.newlyAwardedMilestones && response.data.newlyAwardedMilestones.length > 0) {
+                            const milestone = response.data.newlyAwardedMilestones[response.data.newlyAwardedMilestones.length - 1]
+                            toast({
+                                title: `🎯 ${milestone.milestone}% Milestone!`,
+                                description: `+${milestone.xp} XP`,
+                                duration: 3000,
+                                className: "bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0 shadow-xl",
+                            })
+                        }
+                    } else if (!response.success && response.error) {
+                        // Handle API errors (non-network errors)
+                        console.error('Error updating watch progress:', response.error)
+                        // Don't show toast for every progress update error to avoid spam
+                    }
+                } catch (error) {
+                    console.error('Error updating watch progress:', error)
+                    // Network errors are caught here, but we don't want to spam user with toasts
+                }
             }
         }, 5000)
 
         return () => clearInterval(interval)
-    }, [contentId])
+    }, [contentId, effectiveWatchTime, playStartTime, completed, maxWatchedTime, lastSeekTime])
 
     const fetchContent = async () => {
         try {
@@ -68,16 +217,29 @@ export default function VideoPlayerPage() {
             const response = await apiClient.getUserContentById(contentId)
             
             if (response.success && response.data) {
-                setContent(response.data.content)
+                const contentData = response.data.content
+                setContent(contentData)
                 setRelatedContent(response.data.relatedContent)
                 
                 // Set initial engagement state from user progress
-                const userProgress = (response.data.content as any).userProgress?.[0]
+                const userProgress = (contentData as any).userProgress?.[0]
                 if (userProgress) {
                     setLiked(userProgress.liked || false)
                     setSaved(userProgress.saved || false)
                     setCompleted(userProgress.completed || false)
-                    setWatchTime(userProgress.watchTime || 0)
+                    const savedWatchTime = userProgress.watchTime || 0
+                    setWatchTime(savedWatchTime)
+                    setMaxWatchedTime(savedWatchTime) // Initialize max watched time from saved progress
+                    // Initialize effective watch time (for now, use watchTime as approximation)
+                    // In future, we could store effectiveWatchTime in DB
+                    setEffectiveWatchTime(savedWatchTime)
+                    
+                    // Calculate initial watch percentage
+                    if (contentData.duration) {
+                        const initialWatchPct = (savedWatchTime / contentData.duration) * 100
+                        setWatchPercentage(Math.min(100, Math.round(initialWatchPct)))
+                        setEffectiveWatchPercentage(Math.min(100, Math.round(initialWatchPct)))
+                    }
                 }
             }
         } catch (error) {
@@ -123,20 +285,80 @@ export default function VideoPlayerPage() {
     }
 
     const handleComplete = async () => {
+        if (completing || completed) return // Prevent multiple clicks
+        
         try {
-            const currentTime = videoRef.current ? Math.floor(videoRef.current.currentTime) : watchTime
-            const response = await apiClient.updateWatchProgress(contentId, currentTime, true)
+            setCompleting(true)
+            // Use maxWatchedTime (not currentTime) to prevent seeking abuse
+            const watchTimeToSend = maxWatchedTime > 0 ? maxWatchedTime : (videoRef.current ? Math.floor(videoRef.current.currentTime) : watchTime)
+            
+            // Calculate current effective watch time
+            let currentEffectiveTime = effectiveWatchTime
+            if (playStartTime !== null) {
+                const playedDuration = Math.floor((Date.now() - playStartTime) / 1000)
+                currentEffectiveTime = effectiveWatchTime + playedDuration
+            }
+            
+            const response = await apiClient.updateWatchProgress(contentId, watchTimeToSend, true, currentEffectiveTime)
             
             if (response.success && response.data) {
                 setCompleted(true)
+                setWatchPercentage(response.data.watchPercentage || 0)
+                setEffectiveWatchPercentage(response.data.effectiveWatchPercentage || 0)
+                
+                // Refresh user profile to get updated XP/level
+                await fetchUserProfile()
+                
                 toast({
                     title: '🎉 Completed!',
-                    description: `You earned ${response.data.xpEarned} XP!`,
-                    duration: 5000
+                    description: (
+                        <div className="flex flex-col gap-1">
+                            <span className="font-semibold text-lg">+{response.data.xpEarned} XP Earned!</span>
+                            <span className="text-sm opacity-90">Great job watching the video!</span>
+                        </div>
+                    ),
+                    duration: 6000,
+                    className: "bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 shadow-2xl",
                 })
+            } else if (!response.success && response.error) {
+                // Handle API errors
+                const errorCode = response.error.code
+                const errorMessage = response.error.message || 'An error occurred'
+                
+                if (errorCode === 'INSUFFICIENT_WATCH_TIME') {
+                    toast({
+                        title: '⚠️ Watch More to Complete',
+                        description: (
+                            <div className="flex flex-col gap-1">
+                                <span>{errorMessage}</span>
+                                <span className="text-sm opacity-90">
+                                    You've watched {Math.round(watchPercentage)}%. Watch at least 80% to complete.
+                                </span>
+                            </div>
+                        ),
+                        variant: 'destructive',
+                        duration: 5000,
+                    })
+                } else {
+                    toast({
+                        title: 'Error',
+                        description: errorMessage,
+                        variant: 'destructive',
+                        duration: 5000,
+                    })
+                }
             }
-        } catch (error) {
+        } catch (error: any) {
+            // Handle network errors
             console.error('Error completing content:', error)
+            toast({
+                title: 'Network Error',
+                description: 'Failed to complete video. Please check your connection and try again.',
+                variant: 'destructive',
+                duration: 5000,
+            })
+        } finally {
+            setCompleting(false)
         }
     }
 
@@ -188,6 +410,18 @@ export default function VideoPlayerPage() {
             const clickX = e.clientX - rect.left
             const newTime = (clickX / rect.width) * videoRef.current.duration
             videoRef.current.currentTime = newTime
+            
+            // Mark that we just seeked - don't count this as watch time
+            setLastSeekTime(Date.now())
+            
+            // If seeking backward, don't update watchTime
+            // If seeking forward, only update maxWatchedTime if we actually play through it
+            const currentTime = Math.floor(videoRef.current.currentTime)
+            if (currentTime <= maxWatchedTime) {
+                // Seeking backward - don't update anything
+                // maxWatchedTime stays the same
+            }
+            // If seeking forward, we'll only update maxWatchedTime when video actually plays to that point
         }
     }
 
@@ -329,12 +563,6 @@ export default function VideoPlayerPage() {
                                                 {content.difficulty}
                                             </div>
                                         )}
-                                        
-                                        {/* XP Reward Badge */}
-                                        <div className="flex items-center space-x-2 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
-                                            <Zap className="w-4 h-4 text-cyan-400" />
-                                            <span className="text-white text-sm font-medium">+50 XP</span>
-                                        </div>
                                     </div>
 
                                     {/* Center Play Button */}
@@ -627,41 +855,95 @@ export default function VideoPlayerPage() {
 
 
                 {/* XP Reward Section */}
-                <div className="text-center p-12 rounded-3xl bg-gradient-to-br from-cyan-500/10 via-purple-600/10 to-pink-500/10 border border-cyan-500/20 shadow-xl">
-                    <div className="w-32 h-32 mx-auto mb-8">
-                        <XPRing 
-                            currentXP={0} 
-                            level={1} 
-                            xpToNextLevel={50}
-                            size="lg"
-                        />
-                    </div>
-                    <h3 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-4">
-                        Complete for XP
-                    </h3>
-                    <p className="text-[var(--neumorphic-muted)] mb-8 text-xl">
-                        Finish this workout to earn 50 XP and level up your fitness journey
-                    </p>
-                    
-                    {!completed ? (
-                        <button
-                            onClick={handleComplete}
-                            className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-12 py-6 rounded-full font-bold text-xl hover:from-cyan-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-xl"
-                        >
-                            <div className="flex items-center justify-center space-x-3">
-                                <CheckCircle className="w-8 h-8" />
-                                <span>Complete for +50 XP</span>
-                            </div>
-                        </button>
-                    ) : (
-                        <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-12 py-6 rounded-full font-bold text-xl shadow-xl">
-                            <div className="flex items-center justify-center space-x-3">
-                                <CheckCircle className="w-8 h-8" />
-                                <span>Completed!</span>
+                <NeumorphicCard variant="raised" className="p-8">
+                    <div className="flex flex-col md:flex-row items-center gap-8">
+                        {/* Left: XP Ring */}
+                        <div className="flex-shrink-0 flex flex-col items-center">
+                            <XPRing 
+                                currentXP={userXP} 
+                                level={userLevel} 
+                                xpToNextLevel={xpToNextLevel}
+                                xpProgress={xpProgress}
+                                size="lg"
+                            />
+                            <div className="mt-4 text-center">
+                                <div className="text-sm text-[var(--neumorphic-muted)]">
+                                    {xpToNextLevel - xpProgress} to next
+                                </div>
                             </div>
                         </div>
-                    )}
-                </div>
+                        
+                        {/* Right: Progress and Action */}
+                        <div className="flex-1 w-full md:w-auto">
+                            <h3 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-4 text-center md:text-left">
+                                Complete Video for XP
+                            </h3>
+                            
+                            {/* Watch Progress */}
+                            <div className="mb-6 space-y-2">
+                                <div className="flex items-center justify-between text-sm text-[var(--neumorphic-muted)] mb-2">
+                                    <span>Watch Progress</span>
+                                    <span className="font-semibold text-[var(--neumorphic-text)]">{Math.round(watchPercentage)}%</span>
+                                </div>
+                                <div className="w-full bg-[var(--neumorphic-bg)] rounded-full h-3 overflow-hidden">
+                                    <div 
+                                        className="bg-gradient-to-r from-cyan-500 to-purple-600 h-3 rounded-full transition-all duration-500"
+                                        style={{ width: `${Math.min(watchPercentage, 100)}%` }}
+                                    />
+                                </div>
+                                {watchPercentage < 80 && !completed && (
+                                    <p className="text-sm text-[var(--neumorphic-muted)] text-center md:text-left">
+                                        Watch {80 - Math.round(watchPercentage)}% more to complete
+                                    </p>
+                                )}
+                            </div>
+                            
+                            <p className="text-[var(--neumorphic-muted)] mb-6 text-center md:text-left">
+                                {completed 
+                                    ? '✅ You earned XP for completing this video!' 
+                                    : 'Watch at least 80% to earn XP and complete this video'
+                                }
+                            </p>
+                            
+                            {/* Complete Button */}
+                            {completed ? (
+                                <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl text-center">
+                                    <div className="flex items-center justify-center space-x-2">
+                                        <CheckCircle className="w-6 h-6" />
+                                        <span>Completed!</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={handleComplete}
+                                    disabled={completing || watchPercentage < 80}
+                                    className={`w-full md:w-auto px-8 py-4 rounded-full font-bold text-lg transition-all duration-200 shadow-xl ${
+                                        watchPercentage < 80
+                                            ? 'bg-gray-400 text-gray-200 cursor-not-allowed opacity-60'
+                                            : completing
+                                            ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white cursor-wait'
+                                            : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700 transform hover:scale-105'
+                                    }`}
+                                    title={watchPercentage < 80 ? `Watch at least 80% to complete. Currently at ${Math.round(watchPercentage)}%.` : undefined}
+                                >
+                                    <div className="flex items-center justify-center space-x-2">
+                                        {completing ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                                <span>Completing...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <CheckCircle className="w-6 h-6" />
+                                                <span>Complete for XP</span>
+                                            </>
+                                        )}
+                                    </div>
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </NeumorphicCard>
                 
                 {/* Related Videos */}
                 {relatedContent.length > 0 && (
@@ -768,10 +1050,6 @@ export default function VideoPlayerPage() {
                                                 <div className="flex items-center space-x-1">
                                                     <Heart className="w-4 h-4" />
                                                     <span>{item.likes || 0}</span>
-                                                </div>
-                                                <div className="flex items-center space-x-1">
-                                                    <Zap className="w-4 h-4 text-cyan-500" />
-                                                    <span>+50 XP</span>
                                                 </div>
                                             </div>
                                         </div>

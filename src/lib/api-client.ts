@@ -61,6 +61,11 @@ export interface UserProfile {
   id: number
   userId: number
   totalXp: number
+  level: number
+  dailyStreak: number
+  workoutStreak: number
+  challengeStreak: number
+  lastActivityDate?: string
   challengesCompleted: number
   workoutsCompleted: number
   subscriptionTier: 'premium' | 'pro'
@@ -1229,18 +1234,26 @@ class ApiClient {
   }
 
   // Update watch progress
-  async updateWatchProgress(contentId: number, watchTime: number, completed?: boolean): Promise<ApiResponse<{
+  async updateWatchProgress(contentId: number, watchTime: number, completed?: boolean, effectiveWatchTime?: number): Promise<ApiResponse<{
     watchTime: number
     completed: boolean
+    autoCompleted?: boolean
     xpEarned: number
+    watchPercentage: number
+    effectiveWatchPercentage: number
+    newlyAwardedMilestones?: Array<{ milestone: number; xp: number }>
   }>> {
     return this.request<{
       watchTime: number
       completed: boolean
+      autoCompleted?: boolean
       xpEarned: number
+      watchPercentage: number
+      effectiveWatchPercentage: number
+      newlyAwardedMilestones?: Array<{ milestone: number; xp: number }>
     }>('/user/engagement/watch-progress', {
       method: 'POST',
-      body: JSON.stringify({ contentId, watchTime, completed })
+      body: JSON.stringify({ contentId, watchTime, completed, effectiveWatchTime })
     })
   }
 
@@ -1257,24 +1270,48 @@ class ApiClient {
   // ==================== USER PROGRESS ====================
 
   // Start a workout plan
-  async startWorkoutPlan(workoutPlanId: number): Promise<ApiResponse<any>> {
-    return this.request<any>('/user/progress/workout-plan/start', {
+  async startWorkoutPlan(workoutPlanId: number): Promise<ApiResponse<{
+    planProgress: any
+    firstExerciseProgress?: {
+      exerciseId: number
+      startedAt: string
+      completed: boolean
+    } | null
+  }>> {
+    return this.request<{
+      planProgress: any
+      firstExerciseProgress?: {
+        exerciseId: number
+        startedAt: string
+        completed: boolean
+      } | null
+    }>('/user/progress/workout-plan/start', {
       method: 'POST',
       body: JSON.stringify({ workoutPlanId })
     })
   }
 
   // Complete an exercise
-  async completeExercise(workoutPlanId: number, exerciseId: number, notes?: string): Promise<ApiResponse<{
+  async completeExercise(workoutPlanId: number, exerciseId: number, timeSpent: number, notes?: string): Promise<ApiResponse<{
     exerciseProgress: any
     planProgress: any
+    nextExerciseProgress?: {
+      exerciseId: number
+      startedAt: string
+      completed: boolean
+    } | null
   }>> {
     return this.request<{
       exerciseProgress: any
       planProgress: any
+      nextExerciseProgress?: {
+        exerciseId: number
+        startedAt: string
+        completed: boolean
+      } | null
     }>('/user/progress/exercise/complete', {
       method: 'POST',
-      body: JSON.stringify({ workoutPlanId, exerciseId, notes })
+      body: JSON.stringify({ workoutPlanId, exerciseId, timeSpent, notes })
     })
   }
 
@@ -1331,6 +1368,9 @@ class ApiClient {
       xpProgress: number
       xpNeeded: number
       levelProgress: number
+      dailyStreak: number
+      workoutStreak: number
+      challengeStreak: number
       createdAt: string
     }
     stats: {
@@ -1383,6 +1423,10 @@ class ApiClient {
       level: number
       xpProgress: number
       xpNeeded: number
+      levelProgress: number
+      dailyStreak: number
+      workoutStreak: number
+      challengeStreak: number
       memberSince: string
     }
     stats: {
@@ -1402,7 +1446,7 @@ class ApiClient {
     }>('/user/profile/stats')
   }
 
-  // Get user achievements
+  // Get user achievements (legacy - use getAchievements instead)
   async getUserAchievements(): Promise<ApiResponse<{
     achievements: any[]
     totalUnlocked: number
@@ -1413,6 +1457,162 @@ class ApiClient {
       totalUnlocked: number
       totalAchievements: number
     }>('/user/profile/achievements')
+  }
+
+  // Get all achievements with unlock status
+  async getAchievements(): Promise<ApiResponse<{
+    achievements: Array<{
+      id: number
+      name: string
+      description: string
+      icon: string
+      rarity: 'common' | 'rare' | 'epic' | 'legendary'
+      xpReward: number
+      criteria: Record<string, unknown>
+      unlocked: boolean
+      unlockedAt: string | null
+    }>
+    stats: {
+      total: number
+      unlocked: number
+      locked: number
+      progress: number
+    }
+  }>> {
+    return this.request<{
+      achievements: Array<{
+        id: number
+        name: string
+        description: string
+        icon: string
+        rarity: 'common' | 'rare' | 'epic' | 'legendary'
+        xpReward: number
+        criteria: Record<string, unknown>
+        unlocked: boolean
+        unlockedAt: string | null
+      }>
+      stats: {
+        total: number
+        unlocked: number
+        locked: number
+        progress: number
+      }
+    }>('/user/achievements')
+  }
+
+  // Refresh all achievements (re-check criteria)
+  async refreshAchievements(): Promise<ApiResponse<{
+    achievements: Array<{
+      id: number
+      name: string
+      description: string
+      icon: string
+      rarity: 'common' | 'rare' | 'epic' | 'legendary'
+      xpReward: number
+      unlocked: boolean
+      unlockedAt: string | null
+    }>
+    totalUnlocked: number
+    totalAchievements: number
+    newlyUnlocked: number
+  }>> {
+    return this.request<{
+      achievements: Array<{
+        id: number
+        name: string
+        description: string
+        icon: string
+        rarity: 'common' | 'rare' | 'epic' | 'legendary'
+        xpReward: number
+        unlocked: boolean
+        unlockedAt: string | null
+      }>
+      totalUnlocked: number
+      totalAchievements: number
+      newlyUnlocked: number
+    }>('/user/achievements/refresh', {
+      method: 'POST'
+    })
+  }
+
+  // Get activity log
+  async getActivityLog(params?: {
+    page?: number
+    pageSize?: number
+    activityType?: string
+    startDate?: string
+    endDate?: string
+  }): Promise<ApiResponse<{
+    activities: Array<{
+      id: number
+      userId: number
+      activityType: string
+      entityId: number | null
+      entityType: string | null
+      xpEarned: number
+      metadata: Record<string, unknown>
+      createdAt: string
+      updatedAt: string
+    }>
+    pagination: {
+      currentPage: number
+      pageSize: number
+      totalItems: number
+      totalPages: number
+    }
+  }>> {
+    const query = createPaginationQuery(params)
+    return this.request<{
+      activities: Array<{
+        id: number
+        userId: number
+        activityType: string
+        entityId: number | null
+        entityType: string | null
+        xpEarned: number
+        metadata: Record<string, unknown>
+        createdAt: string
+        updatedAt: string
+      }>
+      pagination: {
+        currentPage: number
+        pageSize: number
+        totalItems: number
+        totalPages: number
+      }
+    }>(`/user/activity${query}`)
+  }
+
+  // Get activity statistics
+  async getActivityStats(params?: {
+    days?: number
+  }): Promise<ApiResponse<{
+    period: string
+    activitiesByType: Array<{
+      activityType: string
+      count: number
+      totalXP: number
+    }>
+    totalXP: number
+    dailyActivity: Array<{
+      date: string
+      count: number
+    }>
+  }>> {
+    const query = params?.days ? `?days=${params.days}` : ''
+    return this.request<{
+      period: string
+      activitiesByType: Array<{
+        activityType: string
+        count: number
+        totalXP: number
+      }>
+      totalXP: number
+      dailyActivity: Array<{
+        date: string
+        count: number
+      }>
+    }>(`/user/activity/stats${query}`)
   }
 
   // Get user XP history

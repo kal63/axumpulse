@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { XPRing } from '@/components/user/XPRing'
+import { ExerciseTimer } from '@/components/user/ExerciseTimer'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -25,6 +26,8 @@ export default function WorkoutPlanDetailPage() {
     const [relatedPlans, setRelatedPlans] = useState<WorkoutPlan[]>([])
     const [userProgress, setUserProgress] = useState<any>(null)
     const [exerciseProgress, setExerciseProgress] = useState<Map<number, boolean>>(new Map())
+    const [exerciseStartTimes, setExerciseStartTimes] = useState<Map<number, string>>(new Map()) // Store startedAt ISO strings from backend
+    const [exerciseCanComplete, setExerciseCanComplete] = useState<Map<number, boolean>>(new Map()) // Track if exercise reached 80% threshold
     const [loading, setLoading] = useState(true)
     const [starting, setStarting] = useState(false)
 
@@ -65,12 +68,23 @@ export default function WorkoutPlanDetailPage() {
             if (response.success && response.data) {
                 setUserProgress(response.data.planProgress)
                 
-                // Create a map of exercise completion status
-                const progressMap = new Map()
+                // Create maps of exercise progress data
+                const progressMap = new Map<number, boolean>()
+                const startTimesMap = new Map<number, string>()
+                
                 response.data.exerciseProgress.forEach((ep: any) => {
                     progressMap.set(ep.exerciseId, ep.completed)
+                    // Store startedAt from backend if available (handle both Date objects and ISO strings)
+                    if (ep.startedAt && !ep.completed) {
+                        const startedAtValue = ep.startedAt instanceof Date 
+                            ? ep.startedAt.toISOString() 
+                            : ep.startedAt
+                        startTimesMap.set(ep.exerciseId, startedAtValue)
+                    }
                 })
+                
                 setExerciseProgress(progressMap)
+                setExerciseStartTimes(startTimesMap)
             }
         } catch (error) {
             // Progress not found is okay - user has not started yet
@@ -84,11 +98,27 @@ export default function WorkoutPlanDetailPage() {
             const response = await apiClient.startWorkoutPlan(planId)
             
             if (response.success) {
+                // Immediately update startedAt if backend returned it
+                if (response.data?.firstExerciseProgress?.startedAt) {
+                    const exerciseId = response.data.firstExerciseProgress.exerciseId
+                    // Backend returns ISO string, but handle both cases just in case
+                    const startedAtValue = typeof response.data.firstExerciseProgress.startedAt === 'string'
+                        ? response.data.firstExerciseProgress.startedAt
+                        : String(response.data.firstExerciseProgress.startedAt)
+                    
+                    setExerciseStartTimes(prev => {
+                        const newMap = new Map(prev)
+                        newMap.set(exerciseId, startedAtValue)
+                        return newMap
+                    })
+                }
+                
                 toast({
                     title: '🎉 Plan Started!',
                     description: 'Your workout journey begins now. Good luck!'
                 })
-                // Refresh to show progress
+                
+                // Refresh to show full progress (backend will set startedAt for first exercise)
                 await fetchProgress()
             }
         } catch (error) {
@@ -103,26 +133,73 @@ export default function WorkoutPlanDetailPage() {
         }
     }
 
+    const handleTimerThresholdReached = (exerciseId: number) => {
+        // Called when exercise timer reaches 80% threshold
+        setExerciseCanComplete(prev => new Map(prev).set(exerciseId, true))
+    }
+
     const handleCompleteExercise = async (exerciseId: number) => {
         try {
-            const response = await apiClient.completeExercise(planId, exerciseId)
+            // Calculate time spent from startedAt
+            const startedAt = exerciseStartTimes.get(exerciseId)
+            let timeSpent = 30 // Default minimum time
+            
+            if (startedAt) {
+                const startTime = new Date(startedAt).getTime()
+                const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000)
+                timeSpent = Math.max(elapsedSeconds, 30)
+            }
+            
+            const response = await apiClient.completeExercise(planId, exerciseId, timeSpent)
             
             if (response.success && response.data) {
+                // Immediately update startedAt for next exercise if backend returned it
+                if (response.data.nextExerciseProgress?.startedAt) {
+                    const nextExerciseId = response.data.nextExerciseProgress.exerciseId
+                    // Backend returns ISO string, but handle both cases just in case
+                    const startedAtValue = typeof response.data.nextExerciseProgress.startedAt === 'string'
+                        ? response.data.nextExerciseProgress.startedAt
+                        : String(response.data.nextExerciseProgress.startedAt)
+                    
+                    setExerciseStartTimes(prev => {
+                        const newMap = new Map(prev)
+                        newMap.set(nextExerciseId, startedAtValue)
+                        return newMap
+                    })
+                }
+                
                 toast({
                     title: '✅ Exercise Complete!',
                     description: `You earned 25 XP!`
                 })
                 
-                // Update progress
+                // Refresh progress to get full state
                 await fetchProgress()
+                
+                // Clear can-complete flag
+                setExerciseCanComplete(prev => {
+                    const newMap = new Map(prev)
+                    newMap.delete(exerciseId)
+                    return newMap
+                })
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error completing exercise:', error)
-            toast({
-                title: 'Error',
-                description: 'Failed to mark exercise as complete',
-                variant: 'destructive'
-            })
+            
+            // Handle specific error codes
+            if (error?.code === 'INSUFFICIENT_TIME') {
+                toast({
+                    title: '⏱️ More Time Required',
+                    description: error.message || 'You need to spend more time on this exercise',
+                    variant: 'destructive'
+                })
+            } else {
+                toast({
+                    title: 'Error',
+                    description: error?.message || 'Failed to mark exercise as complete',
+                    variant: 'destructive'
+                })
+            }
         }
     }
 
@@ -423,8 +500,10 @@ export default function WorkoutPlanDetailPage() {
                         <div className="space-y-6">
                             {workoutPlan.exercises?.map((exercise, index) => {
                                 const isCompleted = exerciseProgress.get(exercise.id)
-                                const isNext = index === (userProgress?.completedExercises || 0)
-                                const isUpcoming = index > (userProgress?.completedExercises || 0)
+                                const completedCount = userProgress?.completedExercises || 0
+                                const isNext = index === completedCount
+                                const isUpcoming = index > completedCount
+                                const hasStartedAt = exerciseStartTimes.has(exercise.id)
                                 
                                 return (
                                     <div key={exercise.id} className="relative">
@@ -451,13 +530,13 @@ export default function WorkoutPlanDetailPage() {
                                                     : 'hover:shadow-lg hover:scale-[1.02]'
                                             }`}
                                         >
-                                            <div className="p-6">
-                                                <div className="flex items-start justify-between gap-6">
+                                            <div className="p-4 md:p-6">
+                                                <div className="flex flex-col md:flex-row items-start justify-between gap-4 md:gap-6">
                                                     {/* Exercise Info */}
-                                                    <div className="flex items-start gap-4 flex-1">
+                                                    <div className="flex items-start gap-4 flex-1 w-full md:w-auto">
                                                         {/* Exercise Number/Status with Flow Indicator */}
-                                                        <div className="relative">
-                                                            <div className={`flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg transition-all duration-500 ${
+                                                        <div className="relative flex-shrink-0">
+                                                            <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center font-bold text-base md:text-lg transition-all duration-500 ${
                                                                 isCompleted 
                                                                     ? 'bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg' 
                                                                     : isNext
@@ -480,7 +559,7 @@ export default function WorkoutPlanDetailPage() {
                                                         </div>
                                                         
                                                         {/* Exercise Details */}
-                                                        <div className="flex-1 space-y-4">
+                                                        <div className="flex-1 space-y-4 w-full">
                                                             <div>
                                                                 <div className="flex items-center gap-2 mb-2">
                                                                     <h3 className="text-xl font-bold text-[var(--neumorphic-text)]">
@@ -510,7 +589,7 @@ export default function WorkoutPlanDetailPage() {
                                                             </div>
                                                             
                                                             {/* Exercise Stats Grid */}
-                                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                                            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 w-full">
                                                                 {exercise.sets && (
                                                                     <div className="flex items-center gap-2 text-sm">
                                                                         <div className="w-6 h-6 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
@@ -588,21 +667,58 @@ export default function WorkoutPlanDetailPage() {
                                                         </div>
                                                     </div>
                                                     
-                                                    {/* Action Button */}
-                                                    <div className="flex-shrink-0">
+                                                    {/* Timer and Action Button */}
+                                                    <div className="flex-shrink-0 flex flex-col items-center gap-4 w-full md:w-auto">
+                                                        {/* Exercise Timer - Show for active exercise */}
+                                                        {userProgress && !isCompleted && isNext ? (
+                                                            exercise.duration && exercise.duration > 0 ? (
+                                                                hasStartedAt ? (
+                                                                    <ExerciseTimer
+                                                                        duration={exercise.duration}
+                                                                        startedAt={exerciseStartTimes.get(exercise.id) || null}
+                                                                        onThresholdReached={() => handleTimerThresholdReached(exercise.id)}
+                                                                        className="mb-2"
+                                                                    />
+                                                                ) : (
+                                                                    <div className="flex items-center gap-3 mb-2 p-3 bg-[var(--neumorphic-surface)] rounded-xl border border-cyan-500/20 w-full md:w-auto">
+                                                                        <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
+                                                                            <Timer className="w-6 h-6 text-cyan-500 animate-pulse" />
+                                                                        </div>
+                                                                        <div className="flex flex-col">
+                                                                            <div className="text-base font-bold text-[var(--neumorphic-text)]">
+                                                                                {Math.floor(exercise.duration / 60)}:{String(exercise.duration % 60).padStart(2, '0')}
+                                                                            </div>
+                                                                            <div className="text-xs text-[var(--neumorphic-muted)]">Starting timer...</div>
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            ) : (
+                                                                <div className="mb-2 p-2 text-xs text-[var(--neumorphic-muted)]">
+                                                                    No duration set
+                                                                </div>
+                                                            )
+                                                        ) : null}
+                                                        
                                                         {userProgress && !isCompleted ? (
                                                             <Button
                                                                 onClick={() => handleCompleteExercise(exercise.id)}
-                                                                className={`${
+                                                                className={`w-full md:w-auto ${
                                                                     isNext 
-                                                                        ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700 shadow-lg animate-pulse'
+                                                                        ? exerciseCanComplete.get(exercise.id)
+                                                                            ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 shadow-lg'
+                                                                            : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700 shadow-lg animate-pulse'
                                                                         : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700 shadow-lg'
                                                                 }`}
                                                                 size="lg"
-                                                                disabled={isUpcoming}
+                                                                disabled={isUpcoming || (isNext && (exercise.duration ?? 0) > 0 && !exerciseCanComplete.get(exercise.id))}
                                                             >
                                                                 <CheckCircle className="h-5 w-5 mr-2" />
-                                                                {isNext ? 'Start Now' : 'Complete'}
+                                                                {isNext 
+                                                                    ? exerciseCanComplete.get(exercise.id) 
+                                                                        ? 'Complete' 
+                                                                        : 'Waiting...'
+                                                                    : 'Complete'
+                                                                }
                                                             </Button>
                                                         ) : isCompleted ? (
                                                             <div className="text-center space-y-2">

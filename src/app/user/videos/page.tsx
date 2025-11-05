@@ -61,6 +61,11 @@ export default function VideosPage() {
     fetchCategories()
   }, [currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery, sortBy])
 
+  // Fetch featured content separately on mount
+  useEffect(() => {
+    fetchFeaturedContent()
+  }, [])
+
   const fetchContent = async () => {
     try {
       setLoading(true)
@@ -77,15 +82,26 @@ export default function VideosPage() {
         setContent(response.data.items)
         setTotalPages(response.data.pagination.totalPages)
         setTotalItems(response.data.pagination.totalItems)
-        
-        // Filter featured content
-        const featured = response.data.items.filter((item: ContentItem) => item.isFeatured === true)
-        setFeaturedContent(featured)
       }
     } catch (error) {
       console.error('Error fetching content:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchFeaturedContent = async () => {
+    try {
+      const response = await apiClient.getFeaturedContent({
+        page: 1,
+        pageSize: 3
+      })
+
+      if (response.success && response.data) {
+        setFeaturedContent(response.data.items || [])
+      }
+    } catch (error) {
+      console.error('Error fetching featured content:', error)
     }
   }
 
