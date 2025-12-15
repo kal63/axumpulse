@@ -1,4 +1,4 @@
-// API Client for AxumPulse Backend
+// API Client for Compound 360 Backend
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1'
 
 // Helper function to create pagination query string

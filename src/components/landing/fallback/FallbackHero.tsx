@@ -56,7 +56,7 @@ export function FallbackHero() {
                 </span>
                 <br />
                 <span className="text-white">
-                  Life with AxumPulse 360
+                  Life with Compound 360
                 </span>
               </motion.h1>
               

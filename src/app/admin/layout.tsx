@@ -35,6 +35,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/auth-context'
 import DashboardHeader from '@/components/shared/dashboard-header'
+import { Logo } from '@/components/shared/Logo'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -92,7 +93,7 @@ export default function AdminLayout({
     const newDarkMode = !darkMode
     setDarkMode(newDarkMode)
     localStorage.setItem('darkMode', newDarkMode.toString())
-    
+
     if (newDarkMode) {
       document.documentElement.classList.add('dark')
     } else {
@@ -127,7 +128,7 @@ export default function AdminLayout({
     <div className={cn("min-h-screen bg-gray-50 dark:bg-gray-900 flex")}>
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-black/75 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
@@ -140,10 +141,7 @@ export default function AdminLayout({
       )}>
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-emerald-600 to-green-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">AP</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900 dark:text-white">AxumPulse</span>
+            <Logo size="sm" />
           </div>
           <Button
             variant="ghost"
@@ -202,7 +200,7 @@ export default function AdminLayout({
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
         {/* Header */}
-        <DashboardHeader 
+        <DashboardHeader
           onMenuClick={() => setSidebarOpen(true)}
           showMenuButton={true}
           userRole="admin"

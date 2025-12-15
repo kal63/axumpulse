@@ -78,7 +78,7 @@ export default function LoginPage() {
     if (result.success) {
       // Use the user data directly from the login response
       const currentUser = result.user
-      
+
       // Redirect based on user permissions
       if (currentUser?.isAdmin) {
         router.push('/admin/dashboard')
@@ -104,10 +104,10 @@ export default function LoginPage() {
     <div className="min-h-screen relative overflow-hidden">
       {/* Unified Background */}
       <UnifiedBackground />
-      
+
       {/* Header */}
       <Header scrolled={scrolled} showLogin={false} />
-      
+
       {/* Main Content */}
       <div className="relative z-20 flex items-center justify-center min-h-screen p-4 pt-20">
         <div className="w-full max-w-md">
@@ -121,7 +121,7 @@ export default function LoginPage() {
             <div className="relative mx-auto w-24 h-24 mb-6">
               {/* Glowing background */}
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-400 rounded-3xl blur-xl opacity-60 animate-pulse"></div>
-              
+
               {/* Main logo */}
               <motion.div
                 animate={{ rotate: 360 }}
@@ -130,24 +130,24 @@ export default function LoginPage() {
               >
                 <Brain className="w-12 h-12 text-cyan-400" />
               </motion.div>
-              
+
               {/* Floating sparkles */}
               <motion.div
-                animate={{ 
+                animate={{
                   scale: [1, 1.2, 1],
                   opacity: [0.5, 1, 0.5]
                 }}
-                transition={{ 
-                  duration: 2, 
-                  repeat: Infinity, 
-                  ease: "easeInOut" 
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
                 }}
                 className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center"
               >
                 <Sparkles className="w-3 h-3 text-yellow-800" />
               </motion.div>
             </div>
-            
+
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -156,16 +156,16 @@ export default function LoginPage() {
             >
               Welcome Back
             </motion.h1>
-            
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
               className="text-slate-300 text-lg mb-4"
             >
-              Sign in to your <span className="font-semibold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">AxumPulse 360</span> account
+              Sign in to your <span className="font-semibold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Compound 360</span> account
             </motion.p>
-            
+
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -194,11 +194,11 @@ export default function LoginPage() {
               {/* Animated border gradient */}
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-blue-500/20 rounded-lg"></div>
               <div className="absolute inset-[1px] bg-slate-900/90 rounded-lg"></div>
-              
+
               <CardHeader className="relative space-y-1 pb-6 pt-8">
                 <div className="text-center">
                   <motion.div
-                    animate={{ 
+                    animate={{
                       scale: [1, 1.05, 1],
                       boxShadow: [
                         '0 0 20px rgba(6, 182, 212, 0.3)',
@@ -219,7 +219,7 @@ export default function LoginPage() {
                   </CardDescription>
                 </div>
               </CardHeader>
-              
+
               <CardContent className="relative px-8 pb-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {error && (
@@ -403,7 +403,7 @@ export default function LoginPage() {
                       Try our demo accounts
                     </p>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 gap-4">
                     <motion.div
                       whileHover={{ scale: 1.02 }}
@@ -421,7 +421,7 @@ export default function LoginPage() {
                         Admin Login
                       </Button>
                     </motion.div>
-                    
+
                     <motion.div
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -438,7 +438,7 @@ export default function LoginPage() {
                         Trainer Login
                       </Button>
                     </motion.div>
-                    
+
                     <motion.div
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -448,7 +448,7 @@ export default function LoginPage() {
                         variant="outline"
                         size="lg"
                         className="w-full h-12 text-sm bg-gradient-to-r from-purple-900/50 to-purple-800/50 hover:from-purple-800/70 hover:to-purple-700/70 border-purple-500/50 text-purple-200 shadow-lg hover:shadow-xl transition-all duration-300"
-                        onClick={() => handleQuickLogin('+251934567890', 'user123')}
+                        onClick={() => handleQuickLogin('+251935625037', 'user123')}
                         disabled={isLoading}
                       >
                         <Users className="w-5 h-5 mr-3" />
@@ -456,7 +456,7 @@ export default function LoginPage() {
                       </Button>
                     </motion.div>
                   </div>
-                  
+
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

@@ -32,6 +32,7 @@ import {
 export default function ProgressPage() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
+  const [chartLoading, setChartLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Data states
@@ -47,10 +48,35 @@ export default function ProgressPage() {
   const [userInfo, setUserInfo] = useState<any>(null)
   const [activityLog, setActivityLog] = useState<any[]>([])
   const [xpPeriod, setXPPeriod] = useState(30)
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
 
+  // Initial load - fetch all data
   useEffect(() => {
     fetchAllData()
+  }, [])
+
+  // Period change - only fetch chart data
+  useEffect(() => {
+    if (!isInitialLoad) {
+      fetchChartData()
+    }
   }, [xpPeriod])
+
+  async function fetchChartData() {
+    try {
+      setChartLoading(true)
+      const historyRes = await apiClient.getUserXPHistory(xpPeriod)
+
+      if (historyRes.success && historyRes.data) {
+        setXPHistory(historyRes.data.history)
+        setXPSummary(historyRes.data.summary)
+      }
+    } catch (err) {
+      console.error('Error fetching chart data:', err)
+    } finally {
+      setChartLoading(false)
+    }
+  }
 
   async function fetchAllData() {
     try {
@@ -96,12 +122,10 @@ export default function ProgressPage() {
       setError('Failed to load progress data')
     } finally {
       setLoading(false)
+      setIsInitialLoad(false)
     }
   }
 
-  const handlePeriodChange = (period: number) => {
-    setXPPeriod(period)
-  }
 
   // Helper function to get time ago string
   function getTimeAgo(date: Date): string {
@@ -276,11 +300,18 @@ export default function ProgressPage() {
                 {[7, 30, 90].map((period) => (
                   <button
                     key={period}
-                    onClick={() => handlePeriodChange(period)}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      if (xpPeriod !== period) {
+                        setXPPeriod(period)
+                      }
+                    }}
                     className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                       xpPeriod === period 
-                        ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white' 
-                        : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                        ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg' 
+                        : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)]'
                     }`}
                   >
                     {period}d
@@ -290,28 +321,63 @@ export default function ProgressPage() {
             </div>
             
             {/* Real XP Chart Data */}
-            {xpHistory && xpHistory.length > 0 ? (
-              <div className="h-64 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-xl p-4 flex items-end justify-between gap-1">
-                {xpHistory.map((entry, index) => {
-                  const maxXP = Math.max(...xpHistory.map(e => e.xp || 0), 1)
-                  const heightPercent = ((entry.xp || 0) / maxXP) * 100
-                  return (
-                    <div key={index} className="flex flex-col items-center flex-1 min-w-0">
+            {chartLoading ? (
+              <div className="h-64 bg-[var(--neumorphic-surface)] rounded-xl p-4 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500 mx-auto mb-2"></div>
+                  <p className="text-sm text-[var(--neumorphic-muted)]">Loading chart data...</p>
+                </div>
+              </div>
+            ) : xpHistory && xpHistory.length > 0 ? (
+              <div className="relative">
+                <div className="h-64 bg-[var(--neumorphic-surface)] rounded-xl p-4 flex items-end justify-between gap-1 min-h-[200px]">
+                  {xpHistory.map((entry, index) => {
+                    const maxXP = Math.max(...xpHistory.map(e => e.xp || 0), 1)
+                    const heightPercent = maxXP > 0 ? ((entry.xp || 0) / maxXP) * 100 : 0
+                    const minHeight = 5 // Minimum visible height for bars
+                    return (
                       <div 
-                        className="w-full bg-gradient-to-t from-cyan-500 to-purple-600 rounded-t transition-all duration-500"
-                        style={{ height: `${Math.max(heightPercent, 5)}%` }}
-                        title={`${entry.xp || 0} XP on ${new Date(entry.date).toLocaleDateString()}`}
-                      />
-                      <span className="text-xs text-[var(--neumorphic-muted)] mt-2 truncate w-full text-center">
-                        {new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      </span>
-                    </div>
-                  )
-                })}
+                        key={index} 
+                        className="flex flex-col items-center flex-1 min-w-0 group relative"
+                        style={{ height: '100%' }}
+                      >
+                        <div 
+                          className="w-full bg-gradient-to-t from-cyan-500 via-purple-500 to-pink-500 rounded-t transition-all duration-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 cursor-pointer shadow-lg hover:shadow-xl"
+                          style={{ 
+                            height: `${Math.max(heightPercent, minHeight)}%`,
+                            minHeight: `${minHeight}%`
+                          }}
+                          title={`${entry.xp || 0} XP on ${new Date(entry.date).toLocaleDateString()}`}
+                        >
+                          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                            {entry.xp || 0} XP
+                          </div>
+                        </div>
+                        <span className="text-xs text-[var(--neumorphic-muted)] mt-2 truncate w-full text-center">
+                          {new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+                {/* Chart grid lines for better readability */}
+                <div className="absolute inset-0 pointer-events-none mt-4 mb-12">
+                  {[0, 25, 50, 75, 100].map((percent) => (
+                    <div
+                      key={percent}
+                      className="absolute left-0 right-0 border-t border-[var(--neumorphic-border)] opacity-30"
+                      style={{ bottom: `${percent}%` }}
+                    />
+                  ))}
+                </div>
               </div>
             ) : (
-              <div className="h-64 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-xl p-4 flex items-center justify-center">
-                <p className="text-[var(--neumorphic-muted)]">No XP data available for this period</p>
+              <div className="h-64 bg-[var(--neumorphic-surface)] rounded-xl p-4 flex items-center justify-center">
+                <div className="text-center">
+                  <BarChart3 className="h-12 w-12 mx-auto mb-2 text-[var(--neumorphic-muted)] opacity-50" />
+                  <p className="text-[var(--neumorphic-muted)]">No XP data available for this period</p>
+                  <p className="text-xs text-[var(--neumorphic-muted)] mt-1">Start earning XP to see your progress!</p>
+                </div>
               </div>
             )}
             {xpSummary && (

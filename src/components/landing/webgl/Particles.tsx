@@ -74,7 +74,7 @@ export function Particles() {
         />
       </points>
 
-      {/* AxumPulse 3D Text */}
+      {/* Compound 360 3D Text */}
       <group ref={textRef} position={[0, 2, 0]}>
         {/* Background glow effect */}
         {/* <mesh position={[0, 0, -0.1]}>
@@ -98,7 +98,7 @@ export function Particles() {
           outlineWidth={0.02}
           outlineColor="#3b82f6"
         >
-          AxumPulse
+          Compound 360
         </Text>
         
         {/* Glow effect behind text */}
@@ -112,7 +112,7 @@ export function Particles() {
           material-transparent={true}
           material-opacity={0.5}
         >
-          AxumPulse
+          Compound 360
         </Text>
       </group>
 

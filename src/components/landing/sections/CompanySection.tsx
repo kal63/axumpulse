@@ -207,7 +207,7 @@ export function CompanySection({ onLoaded }: CompanySectionProps) {
     <section
       ref={sectionRef}
       id="company"
-      className="py-20 lg:py-32 relative overflow-hidden z-10"
+      className="py-20 lg:py-32 relative overflow-hidden z-10 scroll-mt-24 md:scroll-mt-28"
     >
       {/* Animated background particles */}
       <div 
@@ -290,7 +290,7 @@ export function CompanySection({ onLoaded }: CompanySectionProps) {
             ref={subtitleRef}
             className="text-xl text-white/80 leading-relaxed max-w-3xl mx-auto"
           >
-            The driving force behind AxumPulse 360 - Ethiopia's premier fitness and wellness company
+            The driving force behind Compound 360 - Ethiopia's premier fitness and wellness company
           </motion.p>
         </div>
 

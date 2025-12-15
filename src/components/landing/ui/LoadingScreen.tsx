@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Sparkles, Zap, Users, Globe } from 'lucide-react';
+import { Logo } from '@/components/shared/Logo';
 
 interface LoadingScreenProps {
   message?: string;
@@ -10,11 +11,11 @@ interface LoadingScreenProps {
   totalSections?: number;
 }
 
-export function LoadingScreen({ 
-  message = "Loading immersive experience...", 
-  progress = 0, 
-  loadedSections = 0, 
-  totalSections = 8 
+export function LoadingScreen({
+  message = "Loading immersive experience...",
+  progress = 0,
+  loadedSections = 0,
+  totalSections = 8
 }: LoadingScreenProps) {
 
   return (
@@ -24,67 +25,46 @@ export function LoadingScreen({
         animate={{ opacity: 1, scale: 1 }}
         className="text-center max-w-md mx-auto px-6"
       >
-        {/* Animated Logo */}
+        {/* Logo only */}
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          className="w-20 h-20 mx-auto mb-6"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mb-8 flex justify-center"
         >
-          <div className="w-full h-full bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-400 rounded-2xl flex items-center justify-center shadow-2xl">
-            <Sparkles className="w-10 h-10 text-white" />
+          <Logo withText={false} />
+        </motion.div>
+
+        {/* Loading Message */}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="text-slate-400 text-sm mb-4"
+        >
+          {message}
+        </motion.p>
+
+        {/* Progress Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="w-full max-w-xs mx-auto mb-4"
+        >
+          <div className="flex justify-between text-xs text-slate-500 mb-2">
+            <span>Loading sections...</span>
+            <span>{loadedSections}/{totalSections}</span>
+          </div>
+          <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-400 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
           </div>
         </motion.div>
-        
-        {/* Brand Name */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-2"
-        >
-          AxumPulse 360
-        </motion.h1>
-        
-        {/* Tagline */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="text-slate-300 text-sm mb-8"
-        >
-          Ethiopia's First AI-Powered Fitness Platform
-        </motion.p>
-        
-            {/* Loading Message */}
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className="text-slate-400 text-sm mb-4"
-            >
-              {message}
-            </motion.p>
-
-            {/* Progress Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="w-full max-w-xs mx-auto mb-4"
-            >
-              <div className="flex justify-between text-xs text-slate-500 mb-2">
-                <span>Loading sections...</span>
-                <span>{loadedSections}/{totalSections}</span>
-              </div>
-              <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
-                <motion.div
-                  className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-400 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                />
-              </div>
-            </motion.div>
 
         {/* Feature Icons */}
         {/* <motion.div

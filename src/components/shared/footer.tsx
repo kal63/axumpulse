@@ -1,18 +1,19 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { 
-  Facebook, 
-  Instagram, 
-  Twitter, 
-  Youtube, 
-  Mail, 
-  Phone, 
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+  Mail,
+  Phone,
   MapPin,
   ArrowRight,
   Sparkles
 } from 'lucide-react';
 import Link from 'next/link';
+import { Logo } from '@/components/shared/Logo';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -66,18 +67,7 @@ export default function Footer() {
                 viewport={{ once: true }}
               >
                 <div className="flex items-center mb-6">
-                  <div className="relative">
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                      className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mr-3"
-                    >
-                      <Sparkles className="w-6 h-6 text-white" />
-                    </motion.div>
-                  </div>
-                  <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                    AxumPulse 360
-                  </h3>
+                  <Logo />
                 </div>
                 <p className="text-white/80 mb-6 leading-relaxed">
                   Ethiopia's premier AI-driven fitness and health platform. Transform your life with personalized coaching in your language.
@@ -109,7 +99,7 @@ export default function Footer() {
               <ul className="space-y-3">
                 {footerLinks.product.map((link, index) => (
                   <li key={index}>
-                    <Link 
+                    <Link
                       href={link.href}
                       className="text-white/70 hover:text-blue-400 transition-colors duration-300 flex items-center group"
                     >
@@ -132,7 +122,7 @@ export default function Footer() {
               <ul className="space-y-3">
                 {footerLinks.company.map((link, index) => (
                   <li key={index}>
-                    <Link 
+                    <Link
                       href={link.href}
                       className="text-white/70 hover:text-blue-400 transition-colors duration-300 flex items-center group"
                     >
@@ -155,7 +145,7 @@ export default function Footer() {
               <ul className="space-y-3 mb-6">
                 {footerLinks.support.map((link, index) => (
                   <li key={index}>
-                    <Link 
+                    <Link
                       href={link.href}
                       className="text-white/70 hover:text-blue-400 transition-colors duration-300 flex items-center group"
                     >
@@ -219,7 +209,7 @@ export default function Footer() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="flex flex-col md:flex-row items-center gap-4 text-sm text-white/60">
-                <p>© {currentYear} AxumPulse 360. All rights reserved.</p>
+                <p>© {currentYear} Compound 360. All rights reserved.</p>
                 <div className="hidden md:block w-1 h-1 bg-white/30 rounded-full" />
                 <p>Powered by Ethio Telecom Value-Added Services</p>
               </div>

@@ -6,7 +6,7 @@ import { useTexture } from '@react-three/drei';
 import { Group, Vector3 } from 'three';
 import * as THREE from 'three';
 
-// Placeholder images - replace with actual AxumPulse images
+// Placeholder images - replace with actual Compound 360 images
 const imageUrls = [
   'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop',
   'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=600&fit=crop',

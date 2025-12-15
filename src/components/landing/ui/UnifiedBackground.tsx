@@ -1,11 +1,23 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+
+type PulseTiming = { duration: string; delay: string };
 
 export function UnifiedBackground() {
   const particlesRef = useRef<HTMLDivElement>(null);
   const squaresRef = useRef<HTMLDivElement>(null);
+  const [pulseTimings, setPulseTimings] = useState<PulseTiming[]>([]);
+
+  // Generate random pulse timings only on the client to avoid SSR hydration mismatches
+  useEffect(() => {
+    const timings: PulseTiming[] = Array.from({ length: 64 }).map(() => ({
+      duration: `${2 + Math.random() * 2}s`, // 2s - 4s
+      delay: `${Math.random() * 2}s`,        // 0s - 2s
+    }));
+    setPulseTimings(timings);
+  }, []);
 
   // Create floating particles
   useEffect(() => {
@@ -19,7 +31,7 @@ export function UnifiedBackground() {
         'from-cyan-400 to-purple-500'
       ];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      
+
       particle.className = `absolute bg-gradient-to-r ${randomColor} rounded-full opacity-70`;
       particle.style.width = size + 'px';
       particle.style.height = size + 'px';
@@ -27,11 +39,11 @@ export function UnifiedBackground() {
       particle.style.top = Math.random() * 100 + '%';
       particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
       particle.style.animationDelay = Math.random() * 2 + 's';
-      
+
       const container = particlesRef.current;
       if (container) {
         container.appendChild(particle);
-        
+
         // Remove particle after animation
         setTimeout(() => {
           if (container.contains(particle)) {
@@ -52,12 +64,12 @@ export function UnifiedBackground() {
       const size = Math.random() * 6 + 6; // 6-12px (bigger)
       const colors = [
         'from-blue-500/3 to-purple-500/3',
-        'from-cyan-500/3 to-blue-500/3', 
+        'from-cyan-500/3 to-blue-500/3',
         'from-purple-500/3 to-pink-500/3',
         'from-cyan-500/3 to-purple-500/3'
       ];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      
+
       square.className = `absolute bg-gradient-to-br ${randomColor} rounded-lg opacity-0`;
       square.style.width = size + 'px';
       square.style.height = size + 'px';
@@ -65,18 +77,18 @@ export function UnifiedBackground() {
       square.style.top = Math.random() * 100 + '%';
       square.style.animationDuration = (Math.random() * 3 + 2) + 's';
       square.style.animationDelay = Math.random() * 1 + 's';
-      
+
       const container = squaresRef.current;
       if (container) {
         container.appendChild(square);
-        
+
         // Animate square appearance (very low opacity)
         setTimeout(() => {
           square.style.opacity = '0.15'; // Very low opacity
           square.style.transform = 'scale(1.2) rotate(45deg)';
           square.style.transition = 'all 1.5s ease-in-out';
         }, 100);
-        
+
         // Remove square after animation
         setTimeout(() => {
           if (container.contains(square)) {
@@ -94,16 +106,16 @@ export function UnifiedBackground() {
     <div className="fixed inset-0 z-0 pointer-events-none">
       {/* Base gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
-      
+
       {/* Multiple animated gradient orbs - more subtle */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-pulse" />
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl animate-pulse" />
       <div className="absolute top-1/4 right-1/3 w-80 h-80 bg-pink-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       <div className="absolute bottom-1/3 left-1/6 w-72 h-72 bg-indigo-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-      
+
       {/* Floating particles */}
-      <div 
+      <div
         ref={particlesRef}
         className="absolute inset-0"
         style={{
@@ -119,17 +131,17 @@ export function UnifiedBackground() {
           animation: 'float 20s linear infinite'
         }}
       />
-      
+
       {/* Animated grid pattern - bigger squares with very low opacity */}
       <div className="absolute inset-0 opacity-1">
         <div className="grid grid-cols-8 gap-8 h-full">
-          {Array.from({ length: 64 }).map((_, i) => (
+          {pulseTimings.map((timing, i) => (
             <div
               key={i}
               className="bg-blue-400 rounded-lg animate-pulse"
               style={{
-                animationDuration: `${2 + Math.random() * 2}s`,
-                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: timing.duration,
+                animationDelay: timing.delay,
                 animationIterationCount: 'infinite'
               }}
             />
@@ -138,11 +150,11 @@ export function UnifiedBackground() {
       </div>
 
       {/* Glowing squares */}
-      <div 
+      <div
         ref={squaresRef}
         className="absolute inset-0"
       />
-      
+
       {/* CSS animations */}
       <style jsx>{`
         @keyframes float {

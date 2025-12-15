@@ -360,7 +360,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
     <section
       ref={sectionRef}
       id="how-it-works"
-      className="py-20 lg:py-32 relative overflow-hidden z-10"
+      className="py-20 lg:py-32 relative overflow-hidden z-10 scroll-mt-24 md:scroll-mt-28"
     >
       {/* INSANE Background Effects */}
       <div className="absolute inset-0">

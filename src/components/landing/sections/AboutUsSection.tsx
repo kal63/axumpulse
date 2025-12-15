@@ -174,7 +174,7 @@ export function AboutUsSection({ onLoaded }: AboutUsSectionProps) {
     <section
       ref={sectionRef}
       id="about"
-      className="py-20 lg:py-32 relative overflow-hidden z-10"
+      className="py-20 lg:py-32 relative overflow-hidden z-10 scroll-mt-24 md:scroll-mt-28"
     >
       {/* Animated background particles */}
       <div 
@@ -207,14 +207,14 @@ export function AboutUsSection({ onLoaded }: AboutUsSectionProps) {
                 backgroundSize: '200% 200%'
               }}
             >
-              About AxumPulse 360
+              About Compound 360
             </motion.span>
             
             {/* Main text */}
             <span className="relative z-10 text-white">About</span>
             <br />
             <span className="relative z-10 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-              AxumPulse 360
+              Compound 360
             </span>
             
             {/* Floating sparkles */}
@@ -318,7 +318,7 @@ export function AboutUsSection({ onLoaded }: AboutUsSectionProps) {
           <div className="text-center">
             <h3 className="text-3xl font-bold text-white mb-8">
               <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                Why Choose AxumPulse 360?
+                Why Choose Compound 360?
               </span>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

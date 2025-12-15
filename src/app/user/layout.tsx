@@ -18,6 +18,7 @@ import {
   Award,
   X
 } from 'lucide-react';
+import { Logo } from '@/components/shared/Logo';
 
 interface UserLayoutProps {
   children: React.ReactNode;
@@ -100,23 +101,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
             <div className="px-4 py-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center">
-                    {user?.profilePicture ? (
-                      <img 
-                        src={getImageUrl(user.profilePicture)} 
-                        alt={user.name || 'User'} 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-white font-bold text-sm">
-                        {user?.name?.charAt(0) || 'U'}
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <h1 className="text-lg font-bold text-[var(--neumorphic-text)]">AxumPulse</h1>
-                    <p className="text-xs text-[var(--neumorphic-muted)]">Level {userStats.level}</p>
-                  </div>
+                  <Logo size="sm" />
                 </div>
                 <div className="flex items-center space-x-2">
                   <XPRing 
@@ -181,9 +166,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
             <div className="p-6 h-full flex flex-col">
               {/* Logo/Brand */}
               <div className="mb-8">
-                <h1 className="text-xl font-bold text-[var(--neumorphic-text)] font-orbitron">
-                  AxumPulse
-                </h1>
+                <Logo size="sm" />
                 <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
                   Gamified Fitness Platform
                 </p>

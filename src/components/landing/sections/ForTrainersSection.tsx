@@ -203,7 +203,7 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
     <section
       ref={sectionRef}
       id="for-trainers"
-      className="py-20 lg:py-32 relative overflow-hidden z-10"
+      className="py-20 lg:py-32 relative overflow-hidden z-10 scroll-mt-24 md:scroll-mt-28"
     >
       {/* Animated background particles */}
       <div 
@@ -286,7 +286,7 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
             ref={subtitleRef}
             className="text-xl text-white/80 leading-relaxed max-w-3xl mx-auto"
           >
-            Join AxumPulse 360 as a certified trainer. Reach more clients, publish content, and grow your brand—all with local support and tools.
+            Join Compound 360 as a certified trainer. Reach more clients, publish content, and grow your brand—all with local support and tools.
           </motion.p>
         </div>
 
@@ -328,7 +328,7 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
               <div>
                 <h4 className="text-lg font-semibold text-amber-800 mb-2">Important: Subscription Required</h4>
                 <p className="text-amber-700 mb-3">
-                  To apply as a trainer, you must first <strong>subscribe to AxumPulse 360</strong>. 
+                  To apply as a trainer, you must first <strong>subscribe to Compound 360</strong>. 
                   This ensures you have access to our platform and understand our community before joining as a trainer.
                 </p>
                 <div className="text-center">

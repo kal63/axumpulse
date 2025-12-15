@@ -23,12 +23,13 @@ import {
 import { cn } from '@/lib/utils'
 import DashboardHeader from '@/components/shared/dashboard-header'
 import { useAuth } from '@/contexts/auth-context'
+import { Logo } from '@/components/shared/Logo'
 
 const navigation = [
   { name: 'Dashboard', href: '/trainer/dashboard', icon: LayoutDashboard },
-  { 
-    name: 'Content', 
-    href: '/trainer/content', 
+  {
+    name: 'Content',
+    href: '/trainer/content',
     icon: FileText,
     children: [
       { name: 'Upload', href: '/trainer/content/upload', icon: Upload }
@@ -84,7 +85,7 @@ export default function TrainerLayout({
     const newDarkMode = !darkMode
     setDarkMode(newDarkMode)
     localStorage.setItem('darkMode', newDarkMode.toString())
-    
+
     if (newDarkMode) {
       document.documentElement.classList.add('dark')
     } else {
@@ -115,7 +116,7 @@ export default function TrainerLayout({
     <div className={cn("min-h-screen bg-gray-50 dark:bg-gray-900 flex")}>
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-black/75 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
@@ -128,12 +129,7 @@ export default function TrainerLayout({
       )}>
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                <User className="w-5 h-5 text-white" />
-              </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-emerald-500 to-emerald-600 bg-clip-text text-transparent">
-                AxumPulse 360
-              </span>
+            <Logo size="sm" />
           </div>
           <Button
             variant="ghost"
@@ -150,7 +146,7 @@ export default function TrainerLayout({
             {navigation.map((item) => {
               const isActive = pathname.startsWith(item.href)
               const hasChildren = item.children && item.children.length > 0
-              
+
               return (
                 <React.Fragment key={item.name}>
                   {/* Parent item */}
@@ -158,10 +154,10 @@ export default function TrainerLayout({
                     href={item.href}
                     onClick={() => setSidebarOpen(false)}
                     className={cn(
-                      "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer",                                                                    
+                      "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer",
                       isActive
                         ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-                        : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"                                               
+                        : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
                     )}
                   >
                     <item.icon
@@ -169,12 +165,12 @@ export default function TrainerLayout({
                         "mr-3 h-5 w-5 flex-shrink-0",
                         isActive
                           ? "text-blue-600 dark:text-blue-400"
-                          : "text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400"                                                                       
+                          : "text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400"
                       )}
                     />
                     {item.name}
                   </Link>
-                  
+
                   {/* Child items */}
                   {hasChildren && (
                     <div className="ml-6 mt-1 space-y-1">
@@ -186,10 +182,10 @@ export default function TrainerLayout({
                             href={child.href}
                             onClick={() => setSidebarOpen(false)}
                             className={cn(
-                              "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer",                                                                    
+                              "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer",
                               isChildActive
                                 ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-                                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"                                               
+                                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
                             )}
                           >
                             <child.icon
@@ -197,7 +193,7 @@ export default function TrainerLayout({
                                 "mr-3 h-4 w-4 flex-shrink-0",
                                 isChildActive
                                   ? "text-blue-600 dark:text-blue-400"
-                                  : "text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400"                                                                       
+                                  : "text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400"
                               )}
                             />
                             {child.name}
@@ -232,14 +228,14 @@ export default function TrainerLayout({
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
         {/* Header */}
-        <DashboardHeader 
+        <DashboardHeader
           onMenuClick={() => setSidebarOpen(true)}
           showMenuButton={true}
           userRole="trainer"
           darkMode={darkMode}
           onToggleDarkMode={toggleDarkMode}
         />
-        
+
         {/* Page content */}
         <main className="flex-1 p-6">
           {children}

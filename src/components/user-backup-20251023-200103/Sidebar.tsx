@@ -43,7 +43,7 @@ export function Sidebar({ className }: SidebarProps) {
         {/* Logo/Brand */}
         <div className="mb-8">
           <h1 className="text-xl font-bold text-[var(--neumorphic-text)] font-orbitron">
-            AxumPulse
+            Compound 360
           </h1>
           <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
             Gamified Fitness Platform

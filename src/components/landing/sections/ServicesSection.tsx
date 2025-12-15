@@ -271,7 +271,7 @@ export function ServicesSection({ onLoaded }: ServicesSectionProps) {
     <section
       ref={sectionRef}
       id="services"
-      className="py-20 lg:py-32 relative overflow-hidden z-10"
+      className="py-20 lg:py-32 relative overflow-hidden z-10 scroll-mt-24 md:scroll-mt-28"
     >
       {/* Animated background particles */}
       <div 

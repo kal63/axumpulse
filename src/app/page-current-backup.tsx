@@ -172,7 +172,7 @@ export default function AxumPulseLandingPage() {
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
               Transform Your Life with
               <span className="block mt-2 bg-gradient-to-r from-[hsl(140,70%,50%)] to-[hsl(145,65%,55%)] bg-clip-text text-transparent">
-                AxumPulse 360
+                Compound 360
               </span>
             </h1>
 
@@ -413,7 +413,7 @@ export default function AxumPulseLandingPage() {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-                  About AxumPulse 360
+                  About Compound 360
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                   Ethiopia's first end-to-end, AI-driven fitness and wellness platform that empowers trainees, certified trainers, and medical professionals within a unified, multilingual ecosystem.
@@ -593,7 +593,7 @@ export default function AxumPulseLandingPage() {
             <div className="max-w-5xl mx-auto text-center mb-12">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">For Trainers</h2>
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                Join AxumPulse 360 as a certified trainer. Reach more clients, publish content, and grow your brand—all with local support and tools.
+                Join Compound 360 as a certified trainer. Reach more clients, publish content, and grow your brand—all with local support and tools.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mb-10">
@@ -626,7 +626,7 @@ export default function AxumPulseLandingPage() {
                   <div>
                     <h4 className="text-lg font-semibold text-amber-800 mb-2">Important: Account Required</h4>
                     <p className="text-amber-700 mb-3">
-                      To apply as a trainer, you must first <strong>create an account</strong> and <strong>subscribe to AxumPulse 360</strong>. 
+                      To apply as a trainer, you must first <strong>create an account</strong> and <strong>subscribe to Compound 360</strong>. 
                       This ensures you have access to our platform and understand our community before joining as a trainer.
                     </p>
                     <div className="text-center">
@@ -659,7 +659,7 @@ export default function AxumPulseLandingPage() {
                   About Compound BST
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                  The driving force behind AxumPulse 360 - Ethiopia's premier fitness and wellness company
+                  The driving force behind Compound 360 - Ethiopia's premier fitness and wellness company
                 </p>
               </div>
 
@@ -670,7 +670,7 @@ export default function AxumPulseLandingPage() {
                     Compound BST is a private gym and performance training company based in Addis Ababa (Bole, Rwanda area). Known as a local "Place of Change," we blend expert in-person coaching with modern digital experiences to help people build safe, sustainable fitness habits.
                   </p>
                   <p className="text-muted-foreground leading-relaxed">
-                    To extend our impact beyond a single facility, we developed AxumPulse 360—a multilingual fitness and health platform that brings structured coaching, challenges, and community support to users nationwide.
+                    To extend our impact beyond a single facility, we developed Compound 360—a multilingual fitness and health platform that brings structured coaching, challenges, and community support to users nationwide.
                   </p>
                 </div>
                 <div className="space-y-6">
@@ -820,7 +820,7 @@ export default function AxumPulseLandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             <div>
               <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-[hsl(140,70%,50%)] to-[hsl(145,65%,55%)] bg-clip-text text-transparent">
-                AxumPulse 360
+                Compound 360
               </h3>
               <p className="text-white/80 mb-4 leading-relaxed">
                 Ethiopia's premier AI-driven fitness and health platform. Transform your life with personalized coaching in your language.
@@ -890,7 +890,7 @@ export default function AxumPulseLandingPage() {
 
           <div className="mt-12 pt-8 border-t border-white/20 text-center text-white/70">
             <p>
-              © {new Date().getFullYear()} AxumPulse 360 by Compound BST. All rights reserved.
+              © {new Date().getFullYear()} Compound 360 by Compound BST. All rights reserved.
             </p>
             <p className="mt-2 text-sm">
               Powered by Ethio Telecom Value-Added Services

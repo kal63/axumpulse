@@ -143,7 +143,7 @@ export default function LoginPage() {
               Welcome Back
             </h1>
             <p className="text-emerald-100/80 text-lg">
-              Sign in to your <span className="font-semibold text-emerald-300">AxumPulse 360</span> account
+              Sign in to your <span className="font-semibold text-emerald-300">Compound 360</span> account
             </p>
             <div className="flex items-center justify-center space-x-2 mt-3">
               <Badge variant="secondary" className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30">

@@ -140,7 +140,7 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
               >
                 <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Transform Your Life</span>
                 <br />
-                <span className="text-white">with AxumPulse 360</span>
+                <span className="text-white">with Compound 360</span>
               </h1>
 
               {/* Subtitle */}

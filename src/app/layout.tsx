@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AxumPulse - Fitness & Wellness Platform",
-  description: "A comprehensive fitness and wellness platform with trainer content, challenges, and workout plans. Join AxumPulse to achieve your fitness goals with expert guidance and community support.",
+  title: "Compound 360 - Fitness & Wellness Platform",
+  description: "A comprehensive fitness and wellness platform with trainer content, challenges, and workout plans. Join Compound 360 to achieve your fitness goals with expert guidance and community support.",
 };
 
 export default function RootLayout({
