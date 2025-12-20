@@ -17,14 +17,21 @@ function createPaginationQuery(params?: { page?: number; pageSize?: number; [key
   return query ? `?${query}` : ''
 }
 
+export interface ApiError {
+  code: string
+  message: string
+  details?: unknown
+  status?: number
+  statusText?: string
+  responseText?: string
+  data?: unknown
+  headers?: Record<string, string>
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
-  error?: {
-    code: string
-    message: string
-    details?: unknown
-  }
+  error?: ApiError
 }
 
 export interface PaginatedResponse<T> {
@@ -569,20 +576,43 @@ class ApiClient {
         headers,
       })
 
-      const data = await response.json()
+      // Try to safely read the response body. Some servers may return
+      // non-JSON (HTML error pages, plain text), so we attempt to parse
+      // JSON but fall back to text for diagnostics.
+      let data: any = undefined
+      let responseText: string | undefined = undefined
+
+      try {
+        // Use text() first so we can attempt JSON parse and keep the raw text
+        responseText = await response.text()
+        data = responseText ? JSON.parse(responseText) : undefined
+      } catch (parseError) {
+        // Not JSON or empty body – keep the raw text for error reporting
+        data = undefined
+      }
 
       if (!response.ok) {
         return {
           success: false,
-          error: data.error || {
+          error: {
             code: 'HTTP_ERROR',
             message: `HTTP ${response.status}: ${response.statusText}`,
+            status: response.status,
+            statusText: response.statusText,
+            // Provide response text (if any) and parsed data (if JSON)
+            responseText: responseText,
+            data: data,
+            headers: Object.fromEntries(response.headers.entries()),
           },
         }
       }
 
-      return data
+      // If the server returned JSON we return it, otherwise return the raw text
+      return data ?? ({ success: true, data: responseText } as any)
     } catch (error) {
+      // Network-level errors (CORS/preflight failure, network down, TLS mismatch)
+      // All show up here as thrown by fetch. Include the original error message
+      // to help debugging in the browser console.
       return {
         success: false,
         error: {
@@ -976,6 +1006,28 @@ class ApiClient {
   // Update trainer application (for rejected applications)
   async updateTrainerApplication(formData: FormData): Promise<ApiResponse<TrainerApplication>> {
     return this.request<TrainerApplication>('/trainer/apply', {
+      method: 'PUT',
+      body: formData,
+    })
+  }
+
+  // Medical Professional Application functions
+  // Submit medical professional application (AUTHENTICATED - requires login)
+  async submitMedicalApplication(formData: FormData): Promise<ApiResponse<any>> {
+    return this.request<any>('/medical/apply', {
+      method: 'POST',
+      body: formData,
+    })
+  }
+
+  // Get medical application status for logged-in user
+  async getMedicalApplicationStatus(): Promise<ApiResponse<any>> {
+    return this.request<any>('/medical/apply/status')
+  }
+
+  // Update medical application (for rejected applications)
+  async updateMedicalApplication(formData: FormData): Promise<ApiResponse<any>> {
+    return this.request<any>('/medical/apply', {
       method: 'PUT',
       body: formData,
     })
@@ -1937,6 +1989,464 @@ class ApiClient {
     return this.request('/user/settings/fitness', {
       method: 'PUT',
       body: JSON.stringify(fitness)
+    })
+  }
+
+  // ==================== USER MEDICAL API ====================
+
+  // Medical Profile
+  async getMedicalProfile(): Promise<ApiResponse<any>> {
+    return this.request('/user/medical/profile')
+  }
+
+  async updateMedicalProfile(profile: {
+    conditions?: string[]
+    medications?: Array<{ name: string; dosage?: string; frequency?: string }>
+    allergies?: string[]
+    surgeries?: Array<{ type: string; date?: string }>
+    pregnancyStatus?: string | null
+    contraindications?: string[]
+    notes?: string | null
+  }): Promise<ApiResponse<any>> {
+    return this.request('/user/medical/profile', {
+      method: 'PUT',
+      body: JSON.stringify(profile)
+    })
+  }
+
+  // Intake Forms
+  async getIntakeForms(): Promise<ApiResponse<any[]>> {
+    return this.request('/user/medical/intake-forms')
+  }
+
+  async submitIntakeForm(formId: number, answers: Record<string, any>): Promise<ApiResponse<{
+    intakeResponse: any
+    triageRun: any
+  }>> {
+    return this.request('/user/medical/intake', {
+      method: 'POST',
+      body: JSON.stringify({ formId, answers })
+    })
+  }
+
+  // Triage Runs
+  async getTriageRuns(params?: {
+    page?: number
+    pageSize?: number
+    riskLevel?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/user/medical/triage-runs${query}`)
+  }
+
+  async getTriageRun(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/user/medical/triage-runs/${id}`)
+  }
+
+  // Medical Questions
+  async getMedicalQuestions(params?: {
+    page?: number
+    pageSize?: number
+    status?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/user/medical/questions${query}`)
+  }
+
+  async submitQuestion(data: {
+    text: string
+    tags?: string[]
+    triageRunId?: number
+  }): Promise<ApiResponse<any>> {
+    return this.request('/user/medical/questions', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async getQuestion(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/user/medical/questions/${id}`)
+  }
+
+  // Consult Slots & Bookings
+  async getConsultSlots(params?: {
+    providerId?: number
+    consultType?: string
+    startDate?: string
+    endDate?: string
+  }): Promise<ApiResponse<any[]>> {
+    const query = createPaginationQuery(params)
+    return this.request<any[]>(`/user/medical/consults/slots${query}`)
+  }
+
+  async bookConsult(data: {
+    slotId: number
+    notes?: string
+  }): Promise<ApiResponse<any>> {
+    return this.request('/user/medical/consults/book', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async getConsultBookings(params?: {
+    page?: number
+    pageSize?: number
+    status?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/user/medical/consults${query}`)
+  }
+
+  async getConsultBooking(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/user/medical/consults/${id}`)
+  }
+
+  async cancelConsultBooking(id: number): Promise<ApiResponse<{ message: string }>> {
+    return this.request(`/user/medical/consults/${id}/cancel`, {
+      method: 'POST'
+    })
+  }
+
+  // Health Data
+  async getHealthData(params?: {
+    page?: number
+    pageSize?: number
+    metric?: string
+    startDate?: string
+    endDate?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/user/medical/health-data${query}`)
+  }
+
+  async logHealthData(data: {
+    metric: string
+    value: number
+    unit?: string
+    timestamp?: string
+    metadata?: Record<string, any>
+  }): Promise<ApiResponse<any>> {
+    return this.request('/user/medical/health-data', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async getHealthRollups(params?: {
+    metric?: string
+    period?: 'daily' | 'weekly' | 'monthly'
+    startDate?: string
+    endDate?: string
+  }): Promise<ApiResponse<any[]>> {
+    const query = createPaginationQuery(params)
+    return this.request<any[]>(`/user/medical/health-data/rollups${query}`)
+  }
+
+  // Health Alerts
+  async getHealthAlerts(params?: {
+    page?: number
+    pageSize?: number
+    severity?: string
+    status?: string
+    metric?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/user/medical/alerts${query}`)
+  }
+
+  async acknowledgeAlert(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/user/medical/alerts/${id}/acknowledge`, {
+      method: 'POST'
+    })
+  }
+
+  // ==================== MEDICAL PROFESSIONAL API ====================
+
+  // Dashboard
+  async getMedicalDashboard(): Promise<ApiResponse<{
+    pendingQuestions: number
+    upcomingConsults: number
+    highRiskTriageRuns: number
+    openAlerts: number
+  }>> {
+    return this.request('/medical/dashboard')
+  }
+
+  // Triage Queue
+  async getTriageQueue(params?: {
+    page?: number
+    pageSize?: number
+    riskLevel?: string
+    disposition?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/medical/triage/queue${query}`)
+  }
+
+  async updateTriageRun(id: number, data: {
+    riskLevel?: string
+    disposition?: string
+    messages?: string[]
+  }): Promise<ApiResponse<any>> {
+    return this.request(`/medical/triage/runs/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Triage Rules
+  async getTriageRules(params?: {
+    page?: number
+    pageSize?: number
+    status?: string
+    severity?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/medical/triage/rules${query}`)
+  }
+
+  async getTriageRule(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/triage/rules/${id}`)
+  }
+
+  async createTriageRule(data: {
+    name: string
+    version: string
+    severity: 'low' | 'medium' | 'high' | 'critical'
+    definition: Record<string, any>
+  }): Promise<ApiResponse<any>> {
+    return this.request('/medical/triage/rules', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async updateTriageRule(id: number, data: {
+    name?: string
+    version?: string
+    severity?: 'low' | 'medium' | 'high' | 'critical'
+    definition?: Record<string, any>
+  }): Promise<ApiResponse<any>> {
+    return this.request(`/medical/triage/rules/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async publishTriageRule(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/triage/rules/${id}/publish`, {
+      method: 'POST'
+    })
+  }
+
+  async retireTriageRule(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/triage/rules/${id}/retire`, {
+      method: 'POST'
+    })
+  }
+
+  async testTriageRule(id: number, testData: Record<string, any>): Promise<ApiResponse<any>> {
+    return this.request(`/medical/triage/rules/${id}/test`, {
+      method: 'POST',
+      body: JSON.stringify(testData)
+    })
+  }
+
+  // Q&A Inbox
+  async getMedicalQuestionsInbox(params?: {
+    page?: number
+    pageSize?: number
+    status?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/medical/questions${query}`)
+  }
+
+  async getMedicalQuestion(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/questions/${id}`)
+  }
+
+  async answerQuestion(id: number, data: {
+    text: string
+    visibility: 'user' | 'user_trainer' | 'internal'
+  }): Promise<ApiResponse<any>> {
+    return this.request(`/medical/questions/${id}/answer`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Consult Management
+  async getMedicalConsults(params?: {
+    page?: number
+    pageSize?: number
+    status?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/medical/consults${query}`)
+  }
+
+  async getMedicalConsult(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/consults/${id}`)
+  }
+
+  async getMedicalConsultSlots(params?: {
+    page?: number
+    pageSize?: number
+    startDate?: string
+    endDate?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/medical/consults/slots${query}`)
+  }
+
+  async createConsultSlot(data: {
+    startTime: string
+    duration: number
+    consultType: 'quick' | 'full' | 'follow_up'
+    timezone: string
+  }): Promise<ApiResponse<any>> {
+    return this.request('/medical/consults/slots', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async updateConsultSlot(id: number, data: {
+    startTime?: string
+    duration?: number
+    consultType?: 'quick' | 'full' | 'follow_up'
+  }): Promise<ApiResponse<any>> {
+    return this.request(`/medical/consults/slots/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async deleteConsultSlot(id: number): Promise<ApiResponse<{ deleted: boolean }>> {
+    return this.request(`/medical/consults/slots/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  async createConsultNote(bookingId: number, data: {
+    soapNotes?: {
+      subjective?: string
+      objective?: string
+      assessment?: string
+      plan?: string
+    }
+    diagnoses?: string[]
+    recommendations?: string[]
+    followUps?: Array<{ type: string; date?: string; notes?: string }>
+    constraints?: Record<string, any>
+    shareWithUser?: boolean
+  }): Promise<ApiResponse<any>> {
+    return this.request(`/medical/consults/${bookingId}/notes`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async updateConsultNote(bookingId: number, noteId: number, data: {
+    soapNotes?: {
+      subjective?: string
+      objective?: string
+      assessment?: string
+      plan?: string
+    }
+    diagnoses?: string[]
+    recommendations?: string[]
+    followUps?: Array<{ type: string; date?: string; notes?: string }>
+    constraints?: Record<string, any>
+    shareWithUser?: boolean
+  }): Promise<ApiResponse<any>> {
+    return this.request(`/medical/consults/${bookingId}/notes/${noteId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Client Management
+  async getMedicalClients(params?: {
+    page?: number
+    pageSize?: number
+    q?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/medical/clients${query}`)
+  }
+
+  async getMedicalClient(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/clients/${id}`)
+  }
+
+  // Health Alerts (Medical Pro)
+  async getMedicalAlerts(params?: {
+    page?: number
+    pageSize?: number
+    severity?: string
+    assigned?: boolean
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/medical/alerts${query}`)
+  }
+
+  async assignAlert(id: number, assignToId?: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/alerts/${id}/assign`, {
+      method: 'POST',
+      body: JSON.stringify({ assignToId })
+    })
+  }
+
+  async resolveAlert(id: number, notes?: string): Promise<ApiResponse<any>> {
+    return this.request(`/medical/alerts/${id}/resolve`, {
+      method: 'POST',
+      body: JSON.stringify({ notes })
+    })
+  }
+
+  // ==================== ADMIN MEDICAL APPLICATIONS API ====================
+
+  async getMedicalApplications(params?: {
+    page?: number
+    pageSize?: number
+    status?: string
+    q?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/admin/medical-applications${query}`)
+  }
+
+  async getMedicalApplication(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/admin/medical-applications/${id}`)
+  }
+
+  async approveMedicalApplication(id: number, adminNotes?: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/medical-applications/${id}/approve`, {
+      method: 'POST',
+      body: JSON.stringify({ adminNotes })
+    })
+  }
+
+  async rejectMedicalApplication(id: number, rejectionReason: string, adminNotes?: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/medical-applications/${id}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ rejectionReason, adminNotes })
+    })
+  }
+
+  async updateMedicalApplicationNotes(id: number, adminNotes: string): Promise<ApiResponse<any>> {
+    return this.request(`/admin/medical-applications/${id}/notes`, {
+      method: 'POST',
+      body: JSON.stringify({ adminNotes })
+    })
+  }
+
+  async markMedicalApplicationUnderReview(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/admin/medical-applications/${id}/review`, {
+      method: 'POST'
     })
   }
 }

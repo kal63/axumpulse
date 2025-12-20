@@ -14,7 +14,7 @@ const nextConfig = {
 
     // Environment variables
     env: {
-        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://axum-pulse-api.bitappstech.com/api/v1'
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'
     },
 
     // Disable ESLint during build to avoid blocking deployment

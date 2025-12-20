@@ -41,6 +41,7 @@ const navigation = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { name: 'Moderation', href: '/admin/moderation', icon: FileText },
   { name: 'Trainer Applications', href: '/admin/trainer-applications', icon: ClipboardList },
+  { name: 'Medical Applications', href: '/admin/medical-applications', icon: ClipboardList },
   { name: 'Trainers', href: '/admin/trainers', icon: UserCheck },
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Challenges', href: '/admin/challenges', icon: Trophy },

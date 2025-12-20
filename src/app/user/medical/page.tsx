@@ -1,0 +1,411 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/auth-context'
+import { apiClient } from '@/lib/api-client'
+import { NeumorphicCard } from '@/components/user/NeumorphicCard'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import {
+  Heart,
+  FileText,
+  AlertTriangle,
+  Calendar,
+  Activity,
+  CheckCircle,
+  XCircle,
+  ArrowRight,
+  Clock,
+  Stethoscope,
+  Award
+} from 'lucide-react'
+
+export default function MedicalHubPage() {
+  const router = useRouter()
+  const { user, isLoading: authLoading } = useAuth()
+  const [loading, setLoading] = useState(true)
+  const [profileStatus, setProfileStatus] = useState<'complete' | 'incomplete' | null>(null)
+  const [recentTriage, setRecentTriage] = useState<any>(null)
+  const [upcomingConsults, setUpcomingConsults] = useState<any[]>([])
+  const [activeAlerts, setActiveAlerts] = useState<any[]>([])
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login')
+    } else if (user) {
+      fetchMedicalData()
+    }
+  }, [authLoading, user, router])
+
+  async function fetchMedicalData() {
+    try {
+      setLoading(true)
+
+      // Check medical profile status
+      const profileRes = await apiClient.getMedicalProfile()
+      if (profileRes.success && profileRes.data) {
+        const profile = profileRes.data
+        const hasData = profile.conditions?.length > 0 || 
+                       profile.medications?.length > 0 ||
+                       profile.allergies?.length > 0
+        setProfileStatus(hasData ? 'complete' : 'incomplete')
+      } else {
+        setProfileStatus('incomplete')
+      }
+
+      // Get recent triage runs
+      const triageRes = await apiClient.getTriageRuns({ page: 1, pageSize: 1 })
+      if (triageRes.success && triageRes.data?.items?.length > 0) {
+        setRecentTriage(triageRes.data.items[0])
+      }
+
+      // Get upcoming consults
+      const consultsRes = await apiClient.getConsultBookings({ page: 1, pageSize: 3, status: 'confirmed' })
+      if (consultsRes.success && consultsRes.data?.items) {
+        setUpcomingConsults(consultsRes.data.items)
+      }
+
+      // Get active alerts
+      const alertsRes = await apiClient.getHealthAlerts({ page: 1, pageSize: 5, status: 'active' })
+      if (alertsRes.success && alertsRes.data?.items) {
+        setActiveAlerts(alertsRes.data.items)
+      }
+    } catch (error) {
+      console.error('Error fetching medical data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
+  }
+
+  const getRiskLevelColor = (riskLevel: string) => {
+    switch (riskLevel) {
+      case 'critical': return 'bg-red-500 text-white'
+      case 'high': return 'bg-orange-500 text-white'
+      case 'medium': return 'bg-yellow-500 text-white'
+      case 'low': return 'bg-green-500 text-white'
+      default: return 'bg-gray-500 text-white'
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
+        
+        <div className="relative px-4 md:px-8 py-12">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-teal-500 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                  <Heart className="w-4 h-4" />
+                  <span>Medical Hub</span>
+                </div>
+                <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+                  Your Health & Wellness
+                </h1>
+                <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl">
+                  Manage your medical profile, track health data, and connect with medical professionals
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Dashboard Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="space-y-8">
+          {/* Overview Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Medical Profile Status */}
+            <NeumorphicCard variant="raised" className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full flex items-center justify-center">
+                  <FileText className="w-6 h-6 text-white" />
+                </div>
+                {profileStatus === 'complete' ? (
+                  <CheckCircle className="w-6 h-6 text-green-500" />
+                ) : (
+                  <XCircle className="w-6 h-6 text-orange-500" />
+                )}
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+                Medical Profile
+              </h3>
+              <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+                {profileStatus === 'complete' ? 'Profile complete' : 'Profile incomplete'}
+              </p>
+              <Button
+                onClick={() => router.push('/user/medical/profile')}
+                className="w-full bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white"
+              >
+                {profileStatus === 'complete' ? 'Update Profile' : 'Complete Profile'}
+              </Button>
+            </NeumorphicCard>
+
+            {/* Recent Triage */}
+            <NeumorphicCard variant="raised" className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                  <Stethoscope className="w-6 h-6 text-white" />
+                </div>
+                {recentTriage && (
+                  <Badge className={getRiskLevelColor(recentTriage.riskLevel)}>
+                    {recentTriage.riskLevel}
+                  </Badge>
+                )}
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+                Recent Triage
+              </h3>
+              <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+                {recentTriage 
+                  ? `Last assessment: ${new Date(recentTriage.createdAt).toLocaleDateString()}`
+                  : 'No assessments yet'
+                }
+              </p>
+              <Button
+                onClick={() => router.push('/user/medical/triage')}
+                variant="outline"
+                className="w-full"
+              >
+                View History
+              </Button>
+            </NeumorphicCard>
+
+            {/* Upcoming Consults */}
+            <NeumorphicCard variant="raised" className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                {upcomingConsults.length > 0 && (
+                  <Badge className="bg-purple-500 text-white">
+                    {upcomingConsults.length}
+                  </Badge>
+                )}
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+                Upcoming Consults
+              </h3>
+              <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+                {upcomingConsults.length > 0 
+                  ? `${upcomingConsults.length} scheduled`
+                  : 'No upcoming consults'
+                }
+              </p>
+              <Button
+                onClick={() => router.push('/user/medical/consults')}
+                variant="outline"
+                className="w-full"
+              >
+                View Consults
+              </Button>
+            </NeumorphicCard>
+
+            {/* Active Alerts */}
+            <NeumorphicCard variant="raised" className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center">
+                  <AlertTriangle className="w-6 h-6 text-white" />
+                </div>
+                {activeAlerts.length > 0 && (
+                  <Badge className="bg-red-500 text-white">
+                    {activeAlerts.length}
+                  </Badge>
+                )}
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+                Health Alerts
+              </h3>
+              <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+                {activeAlerts.length > 0 
+                  ? `${activeAlerts.length} active alerts`
+                  : 'No active alerts'
+                }
+              </p>
+              <Button
+                onClick={() => router.push('/user/medical/alerts')}
+                variant="outline"
+                className="w-full"
+              >
+                View Alerts
+              </Button>
+            </NeumorphicCard>
+          </div>
+
+          {/* Quick Actions */}
+          <NeumorphicCard variant="raised" className="p-6">
+            <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-6">
+              Quick Actions
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Button
+                onClick={() => router.push('/user/medical/intake')}
+                className="h-20 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white text-lg font-semibold"
+              >
+                <FileText className="w-6 h-6 mr-3" />
+                Take Intake Form
+              </Button>
+              
+              <Button
+                onClick={() => router.push('/user/medical/consults/book')}
+                className="h-20 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white text-lg font-semibold"
+              >
+                <Calendar className="w-6 h-6 mr-3" />
+                Book Consult
+              </Button>
+              
+              <Button
+                onClick={() => router.push('/user/medical/health-data')}
+                className="h-20 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg font-semibold"
+              >
+                <Activity className="w-6 h-6 mr-3" />
+                Log Health Data
+              </Button>
+              
+              <Button
+                onClick={() => router.push('/user/medical/questions')}
+                className="h-20 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-lg font-semibold"
+              >
+                <Stethoscope className="w-6 h-6 mr-3" />
+                Ask Question
+              </Button>
+              
+              {!user?.isMedical && (
+                <Button
+                  onClick={() => router.push('/user/medical/apply')}
+                  className="h-20 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-lg font-semibold"
+                >
+                  <Award className="w-6 h-6 mr-3" />
+                  Become Medical Pro
+                </Button>
+              )}
+            </div>
+          </NeumorphicCard>
+
+          {/* Recent Activity */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Recent Triage Results */}
+            <NeumorphicCard variant="raised" className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+                  <Stethoscope className="w-5 h-5 text-teal-500" />
+                  Recent Triage Results
+                </h3>
+                <Button
+                  onClick={() => router.push('/user/medical/triage')}
+                  variant="ghost"
+                  size="sm"
+                >
+                  View All <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+              
+              {recentTriage ? (
+                <div className="space-y-4">
+                  <div className="p-4 rounded-xl bg-[var(--neumorphic-surface)]">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm text-[var(--neumorphic-muted)]">
+                        {new Date(recentTriage.createdAt).toLocaleDateString()}
+                      </span>
+                      <Badge className={getRiskLevelColor(recentTriage.riskLevel)}>
+                        {recentTriage.riskLevel}
+                      </Badge>
+                    </div>
+                    <p className="text-sm font-semibold text-[var(--neumorphic-text)] mb-2">
+                      Disposition: {recentTriage.disposition?.replace('_', ' ')}
+                    </p>
+                    {recentTriage.messages?.length > 0 && (
+                      <p className="text-sm text-[var(--neumorphic-muted)]">
+                        {recentTriage.messages[0]}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Stethoscope className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <p className="text-[var(--neumorphic-muted)]">
+                    No triage assessments yet. Complete an intake form to get started.
+                  </p>
+                </div>
+              )}
+            </NeumorphicCard>
+
+            {/* Upcoming Consults */}
+            <NeumorphicCard variant="raised" className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-blue-500" />
+                  Upcoming Consults
+                </h3>
+                <Button
+                  onClick={() => router.push('/user/medical/consults')}
+                  variant="ghost"
+                  size="sm"
+                >
+                  View All <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+              
+              {upcomingConsults.length > 0 ? (
+                <div className="space-y-4">
+                  {upcomingConsults.map((consult) => (
+                    <div key={consult.id} className="p-4 rounded-xl bg-[var(--neumorphic-surface)]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                          {consult.consultType?.replace('_', ' ')}
+                        </span>
+                        <Badge className="bg-blue-500 text-white">
+                          {new Date(consult.slot?.startTime).toLocaleDateString()}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
+                        <Clock className="w-4 h-4" />
+                        <span>
+                          {new Date(consult.slot?.startTime).toLocaleTimeString()}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <p className="text-[var(--neumorphic-muted)] mb-4">
+                    No upcoming consults scheduled.
+                  </p>
+                  <Button
+                    onClick={() => router.push('/user/medical/consults/book')}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white"
+                  >
+                    Book a Consult
+                  </Button>
+                </div>
+              )}
+            </NeumorphicCard>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+

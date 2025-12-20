@@ -12,7 +12,8 @@ import {
   User,
   Trophy,
   Settings,
-  Award
+  Award,
+  Heart
 } from 'lucide-react';
 
 interface NavItem {
@@ -38,6 +39,7 @@ export function Sidebar({ className }: SidebarProps) {
     { id: 'workouts', label: 'Workouts', icon: Target, href: '/user/workout-plans' },
     { id: 'challenges', label: 'Challenges', icon: Trophy, href: '/user/challenges' },
     { id: 'progress', label: 'Progress', icon: BarChart3, href: '/user/progress' },
+    { id: 'medical', label: 'Medical', icon: Heart, href: '/user/medical' },
     { id: 'profile', label: 'Profile', icon: User, href: '/user/profile' },
   ];
 
