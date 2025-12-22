@@ -29,8 +29,19 @@ export default function ConsultDetailPage() {
     try {
       setLoading(true)
       const response = await apiClient.getConsultBooking(bookingId)
+      console.log('Full response:', response)
       if (response.success && response.data) {
-        setBooking(response.data)
+        // Handle nested response structure
+        const bookingData = (response.data as any).data || response.data
+        console.log('Booking data:', bookingData)
+        
+        // Separate user note (string) from consult note (object) if present
+        const consultNote = bookingData.note && typeof bookingData.note === 'object' ? bookingData.note : null
+        const userNote = bookingData.note && typeof bookingData.note === 'string' ? bookingData.note : null
+        
+        // Remove the note object from bookingData to avoid rendering issues
+        const { note, ...bookingWithoutNote } = bookingData
+        setBooking({ ...bookingWithoutNote, userNote, consultNote })
       }
     } catch (error) {
       console.error('Error fetching booking:', error)
@@ -88,77 +99,146 @@ export default function ConsultDetailPage() {
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <NeumorphicCard variant="raised" className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <Badge className="bg-blue-500 text-white">
-                {booking.consultType?.replace('_', ' ')}
+                {booking.slot?.type?.replace('_', ' ') || 'Consultation'}
               </Badge>
-              <Badge className={booking.status === 'confirmed' ? 'bg-green-500' : 'bg-yellow-500'}>
+              <Badge className={
+                booking.status === 'booked' || booking.status === 'confirmed' 
+                  ? 'bg-green-500 text-white' 
+                  : booking.status === 'canceled'
+                  ? 'bg-red-500 text-white'
+                  : 'bg-yellow-500 text-white'
+              }>
                 {booking.status}
               </Badge>
+              {booking.slot?.status && (
+                <Badge className="bg-gray-500 text-white">
+                  Slot: {booking.slot.status}
+                </Badge>
+              )}
             </div>
-            <div className="flex items-center gap-2 text-[var(--neumorphic-muted)]">
-              <Clock className="w-4 h-4" />
-              <span>{new Date(booking.slot?.startTime).toLocaleString()}</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {booking.slot?.startAt && (
+                <div className="flex items-center gap-2 text-[var(--neumorphic-muted)]">
+                  <Clock className="w-4 h-4" />
+                  <div>
+                    <p className="text-xs text-[var(--neumorphic-muted)]">Start Time</p>
+                    <p className="text-[var(--neumorphic-text)]">{new Date(booking.slot.startAt).toLocaleString()}</p>
+                  </div>
+                </div>
+              )}
+              {booking.slot?.endAt && (
+                <div className="flex items-center gap-2 text-[var(--neumorphic-muted)]">
+                  <Clock className="w-4 h-4" />
+                  <div>
+                    <p className="text-xs text-[var(--neumorphic-muted)]">End Time</p>
+                    <p className="text-[var(--neumorphic-text)]">{new Date(booking.slot.endAt).toLocaleString()}</p>
+                  </div>
+                </div>
+              )}
             </div>
-            {booking.notes && (
-              <div>
-                <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Your Notes:</p>
-                <p className="text-[var(--neumorphic-text)]">{booking.notes}</p>
+            {booking.slot?.timezone && (
+              <div className="text-[var(--neumorphic-muted)]">
+                <p className="text-xs font-semibold mb-1">Timezone:</p>
+                <p className="text-sm text-[var(--neumorphic-text)]">{booking.slot.timezone}</p>
               </div>
             )}
+            {booking.slot?.provider && (
+              <div className="text-[var(--neumorphic-muted)]">
+                <p className="text-sm font-semibold mb-1">Provider:</p>
+                <p className="text-[var(--neumorphic-text)]">{booking.slot.provider.name}</p>
+              </div>
+            )}
+            {booking.canceledAt && (
+              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                <p className="text-sm font-semibold text-red-500 mb-1">Canceled</p>
+                <p className="text-xs text-[var(--neumorphic-muted)]">
+                  {new Date(booking.canceledAt).toLocaleString()}
+                </p>
+                {booking.cancelReason && (
+                  <p className="text-sm text-[var(--neumorphic-text)] mt-2">{booking.cancelReason}</p>
+                )}
+              </div>
+            )}
+            {booking.userNote && (
+              <div>
+                <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Your Notes:</p>
+                <p className="text-[var(--neumorphic-text)]">{booking.userNote}</p>
+              </div>
+            )}
+            <div className="pt-4 border-t border-[var(--neumorphic-muted)]/20">
+              <p className="text-xs text-[var(--neumorphic-muted)]">
+                Booking ID: {booking.id} | Created: {new Date(booking.createdAt).toLocaleString()}
+              </p>
+            </div>
           </div>
         </NeumorphicCard>
 
-        {booking.consultNotes && booking.consultNotes.length > 0 && (
-          <NeumorphicCard variant="raised" className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <FileText className="w-5 h-5 text-[var(--neumorphic-muted)]" />
-              <h2 className="text-xl font-bold text-[var(--neumorphic-text)]">Consult Notes</h2>
-            </div>
-            {booking.consultNotes.map((note: any, idx: number) => (
-              <div key={idx} className="mb-4 p-4 rounded-lg bg-[var(--neumorphic-surface)]">
-                {note.soapNotes && (
-                  <div className="space-y-2">
-                    {note.soapNotes.subjective && (
-                      <div>
-                        <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Subjective:</p>
-                        <p className="text-[var(--neumorphic-text)]">{note.soapNotes.subjective}</p>
-                      </div>
-                    )}
-                    {note.soapNotes.objective && (
-                      <div>
-                        <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Objective:</p>
-                        <p className="text-[var(--neumorphic-text)]">{note.soapNotes.objective}</p>
-                      </div>
-                    )}
-                    {note.soapNotes.assessment && (
-                      <div>
-                        <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Assessment:</p>
-                        <p className="text-[var(--neumorphic-text)]">{note.soapNotes.assessment}</p>
-                      </div>
-                    )}
-                    {note.soapNotes.plan && (
-                      <div>
-                        <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Plan:</p>
-                        <p className="text-[var(--neumorphic-text)]">{note.soapNotes.plan}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {note.recommendations && note.recommendations.length > 0 && (
-                  <div className="mt-4">
-                    <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Recommendations:</p>
-                    <ul className="list-disc list-inside space-y-1">
-                      {note.recommendations.map((rec: string, i: number) => (
-                        <li key={i} className="text-[var(--neumorphic-text)]">{rec}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+        {(() => {
+          // Handle consult notes - could be single object or array
+          const consultNotes = booking.consultNote 
+            ? [booking.consultNote] 
+            : (booking.consultNotes && Array.isArray(booking.consultNotes) ? booking.consultNotes : [])
+          
+          if (consultNotes.length === 0) return null
+          
+          return (
+            <NeumorphicCard variant="raised" className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <FileText className="w-5 h-5 text-[var(--neumorphic-muted)]" />
+                <h2 className="text-xl font-bold text-[var(--neumorphic-text)]">Consult Notes</h2>
               </div>
-            ))}
-          </NeumorphicCard>
-        )}
+              {consultNotes.map((note: any, idx: number) => {
+                // Backend returns 'soap' not 'soapNotes'
+                const soap = note.soap || note.soapNotes || {}
+                
+                return (
+                  <div key={idx} className="mb-4 p-4 rounded-lg bg-[var(--neumorphic-surface)]">
+                    {(soap.subjective || soap.objective || soap.assessment || soap.plan) && (
+                      <div className="space-y-2">
+                        {soap.subjective && (
+                          <div>
+                            <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Subjective:</p>
+                            <p className="text-[var(--neumorphic-text)]">{soap.subjective}</p>
+                          </div>
+                        )}
+                        {soap.objective && (
+                          <div>
+                            <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Objective:</p>
+                            <p className="text-[var(--neumorphic-text)]">{soap.objective}</p>
+                          </div>
+                        )}
+                        {soap.assessment && (
+                          <div>
+                            <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Assessment:</p>
+                            <p className="text-[var(--neumorphic-text)]">{soap.assessment}</p>
+                          </div>
+                        )}
+                        {soap.plan && (
+                          <div>
+                            <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Plan:</p>
+                            <p className="text-[var(--neumorphic-text)]">{soap.plan}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {note.recommendations && Array.isArray(note.recommendations) && note.recommendations.length > 0 && (
+                      <div className="mt-4">
+                        <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Recommendations:</p>
+                        <ul className="list-disc list-inside space-y-1">
+                          {note.recommendations.map((rec: string, i: number) => (
+                            <li key={i} className="text-[var(--neumorphic-text)]">{rec}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </NeumorphicCard>
+          )
+        })()}
       </div>
     </div>
   )

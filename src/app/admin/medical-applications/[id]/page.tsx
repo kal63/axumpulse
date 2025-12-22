@@ -35,11 +35,19 @@ export default function MedicalApplicationDetailPage() {
       setLoading(true)
       const response = await apiClient.getMedicalApplication(applicationId)
       if (response.success && response.data) {
-        setApplication(response.data)
-        setAdminNotes(response.data.adminNotes || '')
+        // Handle nested data structure: response.data.data
+        const applicationData = response.data.data || response.data
+        console.log('Application data received:', applicationData)
+        console.log('Response structure:', response)
+        setApplication(applicationData)
+        setAdminNotes(applicationData.adminNotes || '')
+      } else {
+        console.error('Failed to fetch application:', response.error)
+        toast.error(response.error?.message || 'Failed to load application')
       }
     } catch (error) {
       console.error('Error fetching application:', error)
+      toast.error('An error occurred while loading the application')
     } finally {
       setLoading(false)
     }
@@ -125,8 +133,59 @@ export default function MedicalApplicationDetailPage() {
   }
 
   if (!user || !application) {
-    return null
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+        <div className="text-center">
+          <p className="text-[var(--neumorphic-muted)]">Application not found</p>
+        </div>
+      </div>
+    )
   }
+
+  // Helper function to safely parse JSON fields that might be strings
+  const parseJsonField = (field: any) => {
+    if (field === null || field === undefined) return null
+    if (typeof field === 'string') {
+      try {
+        const parsed = JSON.parse(field)
+        return parsed
+      } catch {
+        return field
+      }
+    }
+    return field
+  }
+
+  // Parse JSON fields if needed
+  const specialties = Array.isArray(application.specialties) 
+    ? application.specialties 
+    : (parseJsonField(application.specialties) || [])
+  const languages = Array.isArray(application.languages)
+    ? application.languages
+    : (parseJsonField(application.languages) || [])
+  const licenseInfo = (application.licenseInfo && typeof application.licenseInfo === 'object' && !Array.isArray(application.licenseInfo))
+    ? application.licenseInfo
+    : (parseJsonField(application.licenseInfo) || {})
+  const portfolio = Array.isArray(application.portfolio)
+    ? application.portfolio
+    : (parseJsonField(application.portfolio) || [])
+  const socialMedia = (application.socialMedia && typeof application.socialMedia === 'object' && !Array.isArray(application.socialMedia))
+    ? application.socialMedia
+    : (parseJsonField(application.socialMedia) || {})
+  const preferences = (application.preferences && typeof application.preferences === 'object' && !Array.isArray(application.preferences))
+    ? application.preferences
+    : (parseJsonField(application.preferences) || {})
+
+  // Debug: Log parsed values
+  console.log('Parsed fields:', {
+    specialties,
+    languages,
+    licenseInfo,
+    portfolio,
+    socialMedia,
+    preferences,
+    rawApplication: application
+  })
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -192,34 +251,90 @@ export default function MedicalApplicationDetailPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+        {/* User Information */}
+        {application.user && (
+          <NeumorphicCard variant="raised" className="p-6">
+            <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Applicant Information</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Name</p>
+                <p className="text-[var(--neumorphic-text)]">{application.user.name || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Phone</p>
+                <p className="text-[var(--neumorphic-text)]">{application.user.phone || 'N/A'}</p>
+              </div>
+              {application.user.email && (
+                <div>
+                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Email</p>
+                  <p className="text-[var(--neumorphic-text)]">{application.user.email}</p>
+                </div>
+              )}
+              {application.user.dateOfBirth && (
+                <div>
+                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Date of Birth</p>
+                  <p className="text-[var(--neumorphic-text)]">{new Date(application.user.dateOfBirth).toLocaleDateString()}</p>
+                </div>
+              )}
+            </div>
+          </NeumorphicCard>
+        )}
+
+        {/* Application Metadata */}
+        <NeumorphicCard variant="raised" className="p-6">
+          <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Application Metadata</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Submitted At</p>
+              <p className="text-[var(--neumorphic-text)]">
+                {application.submittedAt ? new Date(application.submittedAt).toLocaleString() : 'N/A'}
+              </p>
+            </div>
+            {application.reviewedAt && (
+              <div>
+                <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Reviewed At</p>
+                <p className="text-[var(--neumorphic-text)]">
+                  {new Date(application.reviewedAt).toLocaleString()}
+                </p>
+              </div>
+            )}
+            {application.reviewedBy && (
+              <div>
+                <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Reviewed By</p>
+                <p className="text-[var(--neumorphic-text)]">Admin ID: {application.reviewedBy}</p>
+              </div>
+            )}
+          </div>
+        </NeumorphicCard>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <NeumorphicCard variant="raised" className="p-6">
             <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Application Details</h2>
             <div className="space-y-3">
               <div>
                 <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Professional Type</p>
-                <p className="text-[var(--neumorphic-text)]">{application.professionalType?.replace('_', ' ')}</p>
+                <p className="text-[var(--neumorphic-text)] capitalize">{application.professionalType?.replace('_', ' ')}</p>
               </div>
-              {application.specialties?.length > 0 && (
+              {specialties.length > 0 && (
                 <div>
                   <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Specialties</p>
                   <div className="flex flex-wrap gap-2 mt-1">
-                    {application.specialties.map((spec: string, idx: number) => (
+                    {specialties.map((spec: string, idx: number) => (
                       <Badge key={idx} className="bg-teal-500 text-white">{spec}</Badge>
                     ))}
                   </div>
                 </div>
               )}
-              {application.bio && (
-                <div>
-                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Bio</p>
-                  <p className="text-[var(--neumorphic-text)]">{application.bio}</p>
-                </div>
-              )}
               {application.yearsOfExperience && (
                 <div>
                   <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Years of Experience</p>
-                  <p className="text-[var(--neumorphic-text)]">{application.yearsOfExperience}</p>
+                  <p className="text-[var(--neumorphic-text)]">{application.yearsOfExperience} years</p>
+                </div>
+              )}
+              {application.bio && (
+                <div>
+                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Bio</p>
+                  <p className="text-[var(--neumorphic-text)] whitespace-pre-wrap">{application.bio}</p>
                 </div>
               )}
             </div>
@@ -227,20 +342,200 @@ export default function MedicalApplicationDetailPage() {
 
           <NeumorphicCard variant="raised" className="p-6">
             <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">License Information</h2>
-            {application.licenseInfo && Object.keys(application.licenseInfo).length > 0 ? (
+            {licenseInfo && Object.keys(licenseInfo).length > 0 ? (
               <div className="space-y-2">
-                {Object.entries(application.licenseInfo).map(([key, value]: [string, any]) => (
-                  <div key={key}>
-                    <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
-                    <p className="text-[var(--neumorphic-text)]">{String(value)}</p>
+                {licenseInfo.licenseNumber && (
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">License Number</p>
+                    <p className="text-[var(--neumorphic-text)]">{licenseInfo.licenseNumber}</p>
                   </div>
-                ))}
+                )}
+                {licenseInfo.issuingAuthority && (
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Issuing Authority</p>
+                    <p className="text-[var(--neumorphic-text)]">{licenseInfo.issuingAuthority}</p>
+                  </div>
+                )}
+                {licenseInfo.state && (
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">State/Province</p>
+                    <p className="text-[var(--neumorphic-text)]">{licenseInfo.state}</p>
+                  </div>
+                )}
+                {licenseInfo.country && (
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Country</p>
+                    <p className="text-[var(--neumorphic-text)]">{licenseInfo.country}</p>
+                  </div>
+                )}
+                {licenseInfo.expiryDate && (
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Expiry Date</p>
+                    <p className="text-[var(--neumorphic-text)]">{licenseInfo.expiryDate}</p>
+                  </div>
+                )}
               </div>
             ) : (
               <p className="text-[var(--neumorphic-muted)]">No license information provided</p>
             )}
           </NeumorphicCard>
         </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <NeumorphicCard variant="raised" className="p-6">
+            <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Languages Spoken</h2>
+            {languages && languages.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {languages.map((lang: string, idx: number) => (
+                  <Badge key={idx} className="bg-teal-500 text-white">{lang}</Badge>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[var(--neumorphic-muted)]">No languages specified</p>
+            )}
+          </NeumorphicCard>
+
+          <NeumorphicCard variant="raised" className="p-6">
+            <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Consultation Preferences</h2>
+            {preferences && Object.keys(preferences).length > 0 ? (
+              <div className="space-y-3">
+                {preferences.consultTypes && preferences.consultTypes.length > 0 && (
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Consult Types</p>
+                    <div className="flex flex-wrap gap-2">
+                      {preferences.consultTypes.map((type: string, idx: number) => (
+                        <Badge key={idx} className="bg-emerald-500 text-white">{type}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {preferences.availability && preferences.availability.length > 0 && (
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Availability</p>
+                    <div className="flex flex-wrap gap-2">
+                      {preferences.availability.map((avail: string, idx: number) => (
+                        <Badge key={idx} className="bg-blue-500 text-white">{avail}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {(!preferences.consultTypes || preferences.consultTypes.length === 0) && 
+                 (!preferences.availability || preferences.availability.length === 0) && (
+                  <p className="text-[var(--neumorphic-muted)]">No preferences specified</p>
+                )}
+              </div>
+            ) : (
+              <p className="text-[var(--neumorphic-muted)]">No preferences specified</p>
+            )}
+          </NeumorphicCard>
+        </div>
+
+        <NeumorphicCard variant="raised" className="p-6">
+          <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Portfolio</h2>
+          {portfolio && portfolio.length > 0 ? (
+            <div className="space-y-4">
+              {portfolio.map((item: any, idx: number) => (
+                <div key={idx} className="p-4 rounded-lg bg-[var(--neumorphic-surface)] space-y-2">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-[var(--neumorphic-text)]">{item.title || `Portfolio Item ${idx + 1}`}</p>
+                      {item.description && (
+                        <p className="text-sm text-[var(--neumorphic-muted)] mt-1 whitespace-pre-wrap">{item.description}</p>
+                      )}
+                      {item.url && (
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-teal-500 hover:underline mt-1 inline-block"
+                        >
+                          View Link →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[var(--neumorphic-muted)]">No portfolio items</p>
+          )}
+        </NeumorphicCard>
+
+        <NeumorphicCard variant="raised" className="p-6">
+          <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Social Media & Links</h2>
+          {socialMedia && Object.keys(socialMedia).length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {socialMedia.linkedin && (
+                <div>
+                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">LinkedIn</p>
+                  <a
+                    href={socialMedia.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-teal-500 hover:underline break-all"
+                  >
+                    {socialMedia.linkedin}
+                  </a>
+                </div>
+              )}
+              {socialMedia.website && (
+                <div>
+                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Website</p>
+                  <a
+                    href={socialMedia.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-teal-500 hover:underline break-all"
+                  >
+                    {socialMedia.website}
+                  </a>
+                </div>
+              )}
+              {socialMedia.instagram && (
+                <div>
+                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Instagram</p>
+                  <a
+                    href={socialMedia.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-teal-500 hover:underline break-all"
+                  >
+                    {socialMedia.instagram}
+                  </a>
+                </div>
+              )}
+              {socialMedia.facebook && (
+                <div>
+                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Facebook</p>
+                  <a
+                    href={socialMedia.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-teal-500 hover:underline break-all"
+                  >
+                    {socialMedia.facebook}
+                  </a>
+                </div>
+              )}
+              {socialMedia.twitter && (
+                <div>
+                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Twitter/X</p>
+                  <a
+                    href={socialMedia.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-teal-500 hover:underline break-all"
+                  >
+                    {socialMedia.twitter}
+                  </a>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p className="text-[var(--neumorphic-muted)]">No social media links provided</p>
+          )}
+        </NeumorphicCard>
 
         {application.credentialFiles && application.credentialFiles.length > 0 && (
           <NeumorphicCard variant="raised" className="p-6">

@@ -56,6 +56,7 @@ export interface User {
   gender?: 'male' | 'female'
   isAdmin: boolean
   isTrainer: boolean
+  isMedical: boolean
   status: 'active' | 'blocked'
   lastLoginAt?: string
   lastActiveAt?: string
@@ -562,8 +563,13 @@ class ApiClient {
     const url = `${this.baseURL}${endpoint}`
     
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
       ...(options.headers as Record<string, string>),
+    }
+
+    // Only set Content-Type for non-FormData requests
+    // FormData needs to set its own Content-Type with boundary
+    if (!(options.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json'
     }
 
     if (this.token) {
@@ -1011,27 +1017,6 @@ class ApiClient {
     })
   }
 
-  // Medical Professional Application functions
-  // Submit medical professional application (AUTHENTICATED - requires login)
-  async submitMedicalApplication(formData: FormData): Promise<ApiResponse<any>> {
-    return this.request<any>('/medical/apply', {
-      method: 'POST',
-      body: formData,
-    })
-  }
-
-  // Get medical application status for logged-in user
-  async getMedicalApplicationStatus(): Promise<ApiResponse<any>> {
-    return this.request<any>('/medical/apply/status')
-  }
-
-  // Update medical application (for rejected applications)
-  async updateMedicalApplication(formData: FormData): Promise<ApiResponse<any>> {
-    return this.request<any>('/medical/apply', {
-      method: 'PUT',
-      body: formData,
-    })
-  }
 
   // Admin Trainer Application functions
   async getTrainerApplications(params?: {
@@ -2083,7 +2068,7 @@ class ApiClient {
     slotId: number
     notes?: string
   }): Promise<ApiResponse<any>> {
-    return this.request('/user/medical/consults/book', {
+    return this.request('/user/medical/consults/bookings', {
       method: 'POST',
       body: JSON.stringify(data)
     })
@@ -2095,16 +2080,17 @@ class ApiClient {
     status?: string
   }): Promise<ApiResponse<PaginatedResponse<any>>> {
     const query = createPaginationQuery(params)
-    return this.request<PaginatedResponse<any>>(`/user/medical/consults${query}`)
+    return this.request<PaginatedResponse<any>>(`/user/medical/consults/bookings${query}`)
   }
 
   async getConsultBooking(id: number): Promise<ApiResponse<any>> {
-    return this.request(`/user/medical/consults/${id}`)
+    return this.request(`/user/medical/consults/bookings/${id}`)
   }
 
-  async cancelConsultBooking(id: number): Promise<ApiResponse<{ message: string }>> {
-    return this.request(`/user/medical/consults/${id}/cancel`, {
-      method: 'POST'
+  async cancelConsultBooking(id: number, cancelReason?: string): Promise<ApiResponse<{ message: string }>> {
+    return this.request(`/user/medical/consults/bookings/${id}/cancel`, {
+      method: 'PATCH',
+      body: JSON.stringify({ cancelReason })
     })
   }
 
@@ -2161,6 +2147,27 @@ class ApiClient {
     })
   }
 
+  // Medical Professional Application
+  async submitMedicalApplication(formData: FormData): Promise<ApiResponse<any>> {
+    return this.request('/medical/apply', {
+      method: 'POST',
+      body: formData,
+      headers: {} // Let browser set Content-Type for FormData
+    })
+  }
+
+  async getMedicalApplicationStatus(): Promise<ApiResponse<any>> {
+    return this.request('/medical/apply/status')
+  }
+
+  async updateMedicalApplication(formData: FormData): Promise<ApiResponse<any>> {
+    return this.request('/medical/apply', {
+      method: 'PUT',
+      body: formData,
+      headers: {} // Let browser set Content-Type for FormData
+    })
+  }
+
   // ==================== MEDICAL PROFESSIONAL API ====================
 
   // Dashboard
@@ -2181,7 +2188,11 @@ class ApiClient {
     disposition?: string
   }): Promise<ApiResponse<PaginatedResponse<any>>> {
     const query = createPaginationQuery(params)
-    return this.request<PaginatedResponse<any>>(`/medical/triage/queue${query}`)
+    return this.request<PaginatedResponse<any>>(`/medical/triage-queue${query}`)
+  }
+
+  async getMedicalTriageRun(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/triage-runs/${id}`)
   }
 
   async updateTriageRun(id: number, data: {
@@ -2189,7 +2200,7 @@ class ApiClient {
     disposition?: string
     messages?: string[]
   }): Promise<ApiResponse<any>> {
-    return this.request(`/medical/triage/runs/${id}`, {
+    return this.request(`/medical/triage-runs/${id}/review`, {
       method: 'PUT',
       body: JSON.stringify(data)
     })
@@ -2203,11 +2214,11 @@ class ApiClient {
     severity?: string
   }): Promise<ApiResponse<PaginatedResponse<any>>> {
     const query = createPaginationQuery(params)
-    return this.request<PaginatedResponse<any>>(`/medical/triage/rules${query}`)
+    return this.request<PaginatedResponse<any>>(`/medical/triage-rules${query}`)
   }
 
   async getTriageRule(id: number): Promise<ApiResponse<any>> {
-    return this.request(`/medical/triage/rules/${id}`)
+    return this.request(`/medical/triage-rules/${id}`)
   }
 
   async createTriageRule(data: {
@@ -2216,7 +2227,7 @@ class ApiClient {
     severity: 'low' | 'medium' | 'high' | 'critical'
     definition: Record<string, any>
   }): Promise<ApiResponse<any>> {
-    return this.request('/medical/triage/rules', {
+    return this.request('/medical/triage-rules', {
       method: 'POST',
       body: JSON.stringify(data)
     })
@@ -2228,26 +2239,26 @@ class ApiClient {
     severity?: 'low' | 'medium' | 'high' | 'critical'
     definition?: Record<string, any>
   }): Promise<ApiResponse<any>> {
-    return this.request(`/medical/triage/rules/${id}`, {
+    return this.request(`/medical/triage-rules/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data)
     })
   }
 
   async publishTriageRule(id: number): Promise<ApiResponse<any>> {
-    return this.request(`/medical/triage/rules/${id}/publish`, {
+    return this.request(`/medical/triage-rules/${id}/publish`, {
       method: 'POST'
     })
   }
 
   async retireTriageRule(id: number): Promise<ApiResponse<any>> {
-    return this.request(`/medical/triage/rules/${id}/retire`, {
+    return this.request(`/medical/triage-rules/${id}/retire`, {
       method: 'POST'
     })
   }
 
-  async testTriageRule(id: number, testData: Record<string, any>): Promise<ApiResponse<any>> {
-    return this.request(`/medical/triage/rules/${id}/test`, {
+  async testTriageRule(testData: Record<string, any>): Promise<ApiResponse<any>> {
+    return this.request('/medical/triage-rules/test', {
       method: 'POST',
       body: JSON.stringify(testData)
     })
@@ -2271,7 +2282,7 @@ class ApiClient {
     text: string
     visibility: 'user' | 'user_trainer' | 'internal'
   }): Promise<ApiResponse<any>> {
-    return this.request(`/medical/questions/${id}/answer`, {
+    return this.request(`/medical/questions/${id}/answers`, {
       method: 'POST',
       body: JSON.stringify(data)
     })
@@ -2284,11 +2295,11 @@ class ApiClient {
     status?: string
   }): Promise<ApiResponse<PaginatedResponse<any>>> {
     const query = createPaginationQuery(params)
-    return this.request<PaginatedResponse<any>>(`/medical/consults${query}`)
+    return this.request<PaginatedResponse<any>>(`/medical/consults/bookings${query}`)
   }
 
   async getMedicalConsult(id: number): Promise<ApiResponse<any>> {
-    return this.request(`/medical/consults/${id}`)
+    return this.request(`/medical/consults/bookings/${id}`)
   }
 
   async getMedicalConsultSlots(params?: {
@@ -2305,11 +2316,20 @@ class ApiClient {
     startTime: string
     duration: number
     consultType: 'quick' | 'full' | 'follow_up'
-    timezone: string
+    timezone?: string
   }): Promise<ApiResponse<any>> {
+    // Transform frontend format to backend format
+    const startAt = new Date(data.startTime)
+    const endAt = new Date(startAt.getTime() + data.duration * 60 * 1000) // Add duration in milliseconds
+    
     return this.request('/medical/consults/slots', {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        startAt: startAt.toISOString(),
+        endAt: endAt.toISOString(),
+        type: data.consultType,
+        timezone: data.timezone || null
+      })
     })
   }
 
@@ -2343,28 +2363,37 @@ class ApiClient {
     constraints?: Record<string, any>
     shareWithUser?: boolean
   }): Promise<ApiResponse<any>> {
-    return this.request(`/medical/consults/${bookingId}/notes`, {
+    // Transform soapNotes to soap for backend
+    const requestData: any = {
+      diagnoses: data.diagnoses,
+      recommendations: data.recommendations,
+      followUps: data.followUps,
+      constraints: data.constraints
+    }
+    
+    // Convert soapNotes to soap format expected by backend
+    if (data.soapNotes) {
+      requestData.soap = {
+        subjective: data.soapNotes.subjective,
+        objective: data.soapNotes.objective,
+        assessment: data.soapNotes.assessment,
+        plan: data.soapNotes.plan
+      }
+    }
+    
+    return this.request(`/medical/consults/bookings/${bookingId}/notes`, {
       method: 'POST',
-      body: JSON.stringify(data)
+      body: JSON.stringify(requestData)
     })
   }
 
-  async updateConsultNote(bookingId: number, noteId: number, data: {
-    soapNotes?: {
-      subjective?: string
-      objective?: string
-      assessment?: string
-      plan?: string
-    }
-    diagnoses?: string[]
-    recommendations?: string[]
-    followUps?: Array<{ type: string; date?: string; notes?: string }>
-    constraints?: Record<string, any>
-    shareWithUser?: boolean
-  }): Promise<ApiResponse<any>> {
-    return this.request(`/medical/consults/${bookingId}/notes/${noteId}`, {
-      method: 'PUT',
-      body: JSON.stringify(data)
+  async getConsultNotes(bookingId: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/consults/bookings/${bookingId}/notes`)
+  }
+
+  async shareConsultSummary(bookingId: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/consults/bookings/${bookingId}/share-summary`, {
+      method: 'PUT'
     })
   }
 
@@ -2378,8 +2407,8 @@ class ApiClient {
     return this.request<PaginatedResponse<any>>(`/medical/clients${query}`)
   }
 
-  async getMedicalClient(id: number): Promise<ApiResponse<any>> {
-    return this.request(`/medical/clients/${id}`)
+  async getMedicalClient(userId: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/clients/${userId}`)
   }
 
   // Health Alerts (Medical Pro)
@@ -2400,10 +2429,56 @@ class ApiClient {
     })
   }
 
-  async resolveAlert(id: number, notes?: string): Promise<ApiResponse<any>> {
-    return this.request(`/medical/alerts/${id}/resolve`, {
+  async acknowledgeMedicalAlert(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/alerts/${id}/ack`, {
+      method: 'PUT'
+    })
+  }
+
+  // Intake Forms Management (Medical Professional)
+  async getMedicalIntakeForms(params?: {
+    page?: number
+    pageSize?: number
+    status?: string
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/medical/intake-forms${query}`)
+  }
+
+  async getMedicalIntakeForm(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/intake-forms/${id}`)
+  }
+
+  async createMedicalIntakeForm(data: {
+    version: string
+    schema: Record<string, any>
+  }): Promise<ApiResponse<any>> {
+    return this.request('/medical/intake-forms', {
       method: 'POST',
-      body: JSON.stringify({ notes })
+      body: JSON.stringify(data)
+    })
+  }
+
+  async updateMedicalIntakeForm(id: number, data: {
+    version?: string
+    schema?: Record<string, any>
+    status?: 'draft' | 'published'
+  }): Promise<ApiResponse<any>> {
+    return this.request(`/medical/intake-forms/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async publishMedicalIntakeForm(id: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/intake-forms/${id}/publish`, {
+      method: 'POST'
+    })
+  }
+
+  async deleteMedicalIntakeForm(id: number): Promise<ApiResponse<{ deleted: boolean }>> {
+    return this.request(`/medical/intake-forms/${id}`, {
+      method: 'DELETE'
     })
   }
 
@@ -2425,14 +2500,14 @@ class ApiClient {
 
   async approveMedicalApplication(id: number, adminNotes?: string): Promise<ApiResponse<any>> {
     return this.request(`/admin/medical-applications/${id}/approve`, {
-      method: 'POST',
+      method: 'PUT',
       body: JSON.stringify({ adminNotes })
     })
   }
 
   async rejectMedicalApplication(id: number, rejectionReason: string, adminNotes?: string): Promise<ApiResponse<any>> {
     return this.request(`/admin/medical-applications/${id}/reject`, {
-      method: 'POST',
+      method: 'PUT',
       body: JSON.stringify({ rejectionReason, adminNotes })
     })
   }
@@ -2445,8 +2520,8 @@ class ApiClient {
   }
 
   async markMedicalApplicationUnderReview(id: number): Promise<ApiResponse<any>> {
-    return this.request(`/admin/medical-applications/${id}/review`, {
-      method: 'POST'
+    return this.request(`/admin/medical-applications/${id}/under-review`, {
+      method: 'PUT'
     })
   }
 }

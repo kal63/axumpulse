@@ -28,7 +28,11 @@ export default function ConsultsPage() {
       setLoading(true)
       const response = await apiClient.getConsultBookings({ page: 1, pageSize: 20 })
       if (response.success && response.data) {
-        setBookings(response.data.items || [])
+        // Handle both direct items and nested data.data structure
+        const bookingsData = response.data.items 
+          ? response.data.items
+          : (response.data.data?.items || response.data.data || [])
+        setBookings(Array.isArray(bookingsData) ? bookingsData : [])
       }
     } catch (error) {
       console.error('Error fetching bookings:', error)
@@ -106,7 +110,7 @@ export default function ConsultsPage() {
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <Badge className="bg-blue-500 text-white">
-                        {booking.consultType?.replace('_', ' ')}
+                        {(booking.slot?.type || booking.consultType || 'N/A')?.replace('_', ' ')}
                       </Badge>
                       <Badge className={booking.status === 'confirmed' ? 'bg-green-500' : 'bg-yellow-500'}>
                         {booking.status}
@@ -115,7 +119,9 @@ export default function ConsultsPage() {
                     <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
                       <Clock className="w-4 h-4" />
                       <span>
-                        {new Date(booking.slot?.startTime).toLocaleString()}
+                        {booking.slot?.startAt || booking.slot?.startTime
+                          ? new Date(booking.slot.startAt || booking.slot.startTime).toLocaleString()
+                          : 'Date not available'}
                       </span>
                     </div>
                   </div>

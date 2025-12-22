@@ -34,7 +34,15 @@ export default function BookConsultPage() {
       setLoading(true)
       const response = await apiClient.getConsultSlots()
       if (response.success && response.data) {
-        setSlots(response.data.filter((s: any) => s.status === 'open'))
+        // Handle both direct array and nested data.data structure
+        let slotsData: any[] = []
+        if (Array.isArray(response.data)) {
+          slotsData = response.data
+        } else {
+          const data = response.data as any
+          slotsData = data.data || data.items || []
+        }
+        setSlots(slotsData.filter((s: any) => s.status === 'open'))
       }
     } catch (error) {
       console.error('Error fetching slots:', error)
@@ -119,11 +127,20 @@ export default function BookConsultPage() {
               <SelectValue placeholder="Choose a time slot" />
             </SelectTrigger>
             <SelectContent>
-              {slots.map((slot) => (
-                <SelectItem key={slot.id} value={slot.id.toString()}>
-                  {new Date(slot.startTime).toLocaleString()} - {slot.consultType?.replace('_', ' ')} ({slot.duration} min)
-                </SelectItem>
-              ))}
+              {slots.map((slot) => {
+                const startAt = slot.startAt || slot.startTime
+                const endAt = slot.endAt
+                const type = slot.type || slot.consultType
+                const duration = slot.duration || (startAt && endAt 
+                  ? Math.round((new Date(endAt).getTime() - new Date(startAt).getTime()) / 60000)
+                  : null)
+                
+                return (
+                  <SelectItem key={slot.id} value={slot.id.toString()}>
+                    {startAt ? new Date(startAt).toLocaleString() : 'Invalid date'} - {type?.replace('_', ' ') || 'N/A'} {duration ? `(${duration} min)` : ''}
+                  </SelectItem>
+                )
+              })}
             </SelectContent>
           </Select>
         </NeumorphicCard>

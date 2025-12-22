@@ -8,6 +8,7 @@ import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Calendar, Plus, Clock, X } from 'lucide-react'
@@ -188,7 +189,7 @@ export default function ConsultSlotsPage() {
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <Badge className="bg-blue-500 text-white">
-                        {slot.consultType?.replace('_', ' ')}
+                        {slot.type?.replace('_', ' ') || slot.consultType?.replace('_', ' ')}
                       </Badge>
                       <Badge className={slot.status === 'open' ? 'bg-green-500' : 'bg-gray-500'}>
                         {slot.status}
@@ -196,8 +197,10 @@ export default function ConsultSlotsPage() {
                     </div>
                     <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
                       <Clock className="w-4 h-4" />
-                      <span>{new Date(slot.startTime).toLocaleString()}</span>
-                      <span>• {slot.duration} min</span>
+                      <span>{new Date(slot.startAt).toLocaleString()}</span>
+                      {slot.endAt && (
+                        <span>• {Math.round((new Date(slot.endAt).getTime() - new Date(slot.startAt).getTime()) / 60000)} min</span>
+                      )}
                     </div>
                   </div>
                   {slot.status === 'open' && (

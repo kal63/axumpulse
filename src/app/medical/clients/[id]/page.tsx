@@ -7,7 +7,7 @@ import { apiClient } from '@/lib/api-client'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, User, Activity, Calendar, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, User, Activity, Calendar, AlertTriangle, FileText, Eye } from 'lucide-react'
 
 export default function ClientDetailPage() {
   const router = useRouter()
@@ -16,6 +16,10 @@ export default function ClientDetailPage() {
   const { user, isLoading: authLoading } = useAuth()
   const [loading, setLoading] = useState(true)
   const [client, setClient] = useState<any>(null)
+  const [healthData, setHealthData] = useState<any[]>([])
+  const [alerts, setAlerts] = useState<any[]>([])
+  const [consults, setConsults] = useState<any[]>([])
+  const [intakeResponses, setIntakeResponses] = useState<any[]>([])
 
   useEffect(() => {
     if (!authLoading && user && clientId) {
@@ -27,8 +31,16 @@ export default function ClientDetailPage() {
     try {
       setLoading(true)
       const response = await apiClient.getMedicalClient(clientId)
+      console.log('Full response:', response)
       if (response.success && response.data) {
-        setClient(response.data)
+        // Backend returns { medicalProfile, healthDataRollups, recentAlerts, recentConsults, intakeResponses }
+        const data = response.data as any
+        console.log('Client data:', data)
+        setClient(data.medicalProfile || data)
+        setHealthData(data.healthDataRollups || [])
+        setAlerts(data.recentAlerts || [])
+        setConsults(data.recentConsults || [])
+        setIntakeResponses(data.intakeResponses || [])
       }
     } catch (error) {
       console.error('Error fetching client:', error)
@@ -75,7 +87,7 @@ export default function ClientDetailPage() {
               </div>
               <div>
                 <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
-                  {client.user?.name || `Client ${clientId}`}
+                  {client?.user?.name || client?.name || `Client ${clientId}`}
                 </h1>
               </div>
             </div>
@@ -88,7 +100,7 @@ export default function ClientDetailPage() {
           <NeumorphicCard variant="raised" className="p-6">
             <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Medical Profile</h2>
             <div className="space-y-4">
-              {client.conditions?.length > 0 && (
+              {client?.conditions && Array.isArray(client.conditions) && client.conditions.length > 0 && (
                 <div>
                   <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Conditions:</p>
                   <div className="flex flex-wrap gap-2">
@@ -98,19 +110,19 @@ export default function ClientDetailPage() {
                   </div>
                 </div>
               )}
-              {client.medications?.length > 0 && (
+              {client?.medications && Array.isArray(client.medications) && client.medications.length > 0 && (
                 <div>
                   <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Medications:</p>
                   <div className="space-y-1">
                     {client.medications.map((med: any, idx: number) => (
                       <div key={idx} className="text-sm text-[var(--neumorphic-text)]">
-                        {med.name} {med.dosage && `(${med.dosage})`} {med.frequency && `- ${med.frequency}`}
+                        {typeof med === 'string' ? med : med.name} {med.dosage && `(${med.dosage})`} {med.frequency && `- ${med.frequency}`}
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-              {client.allergies?.length > 0 && (
+              {client?.allergies && Array.isArray(client.allergies) && client.allergies.length > 0 && (
                 <div>
                   <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Allergies:</p>
                   <div className="flex flex-wrap gap-2">
@@ -120,6 +132,11 @@ export default function ClientDetailPage() {
                   </div>
                 </div>
               )}
+              {(!client?.conditions || client.conditions.length === 0) && 
+               (!client?.medications || client.medications.length === 0) && 
+               (!client?.allergies || client.allergies.length === 0) && (
+                <p className="text-sm text-[var(--neumorphic-muted)]">No medical information available</p>
+              )}
             </div>
           </NeumorphicCard>
 
@@ -128,19 +145,62 @@ export default function ClientDetailPage() {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
                 <Activity className="w-4 h-4" />
-                <span>Health data logged</span>
+                <span>Health data logged: {healthData.length} records</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
                 <Calendar className="w-4 h-4" />
-                <span>Consultations scheduled</span>
+                <span>Consultations: {consults.length} recent</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
                 <AlertTriangle className="w-4 h-4" />
-                <span>Active alerts</span>
+                <span>Active alerts: {alerts.length}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
+                <FileText className="w-4 h-4" />
+                <span>Intake forms: {intakeResponses.length} submitted</span>
               </div>
             </div>
           </NeumorphicCard>
         </div>
+
+        {/* Intake Form Submissions */}
+        {intakeResponses.length > 0 && (
+          <NeumorphicCard variant="raised" className="p-6">
+            <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Intake Form Submissions</h2>
+            <div className="space-y-4">
+              {intakeResponses.map((response: any) => {
+                const form = response.form
+                const formSchema = form?.schema ? (typeof form.schema === 'string' ? JSON.parse(form.schema) : form.schema) : null
+                const formTitle = formSchema?.title || `Form v${form?.version || 'N/A'}`
+                
+                return (
+                  <div key={response.id} className="p-4 rounded-lg bg-[var(--neumorphic-surface)] border border-[var(--neumorphic-muted)]/20">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h3 className="font-semibold text-[var(--neumorphic-text)]">{formTitle}</h3>
+                        <p className="text-sm text-[var(--neumorphic-muted)]">
+                          Submitted: {new Date(response.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+                      <Badge className="bg-blue-500 text-white">
+                        {form?.status || 'N/A'}
+                      </Badge>
+                    </div>
+                    
+                    <div className="mt-3 space-y-2">
+                      <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Answers:</p>
+                      <div className="bg-[var(--neumorphic-bg)] p-3 rounded border border-[var(--neumorphic-muted)]/10">
+                        <pre className="text-xs text-[var(--neumorphic-text)] overflow-auto max-h-48">
+                          {JSON.stringify(response.answers, null, 2)}
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </NeumorphicCard>
+        )}
       </div>
     </div>
   )

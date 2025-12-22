@@ -39,23 +39,75 @@ export default function ConsultSessionPage() {
     }
   }, [authLoading, user, bookingId])
 
+  // Debug: Log booking state whenever it changes
+  useEffect(() => {
+    if (booking) {
+      console.log('Booking state:', booking)
+      console.log('Booking.userId:', booking.userId)
+      console.log('Booking.status:', booking.status)
+      console.log('Booking.slot:', booking.slot)
+    }
+  }, [booking])
+
   async function fetchBooking() {
     try {
       setLoading(true)
       const response = await apiClient.getMedicalConsult(bookingId)
+      console.log('Full response:', response)
       if (response.success && response.data) {
-        setBooking(response.data)
-        if (response.data.consultNotes && response.data.consultNotes.length > 0) {
-          const note = response.data.consultNotes[0]
-          setNotes({
-            subjective: note.soapNotes?.subjective || '',
-            objective: note.soapNotes?.objective || '',
-            assessment: note.soapNotes?.assessment || '',
-            plan: note.soapNotes?.plan || '',
-            diagnoses: note.diagnoses || [],
-            recommendations: note.recommendations || [],
-            shareWithUser: note.shareWithUser || false
-          })
+        // Backend returns { booking, medicalProfile }
+        const bookingData = (response.data as any).booking || response.data
+        console.log('Booking data:', bookingData)
+        
+        // Separate user note (string) from consult note (object)
+        // The backend includes ConsultNote as 'note', which overrides the booking.note string field
+        const consultNote = bookingData.note && typeof bookingData.note === 'object' ? bookingData.note : null
+        const userNote = bookingData.note && typeof bookingData.note === 'string' ? bookingData.note : null
+        
+        // Remove the note object from bookingData to avoid rendering issues
+        const { note, ...bookingWithoutNote } = bookingData
+        setBooking({ ...bookingWithoutNote, userNote })
+        
+        // Get consult notes - check if note is included or needs separate fetch
+        if (consultNote) {
+          // Note is included in the booking response
+          const note = Array.isArray(consultNote) ? consultNote[0] : consultNote
+          if (note && typeof note === 'object' && !Array.isArray(note)) {
+            // Backend returns 'soap' not 'soapNotes'
+            const soap = (note as any).soap || (note as any).soapNotes || {}
+            setNotes({
+              subjective: soap.subjective || '',
+              objective: soap.objective || '',
+              assessment: soap.assessment || '',
+              plan: soap.plan || '',
+              diagnoses: (note as any).diagnoses || [],
+              recommendations: (note as any).recommendations || [],
+              shareWithUser: (note as any).shareWithUser || (note as any).summaryShared || false
+            })
+          }
+        } else {
+          // Try to fetch consult notes separately
+          try {
+            const notesResponse = await apiClient.getConsultNotes(bookingId)
+            if (notesResponse.success && notesResponse.data) {
+              const note = Array.isArray(notesResponse.data) ? notesResponse.data[0] : notesResponse.data
+              if (note && typeof note === 'object' && !Array.isArray(note)) {
+                // Backend returns 'soap' not 'soapNotes'
+                const soap = (note as any).soap || (note as any).soapNotes || {}
+                setNotes({
+                  subjective: soap.subjective || '',
+                  objective: soap.objective || '',
+                  assessment: soap.assessment || '',
+                  plan: soap.plan || '',
+                  diagnoses: (note as any).diagnoses || [],
+                  recommendations: (note as any).recommendations || [],
+                  shareWithUser: (note as any).shareWithUser || (note as any).summaryShared || false
+                })
+              }
+            }
+          } catch (noteError) {
+            console.log('No consult notes found or error fetching:', noteError)
+          }
         }
       }
     } catch (error) {
@@ -125,8 +177,18 @@ export default function ConsultSessionPage() {
     )
   }
 
-  if (!user || !booking) {
+  if (!user) {
     return null
+  }
+
+  if (!booking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+        <div className="text-center">
+          <p className="text-[var(--neumorphic-muted)]">No booking data available</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -163,22 +225,92 @@ export default function ConsultSessionPage() {
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <NeumorphicCard variant="raised" className="p-6">
           <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Booking Information</h2>
-          <div className="space-y-2">
-            <p className="text-[var(--neumorphic-text)]">
-              <span className="font-semibold">User ID:</span> {booking.userId}
-            </p>
-            <p className="text-[var(--neumorphic-text)]">
-              <span className="font-semibold">Type:</span> {booking.consultType?.replace('_', ' ')}
-            </p>
-            <p className="text-[var(--neumorphic-text)]">
-              <span className="font-semibold">Time:</span> {new Date(booking.slot?.startTime).toLocaleString()}
-            </p>
-            {booking.userNotes && (
-              <div className="mt-4 p-3 rounded-lg bg-[var(--neumorphic-surface)]">
-                <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-1">User Notes:</p>
-                <p className="text-sm text-[var(--neumorphic-text)]">{booking.userNotes}</p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-[var(--neumorphic-muted)] mb-1">User ID</p>
+                <p className="text-[var(--neumorphic-text)] font-semibold">
+                  {booking.userId !== undefined && booking.userId !== null ? String(booking.userId) : 'N/A'}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-[var(--neumorphic-muted)] mb-1">Booking Status</p>
+                <p className="text-[var(--neumorphic-text)] font-semibold">
+                  {booking.status !== undefined && booking.status !== null ? String(booking.status) : 'N/A'}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-[var(--neumorphic-muted)] mb-1">Consult Type</p>
+                <p className="text-[var(--neumorphic-text)] font-semibold">
+                  {booking.slot?.type ? booking.slot.type.replace('_', ' ') : 'Consultation'}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-[var(--neumorphic-muted)] mb-1">Slot Status</p>
+                <p className="text-[var(--neumorphic-text)] font-semibold">
+                  {booking.slot?.status ? String(booking.slot.status) : 'N/A'}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {booking.slot?.startAt && (
+                <div>
+                  <p className="text-sm text-[var(--neumorphic-muted)] mb-1">Start Time</p>
+                  <p className="text-[var(--neumorphic-text)] font-semibold">
+                    {new Date(booking.slot.startAt).toLocaleString()}
+                  </p>
+                </div>
+              )}
+              {booking.slot?.endAt && (
+                <div>
+                  <p className="text-sm text-[var(--neumorphic-muted)] mb-1">End Time</p>
+                  <p className="text-[var(--neumorphic-text)] font-semibold">
+                    {new Date(booking.slot.endAt).toLocaleString()}
+                  </p>
+                </div>
+              )}
+            </div>
+            {booking.slot?.timezone && (
+              <div>
+                <p className="text-sm text-[var(--neumorphic-muted)] mb-1">Timezone</p>
+                <p className="text-[var(--neumorphic-text)]">{booking.slot.timezone}</p>
               </div>
             )}
+            {booking.slot?.provider && (
+              <div>
+                <p className="text-sm text-[var(--neumorphic-muted)] mb-1">Provider</p>
+                <p className="text-[var(--neumorphic-text)] font-semibold">{booking.slot.provider.name}</p>
+              </div>
+            )}
+            {booking.canceledAt && (
+              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                <p className="text-sm font-semibold text-red-500 mb-1">Canceled</p>
+                <p className="text-xs text-[var(--neumorphic-muted)]">
+                  {new Date(booking.canceledAt).toLocaleString()}
+                </p>
+                {booking.cancelReason && (
+                  <p className="text-sm text-[var(--neumorphic-text)] mt-2">{booking.cancelReason}</p>
+                )}
+              </div>
+            )}
+            {booking.userNote && (
+              <div className="p-3 rounded-lg bg-[var(--neumorphic-surface)]">
+                <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">User Notes:</p>
+                <p className="text-sm text-[var(--neumorphic-text)]">{booking.userNote}</p>
+              </div>
+            )}
+            <div className="pt-4 border-t border-[var(--neumorphic-muted)]/20">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-[var(--neumorphic-muted)]">
+                <div>
+                  <p>Booking ID: {booking.id}</p>
+                  <p>Slot ID: {booking.slotId}</p>
+                </div>
+                <div>
+                  <p>Created: {new Date(booking.createdAt).toLocaleString()}</p>
+                  <p>Updated: {new Date(booking.updatedAt).toLocaleString()}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </NeumorphicCard>
 

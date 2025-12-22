@@ -15,7 +15,8 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  ClipboardCheck
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -23,6 +24,7 @@ const navigation = [
   { name: 'Dashboard', href: '/medical/dashboard', icon: LayoutDashboard },
   { name: 'Triage Queue', href: '/medical/triage', icon: ClipboardList },
   { name: 'Triage Rules', href: '/medical/triage/rules', icon: FileText },
+  { name: 'Intake Forms', href: '/medical/intake-forms', icon: ClipboardCheck },
   { name: 'Q&A Inbox', href: '/medical/questions', icon: MessageSquare },
   { name: 'Consults', href: '/medical/consults', icon: Calendar },
   { name: 'Clients', href: '/medical/clients', icon: Users },

@@ -35,6 +35,19 @@ export default function NewTriageRulePage() {
     )
   }
 
+  if (!user.isMedical) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+        <div className="text-center">
+          <p className="text-[var(--neumorphic-muted)] mb-4">You must be a medical professional to create triage rules.</p>
+          <Button onClick={() => router.push('/user/medical/apply')}>
+            Apply to Become Medical Professional
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   async function handleSave() {
     if (!formData.name.trim()) {
       toast.error('Please enter a rule name')

@@ -59,12 +59,9 @@ interface MedicalFormData {
 
 const PROFESSIONAL_TYPE_OPTIONS = [
   { value: 'doctor', label: 'Doctor (MD/DO)' },
-  { value: 'nurse_practitioner', label: 'Nurse Practitioner' },
-  { value: 'physician_assistant', label: 'Physician Assistant' },
-  { value: 'registered_nurse', label: 'Registered Nurse' },
-  { value: 'nutritionist', label: 'Nutritionist/Dietitian' },
+  { value: 'nurse', label: 'Nurse' },
   { value: 'health_coach', label: 'Health Coach' },
-  { value: 'other', label: 'Other Medical Professional' }
+  { value: 'nutritionist', label: 'Nutritionist/Dietitian' }
 ]
 
 const MEDICAL_SPECIALTY_OPTIONS = [
@@ -313,24 +310,15 @@ export default function MedicalApplyPage() {
         formDataToSend.append('credentials', file)
       })
 
-      const token = localStorage.getItem('authToken')
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+      const response = existingApplication
+        ? await apiClient.updateMedicalApplication(formDataToSend)
+        : await apiClient.submitMedicalApplication(formDataToSend)
 
-      const response = await fetch(`${apiUrl}/api/v1/medical/apply`, {
-        method: existingApplication ? 'PUT' : 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formDataToSend
-      })
-
-      const result = await response.json()
-
-      if (result.success) {
+      if (response.success) {
         toast.success('Application submitted successfully!')
         router.push('/user/medical/apply/status')
       } else {
-        toast.error(result.error?.message || 'Failed to submit application')
+        toast.error(response.error?.message || 'Failed to submit application')
       }
     } catch (error) {
       console.error('Error submitting application:', error)
@@ -442,7 +430,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label>Professional Type *</Label>
+              <Label className="text-[var(--neumorphic-text)]">Professional Type *</Label>
               <Select value={formData.professionalType} onValueChange={(v) => setFormData({ ...formData, professionalType: v })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your professional type" />
@@ -458,7 +446,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label>Specialties *</Label>
+              <Label className="text-[var(--neumorphic-text)]">Specialties *</Label>
               <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
                 Select all that apply
               </p>
@@ -470,7 +458,7 @@ export default function MedicalApplyPage() {
                     className={`cursor-pointer ${
                       formData.specialties.includes(specialty)
                         ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
-                        : 'bg-[var(--neumorphic-surface)]'
+                        : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border border-[var(--neumorphic-muted)]/20'
                     }`}
                   >
                     {specialty}
@@ -483,7 +471,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label>Years of Experience</Label>
+              <Label className="text-[var(--neumorphic-text)]">Years of Experience</Label>
               <Input
                 type="number"
                 value={formData.yearsOfExperience}
@@ -493,7 +481,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label>Bio *</Label>
+              <Label className="text-[var(--neumorphic-text)]">Bio *</Label>
               <Textarea
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -503,7 +491,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label>Languages Spoken</Label>
+              <Label className="text-[var(--neumorphic-text)]">Languages Spoken</Label>
               <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
                 Select languages you can communicate in
               </p>
@@ -511,14 +499,14 @@ export default function MedicalApplyPage() {
                 <p className="text-sm text-[var(--neumorphic-muted)]">Loading languages...</p>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {languages.filter(lang => lang.status === 'active').map(lang => (
+                  {languages.filter(lang => lang.isActive).map(lang => (
                     <Badge
                       key={lang.code}
                       onClick={() => toggleLanguage(lang.code)}
                       className={`cursor-pointer ${
                         formData.languages.includes(lang.code)
                           ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
-                          : 'bg-[var(--neumorphic-surface)]'
+                          : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border border-[var(--neumorphic-muted)]/20'
                       }`}
                     >
                       {lang.name}
@@ -548,7 +536,7 @@ export default function MedicalApplyPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label>License Number</Label>
+                <Label className="text-[var(--neumorphic-text)]">License Number</Label>
                 <Input
                   value={formData.licenseInfo.licenseNumber || ''}
                   onChange={(e) => setFormData({
@@ -559,7 +547,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div>
-                <Label>Issuing Authority</Label>
+                <Label className="text-[var(--neumorphic-text)]">Issuing Authority</Label>
                 <Input
                   value={formData.licenseInfo.issuingAuthority || ''}
                   onChange={(e) => setFormData({
@@ -570,7 +558,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div>
-                <Label>State/Province</Label>
+                <Label className="text-[var(--neumorphic-text)]">State/Province</Label>
                 <Input
                   value={formData.licenseInfo.state || ''}
                   onChange={(e) => setFormData({
@@ -581,7 +569,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div>
-                <Label>Country</Label>
+                <Label className="text-[var(--neumorphic-text)]">Country</Label>
                 <Input
                   value={formData.licenseInfo.country || ''}
                   onChange={(e) => setFormData({
@@ -592,7 +580,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div>
-                <Label>Expiry Date</Label>
+                <Label className="text-[var(--neumorphic-text)]">Expiry Date</Label>
                 <Input
                   type="date"
                   value={formData.licenseInfo.expiryDate || ''}
@@ -605,7 +593,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label>Upload Credential Files</Label>
+              <Label className="text-[var(--neumorphic-text)]">Upload Credential Files</Label>
               <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
                 Upload copies of your licenses, certifications, or credentials (PDF, JPG, PNG - Max 10MB each)
               </p>
@@ -660,7 +648,7 @@ export default function MedicalApplyPage() {
 
             <div>
               <div className="flex items-center justify-between mb-4">
-                <Label>Portfolio Items</Label>
+                <Label className="text-[var(--neumorphic-text)]">Portfolio Items</Label>
                 <Button onClick={addPortfolioItem} variant="outline" size="sm">
                   <Check className="w-4 h-4 mr-2" />
                   Add Item
@@ -702,7 +690,7 @@ export default function MedicalApplyPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label>LinkedIn</Label>
+                <Label className="text-[var(--neumorphic-text)]">LinkedIn</Label>
                 <Input
                   value={formData.socialMedia.linkedin || ''}
                   onChange={(e) => setFormData({
@@ -713,7 +701,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div>
-                <Label>Website</Label>
+                <Label className="text-[var(--neumorphic-text)]">Website</Label>
                 <Input
                   value={formData.socialMedia.website || ''}
                   onChange={(e) => setFormData({
@@ -721,6 +709,39 @@ export default function MedicalApplyPage() {
                     socialMedia: { ...formData.socialMedia, website: e.target.value }
                   })}
                   placeholder="Personal or professional website"
+                />
+              </div>
+              <div>
+                <Label className="text-[var(--neumorphic-text)]">Instagram</Label>
+                <Input
+                  value={formData.socialMedia.instagram || ''}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    socialMedia: { ...formData.socialMedia, instagram: e.target.value }
+                  })}
+                  placeholder="Instagram profile URL"
+                />
+              </div>
+              <div>
+                <Label className="text-[var(--neumorphic-text)]">Facebook</Label>
+                <Input
+                  value={formData.socialMedia.facebook || ''}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    socialMedia: { ...formData.socialMedia, facebook: e.target.value }
+                  })}
+                  placeholder="Facebook profile URL"
+                />
+              </div>
+              <div>
+                <Label className="text-[var(--neumorphic-text)]">Twitter/X</Label>
+                <Input
+                  value={formData.socialMedia.twitter || ''}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    socialMedia: { ...formData.socialMedia, twitter: e.target.value }
+                  })}
+                  placeholder="Twitter/X profile URL"
                 />
               </div>
             </div>
@@ -741,7 +762,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label>Consult Types You Offer *</Label>
+              <Label className="text-[var(--neumorphic-text)]">Consult Types You Offer *</Label>
               <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
                 Select all that apply
               </p>
@@ -753,7 +774,7 @@ export default function MedicalApplyPage() {
                     className={`cursor-pointer ${
                       formData.preferences.consultTypes.includes(type)
                         ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
-                        : 'bg-[var(--neumorphic-surface)]'
+                        : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border border-[var(--neumorphic-muted)]/20'
                     }`}
                   >
                     {type}
@@ -766,7 +787,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label>Availability</Label>
+              <Label className="text-[var(--neumorphic-text)]">Availability</Label>
               <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
                 When are you typically available for consultations?
               </p>
@@ -778,7 +799,7 @@ export default function MedicalApplyPage() {
                     className={`cursor-pointer ${
                       formData.preferences.availability.includes(availability)
                         ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
-                        : 'bg-[var(--neumorphic-surface)]'
+                        : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border border-[var(--neumorphic-muted)]/20'
                     }`}
                   >
                     {availability}

@@ -97,12 +97,12 @@ export default function MedicalConsultsPage() {
                         {booking.status}
                       </Badge>
                       <span className="text-sm text-[var(--neumorphic-muted)]">
-                        User ID: {booking.userId}
+                        Name: {booking.user?.name}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
                       <Clock className="w-4 h-4" />
-                      <span>{new Date(booking.slot?.startTime).toLocaleString()}</span>
+                      <span>{new Date(booking.slot?.startAt).toLocaleString()}</span>
                     </div>
                   </div>
                   <Button variant="outline">
