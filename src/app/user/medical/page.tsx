@@ -56,7 +56,7 @@ export default function MedicalHubPage() {
 
       // Get recent triage runs
       const triageRes = await apiClient.getTriageRuns({ page: 1, pageSize: 1 })
-      if (triageRes.success && triageRes.data?.items?.length > 0) {
+      if (triageRes.success && triageRes.data && Array.isArray(triageRes.data.items) && triageRes.data.items.length > 0) {
         setRecentTriage(triageRes.data.items[0])
       }
 
@@ -289,6 +289,16 @@ export default function MedicalHubPage() {
                 Ask Question
               </Button>
               
+              {user?.isMedical && (
+                <Button
+                  onClick={() => router.push('/medical/dashboard')}
+                  className="h-20 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-lg font-semibold"
+                >
+                  <Award className="w-6 h-6 mr-3" />
+                  Go to Dashboard
+                </Button>
+              )}
+              
               {!user?.isMedical && (
                 <Button
                   onClick={() => router.push('/user/medical/apply')}
@@ -375,13 +385,13 @@ export default function MedicalHubPage() {
                           {consult.consultType?.replace('_', ' ')}
                         </span>
                         <Badge className="bg-blue-500 text-white">
-                          {new Date(consult.slot?.startTime).toLocaleDateString()}
+                          {new Date(consult.slot?.startAt).toLocaleDateString()}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
                         <Clock className="w-4 h-4" />
                         <span>
-                          {new Date(consult.slot?.startTime).toLocaleTimeString()}
+                          {new Date(consult.slot?.startAt).toLocaleTimeString()}
                         </span>
                       </div>
                     </div>

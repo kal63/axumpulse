@@ -14,6 +14,7 @@ export default function ConsultsPage() {
   const { user, isLoading: authLoading } = useAuth()
   const [loading, setLoading] = useState(true)
   const [bookings, setBookings] = useState<any[]>([])
+  const [activeTab, setActiveTab] = useState<'upcoming' | 'completed'>('upcoming')
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -40,6 +41,24 @@ export default function ConsultsPage() {
       setLoading(false)
     }
   }
+
+  const upcomingBookings = bookings.filter((booking) => {
+    const status = booking.status
+    const slotEndTime = booking.slot?.endAt ? new Date(booking.slot.endAt) : null
+    const now = new Date()
+    
+    // Show as upcoming if: status is 'booked' AND slot hasn't ended yet
+    return status === 'booked' && (!slotEndTime || slotEndTime > now)
+  })
+
+  const completedBookings = bookings.filter((booking) => {
+    const status = booking.status
+    const slotEndTime = booking.slot?.endAt ? new Date(booking.slot.endAt) : null
+    const now = new Date()
+    
+    // Show as completed if: status is 'completed' OR (status is 'booked' AND slot has ended)
+    return status === 'completed' || (status === 'booked' && slotEndTime && slotEndTime <= now)
+  })
 
   if (authLoading || loading) {
     return (
@@ -97,52 +116,93 @@ export default function ConsultsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {bookings.length > 0 ? (
-          <div className="space-y-4">
-            {bookings.map((booking) => (
-              <NeumorphicCard
-                key={booking.id}
-                variant="raised"
-                className="p-6 cursor-pointer"
-                onClick={() => router.push(`/user/medical/consults/${booking.id}`)}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <Badge className="bg-blue-500 text-white">
-                        {(booking.slot?.type || booking.consultType || 'N/A')?.replace('_', ' ')}
-                      </Badge>
-                      <Badge className={booking.status === 'confirmed' ? 'bg-green-500' : 'bg-yellow-500'}>
-                        {booking.status}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
-                      <Clock className="w-4 h-4" />
-                      <span>
-                        {booking.slot?.startAt || booking.slot?.startTime
-                          ? new Date(booking.slot.startAt || booking.slot.startTime).toLocaleString()
-                          : 'Date not available'}
-                      </span>
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6">
+          <Button
+            variant={activeTab === 'upcoming' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('upcoming')}
+            className={activeTab === 'upcoming' ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white' : ''}
+          >
+            Upcoming ({upcomingBookings.length})
+          </Button>
+          <Button
+            variant={activeTab === 'completed' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('completed')}
+            className={activeTab === 'completed' ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white' : ''}
+          >
+            Completed ({completedBookings.length})
+          </Button>
+        </div>
+
+        {(() => {
+          const displayBookings = activeTab === 'upcoming' ? upcomingBookings : completedBookings
+          
+          return displayBookings.length > 0 ? (
+            <div className="space-y-4">
+              {displayBookings.map((booking) => (
+                <NeumorphicCard
+                  key={booking.id}
+                  variant="raised"
+                  className="p-6 cursor-pointer"
+                  onClick={() => router.push(`/user/medical/consults/${booking.id}`)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <Badge className="bg-blue-500 text-white">
+                          {(booking.slot?.type || booking.consultType || 'N/A')?.replace('_', ' ')}
+                        </Badge>
+                        <Badge className={
+                          booking.status === 'completed' 
+                            ? 'bg-green-500 text-white'
+                            : booking.status === 'canceled'
+                            ? 'bg-red-500 text-white'
+                            : 'bg-yellow-500 text-white'
+                        }>
+                          {booking.status}
+                        </Badge>
+                        {booking.slot?.provider && (
+                          <span className="text-sm text-[var(--neumorphic-muted)]">
+                            Provider: {booking.slot.provider.name}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
+                        <Clock className="w-4 h-4" />
+                        <span>
+                          {booking.slot?.startAt || booking.slot?.startTime
+                            ? new Date(booking.slot.startAt || booking.slot.startTime).toLocaleString()
+                            : 'Date not available'}
+                        </span>
+                        {booking.slot?.endAt && (
+                          <>
+                            <span> - </span>
+                            <span>{new Date(booking.slot.endAt).toLocaleString()}</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </NeumorphicCard>
-            ))}
-          </div>
-        ) : (
-          <NeumorphicCard variant="raised" className="p-12 text-center">
-            <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-semibold text-[var(--neumorphic-text)] mb-2">
-              No Consultations Yet
-            </h3>
-            <Button
-              onClick={() => router.push('/user/medical/consults/book')}
-              className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
-            >
-              Book Your First Consult
-            </Button>
-          </NeumorphicCard>
-        )}
+                </NeumorphicCard>
+              ))}
+            </div>
+          ) : (
+            <NeumorphicCard variant="raised" className="p-12 text-center">
+              <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+              <h3 className="text-xl font-semibold text-[var(--neumorphic-text)] mb-2">
+                {activeTab === 'upcoming' ? 'No Upcoming Consultations' : 'No Completed Consultations'}
+              </h3>
+              {activeTab === 'upcoming' && (
+                <Button
+                  onClick={() => router.push('/user/medical/consults/book')}
+                  className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
+                >
+                  Book Your First Consult
+                </Button>
+              )}
+            </NeumorphicCard>
+          )
+        })()}
       </div>
     </div>
   )

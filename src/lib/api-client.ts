@@ -2397,6 +2397,12 @@ class ApiClient {
     })
   }
 
+  async completeConsult(bookingId: number): Promise<ApiResponse<any>> {
+    return this.request(`/medical/consults/bookings/${bookingId}/complete`, {
+      method: 'PUT'
+    })
+  }
+
   // Client Management
   async getMedicalClients(params?: {
     page?: number

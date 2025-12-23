@@ -228,9 +228,9 @@ export default function ConsultSessionPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-[var(--neumorphic-muted)] mb-1">User ID</p>
+                <p className="text-sm text-[var(--neumorphic-muted)] mb-1">User Name</p>
                 <p className="text-[var(--neumorphic-text)] font-semibold">
-                  {booking.userId !== undefined && booking.userId !== null ? String(booking.userId) : 'N/A'}
+                  {booking.userId !== undefined && booking.userId !== null ? String(booking.user.name) : 'N/A'}
                 </p>
               </div>
               <div>
@@ -434,14 +434,37 @@ export default function ConsultSessionPage() {
           </div>
         </NeumorphicCard>
 
-        <Button
-          onClick={handleSaveNotes}
-          disabled={saving}
-          className="w-full bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
-        >
-          <Save className="w-4 h-4 mr-2" />
-          {saving ? 'Saving...' : 'Save Consult Notes'}
-        </Button>
+        <div className="flex gap-4">
+          <Button
+            onClick={handleSaveNotes}
+            disabled={saving}
+            className="flex-1 bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
+          >
+            <Save className="w-4 h-4 mr-2" />
+            {saving ? 'Saving...' : 'Save Consult Notes'}
+          </Button>
+          {booking.status === 'booked' && (
+            <Button
+              onClick={async () => {
+                try {
+                  const response = await apiClient.completeConsult(bookingId)
+                  if (response.success) {
+                    toast.success('Consult marked as completed')
+                    fetchBooking()
+                  } else {
+                    throw new Error(response.error?.message || 'Failed to complete consult')
+                  }
+                } catch (error: any) {
+                  toast.error(error.message || 'Failed to mark consult as completed')
+                }
+              }}
+              variant="outline"
+              className="border-green-500 text-green-600 hover:bg-green-50"
+            >
+              Mark as Completed
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   )

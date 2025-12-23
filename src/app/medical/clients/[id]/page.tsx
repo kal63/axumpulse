@@ -7,7 +7,7 @@ import { apiClient } from '@/lib/api-client'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, User, Activity, Calendar, AlertTriangle, FileText, Eye } from 'lucide-react'
+import { ArrowLeft, User, Activity, Calendar, AlertTriangle, FileText, Eye, AlertCircle, CheckCircle, XCircle } from 'lucide-react'
 
 export default function ClientDetailPage() {
   const router = useRouter()
@@ -173,6 +173,29 @@ export default function ClientDetailPage() {
                 const formSchema = form?.schema ? (typeof form.schema === 'string' ? JSON.parse(form.schema) : form.schema) : null
                 const formTitle = formSchema?.title || `Form v${form?.version || 'N/A'}`
                 
+                // Get the most recent triage run
+                const triageRuns = response.triageRuns || []
+                const triageRun = Array.isArray(triageRuns) && triageRuns.length > 0 ? triageRuns[0] : null
+                
+                const getRiskLevelColor = (riskLevel: string) => {
+                  switch (riskLevel) {
+                    case 'critical': return 'bg-red-600 text-white'
+                    case 'high': return 'bg-orange-500 text-white'
+                    case 'medium': return 'bg-yellow-500 text-white'
+                    case 'low': return 'bg-green-500 text-white'
+                    default: return 'bg-gray-500 text-white'
+                  }
+                }
+                
+                const getDispositionIcon = (disposition: string) => {
+                  switch (disposition) {
+                    case 'ok': return <CheckCircle className="w-4 h-4" />
+                    case 'book_consult': return <Calendar className="w-4 h-4" />
+                    case 'urgent_care': return <AlertCircle className="w-4 h-4" />
+                    default: return <FileText className="w-4 h-4" />
+                  }
+                }
+                
                 return (
                   <div key={response.id} className="p-4 rounded-lg bg-[var(--neumorphic-surface)] border border-[var(--neumorphic-muted)]/20">
                     <div className="flex items-start justify-between mb-3">
@@ -186,6 +209,63 @@ export default function ClientDetailPage() {
                         {form?.status || 'N/A'}
                       </Badge>
                     </div>
+                    
+                    {/* Triage Run Results */}
+                    {triageRun && (
+                      <div className="mt-3 mb-3 p-3 rounded-lg bg-[var(--neumorphic-bg)] border border-[var(--neumorphic-muted)]/10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <FileText className="w-4 h-4 text-[var(--neumorphic-muted)]" />
+                          <p className="text-sm font-semibold text-[var(--neumorphic-text)]">Triage Results</p>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                          <div>
+                            <p className="text-xs text-[var(--neumorphic-muted)] mb-1">Risk Level</p>
+                            <Badge className={getRiskLevelColor(triageRun.riskLevel)}>
+                              {triageRun.riskLevel?.toUpperCase() || 'N/A'}
+                            </Badge>
+                          </div>
+                          <div>
+                            <p className="text-xs text-[var(--neumorphic-muted)] mb-1">Disposition</p>
+                            <div className="flex items-center gap-2">
+                              {getDispositionIcon(triageRun.disposition)}
+                              <Badge className="bg-purple-500 text-white">
+                                {triageRun.disposition?.replace('_', ' ').toUpperCase() || 'N/A'}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                        {triageRun.messages && Array.isArray(triageRun.messages) && triageRun.messages.length > 0 && (
+                          <div className="mt-3">
+                            <p className="text-xs font-semibold text-[var(--neumorphic-muted)] mb-2">Messages:</p>
+                            <ul className="space-y-1">
+                              {triageRun.messages.map((msg: string, idx: number) => (
+                                <li key={idx} className="text-sm text-[var(--neumorphic-text)] flex items-start gap-2">
+                                  <span className="text-[var(--neumorphic-muted)] mt-1">•</span>
+                                  <span>{msg}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {triageRun.ruleHits && Array.isArray(triageRun.ruleHits) && triageRun.ruleHits.length > 0 && (
+                          <div className="mt-3">
+                            <p className="text-xs font-semibold text-[var(--neumorphic-muted)] mb-2">Rule Hits:</p>
+                            <div className="flex flex-wrap gap-2">
+                              {triageRun.ruleHits.map((rule: any, idx: number) => (
+                                <Badge key={idx} className="bg-indigo-500 text-white text-xs">
+                                  {typeof rule === 'string' ? rule : rule.name || `Rule ${idx + 1}`}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {triageRun.createdAt && (
+                          <p className="text-xs text-[var(--neumorphic-muted)] mt-3">
+                            Triage run: {new Date(triageRun.createdAt).toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+                    )}
                     
                     <div className="mt-3 space-y-2">
                       <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Answers:</p>

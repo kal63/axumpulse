@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils'
 
 const navigation = [
   { name: 'Dashboard', href: '/medical/dashboard', icon: LayoutDashboard },
-  { name: 'Triage Queue', href: '/medical/triage', icon: ClipboardList },
+  { name: 'Triage Runs', href: '/medical/triage', icon: ClipboardList },
   { name: 'Triage Rules', href: '/medical/triage/rules', icon: FileText },
   { name: 'Intake Forms', href: '/medical/intake-forms', icon: ClipboardCheck },
   { name: 'Q&A Inbox', href: '/medical/questions', icon: MessageSquare },
@@ -77,32 +77,40 @@ export default function MedicalLayout({ children }: { children: React.ReactNode 
           </div>
 
           <nav className="flex-1 px-4 space-y-2">
-            {navigation.map((item) => {
-              const isActive = pathname.startsWith(item.href)
-              const Icon = item.icon
-              return (
-                <button
-                  key={item.name}
-                  onClick={() => router.push(item.href)}
-                  className={cn(
-                    'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left',
-                    'hover:bg-gray-50 dark:hover:bg-gray-800/50',
-                    isActive && 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg'
-                  )}
-                >
-                  <Icon className={cn(
-                    'w-5 h-5',
-                    isActive ? 'text-white' : 'text-gray-600 dark:text-gray-400'
-                  )} />
-                  <span className={cn(
-                    'font-medium',
-                    isActive ? 'text-white' : 'text-gray-700 dark:text-gray-300'
-                  )}>
-                    {item.name}
-                  </span>
-                </button>
-              )
-            })}
+            {(() => {
+              // Find the most specific matching route (longest path that matches)
+              const sortedNav = [...navigation].sort((a, b) => b.href.length - a.href.length)
+              const activeHref = sortedNav.find(nav => 
+                pathname === nav.href || pathname.startsWith(nav.href + '/')
+              )?.href
+              
+              return navigation.map((item) => {
+                const isActive = activeHref === item.href
+                const Icon = item.icon
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => router.push(item.href)}
+                    className={cn(
+                      'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left',
+                      'hover:bg-gray-50 dark:hover:bg-gray-800/50',
+                      isActive && 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg'
+                    )}
+                  >
+                    <Icon className={cn(
+                      'w-5 h-5',
+                      isActive ? 'text-white' : 'text-gray-600 dark:text-gray-400'
+                    )} />
+                    <span className={cn(
+                      'font-medium',
+                      isActive ? 'text-white' : 'text-gray-700 dark:text-gray-300'
+                    )}>
+                      {item.name}
+                    </span>
+                  </button>
+                )
+              })
+            })()}
           </nav>
 
           <div className="p-4 space-y-2 border-t border-gray-200/50 dark:border-gray-700/50">
@@ -135,26 +143,34 @@ export default function MedicalLayout({ children }: { children: React.ReactNode 
                 </button>
               </div>
               <nav className="space-y-2">
-                {navigation.map((item) => {
-                  const isActive = pathname.startsWith(item.href)
-                  const Icon = item.icon
-                  return (
-                    <button
-                      key={item.name}
-                      onClick={() => {
-                        router.push(item.href)
-                        setSidebarOpen(false)
-                      }}
-                      className={cn(
-                        'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left',
-                        isActive && 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
-                      )}
-                    >
-                      <Icon className="w-5 h-5" />
-                      <span className="font-medium">{item.name}</span>
-                    </button>
-                  )
-                })}
+                {(() => {
+                  // Find the most specific matching route (longest path that matches)
+                  const sortedNav = [...navigation].sort((a, b) => b.href.length - a.href.length)
+                  const activeHref = sortedNav.find(nav => 
+                    pathname === nav.href || pathname.startsWith(nav.href + '/')
+                  )?.href
+                  
+                  return navigation.map((item) => {
+                    const isActive = activeHref === item.href
+                    const Icon = item.icon
+                    return (
+                      <button
+                        key={item.name}
+                        onClick={() => {
+                          router.push(item.href)
+                          setSidebarOpen(false)
+                        }}
+                        className={cn(
+                          'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left',
+                          isActive && 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
+                        )}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span className="font-medium">{item.name}</span>
+                      </button>
+                    )
+                  })
+                })()}
               </nav>
             </div>
           </div>
