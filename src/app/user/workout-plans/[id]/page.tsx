@@ -6,7 +6,8 @@ import { apiClient } from '@/lib/api-client'
 import { 
   ArrowLeft, Dumbbell, Clock, CheckCircle, PlayCircle, TrendingUp, 
   Zap, Target, Award, Trophy, Star, Flame, Heart, Timer, 
-  ChevronRight, Sparkles, Users, Calendar, MapPin, Globe, User
+  ChevronRight, Sparkles, Users, Calendar, MapPin, Globe, User,
+  AlertCircle, Stethoscope, Edit2, Plus, Sparkles as SparklesIcon, X
 } from 'lucide-react'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { XPRing } from '@/components/user/XPRing'
@@ -14,13 +15,27 @@ import { ExerciseTimer } from '@/components/user/ExerciseTimer'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import type { WorkoutPlan } from '@/lib/api-client'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import type { WorkoutPlan, WorkoutPlanInsight } from '@/lib/api-client'
 import { useToast } from '@/hooks/use-toast'
+import { useAuth } from '@/contexts/auth-context'
 
 export default function WorkoutPlanDetailPage() {
     const params = useParams()
     const router = useRouter()
     const { toast } = useToast()
+    const { user } = useAuth()
     
     const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null)
     const [relatedPlans, setRelatedPlans] = useState<WorkoutPlan[]>([])
@@ -31,14 +46,37 @@ export default function WorkoutPlanDetailPage() {
     const [loading, setLoading] = useState(true)
     const [starting, setStarting] = useState(false)
 
+    // Insight-related state
+    const [insight, setInsight] = useState<WorkoutPlanInsight | null>(null)
+    const [loadingInsight, setLoadingInsight] = useState(false)
+    const [insightDialogOpen, setInsightDialogOpen] = useState(false)
+    const [aiGenerationLoading, setAiGenerationLoading] = useState(false)
+    const [availableUsers, setAvailableUsers] = useState<Array<{
+        id: number
+        name: string
+        email?: string
+        phone?: string
+        profilePicture?: string
+        lastBookingDate: string
+    }>>([])
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
+    const [insightFormData, setInsightFormData] = useState({
+        insightText: '',
+        suitability: 'recommended' as 'recommended' | 'caution' | 'not_recommended' | 'requires_modification',
+        customLabels: [] as string[],
+        customLabelInput: ''
+    })
+
     const planId = Number(params.id)
+    const isMedicalPro = user?.isMedical || false
 
     useEffect(() => {
         if (planId) {
             fetchWorkoutPlan()
             fetchProgress()
+            fetchInsight()
         }
-    }, [planId])
+    }, [planId, user?.id])
 
     const fetchWorkoutPlan = async () => {
         try {
@@ -200,6 +238,184 @@ export default function WorkoutPlanDetailPage() {
                     variant: 'destructive'
                 })
             }
+        }
+    }
+
+    const fetchInsight = async () => {
+        try {
+            setLoadingInsight(true)
+            const userId = user?.id
+            if (!userId) return
+
+            const response = await apiClient.getWorkoutPlanInsight(planId, userId)
+            if (response.success && response.data) {
+                setInsight(response.data)
+            }
+        } catch (error: any) {
+            // 404 is okay - no insight exists yet
+            if (error?.status !== 404) {
+                console.error('Error fetching insight:', error)
+            }
+        } finally {
+            setLoadingInsight(false)
+        }
+    }
+
+    const fetchAvailableUsers = async () => {
+        try {
+            const response = await apiClient.getAvailableUsersForInsight(planId)
+            if (response.success && response.data) {
+                setAvailableUsers(response.data.users)
+            }
+        } catch (error) {
+            console.error('Error fetching available users:', error)
+            toast({
+                title: 'Error',
+                description: 'Failed to load available users',
+                variant: 'destructive'
+            })
+        }
+    }
+
+    const handleOpenInsightDialog = async () => {
+        await fetchAvailableUsers()
+        if (insight) {
+            setSelectedUserId(insight.userId)
+            setInsightFormData({
+                insightText: insight.insightText,
+                suitability: insight.suitability,
+                customLabels: insight.customLabels || [],
+                customLabelInput: ''
+            })
+        } else {
+            setSelectedUserId(user?.id || null)
+            setInsightFormData({
+                insightText: '',
+                suitability: 'recommended',
+                customLabels: [],
+                customLabelInput: ''
+            })
+        }
+        setInsightDialogOpen(true)
+    }
+
+    const handleGenerateWithAI = async () => {
+        if (!selectedUserId) {
+            if (availableUsers.length > 0) {
+                setSelectedUserId(availableUsers[0].id)
+            } else {
+                toast({
+                    title: 'Error',
+                    description: 'Please select a user first',
+                    variant: 'destructive'
+                })
+                return
+            }
+        }
+
+        try {
+            setAiGenerationLoading(true)
+            const response = await apiClient.generateWorkoutPlanInsightWithAI(planId, selectedUserId)
+            if (response.success && response.data) {
+                setInsightFormData({
+                    insightText: response.data.insightText,
+                    suitability: response.data.suitability,
+                    customLabels: response.data.customLabels || [],
+                    customLabelInput: ''
+                })
+                toast({
+                    title: 'AI Insight Generated',
+                    description: 'Review and edit the generated insight before saving'
+                })
+            }
+        } catch (error: any) {
+            console.error('Error generating AI insight:', error)
+            toast({
+                title: 'Error',
+                description: error?.message || 'Failed to generate AI insight',
+                variant: 'destructive'
+            })
+        } finally {
+            setAiGenerationLoading(false)
+        }
+    }
+
+    const handleSaveInsight = async () => {
+        if (!selectedUserId || !insightFormData.insightText.trim()) {
+            toast({
+                title: 'Validation Error',
+                description: 'Please fill in all required fields',
+                variant: 'destructive'
+            })
+            return
+        }
+
+        try {
+            const response = await apiClient.createOrUpdateWorkoutPlanInsight(planId, {
+                userId: selectedUserId,
+                insightText: insightFormData.insightText,
+                customLabels: insightFormData.customLabels,
+                suitability: insightFormData.suitability,
+                sourceType: insight ? (insight.sourceType === 'ai' ? 'ai_edited' : 'medical_professional') : 'medical_professional'
+            })
+
+            if (response.success && response.data) {
+                setInsight(response.data)
+                setInsightDialogOpen(false)
+                toast({
+                    title: 'Success',
+                    description: 'Insight saved successfully'
+                })
+                // Refresh insight if viewing for the same user
+                if (selectedUserId === user?.id) {
+                    await fetchInsight()
+                }
+            }
+        } catch (error: any) {
+            console.error('Error saving insight:', error)
+            toast({
+                title: 'Error',
+                description: error?.message || 'Failed to save insight',
+                variant: 'destructive'
+            })
+        }
+    }
+
+    const handleAddCustomLabel = () => {
+        const label = insightFormData.customLabelInput.trim()
+        if (label && !insightFormData.customLabels.includes(label)) {
+            setInsightFormData(prev => ({
+                ...prev,
+                customLabels: [...prev.customLabels, label],
+                customLabelInput: ''
+            }))
+        }
+    }
+
+    const handleRemoveCustomLabel = (label: string) => {
+        setInsightFormData(prev => ({
+            ...prev,
+            customLabels: prev.customLabels.filter(l => l !== label)
+        }))
+    }
+
+    const getSuitabilityColor = (suitability: string) => {
+        switch (suitability) {
+            case 'recommended': return 'bg-green-500/20 text-green-400 border-green-500/30'
+            case 'caution': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+            case 'not_recommended': return 'bg-red-500/20 text-red-400 border-red-500/30'
+            case 'requires_modification': return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+            default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+        }
+    }
+
+    const getSuitabilityLabel = (suitability: string) => {
+        switch (suitability) {
+            case 'recommended': return 'Recommended'
+            case 'caution': return 'Caution'
+            case 'not_recommended': return 'Not Recommended'
+            case 'requires_modification': return 'Requires Modification'
+            default: return suitability
         }
     }
 
@@ -471,6 +687,109 @@ export default function WorkoutPlanDetailPage() {
                                 <p className="text-[var(--neumorphic-muted)] leading-relaxed whitespace-pre-wrap">
                                     {workoutPlan.description}
                                 </p>
+                            </NeumorphicCard>
+                        )}
+
+                        {/* Medical Professional Actions */}
+                        {isMedicalPro && (
+                            <div className="flex gap-3">
+                                <Button
+                                    onClick={handleOpenInsightDialog}
+                                    className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white"
+                                >
+                                    <Edit2 className="h-4 w-4 mr-2" />
+                                    {insight ? 'Update Insight' : 'Add Insight'}
+                                </Button>
+                                <Button
+                                    onClick={async () => {
+                                        await fetchAvailableUsers()
+                                        if (availableUsers.length > 0) {
+                                            setSelectedUserId(availableUsers[0].id)
+                                            setInsightFormData({
+                                                insightText: '',
+                                                suitability: 'recommended',
+                                                customLabels: [],
+                                                customLabelInput: ''
+                                            })
+                                            setInsightDialogOpen(true)
+                                            // Auto-generate after dialog opens
+                                            setTimeout(() => {
+                                                handleGenerateWithAI()
+                                            }, 100)
+                                        } else {
+                                            toast({
+                                                title: 'No Users Available',
+                                                description: 'You need to have consulted with users before generating insights',
+                                                variant: 'destructive'
+                                            })
+                                        }
+                                    }}
+                                    variant="outline"
+                                    className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
+                                    disabled={aiGenerationLoading}
+                                >
+                                    <SparklesIcon className="h-4 w-4 mr-2" />
+                                    {aiGenerationLoading ? 'Generating...' : 'Generate with AI'}
+                                </Button>
+                            </div>
+                        )}
+
+                        {/* Insight Display Section */}
+                        {insight && (
+                            <NeumorphicCard variant="recessed" className="p-6 border-l-4 border-l-cyan-500">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex items-center gap-2">
+                                        <Stethoscope className="h-5 w-5 text-cyan-500" />
+                                        <h3 className="text-xl font-bold text-[var(--neumorphic-text)]">
+                                            Medical Insight
+                                        </h3>
+                                    </div>
+                                    <Badge className={getSuitabilityColor(insight.suitability)}>
+                                        {getSuitabilityLabel(insight.suitability)}
+                                    </Badge>
+                                </div>
+                                
+                                <p className="text-[var(--neumorphic-muted)] leading-relaxed mb-4">
+                                    {insight.insightText}
+                                </p>
+
+                                {insight.customLabels && insight.customLabels.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                        {insight.customLabels.map((label, idx) => (
+                                            <Badge key={idx} variant="outline" className="text-xs">
+                                                {label}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <div className="flex items-center justify-between text-sm text-[var(--neumorphic-muted)] pt-4 border-t border-[var(--neumorphic-border)]">
+                                    <div className="flex items-center gap-2">
+                                        {insight.sourceType === 'ai' && (
+                                            <Badge variant="outline" className="text-xs">
+                                                <SparklesIcon className="h-3 w-3 mr-1" />
+                                                AI Generated
+                                            </Badge>
+                                        )}
+                                        {insight.sourceType === 'ai_edited' && (
+                                            <Badge variant="outline" className="text-xs">
+                                                <SparklesIcon className="h-3 w-3 mr-1" />
+                                                AI Generated (Edited)
+                                            </Badge>
+                                        )}
+                                        {insight.sourceType === 'medical_professional' && (
+                                            <Badge variant="outline" className="text-xs">
+                                                <Stethoscope className="h-3 w-3 mr-1" />
+                                                Medical Professional
+                                            </Badge>
+                                        )}
+                                    </div>
+                                    {insight.creator && (
+                                        <span>
+                                            By {insight.creator.name} • {new Date(insight.updatedAt).toLocaleDateString()}
+                                        </span>
+                                    )}
+                                </div>
                             </NeumorphicCard>
                         )}
                     </div>
@@ -816,6 +1135,138 @@ export default function WorkoutPlanDetailPage() {
                     </div>
                 </div>
             )}
+
+            {/* Insight Management Dialog */}
+            <Dialog open={insightDialogOpen} onOpenChange={setInsightDialogOpen}>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Stethoscope className="h-5 w-5" />
+                            {insight ? 'Update Workout Plan Insight' : 'Add Workout Plan Insight'}
+                        </DialogTitle>
+                        <DialogDescription>
+                            Provide personalized medical guidance for this workout plan
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="space-y-6 py-4">
+                        {/* User Selection (for medical professionals) */}
+                        {isMedicalPro && (
+                            <div className="space-y-2">
+                                <Label htmlFor="user-select">Select User</Label>
+                                <Select
+                                    value={selectedUserId?.toString() || ''}
+                                    onValueChange={(value) => setSelectedUserId(parseInt(value))}
+                                >
+                                    <SelectTrigger id="user-select">
+                                        <SelectValue placeholder="Select a user" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {availableUsers.map((u) => (
+                                            <SelectItem key={u.id} value={u.id.toString()}>
+                                                {u.name} {u.email && `(${u.email})`}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
+
+                        {/* AI Generate Button */}
+                        {isMedicalPro && (
+                            <div className="flex justify-end">
+                                <Button
+                                    onClick={handleGenerateWithAI}
+                                    variant="outline"
+                                    disabled={!selectedUserId || aiGenerationLoading}
+                                    className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
+                                >
+                                    <SparklesIcon className="h-4 w-4 mr-2" />
+                                    {aiGenerationLoading ? 'Generating...' : 'Generate with AI'}
+                                </Button>
+                            </div>
+                        )}
+
+                        {/* Suitability */}
+                        <div className="space-y-2">
+                            <Label htmlFor="suitability">Suitability</Label>
+                            <Select
+                                value={insightFormData.suitability}
+                                onValueChange={(value: any) => setInsightFormData(prev => ({ ...prev, suitability: value }))}
+                            >
+                                <SelectTrigger id="suitability">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="recommended">Recommended</SelectItem>
+                                    <SelectItem value="caution">Caution</SelectItem>
+                                    <SelectItem value="requires_modification">Requires Modification</SelectItem>
+                                    <SelectItem value="not_recommended">Not Recommended</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {/* Insight Text */}
+                        <div className="space-y-2">
+                            <Label htmlFor="insight-text">Insight Text</Label>
+                            <Textarea
+                                id="insight-text"
+                                value={insightFormData.insightText}
+                                onChange={(e) => setInsightFormData(prev => ({ ...prev, insightText: e.target.value }))}
+                                placeholder="Provide personalized guidance based on the user's medical profile..."
+                                rows={6}
+                                className="resize-none"
+                            />
+                        </div>
+
+                        {/* Custom Labels */}
+                        <div className="space-y-2">
+                            <Label htmlFor="custom-labels">Custom Labels</Label>
+                            <div className="flex gap-2">
+                                <Input
+                                    id="custom-labels"
+                                    value={insightFormData.customLabelInput}
+                                    onChange={(e) => setInsightFormData(prev => ({ ...prev, customLabelInput: e.target.value }))}
+                                    placeholder="e.g., low-impact, beginner-friendly"
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault()
+                                            handleAddCustomLabel()
+                                        }
+                                    }}
+                                />
+                                <Button type="button" onClick={handleAddCustomLabel} variant="outline">
+                                    <Plus className="h-4 w-4" />
+                                </Button>
+                            </div>
+                            {insightFormData.customLabels.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {insightFormData.customLabels.map((label, idx) => (
+                                        <Badge key={idx} variant="outline" className="flex items-center gap-1">
+                                            {label}
+                                            <button
+                                                onClick={() => handleRemoveCustomLabel(label)}
+                                                className="ml-1 hover:text-red-500"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                        </Badge>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setInsightDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button onClick={handleSaveInsight} disabled={!insightFormData.insightText.trim() || !selectedUserId}>
+                            {insight ? 'Update Insight' : 'Save Insight'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

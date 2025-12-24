@@ -135,8 +135,8 @@ export default function HealthDataPage() {
                           <SelectValue placeholder="Select metric" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="heart_rate">Heart Rate</SelectItem>
-                          <SelectItem value="blood_pressure">Blood Pressure</SelectItem>
+                          <SelectItem value="hr">Heart Rate</SelectItem>
+                          <SelectItem value="bp_systolic">Blood Pressure</SelectItem>
                           <SelectItem value="glucose">Glucose</SelectItem>
                           <SelectItem value="weight">Weight</SelectItem>
                           <SelectItem value="steps">Steps</SelectItem>

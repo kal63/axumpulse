@@ -505,8 +505,33 @@ export interface WorkoutPlan {
     email: string
     phone?: string
   }
+  insight?: WorkoutPlanInsight
   createdAt: string
   updatedAt: string
+}
+
+export interface WorkoutPlanInsight {
+  id: number
+  userId: number
+  workoutPlanId: number
+  insightText: string
+  customLabels: string[]
+  suitability: 'recommended' | 'caution' | 'not_recommended' | 'requires_modification'
+  medicalContext?: {
+    intakeResponseId?: number
+    triageRunId?: number
+    consultNoteId?: number
+  }
+  sourceType: 'ai' | 'medical_professional' | 'ai_edited'
+  createdBy?: number
+  creator?: {
+    id: number
+    name: string
+    profilePicture?: string
+  }
+  generatedAt: string
+  updatedAt: string
+  createdAt: string
 }
 
 export interface ContentItem {
@@ -1177,6 +1202,62 @@ class ApiClient {
   // Get available workout plan categories
   async getUserWorkoutPlanCategories(): Promise<ApiResponse<{ categories: string[] }>> {
     return this.request<{ categories: string[] }>('/user/workout-plans/categories')
+  }
+
+  // Workout Plan Insight Methods
+  async getWorkoutPlanInsight(planId: number, userId?: number): Promise<ApiResponse<WorkoutPlanInsight>> {
+    const query = userId ? `?userId=${userId}` : ''
+    return this.request<WorkoutPlanInsight>(`/user/workout-plans/${planId}/insight${query}`)
+  }
+
+  async getAvailableUsersForInsight(planId: number): Promise<ApiResponse<{ users: Array<{
+    id: number
+    name: string
+    email?: string
+    phone?: string
+    profilePicture?: string
+    lastBookingDate: string
+  }> }>> {
+    return this.request<{ users: Array<{
+      id: number
+      name: string
+      email?: string
+      phone?: string
+      profilePicture?: string
+      lastBookingDate: string
+    }> }>(`/user/workout-plans/${planId}/insight/available-users`)
+  }
+
+  async createOrUpdateWorkoutPlanInsight(
+    planId: number,
+    data: {
+      userId: number
+      insightText: string
+      customLabels?: string[]
+      suitability: 'recommended' | 'caution' | 'not_recommended' | 'requires_modification'
+      sourceType?: 'ai' | 'medical_professional' | 'ai_edited'
+    }
+  ): Promise<ApiResponse<WorkoutPlanInsight>> {
+    return this.request<WorkoutPlanInsight>(`/user/workout-plans/${planId}/insight`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+
+  async generateWorkoutPlanInsightWithAI(
+    planId: number,
+    userId: number
+  ): Promise<ApiResponse<WorkoutPlanInsight>> {
+    return this.request<WorkoutPlanInsight>(`/user/workout-plans/${planId}/insight/generate-ai`, {
+      method: 'POST',
+      body: JSON.stringify({ userId }),
+    })
+  }
+
+  async deleteWorkoutPlanInsight(planId: number, userId: number): Promise<ApiResponse<{ message: string }>> {
+    return this.request<{ message: string }>(`/user/workout-plans/${planId}/insight?userId=${userId}`, {
+      method: 'DELETE',
+    })
   }
 
   // Get all featured workout plans
