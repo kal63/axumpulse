@@ -10,9 +10,21 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, Save, Check, X } from 'lucide-react'
 import { toast } from 'sonner'
+import { TriageRuleBuilder } from '@/components/medical/TriageRuleBuilder'
+
+interface RuleDefinition {
+  conditions: Array<{
+    field: string
+    operator: string
+    value?: string | number
+  }>
+  actions: Array<{
+    type: string
+    value: string
+  }>
+}
 
 export default function TriageRuleDetailPage() {
   const router = useRouter()
@@ -23,6 +35,10 @@ export default function TriageRuleDetailPage() {
   const [rule, setRule] = useState<any>(null)
   const [editing, setEditing] = useState(false)
   const [formData, setFormData] = useState<any>(null)
+  const [definition, setDefinition] = useState<RuleDefinition>({
+    conditions: [],
+    actions: []
+  })
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -37,11 +53,15 @@ export default function TriageRuleDetailPage() {
       const response = await apiClient.getTriageRule(ruleId)
       if (response.success && response.data) {
         setRule(response.data)
+        const def = response.data.definition || { conditions: [], actions: [] }
+        setDefinition({
+          conditions: def.conditions || [],
+          actions: def.actions || []
+        })
         setFormData({
           name: response.data.name,
           version: response.data.version,
-          severity: response.data.severity,
-          definition: JSON.stringify(response.data.definition, null, 2)
+          severity: response.data.severity
         })
       }
     } catch (error) {
@@ -52,15 +72,34 @@ export default function TriageRuleDetailPage() {
   }
 
   async function handleSave() {
+    if (!formData.name.trim()) {
+      toast.error('Please enter a rule name')
+      return
+    }
+
+    if (definition.conditions.length === 0) {
+      toast.error('Please add at least one condition')
+      return
+    }
+
+    // Validate conditions
+    const invalidConditions = definition.conditions.some(cond => 
+      !cond.field || !cond.operator || (cond.operator !== 'exists' && cond.operator !== 'not_exists' && cond.value === undefined)
+    )
+    if (invalidConditions) {
+      toast.error('All conditions must have a field, operator, and value (if required)')
+      return
+    }
+
+    // Validate actions
+    const invalidActions = definition.actions.some(action => !action.type || !action.value)
+    if (invalidActions) {
+      toast.error('All actions must have a type and value')
+      return
+    }
+
     try {
       setSaving(true)
-      let definition
-      try {
-        definition = JSON.parse(formData.definition)
-      } catch {
-        toast.error('Invalid JSON in definition')
-        return
-      }
 
       const response = await apiClient.updateTriageRule(ruleId, {
         name: formData.name,
@@ -186,61 +225,60 @@ export default function TriageRuleDetailPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-8">
         {editing ? (
-          <NeumorphicCard variant="raised" className="p-6">
-            <div className="space-y-4">
-              <div>
-                <Label>Rule Name</Label>
-                <Input
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-6">
+            <NeumorphicCard variant="raised" className="p-6">
+              <div className="space-y-4">
                 <div>
-                  <Label>Version</Label>
+                  <Label>Rule Name *</Label>
                   <Input
-                    value={formData.version}
-                    onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 </div>
-                <div>
-                  <Label>Severity</Label>
-                  <Select value={formData.severity} onValueChange={(v: any) => setFormData({ ...formData, severity: v })}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                      <SelectItem value="critical">Critical</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Version *</Label>
+                    <Input
+                      value={formData.version}
+                      onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label>Severity *</Label>
+                    <Select value={formData.severity} onValueChange={(v: any) => setFormData({ ...formData, severity: v })}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="critical">Critical</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
-              <div>
-                <Label>Definition (JSON)</Label>
-                <Textarea
-                  value={formData.definition}
-                  onChange={(e) => setFormData({ ...formData, definition: e.target.value })}
-                  rows={12}
-                  className="font-mono text-sm"
-                />
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button onClick={() => setEditing(false)} variant="outline">
-                  <X className="w-4 h-4 mr-2" />
-                  Cancel
-                </Button>
-                <Button onClick={handleSave} disabled={saving} className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white">
-                  <Save className="w-4 h-4 mr-2" />
-                  {saving ? 'Saving...' : 'Save'}
-                </Button>
-              </div>
+            </NeumorphicCard>
+
+            <TriageRuleBuilder
+              initialDefinition={definition}
+              onDefinitionChange={setDefinition}
+            />
+
+            <div className="flex justify-end gap-2">
+              <Button onClick={() => setEditing(false)} variant="outline">
+                <X className="w-4 h-4 mr-2" />
+                Cancel
+              </Button>
+              <Button onClick={handleSave} disabled={saving} className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white">
+                <Save className="w-4 h-4 mr-2" />
+                {saving ? 'Saving...' : 'Save'}
+              </Button>
             </div>
-          </NeumorphicCard>
+          </div>
         ) : (
           <NeumorphicCard variant="raised" className="p-6">
             <div className="space-y-4">
