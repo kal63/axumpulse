@@ -33,6 +33,11 @@ export class WebRTCClient {
   get peerConnection(): RTCPeerConnection | null {
     return this._peerConnection
   }
+  
+  // Check if peer connection exists (for debugging)
+  hasPeerConnection(): boolean {
+    return this._peerConnection !== null
+  }
 
   constructor(config: WebRTCConfig) {
     this.config = config
@@ -42,44 +47,111 @@ export class WebRTCClient {
    * Initialize peer connection with STUN/TURN servers
    */
   async initializePeerConnection(): Promise<void> {
-    // Reset state
-    this.iceCandidateQueue = []
-    this.isRemoteDescriptionSet = false
-
-    const iceServers: RTCIceServer[] = [
-      // STUN server (public)
-      { urls: 'stun:stun.l.google.com:19302' }
-    ]
-
-    // Add TURN server if configured
-    if (this.config.turnServer) {
-      const turnUrl = `turn:${this.config.turnServer}:${this.config.turnPort || 3478}`
-      console.log('Adding TURN server:', turnUrl)
-      const turnConfig: RTCIceServer = {
-        urls: turnUrl,
-        username: this.config.turnUsername || '',
-        credential: this.config.turnPassword || ''
+    try {
+      // Check if RTCPeerConnection is available
+      if (typeof RTCPeerConnection === 'undefined') {
+        throw new Error('RTCPeerConnection is not available in this browser. WebRTC is not supported.')
       }
-      // Note: WebRTC handles realm automatically, but we can add it for debugging
-      iceServers.push(turnConfig)
-      console.log('TURN server config:', { url: turnUrl, username: this.config.turnUsername ? '***' : 'none' })
-    } else {
-      console.warn('No TURN server configured - connections may fail behind NAT/firewall')
-    }
 
-    const rtcConfig: RTCConfiguration = {
-      iceServers,
-      iceCandidatePoolSize: 10,
-      iceTransportPolicy: 'all' // Try both relay and direct connections
-    }
+      // Reset state
+      this.iceCandidateQueue = []
+      this.isRemoteDescriptionSet = false
+      
+      // Clear local stream if peer connection is being re-initialized
+      // (but don't stop tracks here - they might still be in use)
+      // The cleanup() method should handle stopping tracks
 
-    console.log('Initializing peer connection with ICE servers:', iceServers.map(s => s.urls))
-    this._peerConnection = new RTCPeerConnection(rtcConfig)
+      const iceServers: RTCIceServer[] = [
+        // STUN server (public)
+        { urls: 'stun:stun.l.google.com:19302' }
+      ]
+
+      // Add TURN server if configured
+      if (this.config.turnServer) {
+        const turnUrl = `turn:${this.config.turnServer}:${this.config.turnPort || 3478}`
+        console.log('Adding TURN server:', turnUrl)
+        const turnConfig: RTCIceServer = {
+          urls: turnUrl,
+          username: this.config.turnUsername || '',
+          credential: this.config.turnPassword || ''
+        }
+        // Note: WebRTC handles realm automatically, but we can add it for debugging
+        iceServers.push(turnConfig)
+        console.log('TURN server config:', { url: turnUrl, username: this.config.turnUsername ? '***' : 'none' })
+      } else {
+        console.warn('No TURN server configured - connections may fail behind NAT/firewall')
+      }
+
+      const rtcConfig: RTCConfiguration = {
+        iceServers,
+        iceCandidatePoolSize: 10,
+        iceTransportPolicy: 'all' // Try both relay and direct connections
+      }
+
+      console.log('Initializing peer connection with ICE servers:', iceServers.map(s => s.urls))
+      
+      // Close existing peer connection if it exists (shouldn't happen, but safety check)
+      if (this._peerConnection) {
+        console.warn('⚠️ Existing peer connection found, closing it first...')
+        try {
+          this._peerConnection.close()
+        } catch (closeError) {
+          console.warn('Error closing existing peer connection:', closeError)
+        }
+        this._peerConnection = null
+      }
+      
+      try {
+        this._peerConnection = new RTCPeerConnection(rtcConfig)
+        console.log('✅ Peer connection created successfully:', {
+          connectionState: this._peerConnection.connectionState,
+          signalingState: this._peerConnection.signalingState,
+          peerConnectionId: this._peerConnection ? 'exists' : 'null'
+        })
+      } catch (pcError: any) {
+        console.error('❌ Error creating RTCPeerConnection:', pcError)
+        this._peerConnection = null // Ensure it's null on error
+        throw new Error(`Failed to create peer connection: ${pcError.message || 'Unknown error'}`)
+      }
+
+      // Verify peer connection was created
+      if (!this._peerConnection) {
+        console.error('❌ Peer connection is null after constructor call')
+        throw new Error('Peer connection was not created (null after constructor)')
+      }
+      
+      console.log('✅ Peer connection verified:', {
+        exists: !!this._peerConnection,
+        connectionState: this._peerConnection.connectionState
+      })
 
     // Handle remote stream
     this._peerConnection.ontrack = (event) => {
+      console.log('📹 Remote track received:', {
+        kind: event.track.kind,
+        id: event.track.id,
+        enabled: event.track.enabled,
+        readyState: event.track.readyState,
+        streamsCount: event.streams?.length || 0
+      })
+      
       if (event.streams && event.streams[0]) {
-        this.remoteStream = event.streams[0]
+        const stream = event.streams[0]
+        console.log('✅ Remote stream received:', {
+          id: stream.id,
+          active: stream.active,
+          audioTracks: stream.getAudioTracks().length,
+          videoTracks: stream.getVideoTracks().length
+        })
+        this.remoteStream = stream
+        if (this.onRemoteStreamCallback) {
+          this.onRemoteStreamCallback(this.remoteStream)
+        }
+      } else if (event.track) {
+        // If no stream, create one from the track
+        console.log('⚠️ Track received without stream, creating stream...')
+        const stream = new MediaStream([event.track])
+        this.remoteStream = stream
         if (this.onRemoteStreamCallback) {
           this.onRemoteStreamCallback(this.remoteStream)
         }
@@ -123,6 +195,19 @@ export class WebRTCClient {
       } else {
         console.log('ICE candidate gathering completed')
       }
+    }
+    } catch (error: any) {
+      console.error('❌ Error in initializePeerConnection:', error)
+      // Clean up if peer connection was partially created
+      if (this._peerConnection) {
+        try {
+          this._peerConnection.close()
+        } catch (closeError) {
+          console.error('Error closing peer connection during cleanup:', closeError)
+        }
+        this._peerConnection = null
+      }
+      throw error
     }
   }
 

@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Calendar, Clock, FileText, Phone } from 'lucide-react'
 import { toast } from 'sonner'
 import { VideoCall } from '@/components/medical/VideoCall'
+import { AudioCall } from '@/components/medical/AudioCall'
+import { Video } from 'lucide-react'
 
 export default function ConsultDetailPage() {
   const router = useRouter()
@@ -20,6 +22,7 @@ export default function ConsultDetailPage() {
   const [booking, setBooking] = useState<any>(null)
   const [isCallActive, setIsCallActive] = useState(false)
   const [callRoomId, setCallRoomId] = useState<string | null>(null)
+  const [callType, setCallType] = useState<'video' | 'audio' | null>(null) // Track call type
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -45,15 +48,19 @@ export default function ConsultDetailPage() {
         
         // Remove the note object from bookingData to avoid rendering issues
         const { note, ...bookingWithoutNote } = bookingData
-        setBooking({ ...bookingWithoutNote, userNote, consultNote })
+        // Include callStatus in booking state for notification
+        setBooking({ ...bookingWithoutNote, userNote, consultNote, callStatus: bookingData.callStatus })
         
         // Check if call is active
+        // Don't auto-join on page load - let user manually join
         if (bookingData.callRoomId && (bookingData.callStatus === 'ringing' || bookingData.callStatus === 'in_progress')) {
           setCallRoomId(bookingData.callRoomId)
-          // Auto-join if call is in progress
-          if (bookingData.callStatus === 'in_progress') {
-            setIsCallActive(true)
-          }
+          // Don't auto-set isCallActive - user should manually join
+          setIsCallActive(false)
+        } else {
+          setIsCallActive(false)
+          setCallRoomId(null)
+          setCallType(null)
         }
       }
     } catch (error) {
@@ -74,6 +81,8 @@ export default function ConsultDetailPage() {
           const { callStatus, callRoomId } = response.data
           if (callRoomId && (callStatus === 'ringing' || callStatus === 'in_progress')) {
             setCallRoomId(callRoomId)
+            // Update booking callStatus for notification
+            setBooking((prev: any) => prev ? { ...prev, callStatus } : prev)
             if (callStatus === 'ringing') {
               toast.info('Incoming call from medical professional')
             }
@@ -134,6 +143,134 @@ export default function ConsultDetailPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+        {/* Incoming Call Notification - When call is ringing */}
+        {booking.status === 'booked' && callRoomId && booking.callStatus === 'ringing' && !isCallActive && (
+          <NeumorphicCard variant="raised" className="p-6 bg-gradient-to-r from-teal-500/10 to-emerald-500/10 border-2 border-teal-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-teal-500 to-emerald-600 flex items-center justify-center animate-pulse">
+                  <Phone className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <p className="text-lg font-semibold text-[var(--neumorphic-text)]">
+                    Incoming call from {booking.slot?.provider?.name || 'Medical Professional'}
+                  </p>
+                  <p className="text-sm text-[var(--neumorphic-muted)]">
+                    Choose how you'd like to join
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  onClick={async () => {
+                    try {
+                      const response = await apiClient.joinCall(bookingId)
+                      if (response.success && response.data) {
+                        setIsCallActive(true)
+                        setCallType('video')
+                        toast.success('Joining video call...')
+                      } else {
+                        throw new Error(response.error?.message || 'Failed to join call')
+                      }
+                    } catch (error: any) {
+                      toast.error(error.message || 'Failed to join call')
+                    }
+                  }}
+                  className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
+                >
+                  <Video className="w-4 h-4 mr-2" />
+                  Join Video
+                </Button>
+                <Button
+                  onClick={async () => {
+                    try {
+                      const response = await apiClient.joinCall(bookingId)
+                      if (response.success && response.data) {
+                        setIsCallActive(true)
+                        setCallType('audio')
+                        toast.success('Joining audio call...')
+                      } else {
+                        throw new Error(response.error?.message || 'Failed to join call')
+                      }
+                    } catch (error: any) {
+                      toast.error(error.message || 'Failed to join call')
+                    }
+                  }}
+                  variant="outline"
+                  className="border-teal-500 text-teal-600 hover:bg-teal-50"
+                >
+                  <Phone className="w-4 h-4 mr-2" />
+                  Join Audio
+                </Button>
+              </div>
+            </div>
+          </NeumorphicCard>
+        )}
+        
+        {/* Call In Progress Banner - When call is in progress but user hasn't joined yet */}
+        {booking.status === 'booked' && callRoomId && booking.callStatus === 'in_progress' && !isCallActive && (
+          <NeumorphicCard variant="raised" className="p-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-2 border-blue-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                  <Video className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <p className="text-lg font-semibold text-[var(--neumorphic-text)]">
+                    Call in progress with {booking.slot?.provider?.name || 'Medical Professional'}
+                  </p>
+                  <p className="text-sm text-[var(--neumorphic-muted)]">
+                    Join the call to continue the consultation.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  onClick={async () => {
+                    try {
+                      const response = await apiClient.joinCall(bookingId)
+                      if (response.success && response.data) {
+                        setIsCallActive(true)
+                        setCallType('video')
+                        toast.success('Joining video call...')
+                      } else {
+                        throw new Error(response.error?.message || 'Failed to join call')
+                      }
+                    } catch (error: any) {
+                      toast.error(error.message || 'Failed to join call')
+                    }
+                  }}
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white"
+                >
+                  <Video className="w-4 h-4 mr-2" />
+                  Join Video Call
+                </Button>
+                <Button
+                  onClick={async () => {
+                    try {
+                      const response = await apiClient.joinCall(bookingId)
+                      if (response.success && response.data) {
+                        setIsCallActive(true)
+                        setCallType('audio')
+                        toast.success('Joining audio call...')
+                      } else {
+                        throw new Error(response.error?.message || 'Failed to join call')
+                      }
+                    } catch (error: any) {
+                      toast.error(error.message || 'Failed to join call')
+                    }
+                  }}
+                  variant="outline"
+                  className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                >
+                  <Phone className="w-4 h-4 mr-2" />
+                  Join Audio Call
+                </Button>
+              </div>
+            </div>
+          </NeumorphicCard>
+        )}
+        
         <NeumorphicCard variant="raised" className="p-6">
           <div className="space-y-4">
             <div className="flex items-center gap-3 flex-wrap">
@@ -209,32 +346,56 @@ export default function ConsultDetailPage() {
                 Booking ID: {booking.id} | Created: {new Date(booking.createdAt).toLocaleString()}
               </p>
               {booking.status === 'booked' && callRoomId && !isCallActive && (
-                <Button
-                  onClick={async () => {
-                    try {
-                      const response = await apiClient.joinCall(bookingId)
-                      if (response.success && response.data) {
-                        setIsCallActive(true)
-                        toast.success('Joining call...')
-                      } else {
-                        throw new Error(response.error?.message || 'Failed to join call')
+                <div className="flex gap-2">
+                  <Button
+                    onClick={async () => {
+                      try {
+                        const response = await apiClient.joinCall(bookingId)
+                        if (response.success && response.data) {
+                          setIsCallActive(true)
+                          setCallType('video')
+                          toast.success('Joining video call...')
+                        } else {
+                          throw new Error(response.error?.message || 'Failed to join call')
+                        }
+                      } catch (error: any) {
+                        toast.error(error.message || 'Failed to join call')
                       }
-                    } catch (error: any) {
-                      toast.error(error.message || 'Failed to join call')
-                    }
-                  }}
-                  className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
-                >
-                  <Phone className="w-4 h-4 mr-2" />
-                  Join Call
-                </Button>
+                    }}
+                    className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
+                  >
+                    <Video className="w-4 h-4 mr-2" />
+                    Join Video Call
+                  </Button>
+                  <Button
+                    onClick={async () => {
+                      try {
+                        const response = await apiClient.joinCall(bookingId)
+                        if (response.success && response.data) {
+                          setIsCallActive(true)
+                          setCallType('audio')
+                          toast.success('Joining audio call...')
+                        } else {
+                          throw new Error(response.error?.message || 'Failed to join call')
+                        }
+                      } catch (error: any) {
+                        toast.error(error.message || 'Failed to join call')
+                      }
+                    }}
+                    variant="outline"
+                    className="border-teal-500 text-teal-600 hover:bg-teal-50"
+                  >
+                    <Phone className="w-4 h-4 mr-2" />
+                    Join Call
+                  </Button>
+                </div>
               )}
             </div>
           </div>
         </NeumorphicCard>
         
-        {/* Video Call Component */}
-        {isCallActive && callRoomId && (
+        {/* Call Components */}
+        {isCallActive && callRoomId && callType === 'video' && (
           <VideoCall
             bookingId={bookingId}
             roomId={callRoomId}
@@ -242,6 +403,21 @@ export default function ConsultDetailPage() {
             onEndCall={() => {
               setIsCallActive(false)
               setCallRoomId(null)
+              setCallType(null)
+              fetchBooking()
+            }}
+            otherUserName={booking.slot?.provider?.name || 'Medical Professional'}
+          />
+        )}
+        {isCallActive && callRoomId && callType === 'audio' && (
+          <AudioCall
+            bookingId={bookingId}
+            roomId={callRoomId}
+            isInitiator={false}
+            onEndCall={() => {
+              setIsCallActive(false)
+              setCallRoomId(null)
+              setCallType(null)
               fetchBooking()
             }}
             otherUserName={booking.slot?.provider?.name || 'Medical Professional'}

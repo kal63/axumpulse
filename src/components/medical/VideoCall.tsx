@@ -61,17 +61,18 @@ export function VideoCall({
   const remoteVideoRef = useRef<HTMLVideoElement>(null)
   const chatEndRef = useRef<HTMLDivElement>(null)
 
-  // Initialize call
+  // Initialize call (video mode)
   useEffect(() => {
     if (!hasStarted && roomId) {
       setHasStarted(true)
       if (isInitiator) {
-        startCall(bookingId, roomId, true)
+        startCall(bookingId, roomId, true, true) // true = enable video
       } else {
-        joinCall(bookingId, roomId)
+        joinCall(bookingId, roomId, true) // true = enable video
       }
     }
-  }, [bookingId, roomId, isInitiator, hasStarted, startCall, joinCall])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookingId, roomId, isInitiator, hasStarted]) // Removed startCall and joinCall from deps to prevent duplicate calls
 
   // Update video elements
   useEffect(() => {
@@ -82,7 +83,21 @@ export function VideoCall({
 
   useEffect(() => {
     if (remoteVideoRef.current && remoteStream) {
+      console.log('📹 Setting remote video stream:', {
+        id: remoteStream.id,
+        active: remoteStream.active,
+        audioTracks: remoteStream.getAudioTracks().length,
+        videoTracks: remoteStream.getVideoTracks().length
+      })
       remoteVideoRef.current.srcObject = remoteStream
+      
+      // Ensure video plays
+      remoteVideoRef.current.play().catch((err) => {
+        console.error('Error playing remote video:', err)
+      })
+    } else if (remoteVideoRef.current) {
+      // Clear video if stream is removed
+      remoteVideoRef.current.srcObject = null
     }
   }, [remoteStream])
 
@@ -146,8 +161,20 @@ export function VideoCall({
                     {otherUserName}
                   </p>
                   <p className="text-sm text-[var(--neumorphic-muted)] mt-2">
-                    {isConnecting ? 'Connecting...' : 'Waiting for video...'}
+                    {isInitiator && !remoteStream 
+                      ? 'Waiting for user to join...' 
+                      : isConnecting 
+                        ? 'Connecting...' 
+                        : 'Waiting for video...'}
                   </p>
+                  {isInitiator && !remoteStream && (
+                    <div className="mt-4 flex items-center justify-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin text-teal-500" />
+                      <span className="text-xs text-[var(--neumorphic-muted)]">
+                        Call is active, waiting for participant...
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

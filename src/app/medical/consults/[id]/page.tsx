@@ -13,6 +13,8 @@ import { Switch } from '@/components/ui/switch'
 import { ArrowLeft, Calendar, FileText, Save, X, Phone } from 'lucide-react'
 import { toast } from 'sonner'
 import { VideoCall } from '@/components/medical/VideoCall'
+import { AudioCall } from '@/components/medical/AudioCall'
+import { Video } from 'lucide-react'
 
 export default function ConsultSessionPage() {
   const router = useRouter()
@@ -35,12 +37,41 @@ export default function ConsultSessionPage() {
   const [saving, setSaving] = useState(false)
   const [isCallActive, setIsCallActive] = useState(false)
   const [callRoomId, setCallRoomId] = useState<string | null>(null)
+  const [callType, setCallType] = useState<'video' | 'audio' | null>(null) // Track call type
 
   useEffect(() => {
     if (!authLoading && user && bookingId) {
       fetchBooking()
     }
   }, [authLoading, user, bookingId])
+
+  // Poll for call status when call is ringing (waiting for user to join)
+  useEffect(() => {
+    if (!booking || !callRoomId || booking.callStatus !== 'ringing') return
+    
+    const interval = setInterval(async () => {
+      try {
+        const response = await apiClient.getMedicalConsult(bookingId)
+        if (response.success && response.data) {
+          const bookingData = (response.data as any).booking || response.data
+          if (bookingData.callStatus === 'in_progress') {
+            // User joined! Update state
+            setBooking((prev: any) => ({ ...prev, callStatus: 'in_progress' }))
+            setIsCallActive(true)
+            // Default to video if type not set
+            if (!callType) {
+              setCallType('video')
+            }
+            clearInterval(interval)
+          }
+        }
+      } catch (error) {
+        console.error('Error checking call status:', error)
+      }
+    }, 2000) // Check every 2 seconds
+    
+    return () => clearInterval(interval)
+  }, [booking, bookingId, callRoomId, callType])
 
   // Debug: Log booking state whenever it changes
   useEffect(() => {
@@ -70,6 +101,22 @@ export default function ConsultSessionPage() {
         // Remove the note object from bookingData to avoid rendering issues
         const { note, ...bookingWithoutNote } = bookingData
         setBooking({ ...bookingWithoutNote, userNote })
+        
+        // Update call state if call is active
+        // Don't auto-show call UI on page load - user should manually join
+        if (bookingData.callRoomId && (bookingData.callStatus === 'ringing' || bookingData.callStatus === 'in_progress')) {
+          setCallRoomId(bookingData.callRoomId)
+          // Don't auto-set isCallActive on page load - let user manually join
+          // This prevents auto-showing call UI on refresh
+          setIsCallActive(false)
+        } else {
+          // Only clear if call is truly ended
+          if (bookingData.callStatus === 'ended' || !bookingData.callRoomId) {
+            setIsCallActive(false)
+            setCallRoomId(null)
+            setCallType(null)
+          }
+        }
         
         // Get consult notes - check if note is included or needs separate fetch
         if (consultNote) {
@@ -226,6 +273,71 @@ export default function ConsultSessionPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+        {/* Call Status Banner - Show when call is ringing (waiting for user) */}
+        {booking.callStatus === 'ringing' && callRoomId && !isCallActive && (
+          <NeumorphicCard variant="raised" className="p-6 bg-gradient-to-r from-teal-500/10 to-emerald-500/10 border-2 border-teal-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-teal-500 to-emerald-600 flex items-center justify-center animate-pulse">
+                  <Phone className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <p className="text-lg font-semibold text-[var(--neumorphic-text)]">
+                    Waiting for {booking.user?.name || 'patient'} to join...
+                  </p>
+                  <p className="text-sm text-[var(--neumorphic-muted)]">
+                    Call is ringing. The patient will receive a notification to join.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </NeumorphicCard>
+        )}
+        
+        {/* Call In Progress Banner - Show when call is in progress but user hasn't joined yet */}
+        {booking.callStatus === 'in_progress' && callRoomId && !isCallActive && (
+          <NeumorphicCard variant="raised" className="p-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-2 border-blue-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                  <Video className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <p className="text-lg font-semibold text-[var(--neumorphic-text)]">
+                    Call in progress with {booking.user?.name || 'patient'}
+                  </p>
+                  <p className="text-sm text-[var(--neumorphic-muted)]">
+                    Join the call to continue the consultation.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    setIsCallActive(true)
+                    setCallType('video')
+                  }}
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white"
+                >
+                  <Video className="w-4 h-4 mr-2" />
+                  Join Video Call
+                </Button>
+                <Button
+                  onClick={() => {
+                    setIsCallActive(true)
+                    setCallType('audio')
+                  }}
+                  variant="outline"
+                  className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                >
+                  <Phone className="w-4 h-4 mr-2" />
+                  Join Audio Call
+                </Button>
+              </div>
+            </div>
+          </NeumorphicCard>
+        )}
+
         <NeumorphicCard variant="raised" className="p-6">
           <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">Booking Information</h2>
           <div className="space-y-4">
@@ -453,9 +565,12 @@ export default function ConsultSessionPage() {
                   try {
                     const response = await apiClient.startCall(bookingId)
                     if (response.success && response.data) {
-                      setCallRoomId(response.data.roomId)
-                      setIsCallActive(true)
-                      toast.success('Call started. Waiting for user to join...')
+                      setCallRoomId(response.data.callRoomId)
+                      // Don't set isCallActive yet - wait for user to join (callStatus becomes 'in_progress')
+                      setCallType('video')
+                      toast.success('Video call started. Waiting for user to join...')
+                      // Refresh booking to get updated callStatus
+                      setTimeout(() => fetchBooking(), 1000)
                     } else {
                       throw new Error(response.error?.message || 'Failed to start call')
                     }
@@ -464,6 +579,30 @@ export default function ConsultSessionPage() {
                   }
                 }}
                 className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
+              >
+                <Video className="w-4 h-4 mr-2" />
+                Start Video Call
+              </Button>
+              <Button
+                onClick={async () => {
+                  try {
+                    const response = await apiClient.startCall(bookingId)
+                    if (response.success && response.data) {
+                      setCallRoomId(response.data.callRoomId)
+                      // Don't set isCallActive yet - wait for user to join (callStatus becomes 'in_progress')
+                      setCallType('audio')
+                      toast.success('Audio call started. Waiting for user to join...')
+                      // Refresh booking to get updated callStatus
+                      setTimeout(() => fetchBooking(), 1000)
+                    } else {
+                      throw new Error(response.error?.message || 'Failed to start call')
+                    }
+                  } catch (error: any) {
+                    toast.error(error.message || 'Failed to start call')
+                  }
+                }}
+                variant="outline"
+                className="border-teal-500 text-teal-600 hover:bg-teal-50"
               >
                 <Phone className="w-4 h-4 mr-2" />
                 Start Call
@@ -491,8 +630,8 @@ export default function ConsultSessionPage() {
           )}
         </div>
         
-        {/* Video Call Component */}
-        {isCallActive && callRoomId && (
+        {/* Call Components - Only show when call is in progress, not just ringing */}
+        {isCallActive && callRoomId && callType === 'video' && booking.callStatus === 'in_progress' && (
           <VideoCall
             bookingId={bookingId}
             roomId={callRoomId}
@@ -500,6 +639,21 @@ export default function ConsultSessionPage() {
             onEndCall={() => {
               setIsCallActive(false)
               setCallRoomId(null)
+              setCallType(null)
+              fetchBooking()
+            }}
+            otherUserName={booking.user?.name || 'Patient'}
+          />
+        )}
+        {isCallActive && callRoomId && callType === 'audio' && booking.callStatus === 'in_progress' && (
+          <AudioCall
+            bookingId={bookingId}
+            roomId={callRoomId}
+            isInitiator={true}
+            onEndCall={() => {
+              setIsCallActive(false)
+              setCallRoomId(null)
+              setCallType(null)
               fetchBooking()
             }}
             otherUserName={booking.user?.name || 'Patient'}

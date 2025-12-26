@@ -37,8 +37,8 @@ export interface UseWebRTCReturn {
   endCall: () => void
 
   // Actions
-  startCall: (bookingId: number, roomId: string, isInitiator: boolean) => Promise<void>
-  joinCall: (bookingId: number, roomId: string) => Promise<void>
+  startCall: (bookingId: number, roomId: string, isInitiator: boolean, enableVideo?: boolean) => Promise<void>
+  joinCall: (bookingId: number, roomId: string, enableVideo?: boolean) => Promise<void>
 
   // Error
   error: string | null
@@ -62,9 +62,10 @@ export function useWebRTC(): UseWebRTCReturn {
   const currentRoomIdRef = useRef<string | null>(null)
   const currentBookingIdRef = useRef<number | null>(null)
   const isInitiatorRef = useRef<boolean>(false)
-  const currentUserIdRef = useRef<number | null>(null)
-  const pendingOfferRef = useRef<any>(null) // Queue for offer received before ready
-  const isReadyRef = useRef<boolean>(false) // Track if peer connection is ready
+      const currentUserIdRef = useRef<number | null>(null)
+      const pendingOfferRef = useRef<any>(null) // Queue for offer received before ready
+      const isReadyRef = useRef<boolean>(false) // Track if peer connection is ready
+      const isCallActiveRef = useRef<boolean>(false) // Track if call is currently active to prevent duplicate calls
 
   // Initialize Socket.io connection
   useEffect(() => {
@@ -160,17 +161,19 @@ export function useWebRTC(): UseWebRTCReturn {
       if (webrtcClientRef.current) {
         try {
           // Check if remote description is already set
-          const currentState = webrtcClientRef.current.getConnectionState()
           const peerConn = webrtcClientRef.current.peerConnection
           const currentRemoteDesc = peerConn?.remoteDescription
+          const signalingState = peerConn?.signalingState
           
           if (currentRemoteDesc && currentRemoteDesc.type === 'answer') {
             console.log('⚠️ Answer already set, ignoring duplicate')
             return
           }
           
-          if (currentState === 'stable' && !currentRemoteDesc) {
-            console.log('⚠️ Connection already stable, but no remote description. Setting answer...')
+          // Check if signaling state is stable and we already have a remote description
+          if (signalingState === 'stable' && currentRemoteDesc) {
+            console.log('⚠️ Signaling state is stable and remote description already set, skipping duplicate answer')
+            return
           }
           
           await webrtcClientRef.current.setRemoteDescription(data.answer)
@@ -347,19 +350,32 @@ export function useWebRTC(): UseWebRTCReturn {
     webrtcClientRef.current = client
 
     return () => {
-      client.cleanup()
-      webrtcClientRef.current = null
+      // Only cleanup if we're actually unmounting (not just re-rendering)
+      // In React Strict Mode, this runs twice, so we need to be careful
+      if (webrtcClientRef.current === client) {
+        console.log('🧹 Cleaning up WebRTC client on unmount')
+        client.cleanup()
+        webrtcClientRef.current = null
+      }
     }
   }, [])
 
-  const startCall = useCallback(async (bookingId: number, roomId: string, isInitiator: boolean) => {
+  const startCall = useCallback(async (bookingId: number, roomId: string, isInitiator: boolean, enableVideo: boolean = true) => {
     if (!user?.id) {
       setError('User not authenticated')
       return
     }
+    
+    // Prevent duplicate calls for the same room
+    if (isCallActiveRef.current && currentRoomIdRef.current === roomId) {
+      console.warn('⚠️ Call already active for this room, skipping duplicate startCall')
+      return
+    }
+    
     try {
       setError(null)
       setIsConnecting(true)
+      isCallActiveRef.current = true
       currentBookingIdRef.current = bookingId
       currentRoomIdRef.current = roomId
       isInitiatorRef.current = isInitiator
@@ -371,23 +387,87 @@ export function useWebRTC(): UseWebRTCReturn {
 
       // Initialize WebRTC
       if (!webrtcClientRef.current) {
+        console.error('❌ WebRTC client is null')
         throw new Error('WebRTC client not initialized')
       }
 
-      await webrtcClientRef.current.initializePeerConnection()
+      console.log('✅ WebRTC client exists, checking peer connection state...')
 
-      // Get user media - with fallback to audio-only if video permission denied
+      // Check if peer connection already exists and has a local description
+      const existingPC = webrtcClientRef.current.peerConnection
+      if (existingPC && existingPC.localDescription) {
+        console.warn('⚠️ Peer connection already has local description, cleaning up first...')
+        webrtcClientRef.current.cleanup()
+        // Wait a bit for cleanup to complete
+        await new Promise(resolve => setTimeout(resolve, 100))
+        // Verify cleanup completed
+        if (webrtcClientRef.current.peerConnection) {
+          console.warn('⚠️ Peer connection still exists after cleanup, forcing null')
+          webrtcClientRef.current.cleanup() // Cleanup again
+          await new Promise(resolve => setTimeout(resolve, 50))
+        }
+      }
+
+      // Initialize peer connection
+      console.log('🔄 Initializing peer connection...')
+      console.log('   Client state before init:', {
+        hasClient: !!webrtcClientRef.current,
+        hasExistingPC: !!webrtcClientRef.current?.peerConnection
+      })
+      
+      await webrtcClientRef.current.initializePeerConnection()
+      
+      // Small delay to ensure peer connection is fully set (helps with React Strict Mode timing)
+      await new Promise(resolve => setTimeout(resolve, 10))
+      
+      // Verify peer connection was created
+      let pc = webrtcClientRef.current?.peerConnection
+      if (!pc) {
+        // This can happen in React Strict Mode or other edge cases
+        // Try to re-initialize once - this is a recoverable situation
+        console.warn('⚠️ Peer connection is null after first initialization (likely React Strict Mode), retrying...')
+        await webrtcClientRef.current.initializePeerConnection()
+        await new Promise(resolve => setTimeout(resolve, 10))
+        pc = webrtcClientRef.current?.peerConnection
+        if (!pc) {
+          // Only log as error if retry also fails
+          console.error('❌ Peer connection is null after retry - this is a real error')
+          console.error('   Client state:', {
+            hasClient: !!webrtcClientRef.current,
+            clientType: typeof webrtcClientRef.current,
+            clientConstructor: webrtcClientRef.current?.constructor?.name
+          })
+          throw new Error('Failed to initialize peer connection: peer connection is null after retry')
+        }
+        console.log('✅ Peer connection created successfully on retry')
+      } else {
+        console.log('✅ Peer connection initialized successfully:', {
+          connectionState: pc.connectionState,
+          signalingState: pc.signalingState
+        })
+      }
+
+      // Get user media - audio-only or audio+video based on enableVideo parameter
+      let localMediaStream: MediaStream | null = null
       try {
-        const stream = await webrtcClientRef.current.getUserMedia(true, true)
-        setLocalStream(stream)
-        setIsAudioEnabled(true)
-        setIsVideoEnabled(true)
+        if (enableVideo) {
+          localMediaStream = await webrtcClientRef.current.getUserMedia(true, true)
+          setLocalStream(localMediaStream)
+          setIsAudioEnabled(true)
+          setIsVideoEnabled(true)
+        } else {
+          // Audio-only mode
+          localMediaStream = await webrtcClientRef.current.getUserMedia(true, false)
+          setLocalStream(localMediaStream)
+          setIsAudioEnabled(true)
+          setIsVideoEnabled(false)
+        }
       } catch (mediaError: any) {
-        // If video permission denied, try audio-only
-        if (mediaError.message?.includes('Camera') || mediaError.message?.includes('permission')) {
+        // If video permission denied and we wanted video, try audio-only
+        if (enableVideo && (mediaError.message?.includes('Camera') || mediaError.message?.includes('permission'))) {
           console.log('Video permission denied, trying audio-only...')
-          const audioStream = await webrtcClientRef.current.getUserMedia(true, false)
-          setLocalStream(audioStream)
+          localMediaStream = await webrtcClientRef.current.getUserMedia(true, false)
+          setLocalStream(localMediaStream)
           setIsAudioEnabled(true)
           setIsVideoEnabled(false)
         } else {
@@ -395,7 +475,32 @@ export function useWebRTC(): UseWebRTCReturn {
         }
       }
 
+      // Verify stream was obtained before adding tracks
+      if (!localMediaStream) {
+        throw new Error('Failed to obtain local media stream')
+      }
+      
+      // Verify stream has tracks
+      if (localMediaStream.getTracks().length === 0) {
+        throw new Error('Media stream has no tracks')
+      }
+      
+      // Verify peer connection exists
+      if (!webrtcClientRef.current.peerConnection) {
+        throw new Error('Peer connection not initialized before adding tracks')
+      }
+      
+      // Verify that getUserMedia() actually set the stream in the client
+      // getUserMedia() should have set this.localStream in WebRTCClient
+      // If it didn't, we need to check why
+      console.log('📹 Stream obtained:', {
+        streamId: localMediaStream.id,
+        tracksCount: localMediaStream.getTracks().length,
+        hasPeerConnection: !!webrtcClientRef.current.peerConnection
+      })
+
       // Add tracks to peer connection
+      // Note: getUserMedia() sets this.localStream in the WebRTCClient, so it should be available
       webrtcClientRef.current.addLocalTracks()
       
       // Mark as ready
@@ -424,6 +529,13 @@ export function useWebRTC(): UseWebRTCReturn {
           }
         } else if (isInitiator) {
           // Create offer if initiator and no pending offer
+          // Check if peer connection already has a local description
+          const pc = webrtcClientRef.current.peerConnection
+          if (pc && pc.localDescription) {
+            console.warn('⚠️ Peer connection already has local description, skipping offer creation')
+            return
+          }
+          
           console.log('📤 Creating offer as initiator...')
           const offer = await webrtcClientRef.current.createOffer()
           console.log('✅ Offer created, sending...')
@@ -440,8 +552,8 @@ export function useWebRTC(): UseWebRTCReturn {
     }
   }, [user])
 
-  const joinCall = useCallback(async (bookingId: number, roomId: string) => {
-    await startCall(bookingId, roomId, false)
+  const joinCall = useCallback(async (bookingId: number, roomId: string, enableVideo: boolean = true) => {
+    await startCall(bookingId, roomId, false, enableVideo)
   }, [startCall])
 
   const toggleAudio = useCallback(() => {
@@ -485,6 +597,7 @@ export function useWebRTC(): UseWebRTCReturn {
     currentBookingIdRef.current = null
     pendingOfferRef.current = null
     isReadyRef.current = false
+    isCallActiveRef.current = false // Reset call active flag
   }, [])
 
   const endCall = useCallback(() => {
