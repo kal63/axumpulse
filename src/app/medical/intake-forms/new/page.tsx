@@ -8,23 +8,37 @@ import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, Save } from 'lucide-react'
 import { toast } from 'sonner'
+import { IntakeFormBuilder } from '@/components/medical/IntakeFormBuilder'
+
+interface FormSchema {
+  title: string
+  description: string
+  sections: Array<{
+    id: string
+    title: string
+    description?: string
+    fields: Array<{
+      id: string
+      type: string
+      label: string
+      required: boolean
+      placeholder?: string
+      options?: Array<{ label: string; value: string }>
+    }>
+  }>
+}
 
 export default function NewIntakeFormPage() {
   const router = useRouter()
   const { user, isLoading: authLoading } = useAuth()
   const [saving, setSaving] = useState(false)
-  const [formData, setFormData] = useState({
-    version: '1.0',
+  const [version, setVersion] = useState('1.0')
+  const [schema, setSchema] = useState<FormSchema>({
     title: '',
     description: '',
-    schemaJson: JSON.stringify({
-      title: '',
-      description: '',
-      fields: []
-    }, null, 2)
+    sections: []
   })
 
   if (authLoading || !user) {
@@ -52,31 +66,56 @@ export default function NewIntakeFormPage() {
   }
 
   async function handleSave() {
-    if (!formData.version.trim()) {
+    if (!version.trim()) {
       toast.error('Please enter a version')
       return
     }
 
-    if (!formData.title.trim()) {
-      toast.error('Please enter a title')
+    if (!schema.title.trim()) {
+      toast.error('Please enter a form title')
+      return
+    }
+
+    if (schema.sections.length === 0) {
+      toast.error('Please add at least one section to the form')
+      return
+    }
+
+    // Validate that all sections have at least one field
+    const sectionsWithoutFields = schema.sections.filter(s => s.fields.length === 0)
+    if (sectionsWithoutFields.length > 0) {
+      toast.error('All sections must have at least one field')
+      return
+    }
+
+    // Validate that all fields have labels
+    const fieldsWithoutLabels = schema.sections.some(s => 
+      s.fields.some(f => !f.label.trim())
+    )
+    if (fieldsWithoutLabels) {
+      toast.error('All fields must have a label')
+      return
+    }
+
+    // Validate options for select/radio/checkbox fields
+    const fieldsWithInvalidOptions = schema.sections.some(s =>
+      s.fields.some(f => {
+        if (['select', 'radio', 'checkbox'].includes(f.type)) {
+          return !f.options || f.options.length === 0
+        }
+        return false
+      })
+    )
+    if (fieldsWithInvalidOptions) {
+      toast.error('Select, radio, and checkbox fields must have at least one option')
       return
     }
 
     try {
       setSaving(true)
-      let schema
-      try {
-        schema = JSON.parse(formData.schemaJson)
-        // Update schema with title and description
-        schema.title = formData.title
-        schema.description = formData.description
-      } catch (e: any) {
-        toast.error(`Invalid JSON in schema: ${e.message}`)
-        return
-      }
 
       const response = await apiClient.createMedicalIntakeForm({
-        version: formData.version,
+        version: version.trim(),
         schema
       })
 
@@ -117,52 +156,23 @@ export default function NewIntakeFormPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         <NeumorphicCard variant="raised" className="p-6">
-          <div className="space-y-4">
-            <div>
-              <Label className="text-[var(--neumorphic-text)]">Form Title</Label>
-              <Input
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="e.g., General Health Intake Form"
-              />
-            </div>
-            <div>
-              <Label className="text-[var(--neumorphic-text)]">Description</Label>
-              <Textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Brief description of what this form is for"
-                rows={3}
-              />
-            </div>
-            <div>
-              <Label className="text-[var(--neumorphic-text)]">Version</Label>
-              <Input
-                value={formData.version}
-                onChange={(e) => setFormData({ ...formData, version: e.target.value })}
-                placeholder="1.0"
-              />
-            </div>
-            <div>
-              <Label className="text-[var(--neumorphic-text)]">Form Schema (JSON)</Label>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-2">
-                Define the form structure with fields, types, and validation rules.
-              </p>
-              <Textarea
-                value={formData.schemaJson}
-                onChange={(e) => setFormData({ ...formData, schemaJson: e.target.value })}
-                placeholder='{"title": "", "description": "", "fields": []}'
-                rows={20}
-                className="font-mono text-sm"
-              />
-              <p className="text-xs text-[var(--neumorphic-muted)] mt-2">
-                Example field structure: {'{'} "id": "symptom", "type": "text", "label": "Main Symptom", "required": true {'}'}
-              </p>
-            </div>
+          <div className="mb-4">
+            <Label className="text-[var(--neumorphic-text)]">Version</Label>
+            <Input
+              value={version}
+              onChange={(e) => setVersion(e.target.value)}
+              placeholder="1.0"
+              className="max-w-xs"
+            />
           </div>
         </NeumorphicCard>
+
+        <IntakeFormBuilder
+          initialSchema={schema}
+          onSchemaChange={setSchema}
+        />
 
         <div className="flex items-center justify-end gap-4">
           <Button

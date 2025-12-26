@@ -9,9 +9,27 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { ArrowLeft, Save, Check, Eye } from 'lucide-react'
+import { ArrowLeft, Save, Check } from 'lucide-react'
 import { toast } from 'sonner'
+import { IntakeFormBuilder } from '@/components/medical/IntakeFormBuilder'
+
+interface FormSchema {
+  title: string
+  description: string
+  sections: Array<{
+    id: string
+    title: string
+    description?: string
+    fields: Array<{
+      id: string
+      type: string
+      label: string
+      required: boolean
+      placeholder?: string
+      options?: Array<{ label: string; value: string }>
+    }>
+  }>
+}
 
 export default function IntakeFormDetailPage() {
   const router = useRouter()
@@ -23,7 +41,12 @@ export default function IntakeFormDetailPage() {
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState<any>(null)
   const [editing, setEditing] = useState(editMode)
-  const [formData, setFormData] = useState<any>(null)
+  const [version, setVersion] = useState('1.0')
+  const [schema, setSchema] = useState<FormSchema>({
+    title: '',
+    description: '',
+    sections: []
+  })
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -39,13 +62,48 @@ export default function IntakeFormDetailPage() {
       if (response.success && response.data) {
         const formData = response.data.data || response.data
         setForm(formData)
-        const schema = typeof formData.schema === 'string' ? JSON.parse(formData.schema) : formData.schema
-        setFormData({
-          version: formData.version,
-          title: schema?.title || '',
-          description: schema?.description || '',
-          schemaJson: JSON.stringify(schema, null, 2)
-        })
+        setVersion(formData.version)
+        
+        let parsedSchema = typeof formData.schema === 'string' ? JSON.parse(formData.schema) : formData.schema
+        
+        // Convert old format (fields array) to new format (sections array)
+        if (parsedSchema && !parsedSchema.sections && parsedSchema.fields) {
+          // Old format: convert to sections format
+          parsedSchema = {
+            title: parsedSchema.title || '',
+            description: parsedSchema.description || '',
+            sections: [{
+              id: `section_${Date.now()}`,
+              title: 'Main Section',
+              description: '',
+              fields: parsedSchema.fields.map((f: any, idx: number) => ({
+                ...f,
+                id: f.id || `field_${idx}`
+              }))
+            }]
+          }
+        } else if (parsedSchema && parsedSchema.sections) {
+          // Ensure all fields have IDs
+          parsedSchema = {
+            ...parsedSchema,
+            sections: parsedSchema.sections.map((s: any, sIdx: number) => ({
+              ...s,
+              id: s.id || `section_${sIdx}`,
+              fields: s.fields.map((f: any, fIdx: number) => ({
+                ...f,
+                id: f.id || `field_${sIdx}_${fIdx}`
+              }))
+            }))
+          }
+        } else {
+          parsedSchema = {
+            title: parsedSchema?.title || '',
+            description: parsedSchema?.description || '',
+            sections: []
+          }
+        }
+        
+        setSchema(parsedSchema)
       }
     } catch (error) {
       console.error('Error fetching form:', error)
@@ -56,30 +114,56 @@ export default function IntakeFormDetailPage() {
   }
 
   async function handleSave() {
-    if (!formData.version.trim()) {
+    if (!version.trim()) {
       toast.error('Please enter a version')
       return
     }
 
-    if (!formData.title.trim()) {
-      toast.error('Please enter a title')
+    if (!schema.title.trim()) {
+      toast.error('Please enter a form title')
+      return
+    }
+
+    if (schema.sections.length === 0) {
+      toast.error('Please add at least one section to the form')
+      return
+    }
+
+    // Validate that all sections have at least one field
+    const sectionsWithoutFields = schema.sections.filter(s => s.fields.length === 0)
+    if (sectionsWithoutFields.length > 0) {
+      toast.error('All sections must have at least one field')
+      return
+    }
+
+    // Validate that all fields have labels
+    const fieldsWithoutLabels = schema.sections.some(s => 
+      s.fields.some(f => !f.label.trim())
+    )
+    if (fieldsWithoutLabels) {
+      toast.error('All fields must have a label')
+      return
+    }
+
+    // Validate options for select/radio/checkbox fields
+    const fieldsWithInvalidOptions = schema.sections.some(s =>
+      s.fields.some(f => {
+        if (['select', 'radio', 'checkbox'].includes(f.type)) {
+          return !f.options || f.options.length === 0
+        }
+        return false
+      })
+    )
+    if (fieldsWithInvalidOptions) {
+      toast.error('Select, radio, and checkbox fields must have at least one option')
       return
     }
 
     try {
       setSaving(true)
-      let schema
-      try {
-        schema = JSON.parse(formData.schemaJson)
-        schema.title = formData.title
-        schema.description = formData.description
-      } catch (e: any) {
-        toast.error(`Invalid JSON in schema: ${e.message}`)
-        return
-      }
 
       const response = await apiClient.updateMedicalIntakeForm(formId, {
-        version: formData.version,
+        version: version.trim(),
         schema
       })
 
@@ -124,9 +208,21 @@ export default function IntakeFormDetailPage() {
     return null
   }
 
-  const schema = typeof form.schema === 'string' ? JSON.parse(form.schema) : form.schema
-  const title = schema?.title || `Form v${form.version}`
-  const description = schema?.description || 'No description'
+  let parsedSchema = typeof form.schema === 'string' ? JSON.parse(form.schema) : form.schema
+  // Handle old format
+  if (parsedSchema && !parsedSchema.sections && parsedSchema.fields) {
+    parsedSchema = {
+      ...parsedSchema,
+      sections: [{
+        id: 'main',
+        title: 'Main Section',
+        description: '',
+        fields: parsedSchema.fields
+      }]
+    }
+  }
+  const title = parsedSchema?.title || schema?.title || `Form v${form.version}`
+  const description = parsedSchema?.description || schema?.description || 'No description'
 
   return (
     <div className="min-h-screen bg-[var(--neumorphic-bg)]">
@@ -170,69 +266,46 @@ export default function IntakeFormDetailPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-8">
         {editing ? (
-          <NeumorphicCard variant="raised" className="p-6">
-            <div className="space-y-4">
-              <div>
-                <Label className="text-[var(--neumorphic-text)]">Form Title</Label>
-                <Input
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g., General Health Intake Form"
-                />
-              </div>
-              <div>
-                <Label className="text-[var(--neumorphic-text)]">Description</Label>
-                <Textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Brief description of what this form is for"
-                  rows={3}
-                />
-              </div>
+          <div className="space-y-6">
+            <NeumorphicCard variant="raised" className="p-6">
               <div>
                 <Label className="text-[var(--neumorphic-text)]">Version</Label>
                 <Input
-                  value={formData.version}
-                  onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+                  value={version}
+                  onChange={(e) => setVersion(e.target.value)}
                   placeholder="1.0"
+                  className="max-w-xs"
                 />
               </div>
-              <div>
-                <Label className="text-[var(--neumorphic-text)]">Form Schema (JSON)</Label>
-                <p className="text-sm text-[var(--neumorphic-muted)] mb-2">
-                  Define the form structure with fields, types, and validation rules.
-                </p>
-                <Textarea
-                  value={formData.schemaJson}
-                  onChange={(e) => setFormData({ ...formData, schemaJson: e.target.value })}
-                  placeholder='{"title": "", "description": "", "fields": []}'
-                  rows={20}
-                  className="font-mono text-sm"
-                />
-              </div>
-              <div className="flex items-center justify-end gap-4 pt-4">
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    setEditing(false)
-                    fetchForm()
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </div>
+            </NeumorphicCard>
+
+            <IntakeFormBuilder
+              initialSchema={schema}
+              onSchemaChange={setSchema}
+            />
+
+            <div className="flex items-center justify-end gap-4">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setEditing(false)
+                  fetchForm()
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={saving}
+                className="bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {saving ? 'Saving...' : 'Save Changes'}
+              </Button>
             </div>
-          </NeumorphicCard>
+          </div>
         ) : (
           <div className="space-y-6">
             <NeumorphicCard variant="raised" className="p-6">
@@ -282,7 +355,7 @@ export default function IntakeFormDetailPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => {
-                      const blob = new Blob([formData.schemaJson], { type: 'application/json' })
+                      const blob = new Blob([JSON.stringify(schema || parsedSchema, null, 2)], { type: 'application/json' })
                       const url = URL.createObjectURL(blob)
                       const a = document.createElement('a')
                       a.href = url
@@ -294,8 +367,8 @@ export default function IntakeFormDetailPage() {
                     Download JSON
                   </Button>
                 </div>
-                <pre className="bg-[var(--neumorphic-bg)] p-4 rounded-lg border border-[var(--neumorphic-muted)]/20 overflow-auto text-sm font-mono text-[var(--neumorphic-text)]">
-                  {formData?.schemaJson || JSON.stringify(schema, null, 2)}
+                <pre className="bg-[var(--neumorphic-bg)] p-4 rounded-lg border border-[var(--neumorphic-muted)]/20 overflow-auto text-sm font-mono text-[var(--neumorphic-text)] max-h-96">
+                  {JSON.stringify(schema || parsedSchema, null, 2)}
                 </pre>
               </div>
             </NeumorphicCard>
