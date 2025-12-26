@@ -37,6 +37,7 @@ export function VideoCall({
     isConnected,
     isConnecting,
     connectionState,
+    iceConnectionState,
     localStream,
     remoteStream,
     isAudioEnabled,
@@ -105,11 +106,17 @@ export function VideoCall({
   }
 
   const getConnectionStatus = () => {
-    if (isConnecting) return 'Connecting...'
-    if (connectionState === 'connected') return 'Connected'
-    if (connectionState === 'connecting') return 'Connecting...'
-    if (connectionState === 'disconnected') return 'Disconnected'
     if (error) return error
+    if (isConnecting) {
+      if (iceConnectionState === 'checking') return 'Checking connection...'
+      if (iceConnectionState === 'new') return 'Initializing...'
+      return 'Connecting...'
+    }
+    if (connectionState === 'connected' || iceConnectionState === 'connected') return 'Connected'
+    if (connectionState === 'connecting') return 'Connecting...'
+    if (connectionState === 'disconnected' || iceConnectionState === 'disconnected') return 'Disconnected'
+    if (iceConnectionState === 'failed') return 'Connection failed'
+    if (iceConnectionState === 'checking') return 'Checking connection...'
     return 'Initializing...'
   }
 

@@ -44,20 +44,53 @@ export default function ConsultsPage() {
 
   const upcomingBookings = bookings.filter((booking) => {
     const status = booking.status
-    const slotEndTime = booking.slot?.endAt ? new Date(booking.slot.endAt) : null
-    const now = new Date()
     
-    // Show as upcoming if: status is 'booked' AND slot hasn't ended yet
-    return status === 'booked' && (!slotEndTime || slotEndTime > now)
+    // Only show as upcoming if status is 'booked' (not 'completed' or 'canceled')
+    if (status !== 'booked') {
+      return false
+    }
+    
+    const slotEndTime = booking.slot?.endAt ? new Date(booking.slot.endAt) : null
+    
+    // If no end time, consider it upcoming
+    if (!slotEndTime) {
+      return true
+    }
+    
+    // Compare using getTime() to avoid timezone issues
+    const now = new Date().getTime()
+    const endTime = slotEndTime.getTime()
+    
+    // Show as upcoming if slot hasn't ended yet (endTime is in the future)
+    return endTime > now
   })
 
   const completedBookings = bookings.filter((booking) => {
     const status = booking.status
-    const slotEndTime = booking.slot?.endAt ? new Date(booking.slot.endAt) : null
-    const now = new Date()
     
-    // Show as completed if: status is 'completed' OR (status is 'booked' AND slot has ended)
-    return status === 'completed' || (status === 'booked' && slotEndTime && slotEndTime <= now)
+    // If status is explicitly 'completed' or 'canceled', show in completed
+    if (status === 'completed' || status === 'canceled') {
+      return true
+    }
+    
+    // If status is 'booked', check if slot has ended
+    if (status === 'booked') {
+      const slotEndTime = booking.slot?.endAt ? new Date(booking.slot.endAt) : null
+      
+      // If no end time, don't show as completed
+      if (!slotEndTime) {
+        return false
+      }
+      
+      // Compare using getTime() to avoid timezone issues
+      const now = new Date().getTime()
+      const endTime = slotEndTime.getTime()
+      
+      // Show as completed if slot has ended (endTime is in the past)
+      return endTime <= now
+    }
+    
+    return false
   })
 
   if (authLoading || loading) {

@@ -63,6 +63,8 @@ export function useWebRTC(): UseWebRTCReturn {
   const currentBookingIdRef = useRef<number | null>(null)
   const isInitiatorRef = useRef<boolean>(false)
   const currentUserIdRef = useRef<number | null>(null)
+  const pendingOfferRef = useRef<any>(null) // Queue for offer received before ready
+  const isReadyRef = useRef<boolean>(false) // Track if peer connection is ready
 
   // Initialize Socket.io connection
   useEffect(() => {
@@ -108,8 +110,9 @@ export function useWebRTC(): UseWebRTCReturn {
     })
 
     socket.on('room-joined', (data) => {
-      console.log('Room joined:', data)
+      console.log('✅ Room joined:', data)
       currentRoomIdRef.current = data.roomId
+      console.log('📋 Current room participants:', data.participants?.length || 0)
     })
 
     socket.on('user-joined', (data) => {
@@ -121,38 +124,96 @@ export function useWebRTC(): UseWebRTCReturn {
     })
 
     socket.on('offer', async (data) => {
-      console.log('Received offer:', data)
-      if (webrtcClientRef.current && currentRoomIdRef.current) {
-        try {
-          const answer = await webrtcClientRef.current.createAnswer(data.offer)
-          socket.emit('answer', { roomId: currentRoomIdRef.current, answer })
-        } catch (err) {
-          console.error('Error handling offer:', err)
-          setError('Failed to handle call offer')
-        }
+      console.log('📨 Received offer from', data.from, '- Processing...', {
+        hasOffer: !!data.offer,
+        offerType: data.offer?.type,
+        isReady: isReadyRef.current,
+        hasClient: !!webrtcClientRef.current,
+        hasRoom: !!currentRoomIdRef.current
+      })
+      
+      // If not ready yet, queue the offer
+      if (!isReadyRef.current || !webrtcClientRef.current || !currentRoomIdRef.current) {
+        console.log('⏳ Client not ready yet, queueing offer...', {
+          isReady: isReadyRef.current,
+          hasClient: !!webrtcClientRef.current,
+          hasRoom: !!currentRoomIdRef.current
+        })
+        pendingOfferRef.current = data
+        return
+      }
+      
+      try {
+        console.log('✅ Client ready, processing offer...')
+        const answer = await webrtcClientRef.current.createAnswer(data.offer)
+        console.log('✅ Created answer, sending to room:', currentRoomIdRef.current)
+        socket.emit('answer', { roomId: currentRoomIdRef.current, answer })
+        console.log('✅ Answer sent successfully')
+      } catch (err: any) {
+        console.error('❌ Error handling offer:', err)
+        setError(`Failed to handle call offer: ${err.message || 'Unknown error'}`)
       }
     })
 
     socket.on('answer', async (data) => {
-      console.log('Received answer:', data)
+      console.log('📥 Received answer from', data.from)
       if (webrtcClientRef.current) {
         try {
+          // Check if remote description is already set
+          const currentState = webrtcClientRef.current.getConnectionState()
+          const peerConn = webrtcClientRef.current.peerConnection
+          const currentRemoteDesc = peerConn?.remoteDescription
+          
+          if (currentRemoteDesc && currentRemoteDesc.type === 'answer') {
+            console.log('⚠️ Answer already set, ignoring duplicate')
+            return
+          }
+          
+          if (currentState === 'stable' && !currentRemoteDesc) {
+            console.log('⚠️ Connection already stable, but no remote description. Setting answer...')
+          }
+          
           await webrtcClientRef.current.setRemoteDescription(data.answer)
-        } catch (err) {
-          console.error('Error handling answer:', err)
-          setError('Failed to handle call answer')
+          console.log('✅ Remote description (answer) set successfully')
+        } catch (err: any) {
+          // If error is about wrong state, it might be because answer was already set
+          if (err.message?.includes('wrong state') || err.message?.includes('stable')) {
+            console.log('⚠️ Answer already processed or connection already established (this is normal)')
+          } else {
+            console.error('❌ Error handling answer:', err)
+            setError(`Failed to handle call answer: ${err.message || 'Unknown error'}`)
+          }
         }
+      } else {
+        console.error('❌ WebRTC client not available when answer received')
       }
     })
 
     socket.on('ice-candidate', async (data) => {
-      console.log('Received ICE candidate:', data)
+      // Extract info from candidate string if available
+      const candidateStr = data.candidate?.candidate || ''
+      const candidatePreview = candidateStr.substring(0, 80) + (candidateStr.length > 80 ? '...' : '')
+      
+      console.log('📥 Received ICE candidate from', data.from, ':', {
+        candidate: candidatePreview,
+        sdpMLineIndex: data.candidate?.sdpMLineIndex,
+        sdpMid: data.candidate?.sdpMid
+      })
+      
       if (webrtcClientRef.current) {
         try {
           await webrtcClientRef.current.addIceCandidate(data.candidate)
-        } catch (err) {
-          console.error('Error adding ICE candidate:', err)
+          console.log('✅ ICE candidate added successfully')
+        } catch (err: any) {
+          // Ignore errors for duplicate or invalid candidates (common and non-critical)
+          if (err.message?.includes('duplicate') || err.message?.includes('InvalidStateError')) {
+            console.log('⚠️ Skipping duplicate or invalid ICE candidate (this is normal)')
+          } else {
+            console.error('❌ Error adding ICE candidate:', err)
+          }
         }
+      } else {
+        console.warn('⚠️ WebRTC client not available when ICE candidate received')
       }
     })
 
@@ -197,27 +258,88 @@ export function useWebRTC(): UseWebRTCReturn {
     })
 
     client.onConnectionStateChange((state) => {
+      console.log('Peer connection state changed:', state)
       setConnectionState(state)
       if (state === 'connected') {
+        console.log('✅ Peer connection established!')
         setIsConnecting(false)
+        setIsConnected(true)
       } else if (state === 'connecting') {
+        console.log('🔄 Peer connection connecting...')
         setIsConnecting(true)
+      } else if (state === 'disconnected') {
+        console.log('❌ Peer connection disconnected')
+        setIsConnecting(false)
+        setIsConnected(false)
+      } else if (state === 'failed') {
+        console.error('❌ Peer connection failed')
+        setIsConnecting(false)
+        setIsConnected(false)
+        setError('Connection failed. Please try again.')
+      } else if (state === 'closed') {
+        console.log('🔒 Peer connection closed')
+        setIsConnecting(false)
+        setIsConnected(false)
       }
     })
 
     client.onIceConnectionStateChange((state) => {
+      console.log('ICE connection state changed:', state)
       setIceConnectionState(state)
-      if (state === 'failed' || state === 'disconnected') {
+      if (state === 'failed') {
+        const errorMsg = 'ICE connection failed. This may be due to network issues or TURN server configuration. Check TURN server accessibility.'
+        console.error('❌', errorMsg)
+        setError(errorMsg)
+        setIsConnecting(false)
+      } else if (state === 'disconnected') {
+        console.warn('⚠️ ICE connection disconnected')
         setError('Connection lost. Attempting to reconnect...')
+        setIsConnecting(true)
+      } else if (state === 'connected') {
+        console.log('✅ ICE connection established successfully!')
+        setError(null)
+        setIsConnecting(false)
+        setIsConnected(true)
+      } else if (state === 'checking') {
+        console.log('🔄 ICE connection checking... (this may take a moment)')
+        setIsConnecting(true)
+      } else if (state === 'completed') {
+        console.log('✅ ICE connection completed')
+        setIsConnecting(false)
+        setIsConnected(true)
+      } else if (state === 'new') {
+        console.log('🆕 ICE connection new')
+        setIsConnecting(true)
       }
     })
 
     // Handle ICE candidates
     client.onIceCandidate((candidate) => {
       if (socketRef.current && currentRoomIdRef.current) {
+        // Properly serialize ICE candidate
+        const candidateData: RTCIceCandidateInit = {
+          candidate: candidate.candidate,
+          sdpMLineIndex: candidate.sdpMLineIndex,
+          sdpMid: candidate.sdpMid,
+          usernameFragment: candidate.usernameFragment
+        }
+        
+        console.log('📤 Sending ICE candidate:', {
+          type: candidate.type,
+          protocol: candidate.protocol,
+          address: candidate.address,
+          port: candidate.port,
+          candidate: candidate.candidate?.substring(0, 50) + '...'
+        })
+        
         socketRef.current.emit('ice-candidate', {
           roomId: currentRoomIdRef.current,
-          candidate: candidate.toJSON()
+          candidate: candidateData
+        })
+      } else {
+        console.warn('⚠️ Cannot send ICE candidate - socket or room not ready', {
+          hasSocket: !!socketRef.current,
+          hasRoom: !!currentRoomIdRef.current
         })
       }
     })
@@ -275,15 +397,39 @@ export function useWebRTC(): UseWebRTCReturn {
 
       // Add tracks to peer connection
       webrtcClientRef.current.addLocalTracks()
+      
+      // Mark as ready
+      isReadyRef.current = true
+      console.log('✅ Peer connection ready and tracks added')
 
       // Join Socket.io room
       if (socketRef.current) {
+        console.log(`🚪 Joining room ${roomId} as ${isInitiator ? 'initiator' : 'participant'}`)
         socketRef.current.emit('join-room', { bookingId, roomId })
 
-        // If initiator, create offer
-        if (isInitiator) {
+        // Wait a bit for room join to complete
+        await new Promise(resolve => setTimeout(resolve, 500))
+        
+        // Check if there's a pending offer (received before we were ready)
+        if (pendingOfferRef.current) {
+          console.log('📨 Processing queued offer...')
+          try {
+            const answer = await webrtcClientRef.current.createAnswer(pendingOfferRef.current.offer)
+            console.log('✅ Created answer from queued offer, sending...')
+            socketRef.current.emit('answer', { roomId, answer })
+            pendingOfferRef.current = null
+          } catch (err: any) {
+            console.error('❌ Error processing queued offer:', err)
+            setError(`Failed to handle queued offer: ${err.message || 'Unknown error'}`)
+          }
+        } else if (isInitiator) {
+          // Create offer if initiator and no pending offer
+          console.log('📤 Creating offer as initiator...')
           const offer = await webrtcClientRef.current.createOffer()
+          console.log('✅ Offer created, sending...')
           socketRef.current.emit('offer', { roomId, offer })
+        } else {
+          console.log('⏳ Waiting for offer as participant...')
         }
       }
     } catch (err: any) {
@@ -337,6 +483,8 @@ export function useWebRTC(): UseWebRTCReturn {
     setMessages([])
     currentRoomIdRef.current = null
     currentBookingIdRef.current = null
+    pendingOfferRef.current = null
+    isReadyRef.current = false
   }, [])
 
   const endCall = useCallback(() => {

@@ -2652,6 +2652,121 @@ class ApiClient {
       method: 'PUT'
     })
   }
+
+  // ==================== MEDICAL CONSULT SCHEDULES API ====================
+
+  // Get weekly schedules for medical professional
+  async getMedicalConsultSchedules(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>('/medical/consults/schedules')
+  }
+
+  // Create a weekly schedule entry
+  async createConsultSchedule(schedule: {
+    dayOfWeek: number
+    startTime: string
+    endTime: string
+    duration?: number
+    type?: 'quick' | 'full' | 'follow_up'
+    timezone?: string
+    status?: 'active' | 'inactive'
+  }): Promise<ApiResponse<any>> {
+    return this.request('/medical/consults/schedules', {
+      method: 'POST',
+      body: JSON.stringify(schedule)
+    })
+  }
+
+  // Update a weekly schedule entry
+  async updateConsultSchedule(id: number, schedule: {
+    dayOfWeek?: number
+    startTime?: string
+    endTime?: string
+    duration?: number
+    type?: 'quick' | 'full' | 'follow_up'
+    timezone?: string
+    status?: 'active' | 'inactive'
+  }): Promise<ApiResponse<any>> {
+    return this.request(`/medical/consults/schedules/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(schedule)
+    })
+  }
+
+  // Delete a weekly schedule entry
+  async deleteConsultSchedule(id: number): Promise<ApiResponse<{ deleted: boolean }>> {
+    return this.request<{ deleted: boolean }>(`/medical/consults/schedules/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  // Get available doctors for booking
+  async getConsultDoctors(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>('/user/medical/consults/doctors')
+  }
+
+  // Get available slots for booking (generated from schedules)
+  async getConsultSlots(providerId: number, weekStartDate?: string): Promise<ApiResponse<any[]>> {
+    const params = new URLSearchParams()
+    params.append('providerId', providerId.toString())
+    if (weekStartDate) {
+      params.append('weekStartDate', weekStartDate)
+    }
+    const query = params.toString()
+    return this.request<any[]>(`/user/medical/consults/slots?${query}`)
+  }
+
+  // Book a consultation slot
+  async bookConsult(data: { startAt: string; providerId: number; notes?: string }): Promise<ApiResponse<any>> {
+    return this.request('/user/medical/consults/bookings', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Get medical professional's bookings
+  async getMedicalConsults(params?: {
+    page?: number
+    pageSize?: number
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/medical/consults/bookings${query}`)
+  }
+
+  // Legacy methods for backward compatibility (old slot-based system)
+  async getMedicalConsultSlots(params?: {
+    page?: number
+    pageSize?: number
+  }): Promise<ApiResponse<PaginatedResponse<any>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<any>>(`/medical/consults/slots${query}`)
+  }
+
+  async createConsultSlot(slot: {
+    startTime: string
+    duration: number
+    consultType: 'quick' | 'full' | 'follow_up'
+    timezone?: string
+  }): Promise<ApiResponse<any>> {
+    // Convert to old format: calculate endAt from startTime and duration
+    const startDate = new Date(slot.startTime)
+    const endDate = new Date(startDate.getTime() + slot.duration * 60000)
+    
+    return this.request('/medical/consults/slots', {
+      method: 'POST',
+      body: JSON.stringify({
+        startAt: startDate.toISOString(),
+        endAt: endDate.toISOString(),
+        type: slot.consultType,
+        timezone: slot.timezone
+      })
+    })
+  }
+
+  async deleteConsultSlot(id: number): Promise<ApiResponse<{ deleted: boolean }>> {
+    return this.request<{ deleted: boolean }>(`/medical/consults/slots/${id}`, {
+      method: 'DELETE'
+    })
+  }
 }
 
 // Create a singleton instance
