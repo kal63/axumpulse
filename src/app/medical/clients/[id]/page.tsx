@@ -8,6 +8,7 @@ import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, User, Activity, Calendar, AlertTriangle, FileText, Eye, AlertCircle, CheckCircle, XCircle } from 'lucide-react'
+import { IntakeFormAnswers } from '@/components/medical/IntakeFormAnswers'
 
 export default function ClientDetailPage() {
   const router = useRouter()
@@ -170,7 +171,13 @@ export default function ClientDetailPage() {
             <div className="space-y-4">
               {intakeResponses.map((response: any) => {
                 const form = response.form
-                const formSchema = form?.schema ? (typeof form.schema === 'string' ? JSON.parse(form.schema) : form.schema) : null
+                let formSchema = null
+                try {
+                  formSchema = form?.schema ? (typeof form.schema === 'string' ? JSON.parse(form.schema) : form.schema) : null
+                } catch (e) {
+                  console.error('Error parsing form schema:', e)
+                  formSchema = null
+                }
                 const formTitle = formSchema?.title || `Form v${form?.version || 'N/A'}`
                 
                 // Get the most recent triage run
@@ -268,11 +275,12 @@ export default function ClientDetailPage() {
                     )}
                     
                     <div className="mt-3 space-y-2">
-                      <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Answers:</p>
-                      <div className="bg-[var(--neumorphic-bg)] p-3 rounded border border-[var(--neumorphic-muted)]/10">
-                        <pre className="text-xs text-[var(--neumorphic-text)] overflow-auto max-h-48">
-                          {JSON.stringify(response.answers, null, 2)}
-                        </pre>
+                      <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-3">Form Answers:</p>
+                      <div className="bg-[var(--neumorphic-bg)] p-4 rounded-lg border border-[var(--neumorphic-muted)]/20">
+                        <IntakeFormAnswers 
+                          formSchema={formSchema} 
+                          answers={response.answers || {}} 
+                        />
                       </div>
                     </div>
                   </div>
