@@ -10,8 +10,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { ArrowLeft, Calendar, FileText, Save, X } from 'lucide-react'
+import { ArrowLeft, Calendar, FileText, Save, X, Phone } from 'lucide-react'
 import { toast } from 'sonner'
+import { VideoCall } from '@/components/medical/VideoCall'
 
 export default function ConsultSessionPage() {
   const router = useRouter()
@@ -32,6 +33,8 @@ export default function ConsultSessionPage() {
   const [newDiagnosis, setNewDiagnosis] = useState('')
   const [newRecommendation, setNewRecommendation] = useState('')
   const [saving, setSaving] = useState(false)
+  const [isCallActive, setIsCallActive] = useState(false)
+  const [callRoomId, setCallRoomId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!authLoading && user && bookingId) {
@@ -443,28 +446,65 @@ export default function ConsultSessionPage() {
             <Save className="w-4 h-4 mr-2" />
             {saving ? 'Saving...' : 'Save Consult Notes'}
           </Button>
-          {booking.status === 'booked' && (
-            <Button
-              onClick={async () => {
-                try {
-                  const response = await apiClient.completeConsult(bookingId)
-                  if (response.success) {
-                    toast.success('Consult marked as completed')
-                    fetchBooking()
-                  } else {
-                    throw new Error(response.error?.message || 'Failed to complete consult')
+          {booking.status === 'booked' && !isCallActive && (
+            <>
+              <Button
+                onClick={async () => {
+                  try {
+                    const response = await apiClient.startCall(bookingId)
+                    if (response.success && response.data) {
+                      setCallRoomId(response.data.roomId)
+                      setIsCallActive(true)
+                      toast.success('Call started. Waiting for user to join...')
+                    } else {
+                      throw new Error(response.error?.message || 'Failed to start call')
+                    }
+                  } catch (error: any) {
+                    toast.error(error.message || 'Failed to start call')
                   }
-                } catch (error: any) {
-                  toast.error(error.message || 'Failed to mark consult as completed')
-                }
-              }}
-              variant="outline"
-              className="border-green-500 text-green-600 hover:bg-green-50"
-            >
-              Mark as Completed
-            </Button>
+                }}
+                className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
+              >
+                <Phone className="w-4 h-4 mr-2" />
+                Start Call
+              </Button>
+              <Button
+                onClick={async () => {
+                  try {
+                    const response = await apiClient.completeConsult(bookingId)
+                    if (response.success) {
+                      toast.success('Consult marked as completed')
+                      fetchBooking()
+                    } else {
+                      throw new Error(response.error?.message || 'Failed to complete consult')
+                    }
+                  } catch (error: any) {
+                    toast.error(error.message || 'Failed to mark consult as completed')
+                  }
+                }}
+                variant="outline"
+                className="border-green-500 text-green-600 hover:bg-green-50"
+              >
+                Mark as Completed
+              </Button>
+            </>
           )}
         </div>
+        
+        {/* Video Call Component */}
+        {isCallActive && callRoomId && (
+          <VideoCall
+            bookingId={bookingId}
+            roomId={callRoomId}
+            isInitiator={true}
+            onEndCall={() => {
+              setIsCallActive(false)
+              setCallRoomId(null)
+              fetchBooking()
+            }}
+            otherUserName={booking.user?.name || 'Patient'}
+          />
+        )}
       </div>
     </div>
   )

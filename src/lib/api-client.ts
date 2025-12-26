@@ -1,5 +1,5 @@
 // API Client for Compound 360 Backend
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'
 
 // Helper function to create pagination query string
 function createPaginationQuery(params?: { page?: number; pageSize?: number; [key: string]: any }): string {
@@ -602,10 +602,17 @@ class ApiClient {
     }
 
     try {
+      // Create AbortController for timeout (30 seconds)
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000)
+      
       const response = await fetch(url, {
         ...options,
         headers,
+        signal: controller.signal
       })
+      
+      clearTimeout(timeoutId)
 
       // Try to safely read the response body. Some servers may return
       // non-JSON (HTML error pages, plain text), so we attempt to parse
@@ -640,15 +647,27 @@ class ApiClient {
 
       // If the server returned JSON we return it, otherwise return the raw text
       return data ?? ({ success: true, data: responseText } as any)
-    } catch (error) {
+    } catch (error: any) {
       // Network-level errors (CORS/preflight failure, network down, TLS mismatch)
       // All show up here as thrown by fetch. Include the original error message
       // to help debugging in the browser console.
+      
+      // Provide helpful error messages for common issues
+      let errorMessage = error instanceof Error ? error.message : 'Network error occurred'
+      
+      if (error.name === 'AbortError' || error.message?.includes('timeout')) {
+        errorMessage = 'Request timed out. Please check your network connection.'
+      } else if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
+        errorMessage = 'Cannot connect to server. If accessing from mobile, ensure you\'re using the correct IP address (not localhost). See MOBILE_ACCESS_SETUP.md for details.'
+      } else if (error.message?.includes('CORS')) {
+        errorMessage = 'CORS error: Server may not allow requests from this origin.'
+      }
+      
       return {
         success: false,
         error: {
           code: 'NETWORK_ERROR',
-          message: error instanceof Error ? error.message : 'Network error occurred',
+          message: errorMessage,
         },
       }
     }
@@ -2175,6 +2194,17 @@ class ApiClient {
     })
   }
 
+  // Call Management (User)
+  async joinCall(bookingId: number): Promise<ApiResponse<{ bookingId: number; roomId: string; callStatus: string }>> {
+    return this.request(`/user/medical/consults/bookings/${bookingId}/join-call`, {
+      method: 'POST'
+    })
+  }
+
+  async getUserCallStatus(bookingId: number): Promise<ApiResponse<{ bookingId: number; callStatus: string; callRoomId?: string; callStartedAt?: string; callEndedAt?: string }>> {
+    return this.request(`/user/medical/consults/bookings/${bookingId}/call-status`)
+  }
+
   // Health Data
   async getHealthData(params?: {
     page?: number
@@ -2482,6 +2512,17 @@ class ApiClient {
     return this.request(`/medical/consults/bookings/${bookingId}/complete`, {
       method: 'PUT'
     })
+  }
+
+  // Call Management (Medical Pro)
+  async startCall(bookingId: number): Promise<ApiResponse<{ bookingId: number; roomId: string; callStatus: string }>> {
+    return this.request(`/medical/consults/bookings/${bookingId}/start-call`, {
+      method: 'POST'
+    })
+  }
+
+  async getCallStatus(bookingId: number): Promise<ApiResponse<{ bookingId: number; callStatus: string; callRoomId?: string; callStartedAt?: string; callEndedAt?: string }>> {
+    return this.request(`/medical/consults/bookings/${bookingId}/call-status`)
   }
 
   // Client Management

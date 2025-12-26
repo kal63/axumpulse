@@ -7,7 +7,9 @@ import { apiClient } from '@/lib/api-client'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Calendar, Clock, FileText } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, FileText, Phone } from 'lucide-react'
+import { toast } from 'sonner'
+import { VideoCall } from '@/components/medical/VideoCall'
 
 export default function ConsultDetailPage() {
   const router = useRouter()
@@ -16,6 +18,8 @@ export default function ConsultDetailPage() {
   const { user, isLoading: authLoading } = useAuth()
   const [loading, setLoading] = useState(true)
   const [booking, setBooking] = useState<any>(null)
+  const [isCallActive, setIsCallActive] = useState(false)
+  const [callRoomId, setCallRoomId] = useState<string | null>(null)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -42,6 +46,15 @@ export default function ConsultDetailPage() {
         // Remove the note object from bookingData to avoid rendering issues
         const { note, ...bookingWithoutNote } = bookingData
         setBooking({ ...bookingWithoutNote, userNote, consultNote })
+        
+        // Check if call is active
+        if (bookingData.callRoomId && (bookingData.callStatus === 'ringing' || bookingData.callStatus === 'in_progress')) {
+          setCallRoomId(bookingData.callRoomId)
+          // Auto-join if call is in progress
+          if (bookingData.callStatus === 'in_progress') {
+            setIsCallActive(true)
+          }
+        }
       }
     } catch (error) {
       console.error('Error fetching booking:', error)
@@ -49,6 +62,30 @@ export default function ConsultDetailPage() {
       setLoading(false)
     }
   }
+  
+  // Poll for call status if booking is booked and no call active
+  useEffect(() => {
+    if (!booking || isCallActive || booking.status !== 'booked') return
+    
+    const interval = setInterval(async () => {
+      try {
+        const response = await apiClient.getUserCallStatus(bookingId)
+        if (response.success && response.data) {
+          const { callStatus, callRoomId } = response.data
+          if (callRoomId && (callStatus === 'ringing' || callStatus === 'in_progress')) {
+            setCallRoomId(callRoomId)
+            if (callStatus === 'ringing') {
+              toast.info('Incoming call from medical professional')
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error checking call status:', error)
+      }
+    }, 3000) // Check every 3 seconds
+    
+    return () => clearInterval(interval)
+  }, [booking, bookingId, isCallActive])
 
   if (authLoading || loading) {
     return (
@@ -167,13 +204,49 @@ export default function ConsultDetailPage() {
                 <p className="text-[var(--neumorphic-text)]">{booking.userNote}</p>
               </div>
             )}
-            <div className="pt-4 border-t border-[var(--neumorphic-muted)]/20">
+            <div className="pt-4 border-t border-[var(--neumorphic-muted)]/20 flex items-center justify-between">
               <p className="text-xs text-[var(--neumorphic-muted)]">
                 Booking ID: {booking.id} | Created: {new Date(booking.createdAt).toLocaleString()}
               </p>
+              {booking.status === 'booked' && callRoomId && !isCallActive && (
+                <Button
+                  onClick={async () => {
+                    try {
+                      const response = await apiClient.joinCall(bookingId)
+                      if (response.success && response.data) {
+                        setIsCallActive(true)
+                        toast.success('Joining call...')
+                      } else {
+                        throw new Error(response.error?.message || 'Failed to join call')
+                      }
+                    } catch (error: any) {
+                      toast.error(error.message || 'Failed to join call')
+                    }
+                  }}
+                  className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
+                >
+                  <Phone className="w-4 h-4 mr-2" />
+                  Join Call
+                </Button>
+              )}
             </div>
           </div>
         </NeumorphicCard>
+        
+        {/* Video Call Component */}
+        {isCallActive && callRoomId && (
+          <VideoCall
+            bookingId={bookingId}
+            roomId={callRoomId}
+            isInitiator={false}
+            onEndCall={() => {
+              setIsCallActive(false)
+              setCallRoomId(null)
+              fetchBooking()
+            }}
+            otherUserName={booking.slot?.provider?.name || 'Medical Professional'}
+          />
+        )}
 
         {(() => {
           // Handle consult notes - could be single object or array
