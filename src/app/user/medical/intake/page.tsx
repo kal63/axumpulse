@@ -28,7 +28,26 @@ export default function IntakeFormsPage() {
       setLoading(true)
       const response = await apiClient.getIntakeForms()
       if (response.success && response.data) {
-        setForms(response.data)
+        // Parse schema and extract title/description for each form
+        const formsWithParsedSchema = response.data.map((form: any) => {
+          let schema = form.schema
+          if (typeof schema === 'string') {
+            try {
+              schema = JSON.parse(schema)
+            } catch (e) {
+              console.error('Error parsing schema:', e)
+              schema = null
+            }
+          }
+          
+          return {
+            ...form,
+            title: schema?.title || form.title || form.name || `Form v${form.version || 'N/A'}`,
+            description: schema?.description || form.description || null,
+            schema: schema || form.schema
+          }
+        })
+        setForms(formsWithParsedSchema)
       }
     } catch (error) {
       console.error('Error fetching intake forms:', error)
@@ -100,7 +119,7 @@ export default function IntakeFormsPage() {
                   <Badge className="bg-green-500 text-white">Published</Badge>
                 </div>
                 <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-2">
-                  {form.title || form.name}
+                  {form.title || `Form v${form.version || 'N/A'}`}
                 </h3>
                 {form.description && (
                   <p className="text-sm text-[var(--neumorphic-muted)] mb-4 line-clamp-2">

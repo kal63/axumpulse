@@ -35,7 +35,24 @@ export default function IntakeFormSubmissionPage() {
       if (response.success && response.data) {
         const foundForm = response.data.find((f: any) => f.id === formId)
         if (foundForm) {
-          setForm(foundForm)
+          // Parse schema and extract title/description
+          let schema = foundForm.schema
+          if (typeof schema === 'string') {
+            try {
+              schema = JSON.parse(schema)
+            } catch (e) {
+              console.error('Error parsing schema:', e)
+              schema = null
+            }
+          }
+          
+          const formWithParsedSchema = {
+            ...foundForm,
+            title: schema?.title || foundForm.title || foundForm.name || `Form v${foundForm.version || 'N/A'}`,
+            description: schema?.description || foundForm.description || null,
+            schema: schema || foundForm.schema
+          }
+          setForm(formWithParsedSchema)
         } else {
           toast.error('Intake form not found')
           router.push('/user/medical/intake')
@@ -174,7 +191,7 @@ export default function IntakeFormSubmissionPage() {
               </div>
               <div>
                 <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
-                  {form.title || form.name}
+                  {form.title || `Form v${form.version || 'N/A'}`}
                 </h1>
                 {form.description && (
                   <p className="text-lg text-[var(--neumorphic-muted)]">
