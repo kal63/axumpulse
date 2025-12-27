@@ -29,10 +29,8 @@ export default function ConsultsPage() {
       setLoading(true)
       const response = await apiClient.getConsultBookings({ page: 1, pageSize: 20 })
       if (response.success && response.data) {
-        // Handle both direct items and nested data.data structure
-        const bookingsData = response.data.items 
-          ? response.data.items
-          : (response.data.data?.items || response.data.data || [])
+        // response.data is already PaginatedResponse
+        const bookingsData = response.data.items || []
         setBookings(Array.isArray(bookingsData) ? bookingsData : [])
       }
     } catch (error) {

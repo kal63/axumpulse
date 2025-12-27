@@ -315,7 +315,11 @@ export default function WorkoutPlanDetailPage() {
 
         try {
             setAiGenerationLoading(true)
-            const response = await apiClient.generateWorkoutPlanInsightWithAI(planId, selectedUserId)
+            const userId = selectedUserId ?? availableUsers[0]?.id
+            if (!userId) {
+                throw new Error('No user selected')
+            }
+            const response = await apiClient.generateWorkoutPlanInsightWithAI(planId, userId)
             if (response.success && response.data) {
                 setInsightFormData({
                     insightText: response.data.insightText,

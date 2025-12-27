@@ -118,7 +118,7 @@ describe('User Journey Integration Tests', () => {
         data: { exerciseProgress: { completed: true }, planProgress: {} }
       })
 
-      const response = await apiClient.completeExercise(1, 1)
+      const response = await apiClient.completeExercise(1, 1, 30)
 
       expect(response.success).toBe(true)
       expect(apiClient.completeExercise).toHaveBeenCalledWith(1, 1, undefined)

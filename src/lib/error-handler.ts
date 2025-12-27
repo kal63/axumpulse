@@ -64,8 +64,8 @@ export const logError = (error: Error, context?: Record<string, unknown>) => {
 
 // Async error wrapper for API routes
 export const asyncHandler = (fn: (req: unknown, res: unknown, next: unknown) => Promise<unknown>) => {
-  return (req: unknown, res: unknown, next: unknown) => {
-    Promise.resolve(fn(req, res, next)).catch(next)
+  return (req: unknown, res: unknown, next: (err?: unknown) => void) => {
+    Promise.resolve(fn(req, res, next)).catch((err) => next(err))
   }
 }
 

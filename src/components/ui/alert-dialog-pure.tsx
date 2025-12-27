@@ -20,7 +20,7 @@ const AlertDialogContext = React.createContext<AlertDialogContextType | null>(nu
 
 function AlertDialog({ open = false, onOpenChange, children }: AlertDialogProps) {
   return (
-    <AlertDialogContext.Provider value={{ open, onOpenChange }}>
+    <AlertDialogContext.Provider value={{ open, onOpenChange: onOpenChange || (() => {}) }}>
       {children}
     </AlertDialogContext.Provider>
   )

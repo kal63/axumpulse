@@ -17,11 +17,11 @@ import { TriageRuleBuilder } from '@/components/medical/TriageRuleBuilder'
 interface RuleDefinition {
   conditions: Array<{
     field: string
-    operator: string
+    operator: 'eq' | 'neq' | 'gt' | 'lt' | 'gte' | 'lte' | 'includes' | 'exists' | 'not_exists'
     value?: string | number
   }>
   actions: Array<{
-    type: string
+    type: 'set_disposition' | 'message'
     value: string
   }>
 }

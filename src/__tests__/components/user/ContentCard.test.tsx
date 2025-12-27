@@ -3,20 +3,29 @@ import { ContentCard } from '@/components/user/ContentCard'
 
 const mockContent = {
   id: 1,
+  trainerId: 1,
   title: 'Test Workout Video',
   description: 'A great workout video',
-  type: 'video',
+  type: 'video' as const,
   duration: 1800,
-  difficulty: 'intermediate',
-  category: 'Strength',
+  difficulty: 'intermediate' as const,
+  category: 'strength' as const,
   thumbnailUrl: '/test-thumb.jpg',
   views: 1000,
   likes: 50,
+  tags: [],
+  status: 'approved' as const,
+  isPublic: true,
+  isFeatured: false,
+  createdAt: '2024-01-01T00:00:00Z',
+  updatedAt: '2024-01-01T00:00:00Z',
   trainer: {
-    id: 1,
+    userId: 1,
     verified: true,
     User: {
+      id: 1,
       name: 'John Doe',
+      email: 'john@example.com',
       profilePicture: '/profile.jpg'
     }
   }

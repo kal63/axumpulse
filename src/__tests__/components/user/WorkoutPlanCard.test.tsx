@@ -3,23 +3,52 @@ import { WorkoutPlanCard } from '@/components/user/WorkoutPlanCard'
 
 const mockWorkoutPlan = {
   id: 1,
+  trainerId: 1,
   title: '30-Day Fitness Challenge',
   description: 'Get fit in 30 days',
-  difficulty: 'beginner',
+  difficulty: 'beginner' as const,
   category: 'Full Body',
-  duration: 30,
+  tags: [],
+  isPublic: true,
+  status: 'approved' as const,
+  estimatedDuration: 30,
+  totalExercises: 3,
   exercises: [
-    { id: 1, name: 'Push-ups' },
-    { id: 2, name: 'Squats' },
-    { id: 3, name: 'Plank' }
+    { 
+      id: 1, 
+      workoutPlanId: 1,
+      name: 'Push-ups',
+      muscleGroups: [],
+      order: 1,
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z'
+    },
+    { 
+      id: 2, 
+      workoutPlanId: 1,
+      name: 'Squats',
+      muscleGroups: [],
+      order: 2,
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z'
+    },
+    { 
+      id: 3, 
+      workoutPlanId: 1,
+      name: 'Plank',
+      muscleGroups: [],
+      order: 3,
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z'
+    }
   ],
+  createdAt: '2024-01-01T00:00:00Z',
+  updatedAt: '2024-01-01T00:00:00Z',
   trainer: {
     id: 1,
-    verified: true,
-    User: {
-      name: 'Jane Smith',
-      profilePicture: null
-    }
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    profilePicture: null
   }
 }
 

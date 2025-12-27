@@ -2153,26 +2153,8 @@ class ApiClient {
     return this.request(`/user/medical/questions/${id}`)
   }
 
-  // Consult Slots & Bookings
-  async getConsultSlots(params?: {
-    providerId?: number
-    consultType?: string
-    startDate?: string
-    endDate?: string
-  }): Promise<ApiResponse<any[]>> {
-    const query = createPaginationQuery(params)
-    return this.request<any[]>(`/user/medical/consults/slots${query}`)
-  }
-
-  async bookConsult(data: {
-    slotId: number
-    notes?: string
-  }): Promise<ApiResponse<any>> {
-    return this.request('/user/medical/consults/bookings', {
-      method: 'POST',
-      body: JSON.stringify(data)
-    })
-  }
+  // Consult Slots & Bookings (legacy - use getConsultSlots with providerId instead)
+  // Removed duplicate - see getConsultSlots below for current implementation
 
   async getConsultBookings(params?: {
     page?: number
@@ -2399,49 +2381,8 @@ class ApiClient {
     })
   }
 
-  // Consult Management
-  async getMedicalConsults(params?: {
-    page?: number
-    pageSize?: number
-    status?: string
-  }): Promise<ApiResponse<PaginatedResponse<any>>> {
-    const query = createPaginationQuery(params)
-    return this.request<PaginatedResponse<any>>(`/medical/consults/bookings${query}`)
-  }
-
   async getMedicalConsult(id: number): Promise<ApiResponse<any>> {
     return this.request(`/medical/consults/bookings/${id}`)
-  }
-
-  async getMedicalConsultSlots(params?: {
-    page?: number
-    pageSize?: number
-    startDate?: string
-    endDate?: string
-  }): Promise<ApiResponse<PaginatedResponse<any>>> {
-    const query = createPaginationQuery(params)
-    return this.request<PaginatedResponse<any>>(`/medical/consults/slots${query}`)
-  }
-
-  async createConsultSlot(data: {
-    startTime: string
-    duration: number
-    consultType: 'quick' | 'full' | 'follow_up'
-    timezone?: string
-  }): Promise<ApiResponse<any>> {
-    // Transform frontend format to backend format
-    const startAt = new Date(data.startTime)
-    const endAt = new Date(startAt.getTime() + data.duration * 60 * 1000) // Add duration in milliseconds
-    
-    return this.request('/medical/consults/slots', {
-      method: 'POST',
-      body: JSON.stringify({
-        startAt: startAt.toISOString(),
-        endAt: endAt.toISOString(),
-        type: data.consultType,
-        timezone: data.timezone || null
-      })
-    })
   }
 
   async updateConsultSlot(id: number, data: {
@@ -2452,12 +2393,6 @@ class ApiClient {
     return this.request(`/medical/consults/slots/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data)
-    })
-  }
-
-  async deleteConsultSlot(id: number): Promise<ApiResponse<{ deleted: boolean }>> {
-    return this.request(`/medical/consults/slots/${id}`, {
-      method: 'DELETE'
     })
   }
 
@@ -2515,7 +2450,7 @@ class ApiClient {
   }
 
   // Call Management (Medical Pro)
-  async startCall(bookingId: number): Promise<ApiResponse<{ bookingId: number; roomId: string; callStatus: string }>> {
+  async startCall(bookingId: number): Promise<ApiResponse<{ bookingId: number; roomId: string; callRoomId: string; callStatus: string }>> {
     return this.request(`/medical/consults/bookings/${bookingId}/start-call`, {
       method: 'POST'
     })
@@ -2727,6 +2662,7 @@ class ApiClient {
   async getMedicalConsults(params?: {
     page?: number
     pageSize?: number
+    status?: string
   }): Promise<ApiResponse<PaginatedResponse<any>>> {
     const query = createPaginationQuery(params)
     return this.request<PaginatedResponse<any>>(`/medical/consults/bookings${query}`)
@@ -2736,6 +2672,8 @@ class ApiClient {
   async getMedicalConsultSlots(params?: {
     page?: number
     pageSize?: number
+    startDate?: string
+    endDate?: string
   }): Promise<ApiResponse<PaginatedResponse<any>>> {
     const query = createPaginationQuery(params)
     return this.request<PaginatedResponse<any>>(`/medical/consults/slots${query}`)

@@ -22,7 +22,7 @@ interface FormSchema {
     description?: string
     fields: Array<{
       id: string
-      type: string
+      type: 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox'
       label: string
       required: boolean
       placeholder?: string
