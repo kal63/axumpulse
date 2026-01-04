@@ -255,8 +255,9 @@ export default function UserLayout({ children }: UserLayoutProps) {
                 </div>
               </NeumorphicCard>
 
-              {/* Navigation Items */}
-              <nav className="flex-1 space-y-2">
+              {/* Navigation Items flex-1 space-y-2 */}
+
+              <nav className="flex-1 space-y-2 overflow-y-auto pr-2 no-scrollbar">
                 <Sidebar />
               </nav>
 
