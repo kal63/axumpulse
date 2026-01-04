@@ -61,7 +61,7 @@ export default function MedicalHubPage() {
       }
 
       // Get upcoming consults
-      const consultsRes = await apiClient.getConsultBookings({ page: 1, pageSize: 3, status: 'confirmed' })
+      const consultsRes = await apiClient.getConsultBookings({ page: 1, pageSize: 3, status: 'booked' })
       if (consultsRes.success && consultsRes.data?.items) {
         setUpcomingConsults(consultsRes.data.items)
       }
