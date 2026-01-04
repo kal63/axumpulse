@@ -55,7 +55,7 @@ export function IntakeFormWizard({ formSchema, onSubmit, onCancel }: IntakeFormW
     switch (field.type) {
       case 'text':
         return (
-          <div key={field.id} className="mb-4">
+          <div key={field.id} className="mb-4 space-y-2">
             <Label htmlFor={field.id}>{field.label}</Label>
             <Input
               id={field.id}
@@ -69,7 +69,7 @@ export function IntakeFormWizard({ formSchema, onSubmit, onCancel }: IntakeFormW
 
       case 'textarea':
         return (
-          <div key={field.id} className="mb-4">
+          <div key={field.id} className="mb-4 space-y-2">
             <Label htmlFor={field.id}>{field.label}</Label>
             <Textarea
               id={field.id}
@@ -84,7 +84,7 @@ export function IntakeFormWizard({ formSchema, onSubmit, onCancel }: IntakeFormW
 
       case 'select':
         return (
-          <div key={field.id} className="mb-4">
+          <div key={field.id} className="mb-4 space-y-2">
             <Label htmlFor={field.id}>{field.label}</Label>
             <Select
               value={answers[field.id] || ''}
@@ -106,7 +106,7 @@ export function IntakeFormWizard({ formSchema, onSubmit, onCancel }: IntakeFormW
 
       case 'radio':
         return (
-          <div key={field.id} className="mb-4">
+          <div key={field.id} className="mb-4 space-y-2">
             <Label>{field.label}</Label>
             <RadioGroup
               value={answers[field.id] || ''}
@@ -126,7 +126,7 @@ export function IntakeFormWizard({ formSchema, onSubmit, onCancel }: IntakeFormW
 
       case 'checkbox':
         return (
-          <div key={field.id} className="mb-4">
+          <div key={field.id} className="mb-4 space-y-2">
             <Label>{field.label}</Label>
             <div className="space-y-2 mt-2">
               {field.options?.map((option: any) => (
@@ -154,7 +154,7 @@ export function IntakeFormWizard({ formSchema, onSubmit, onCancel }: IntakeFormW
 
       case 'number':
         return (
-          <div key={field.id} className="mb-4">
+          <div key={field.id} className="mb-4 space-y-2">
             <Label htmlFor={field.id}>{field.label}</Label>
             <Input
               id={field.id}

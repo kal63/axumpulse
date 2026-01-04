@@ -140,7 +140,7 @@ export default function NewTriageRulePage() {
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         <NeumorphicCard variant="raised" className="p-6">
           <div className="space-y-4">
-            <div>
+            <div className="space-y-2">
               <Label>Rule Name *</Label>
               <Input
                 value={formData.name}
@@ -149,7 +149,7 @@ export default function NewTriageRulePage() {
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div>
+              <div className="space-y-2">
                 <Label>Version *</Label>
                 <Input
                   value={formData.version}
@@ -157,7 +157,7 @@ export default function NewTriageRulePage() {
                   placeholder="1.0"
                 />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label>Severity *</Label>
                 <Select value={formData.severity} onValueChange={(v: any) => setFormData({ ...formData, severity: v })}>
                   <SelectTrigger>

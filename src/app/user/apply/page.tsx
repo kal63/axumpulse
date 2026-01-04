@@ -411,7 +411,7 @@ export default function UserApplyPage() {
       </div>
 
       <div className="space-y-4">
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label className="text-[var(--neumorphic-text)]">Specialties *</Label>
           <p className="text-sm text-[var(--neumorphic-muted)]">Select all that apply</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -430,7 +430,7 @@ export default function UserApplyPage() {
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="yearsOfExperience" className="text-[var(--neumorphic-text)]">Years of Experience</Label>
           <select
             id="yearsOfExperience"
@@ -447,7 +447,7 @@ export default function UserApplyPage() {
           </select>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label className="text-[var(--neumorphic-text)]">Languages</Label>
           <p className="text-sm text-[var(--neumorphic-muted)]">Select all languages you can communicate in</p>
           {loadingLanguages ? (
@@ -472,7 +472,7 @@ export default function UserApplyPage() {
           )}
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="bio" className="text-[var(--neumorphic-text)]">Bio</Label>
           <Textarea
             id="bio"
@@ -510,7 +510,7 @@ export default function UserApplyPage() {
           {formData.certifications.map((cert, index) => (
             <NeumorphicCard key={index} variant="raised" className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label className="text-[var(--neumorphic-text)]">Certification Name</Label>
                   <Input
                     value={cert.name}
@@ -519,7 +519,7 @@ export default function UserApplyPage() {
                     className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label className="text-[var(--neumorphic-text)]">Issuing Organization</Label>
                   <Input
                     value={cert.issuer}
@@ -528,7 +528,7 @@ export default function UserApplyPage() {
                     className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label className="text-[var(--neumorphic-text)]">Issue Date</Label>
                   <Input
                     type="date"
@@ -537,7 +537,7 @@ export default function UserApplyPage() {
                     className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label className="text-[var(--neumorphic-text)]">Expiry Date (if applicable)</Label>
                   <Input
                     type="date"
@@ -572,7 +572,7 @@ export default function UserApplyPage() {
           {formData.portfolio.map((item, index) => (
             <NeumorphicCard key={index} variant="raised" className="p-4">
               <div className="space-y-4">
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label className="text-[var(--neumorphic-text)]">Title</Label>
                   <Input
                     value={item.title}
@@ -581,7 +581,7 @@ export default function UserApplyPage() {
                     className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label className="text-[var(--neumorphic-text)]">Description</Label>
                   <Textarea
                     value={item.description}
@@ -591,7 +591,7 @@ export default function UserApplyPage() {
                     className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label className="text-[var(--neumorphic-text)]">URL (optional)</Label>
                   <Input
                     value={item.url || ''}
@@ -678,7 +678,7 @@ export default function UserApplyPage() {
           All fields are optional. Add your social media profiles so members can follow and connect with you.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Label htmlFor="instagram" className="text-[var(--neumorphic-text)]">Instagram</Label>
             <Input
               id="instagram"
@@ -688,7 +688,7 @@ export default function UserApplyPage() {
               className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
             />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Label htmlFor="facebook" className="text-[var(--neumorphic-text)]">Facebook</Label>
             <Input
               id="facebook"
@@ -698,7 +698,7 @@ export default function UserApplyPage() {
               className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
             />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Label htmlFor="twitter" className="text-[var(--neumorphic-text)]">Twitter/X</Label>
             <Input
               id="twitter"
@@ -708,7 +708,7 @@ export default function UserApplyPage() {
               className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
             />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Label htmlFor="linkedin" className="text-[var(--neumorphic-text)]">LinkedIn</Label>
             <Input
               id="linkedin"
@@ -718,7 +718,7 @@ export default function UserApplyPage() {
               className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
             />
           </div>
-          <div className="space-y-2 md:col-span-2">
+          <div className="space-y-3 md:col-span-2">
             <Label htmlFor="website" className="text-[var(--neumorphic-text)]">Website</Label>
             <Input
               id="website"

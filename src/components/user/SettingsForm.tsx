@@ -157,7 +157,7 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
         </div>
 
         {/* Name */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="name" className="flex items-center gap-2 text-[var(--neumorphic-text)]">
             <User className="h-4 w-4" />
             Display Name
@@ -179,7 +179,7 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
         </div>
 
         {/* Email (Read Only) */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="email" className="text-[var(--neumorphic-text)]">
             Email Address
           </Label>
@@ -202,7 +202,7 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
         </div>
 
         {/* Bio */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="bio" className="flex items-center gap-2 text-[var(--neumorphic-text)]">
             <FileText className="h-4 w-4" />
             Bio
@@ -230,7 +230,7 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
         </div>
 
         {/* Location */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label htmlFor="location" className="flex items-center gap-2 text-[var(--neumorphic-text)]">
             <MapPin className="h-4 w-4" />
             Location

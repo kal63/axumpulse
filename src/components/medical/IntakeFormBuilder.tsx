@@ -365,7 +365,7 @@ export function IntakeFormBuilder({ initialSchema, onSchemaChange }: IntakeFormB
       {/* Form Metadata */}
       <NeumorphicCard variant="raised" className="p-6">
         <div className="space-y-4">
-          <div>
+          <div className="space-y-2">
             <Label className="text-[var(--neumorphic-text)]">Form Title *</Label>
             <Input
               value={schema.title}
@@ -373,7 +373,7 @@ export function IntakeFormBuilder({ initialSchema, onSchemaChange }: IntakeFormB
               placeholder="e.g., General Health Intake Form"
             />
           </div>
-          <div>
+          <div className="space-y-2">
             <Label className="text-[var(--neumorphic-text)]">Form Description</Label>
             <Textarea
               value={schema.description}

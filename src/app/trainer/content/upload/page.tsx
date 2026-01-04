@@ -421,11 +421,11 @@ export default function UploadContentPage() {
               {error && <div className="text-sm text-red-600">{error}</div>}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label>Title</Label>
                   <Input value={form.title || ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, title: e.target.value })} required />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label>Language</Label>
                   {languages ? (
                     <Select value={form.language} onValueChange={(v) => setForm({ ...form, language: v })}>
@@ -446,13 +446,13 @@ export default function UploadContentPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <Label>Description</Label>
                 <textarea className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={form.description || ''} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setForm({ ...form, description: e.target.value })} placeholder="" />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label>Difficulty</Label>
                   <Select value={form.difficulty} onValueChange={(v) => setForm({ ...form, difficulty: v as any })}>
                     <SelectTrigger className="w-full">
@@ -466,12 +466,12 @@ export default function UploadContentPage() {
                   </Select>
                 </div>
                 {selectedType === 'video' && (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <Label>Duration (auto)</Label>
                     <Input type="number" min={0} value={form.duration ?? ''} readOnly />
                   </div>
                 )}
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label>Category</Label>
                   <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v as any })}>
                     <SelectTrigger className="w-full">
@@ -489,14 +489,14 @@ export default function UploadContentPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label>Visibility</Label>
                   <div className="flex items-center gap-3">
                     <Switch checked={!!form.isPublic} onCheckedChange={(v) => setForm({ ...form, isPublic: v })} />
                     <span className="text-sm text-gray-600 dark:text-gray-400">{form.isPublic ? 'Public' : 'Private'}</span>
                   </div>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label>Tags (comma separated)</Label>
                   <Input value={(form.tags as string[] | undefined)?.join(', ') || ''} onChange={(e) => setForm({ ...form, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })} />
                 </div>

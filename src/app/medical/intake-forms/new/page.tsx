@@ -158,7 +158,7 @@ export default function NewIntakeFormPage() {
 
       <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         <NeumorphicCard variant="raised" className="p-6">
-          <div className="mb-4">
+          <div className="mb-4 space-y-2">
             <Label className="text-[var(--neumorphic-text)]">Version</Label>
             <Input
               value={version}

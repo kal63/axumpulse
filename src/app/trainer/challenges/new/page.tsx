@@ -139,7 +139,7 @@ export default function NewChallengePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="title">Challenge Title *</Label>
                 <Input
                   id="title"
@@ -148,7 +148,7 @@ export default function NewChallengePage() {
                   placeholder="Enter challenge title"
                 />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="description">Description *</Label>
                 <Textarea
                   id="description"
@@ -171,7 +171,7 @@ export default function NewChallengePage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="type">Challenge Type</Label>
                   <Select value={challenge.type || 'fitness'} onValueChange={(value) => handleInputChange('type', value)}>
                     <SelectTrigger className="w-full">
@@ -186,7 +186,7 @@ export default function NewChallengePage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="difficulty">Difficulty Level</Label>
                   <Select value={challenge.difficulty || 'beginner'} onValueChange={(value) => handleInputChange('difficulty', value)}>
                     <SelectTrigger className="w-full">
@@ -203,7 +203,7 @@ export default function NewChallengePage() {
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="duration">Duration</Label>
                   <Select value={challenge.duration?.toString() || '7'} onValueChange={(value) => handleInputChange('duration', parseInt(value))}>
                     <SelectTrigger className="w-full">
@@ -218,7 +218,7 @@ export default function NewChallengePage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
+                <div className="space-y-2">
                   <Label htmlFor="xpReward">XP Reward</Label>
                   <Input
                     id="xpReward"
@@ -242,7 +242,7 @@ export default function NewChallengePage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="requirements">Challenge Requirements</Label>
                 <Textarea
                   id="requirements"
@@ -283,7 +283,7 @@ export default function NewChallengePage() {
                   onCheckedChange={(checked) => handleInputChange('isPublic', checked)}
                 />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label htmlFor="language">Language</Label>
                 <Select value={challenge.language || 'en'} onValueChange={(value) => handleInputChange('language', value)}>
                   <SelectTrigger className="w-full">
@@ -309,7 +309,7 @@ export default function NewChallengePage() {
               </CardTitle>
             </CardHeader>
                   <CardContent className="space-y-4">
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="startDate">Start Date (Optional)</Label>
                       <DatePicker
                         value={startDate}
@@ -317,7 +317,7 @@ export default function NewChallengePage() {
                         placeholder="Select start date"
                       />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="endDate">End Date (Optional)</Label>
                       <DatePicker
                         value={endDate}
