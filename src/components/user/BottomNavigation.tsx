@@ -9,7 +9,8 @@ import {
   Video, 
   BarChart3, 
   User,
-  Trophy
+  Trophy,
+  Heart
 } from 'lucide-react';
 
 interface NavItem {
@@ -24,6 +25,7 @@ const navItems: NavItem[] = [
   { id: 'videos', label: 'Videos', icon: Video, href: '/user/videos' },
   { id: 'workouts', label: 'Workouts', icon: Target, href: '/user/workout-plans' },
   { id: 'challenges', label: 'Challenges', icon: Trophy, href: '/user/challenges' },
+  { id: 'medical', label: 'medical', icon: Heart, href: '/user/medical' },
   { id: 'profile', label: 'Profile', icon: User, href: '/user/profile' },
 ];
 
@@ -37,7 +39,7 @@ export function BottomNavigation() {
         <NeumorphicCard 
           variant="raised" 
           size="sm" 
-          className="flex items-center justify-around py-2"
+          className="flex overflow-x-auto no-scrollbar space-x-2 py-2 px-1"
         >
           {navItems.map((item) => {
             const isActive = pathname.startsWith(item.href);
