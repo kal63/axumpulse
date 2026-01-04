@@ -8,6 +8,7 @@ import { NeumorphicCard } from '@/components/user/NeumorphicCard';
 import { XPRing } from '@/components/user/XPRing';
 import { cn } from '@/lib/utils';
 import { getImageUrl } from '@/lib/upload-utils';
+import { apiClient } from '@/lib/api-client';
 import { 
   User, 
   Trophy, 
@@ -28,6 +29,46 @@ export default function UserLayout({ children }: UserLayoutProps) {
   const { user, logout, isLoading: authLoading } = useAuth();
   const [isMobile, setIsMobile] = useState(false);
   const [showTrainerPromo, setShowTrainerPromo] = useState(true);
+  const [userStats, setUserStats] = useState({
+    level: 1,
+    xp: 0,
+    xpProgress: 0,
+    xpNeeded: 100,
+    workoutsCompleted: 0,
+    challengesCompleted: 0,
+    achievementsUnlocked: 0
+  });
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  // Fetch user stats from API
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      if (!user) return;
+      
+      try {
+        setStatsLoading(true);
+        const response = await apiClient.getUserStats();
+        
+        if (response.success && response.data) {
+          setUserStats({
+            level: response.data.user.level,
+            xp: response.data.user.xp,
+            xpProgress: response.data.user.xpProgress,
+            xpNeeded: response.data.user.xpNeeded,
+            workoutsCompleted: response.data.stats.workoutPlansCompleted,
+            challengesCompleted: response.data.stats.challengesCompleted,
+            achievementsUnlocked: response.data.stats.achievementsUnlocked
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch user stats:', error);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    fetchUserStats();
+  }, [user]);
 
   // Check if trainer promo was dismissed recently (3 hours)
   useEffect(() => {
@@ -62,17 +103,6 @@ export default function UserLayout({ children }: UserLayoutProps) {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  // Mock user data - replace with real API data later
-  const userStats = {
-    level: 4,
-    xp: 344,
-    xpProgress: 44,
-    xpNeeded: 100,
-    workoutsCompleted: 5,
-    challengesCompleted: 2,
-    achievementsUnlocked: 8
-  };
 
   // Show loading while checking authentication
   if (authLoading) {
