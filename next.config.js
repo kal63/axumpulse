@@ -22,6 +22,18 @@ const nextConfig = {
                 port: '4000',
                 pathname: '/api/v1/uploads/**',
             },
+            {
+                protocol: 'http',
+                hostname: 'localhost',
+                port: '3000',
+                pathname: '/**',
+            },
+            {
+                protocol: 'http',
+                hostname: 'localhost',
+                port: '4000',
+                pathname: '/**',
+            },
         ],
         unoptimized: false
     },

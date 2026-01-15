@@ -5,9 +5,14 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import { Loader2 } from 'lucide-react';
 import { getImageUrl } from '@/lib/upload-utils';
 
-// Configure PDF.js worker
+// Configure PDF.js worker at module level to ensure it's set before component renders
+// Match the version that react-pdf is using (5.4.296)
 if (typeof window !== 'undefined') {
-  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+  // react-pdf uses pdfjs-dist 5.4.296, so we must use the same version for the worker
+  // Using unpkg CDN with the exact version that matches react-pdf
+  pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.mjs`;
+  
+  console.log('[PDFViewer] PDF.js worker configured:', pdfjs.GlobalWorkerOptions.workerSrc, 'API version:', pdfjs.version);
 }
 
 interface PDFViewerProps {

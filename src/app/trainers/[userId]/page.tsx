@@ -42,7 +42,10 @@ const PDFViewer = dynamic(
 
 function CertificateDisplay({ file }: { file: CertificationFile }) {
   const isImage = file.fileType.startsWith('image/');
-  const isPDF = file.fileType === 'application/pdf';
+  // Check for PDF - handle both 'application/pdf' and 'pdf' formats
+  const isPDF = file.fileType === 'application/pdf' || 
+                file.fileType.toLowerCase() === 'pdf' ||
+                file.fileType.toLowerCase().includes('pdf');
   const fileUrl = getImageUrl(file.fileUrl) || file.fileUrl;
 
   if (isImage) {
@@ -238,6 +241,7 @@ export default function TrainerDetailPage() {
                       fill
                       className="object-cover"
                       sizes="160px"
+                      unoptimized
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
@@ -440,7 +444,7 @@ export default function TrainerDetailPage() {
               <div className="space-y-8">
                 {certificationFiles.map((file) => (
                   <div key={file.id} className="w-full">
-                    <h4 className="text-white font-semibold mb-4">{file.fileName}</h4>
+                    {/* <h4 className="text-white font-semibold mb-4">{file.fileName}</h4> */}
                     <CertificateDisplay file={file} />
                   </div>
                 ))}
