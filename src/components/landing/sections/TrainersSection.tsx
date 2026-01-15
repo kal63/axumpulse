@@ -36,7 +36,11 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
       try {
         const response = await apiClient.getPublicTrainers();
         if (response.success && response.data) {
-          setTrainers(response.data.items || []);
+          // Handle both { items: [...] } and direct array response
+          const trainersList = Array.isArray(response.data) 
+            ? response.data 
+            : (response.data.items || []);
+          setTrainers(trainersList);
         }
       } catch (error) {
         console.error('Failed to fetch trainers:', error);

@@ -13,25 +13,34 @@ export function FallbackHero() {
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
         {/* Subtle floating elements */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(30)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-white/20 rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                y: [0, -30, 0],
-                opacity: [0.2, 0.6, 0.2],
-              }}
-              transition={{
-                duration: 4 + Math.random() * 3,
-                repeat: Infinity,
-                delay: Math.random() * 2,
-              }}
-            />
-          ))}
+          {[...Array(30)].map((_, i) => {
+            // Use deterministic pseudo-random based on index to avoid hydration mismatch
+            const seed = i * 0.618033988749; // Golden ratio for better distribution
+            const left = ((seed * 100) % 100);
+            const top = (((seed * 137.508) % 100)); // Another prime for different distribution
+            const duration = 4 + ((seed * 3) % 3);
+            const delay = (seed * 2) % 2;
+            
+            return (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 bg-white/20 rounded-full"
+                style={{
+                  left: `${left}%`,
+                  top: `${top}%`,
+                }}
+                animate={{
+                  y: [0, -30, 0],
+                  opacity: [0.2, 0.6, 0.2],
+                }}
+                transition={{
+                  duration: duration,
+                  repeat: Infinity,
+                  delay: delay,
+                }}
+              />
+            );
+          })}
         </div>
       </div>
 

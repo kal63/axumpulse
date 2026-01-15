@@ -251,8 +251,46 @@ export interface TrainerSettings {
 export interface PublicTrainer {
   userId: number
   name: string
+  slug: string
   profilePicture: string | null
   specialties: string[]
+}
+
+export interface CertificationFile {
+  id: number
+  fileName: string
+  fileUrl: string
+  fileType: string
+  fileSize: number
+  createdAt: string
+}
+
+export interface PublicTrainerDetail {
+  userId: number
+  user: {
+    id: number
+    name: string
+    email?: string
+    profilePicture?: string
+    phone?: string
+    dateOfBirth?: string
+    gender?: 'male' | 'female'
+  }
+  trainer: {
+    bio?: string
+    specialties: string[]
+    verified: boolean
+    verifiedAt?: string
+  }
+  application: {
+    yearsOfExperience?: number
+    languages: string[]
+    certifications: string[]
+    portfolio: string[]
+    socialMedia: Record<string, any>
+    preferences: Record<string, any>
+    certificationFiles: CertificationFile[]
+  } | null
 }
 
 export interface UpdateSettingsRequest {
@@ -2717,6 +2755,59 @@ class ApiClient {
   async getPublicTrainers(): Promise<ApiResponse<{ items: PublicTrainer[] }>> {
     return this.request<{ items: PublicTrainer[] }>('/public/trainers')
   }
+
+  async getPublicTrainerDetail(slugOrUserId: string | number): Promise<ApiResponse<PublicTrainerDetail>> {
+    // If it's a number (userId), use it directly. Otherwise encode the slug
+    const param = typeof slugOrUserId === 'number' ? slugOrUserId.toString() : encodeURIComponent(slugOrUserId);
+    console.log('[API Client] Fetching trainer detail:', { original: slugOrUserId, param });
+    return this.request<PublicTrainerDetail>(`/public/trainers/${param}`)
+  }
+}
+
+// Public API interfaces
+export interface PublicTrainer {
+  userId: number
+  name: string
+  slug: string
+  profilePicture?: string | null
+  specialties: string[]
+}
+
+export interface CertificationFile {
+  id: number
+  fileName: string
+  fileUrl: string
+  fileType: string
+  fileSize: number
+  createdAt: string
+}
+
+export interface PublicTrainerDetail {
+  userId: number
+  user: {
+    id: number
+    name: string
+    email?: string
+    profilePicture?: string
+    phone?: string
+    dateOfBirth?: string
+    gender?: 'male' | 'female'
+  }
+  trainer: {
+    bio?: string
+    specialties: string[]
+    verified: boolean
+    verifiedAt?: string
+  }
+  application?: {
+    yearsOfExperience?: number
+    languages: string[]
+    certifications: (string | { name: string; date?: string; expiry?: string; issuer?: string })[]
+    portfolio: string[]
+    socialMedia: Record<string, string>
+    preferences: Record<string, any>
+    certificationFiles: CertificationFile[]
+  } | null
 }
 
 // Create a singleton instance

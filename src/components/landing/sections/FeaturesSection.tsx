@@ -532,26 +532,33 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
 
                 {/* Sparkles effect */}
                 <div className="sparkles absolute inset-0 opacity-0 pointer-events-none">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute w-2 h-2 bg-yellow-400 rounded-full"
-                      style={{
-                        left: `${Math.random() * 100}%`,
-                        top: `${Math.random() * 100}%`
-                      }}
-                      animate={{
-                        scale: [0, 1, 0],
-                        opacity: [0, 1, 0],
-                        rotate: 360
-                      }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        delay: i * 0.2
-                      }}
-                    />
-                  ))}
+                  {Array.from({ length: 8 }).map((_, i) => {
+                    // Use deterministic pseudo-random based on index and feature index to avoid hydration mismatch
+                    const seed = (index * 8 + i) * 0.618033988749; // Golden ratio for better distribution
+                    const left = ((seed * 100) % 100);
+                    const top = (((seed * 137.508) % 100)); // Another prime for different distribution
+                    
+                    return (
+                      <motion.div
+                        key={i}
+                        className="absolute w-2 h-2 bg-yellow-400 rounded-full"
+                        style={{
+                          left: `${left}%`,
+                          top: `${top}%`
+                        }}
+                        animate={{
+                          scale: [0, 1, 0],
+                          opacity: [0, 1, 0],
+                          rotate: 360
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          delay: i * 0.2
+                        }}
+                      />
+                    );
+                  })}
                 </div>
 
                 {/* Hover Effect */}
