@@ -248,6 +248,13 @@ export interface TrainerSettings {
   }
 }
 
+export interface PublicTrainer {
+  userId: number
+  name: string
+  profilePicture: string | null
+  specialties: string[]
+}
+
 export interface UpdateSettingsRequest {
   user?: {
     name?: string
@@ -2704,6 +2711,11 @@ class ApiClient {
     return this.request<{ deleted: boolean }>(`/medical/consults/slots/${id}`, {
       method: 'DELETE'
     })
+  }
+
+  // Public API methods (no authentication required)
+  async getPublicTrainers(): Promise<ApiResponse<{ items: PublicTrainer[] }>> {
+    return this.request<{ items: PublicTrainer[] }>('/public/trainers')
   }
 }
 

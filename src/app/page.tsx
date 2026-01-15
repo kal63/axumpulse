@@ -9,6 +9,7 @@ import { HowItWorksSection } from "@/components/landing/sections/HowItWorksSecti
 import { PricingSection } from "@/components/landing/sections/PricingSection";
 import { AboutUsSection } from "@/components/landing/sections/AboutUsSection";
 import { ServicesSection } from "@/components/landing/sections/ServicesSection";
+import { TrainersSection } from "@/components/landing/sections/TrainersSection";
 import { ForTrainersSection } from "@/components/landing/sections/ForTrainersSection";
 import { CompanySection } from "@/components/landing/sections/CompanySection";
 import Footer from "@/components/shared/footer";
@@ -77,7 +78,7 @@ export default function AxumPulseLandingPage() {
 
   // Real loading logic - wait for all sections to report loaded
   useEffect(() => {
-    const requiredSections = ['hero', 'features', 'how-it-works', 'pricing', 'about', 'services', 'for-trainers', 'company'];
+    const requiredSections = ['hero', 'features', 'how-it-works', 'pricing', 'about', 'services', 'trainers', 'for-trainers', 'company'];
     const progress = Math.round((loadedSections.size / requiredSections.length) * 100);
     console.log(`Loading progress: ${loadedSections.size}/${requiredSections.length} sections loaded (${progress}%)`);
 
@@ -122,7 +123,7 @@ export default function AxumPulseLandingPage() {
         return prev; // Don't update if already loaded
       }
       const newSet = new Set([...prev, sectionName]);
-      console.log(`📊 Loaded sections: ${Array.from(newSet).join(', ')} (${newSet.size}/8)`);
+      console.log(`📊 Loaded sections: ${Array.from(newSet).join(', ')} (${newSet.size}/9)`);
       return newSet;
     });
   }, []);
@@ -243,9 +244,9 @@ export default function AxumPulseLandingPage() {
       >
         <LoadingScreen
           message={loadingMessage}
-          progress={Math.round((loadedSections.size / 8) * 100)}
+          progress={Math.round((loadedSections.size / 9) * 100)}
           loadedSections={loadedSections.size}
-          totalSections={8}
+          totalSections={9}
         />
       </div>
 
@@ -272,6 +273,9 @@ export default function AxumPulseLandingPage() {
 
       {/* Services Section */}
       <ServicesSection onLoaded={() => onSectionLoaded('services')} />
+
+      {/* Trainers Section */}
+      <TrainersSection onLoaded={() => onSectionLoaded('trainers')} />
 
       {/* For Trainers Section */}
       <ForTrainersSection onLoaded={() => onSectionLoaded('for-trainers')} />

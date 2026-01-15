@@ -8,7 +8,21 @@ const nextConfig = {
 
     // Enable image optimization for Node.js deployment
     images: {
-        domains: ['axum-pulse-api.bitappstech.com'],
+        domains: ['axum-pulse-api.bitappstech.com', 'localhost'],
+        remotePatterns: [
+            {
+                protocol: 'http',
+                hostname: 'localhost',
+                port: '3000',
+                pathname: '/api/v1/uploads/**',
+            },
+            {
+                protocol: 'http',
+                hostname: 'localhost',
+                port: '4000',
+                pathname: '/api/v1/uploads/**',
+            },
+        ],
         unoptimized: false
     },
 
