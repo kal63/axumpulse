@@ -303,7 +303,7 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
             <div className="text-white/60">No trainers available at the moment.</div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto" ref={cardsRef}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch" ref={cardsRef}>
             {trainers.map((trainer) => {
               const profileImageUrl = trainer.profilePicture 
                 ? getImageUrl(trainer.profilePicture) 
@@ -315,69 +315,61 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
                   href={`/trainers/${trainer.userId}`}
                   className="group h-full"
                 >
-                  <Card className="bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105 relative overflow-hidden hover:border-blue-500/30 h-full flex flex-col">
+                  <Card className="bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105 relative overflow-hidden hover:border-blue-500/30 h-full min-h-[100px]">
                     {/* Glowing effect */}
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
-                    <CardContent className="p-6 relative z-10 flex flex-col flex-1">
-                      {/* Profile Picture */}
-                      <div className="flex justify-center mb-4 flex-shrink-0">
-                        <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-blue-500/30 group-hover:border-blue-400 transition-colors">
+                    <CardContent className="p-4 relative z-10 flex flex-row items-center gap-4 h-full">
+                      {/* Profile Picture - Left Side */}
+                      <div className="flex-shrink-0">
+                        <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-blue-500/30 group-hover:border-blue-400 transition-colors">
                           {profileImageUrl ? (
                             <Image
                               src={profileImageUrl}
                               alt={trainer.name}
                               fill
                               className="object-cover"
-                              sizes="96px"
+                              sizes="64px"
                             />
                           ) : (
                             <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-                              <User className="w-12 h-12 text-white/60" />
+                              <User className="w-8 h-8 text-white/60" />
                             </div>
                           )}
                           {/* Verified badge */}
-                          <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1 border-2 border-slate-900">
-                            <UserCheck className="w-4 h-4 text-white" />
+                          <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-0.5 border-2 border-slate-900">
+                            <UserCheck className="w-3 h-3 text-white" />
                           </div>
                         </div>
                       </div>
                       
-                      {/* Trainer Name */}
-                      <h3 className="text-xl font-bold text-white mb-3 text-center group-hover:text-blue-400 transition-colors flex-shrink-0">
-                        {trainer.name}
-                      </h3>
-                      
-                      {/* Specialties - flex-grow to push content down */}
-                      <div className="flex-grow flex flex-col justify-center">
+                      {/* Trainer Info - Right Side */}
+                      <div className="flex-1 min-w-0">
+                        {/* Trainer Name */}
+                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors truncate">
+                          {trainer.name}
+                        </h3>
+                        
+                        {/* Specialties */}
                         {trainer.specialties && trainer.specialties.length > 0 ? (
-                          <div className="flex flex-wrap gap-2 justify-center min-h-[60px] items-center">
-                            {trainer.specialties.slice(0, 3).map((specialty, index) => (
+                          <div className="flex flex-wrap gap-1.5">
+                            {trainer.specialties.slice(0, 2).map((specialty, index) => (
                               <span
                                 key={index}
-                                className="px-3 py-1 text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full"
+                                className="px-2 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full"
                               >
                                 {formatSpecialty(specialty)}
                               </span>
                             ))}
-                            {trainer.specialties.length > 3 && (
-                              <span className="px-3 py-1 text-xs font-medium text-white/60">
-                                +{trainer.specialties.length - 3} more
+                            {trainer.specialties.length > 2 && (
+                              <span className="px-2 py-0.5 text-xs font-medium text-white/60">
+                                +{trainer.specialties.length - 2}
                               </span>
                             )}
                           </div>
                         ) : (
-                          <div className="min-h-[60px] flex items-center justify-center">
-                            <span className="text-sm text-white/40">No specialties listed</span>
-                          </div>
+                          <span className="text-xs text-white/40">No specialties listed</span>
                         )}
-                      </div>
-                      
-                      {/* View Profile hint */}
-                      <div className="mt-4 text-center flex-shrink-0">
-                        <span className="text-sm text-white/50 group-hover:text-blue-400 transition-colors">
-                          View Profile →
-                        </span>
                       </div>
                     </CardContent>
                   </Card>
