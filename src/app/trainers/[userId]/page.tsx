@@ -227,10 +227,11 @@ export default function TrainerDetailPage() {
           Back
         </Button>
 
-        {/* Trainer Header */}
+        {/* Trainer Details - Combined Card */}
         <Card className="bg-slate-800 border-slate-700 mb-8">
           <CardContent className="p-8">
-            <div className="flex flex-col md:flex-row gap-8">
+            {/* Trainer Header Section */}
+            <div className="flex flex-col md:flex-row gap-8 mb-8 pb-8 border-b border-slate-700">
               {/* Profile Picture */}
               <div className="flex-shrink-0">
                 <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-blue-500/30">
@@ -318,140 +319,119 @@ export default function TrainerDetailPage() {
                 )}
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Additional Information */}
-        {trainer.application && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            {/* Languages */}
-            {trainer.application.languages && trainer.application.languages.length > 0 && (
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Globe className="w-5 h-5" />
-                    Languages
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {trainer.application.languages.map((lang, index) => (
-                      <Badge key={index} className="bg-purple-500/20 text-purple-300 border-purple-500/30">
-                        {lang}
-                      </Badge>
-                    ))}
+            {/* Additional Information Section */}
+            {trainer.application && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 pb-8 border-b border-slate-700">
+                {/* Languages */}
+                {trainer.application.languages && trainer.application.languages.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                      <Globe className="w-5 h-5" />
+                      Languages
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {trainer.application.languages.map((lang, index) => (
+                        <Badge key={index} className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+                          {lang}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                )}
 
-            {/* Years of Experience */}
-            {trainer.application.yearsOfExperience && (
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Briefcase className="w-5 h-5" />
-                    Experience
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-white/80 text-lg">
-                    {trainer.application.yearsOfExperience} {trainer.application.yearsOfExperience === 1 ? 'year' : 'years'} of experience
-                  </p>
-                </CardContent>
-              </Card>
-            )}
+                {/* Years of Experience */}
+                {trainer.application.yearsOfExperience && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                      <Briefcase className="w-5 h-5" />
+                      Experience
+                    </h3>
+                    <p className="text-white/80 text-lg">
+                      {trainer.application.yearsOfExperience} {trainer.application.yearsOfExperience === 1 ? 'year' : 'years'} of experience
+                    </p>
+                  </div>
+                )}
 
-            {/* Certifications List */}
-            {trainer.application.certifications && trainer.application.certifications.length > 0 && (
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Award className="w-5 h-5" />
-                    Certifications
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {trainer.application.certifications.map((cert, index) => {
-                      // Handle both string and object formats
-                      if (typeof cert === 'string') {
+                {/* Certifications List */}
+                {trainer.application.certifications && trainer.application.certifications.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                      <Award className="w-5 h-5" />
+                      Certifications
+                    </h3>
+                    <ul className="space-y-3">
+                      {trainer.application.certifications.map((cert, index) => {
+                        // Handle both string and object formats
+                        if (typeof cert === 'string') {
+                          return (
+                            <li key={index} className="text-white/80 flex items-start gap-2">
+                              <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                              <span>{cert}</span>
+                            </li>
+                          );
+                        }
+                        // Handle object format with date, name, expiry, issuer
+                        const certObj = cert as { name?: string; date?: string; expiry?: string; issuer?: string };
                         return (
                           <li key={index} className="text-white/80 flex items-start gap-2">
                             <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
-                            <span>{cert}</span>
+                            <div className="flex-1">
+                              <div className="font-medium">{certObj.name || 'Certification'}</div>
+                              {certObj.issuer && (
+                                <div className="text-sm text-white/60">Issued by: {certObj.issuer}</div>
+                              )}
+                              {certObj.date && (
+                                <div className="text-sm text-white/60">Date: {formatDate(certObj.date)}</div>
+                              )}
+                              {certObj.expiry && (
+                                <div className="text-sm text-white/60">Expires: {formatDate(certObj.expiry)}</div>
+                              )}
+                            </div>
                           </li>
                         );
-                      }
-                      // Handle object format with date, name, expiry, issuer
-                      const certObj = cert as { name?: string; date?: string; expiry?: string; issuer?: string };
-                      return (
-                        <li key={index} className="text-white/80 flex items-start gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
-                          <div className="flex-1">
-                            <div className="font-medium">{certObj.name || 'Certification'}</div>
-                            {certObj.issuer && (
-                              <div className="text-sm text-white/60">Issued by: {certObj.issuer}</div>
-                            )}
-                            {certObj.date && (
-                              <div className="text-sm text-white/60">Date: {formatDate(certObj.date)}</div>
-                            )}
-                            {certObj.expiry && (
-                              <div className="text-sm text-white/60">Expires: {formatDate(certObj.expiry)}</div>
-                            )}
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Portfolio */}
-            {trainer.application.portfolio && trainer.application.portfolio.length > 0 && (
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Briefcase className="w-5 h-5" />
-                    Portfolio
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {trainer.application.portfolio.map((item, index) => (
-                      <li key={index} className="text-white/80">
-                        • {item}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        )}
-
-        {/* Certificates Section */}
-        {certificationFiles.length > 0 && (
-          <Card className="bg-slate-800 border-slate-700 mb-8">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <FileText className="w-5 h-5" />
-                Certificates & Documents
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-8">
-                {certificationFiles.map((file) => (
-                  <div key={file.id} className="w-full">
-                    {/* <h4 className="text-white font-semibold mb-4">{file.fileName}</h4> */}
-                    <CertificateDisplay file={file} />
+                      })}
+                    </ul>
                   </div>
-                ))}
+                )}
+
+                {/* Portfolio */}
+                {trainer.application.portfolio && trainer.application.portfolio.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                      <Briefcase className="w-5 h-5" />
+                      Portfolio
+                    </h3>
+                    <ul className="space-y-2">
+                      {trainer.application.portfolio.map((item, index) => (
+                        <li key={index} className="text-white/80">
+                          • {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-            </CardContent>
-          </Card>
-        )}
+            )}
+
+            {/* Certificates Section */}
+            {certificationFiles.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <FileText className="w-5 h-5" />
+                  Certificates & Documents
+                </h3>
+                <div className="space-y-8">
+                  {certificationFiles.map((file) => (
+                    <div key={file.id} className="w-full">
+                      <CertificateDisplay file={file} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       <Footer />
