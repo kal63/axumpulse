@@ -255,12 +255,22 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
       id="trainers"
       className="py-12 lg:py-16 relative overflow-hidden z-10 scroll-mt-24 md:scroll-mt-28"
     >
-      {/* Animated background particles */}
+      {/* Animated background particles - top fade for ServicesSection only */}
       <div 
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)'
+          background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)',
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 100%)'
+        }}
+      />
+      
+      {/* Bottom overlay to blend seamlessly with ForTrainersSection */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none z-0"
+        style={{
+          background: 'linear-gradient(to top, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.4) 25%, rgba(15, 23, 42, 0.2) 50%, rgba(15, 23, 42, 0.1) 75%, transparent 100%)'
         }}
       />
 

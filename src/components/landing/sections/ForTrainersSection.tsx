@@ -205,12 +205,20 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
       id="for-trainers"
       className="py-20 lg:py-32 relative overflow-hidden z-10 scroll-mt-24 md:scroll-mt-28"
     >
-      {/* Animated background particles */}
+      {/* Animated background particles - full opacity to blend with TrainersSection overlay */}
       <div 
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
         style={{
           background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)'
+        }}
+      />
+      
+      {/* Top overlay to blend seamlessly with TrainersSection - matching its bottom overlay */}
+      <div 
+        className="absolute top-0 left-0 right-0 h-64 pointer-events-none z-0"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.4) 25%, rgba(15, 23, 42, 0.2) 50%, rgba(15, 23, 42, 0.1) 75%, transparent 100%)'
         }}
       />
 
