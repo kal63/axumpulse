@@ -10,7 +10,9 @@ import {
   BarChart3, 
   User,
   Trophy,
-  Heart
+  Heart,
+  Flame,
+  Gamepad2
 } from 'lucide-react';
 
 interface NavItem {
@@ -22,10 +24,9 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: 'home', label: 'Home', icon: Home, href: '/user/dashboard' },
-  { id: 'videos', label: 'Videos', icon: Video, href: '/user/videos' },
-  { id: 'workouts', label: 'Workouts', icon: Target, href: '/user/workout-plans' },
+  { id: 'daily-challenges', label: 'Daily', icon: Flame, href: '/user/daily-challenges' },
+  { id: 'games', label: 'Games', icon: Gamepad2, href: '/user/games' },
   { id: 'challenges', label: 'Challenges', icon: Trophy, href: '/user/challenges' },
-  { id: 'medical', label: 'medical', icon: Heart, href: '/user/medical' },
   { id: 'profile', label: 'Profile', icon: User, href: '/user/profile' },
 ];
 

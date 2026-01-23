@@ -30,7 +30,8 @@ import {
   LogOut,
   Settings,
   ChevronDown,
-  ClipboardList
+  ClipboardList,
+  Gamepad2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/auth-context'
@@ -45,6 +46,7 @@ const navigation = [
   { name: 'Trainers', href: '/admin/trainers', icon: UserCheck },
   { name: 'Users', href: '/admin/users', icon: Users },
   { name: 'Challenges', href: '/admin/challenges', icon: Trophy },
+  { name: 'Games', href: '/admin/games', icon: Gamepad2 },
   { name: 'Rewards', href: '/admin/rewards', icon: Gift },
   { name: 'Languages', href: '/admin/languages', icon: Globe },
 ]

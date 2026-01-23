@@ -62,8 +62,13 @@ export default function NewChallengePage() {
     language: 'en',
     isPublic: true,
     startDate: '',
-    endDate: ''
+    endDate: '',
+    isDailyChallenge: false,
+    fitnessLevel: null,
+    recurrencePattern: null,
+    autoAssign: false
   })
+  const [recurrenceDays, setRecurrenceDays] = useState<number[]>([])
   const [startDate, setStartDate] = useState<Date | undefined>(undefined)
   const [endDate, setEndDate] = useState<Date | undefined>(undefined)
 
@@ -86,7 +91,10 @@ export default function NewChallengePage() {
       const challengeData = {
         ...challenge,
         startDate: startDate ? startDate.toISOString() : undefined,
-        endDate: endDate ? endDate.toISOString() : undefined
+        endDate: endDate ? endDate.toISOString() : undefined,
+        recurrencePattern: challenge.isDailyChallenge && recurrenceDays.length > 0
+          ? { days: recurrenceDays }
+          : null
       }
       
       const res = await apiClient.createTrainerChallenge(challengeData)
@@ -257,6 +265,87 @@ export default function NewChallengePage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Daily Challenge Settings */}
+          {challenge.isDailyChallenge && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  Daily Challenge Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="fitnessLevel">Target Fitness Level</Label>
+                  <Select 
+                    value={challenge.fitnessLevel || undefined} 
+                    onValueChange={(value) => handleInputChange('fitnessLevel', value === 'all' ? null : value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select target fitness level (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Levels</SelectItem>
+                      {DIFFICULTY_LEVELS.map((level) => (
+                        <SelectItem key={level.value} value={level.value}>
+                          {level.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    This is separate from difficulty. Select which user fitness level this daily challenge targets.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Recurrence Pattern (Days of Week)</Label>
+                  <div className="grid grid-cols-7 gap-2">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => {
+                          if (recurrenceDays.includes(index)) {
+                            setRecurrenceDays(recurrenceDays.filter(d => d !== index));
+                          } else {
+                            setRecurrenceDays([...recurrenceDays, index]);
+                          }
+                        }}
+                        className={`
+                          p-2 rounded-lg border transition-all
+                          ${recurrenceDays.includes(index)
+                            ? 'bg-cyan-500 text-white border-cyan-600'
+                            : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700'
+                          }
+                        `}
+                      >
+                        {day}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Select which days of the week this challenge should be available. Leave empty for all days.
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="autoAssign">Auto-Assign to Users</Label>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Automatically assign this challenge to users matching the target fitness level
+                    </p>
+                  </div>
+                  <Switch
+                    id="autoAssign"
+                    checked={challenge.autoAssign || false}
+                    onCheckedChange={(checked) => handleInputChange('autoAssign', checked)}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Sidebar */}
@@ -270,6 +359,19 @@ export default function NewChallengePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="isDailyChallenge">Daily Challenge</Label>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Mark this as a recurring daily challenge
+                  </p>
+                </div>
+                <Switch
+                  id="isDailyChallenge"
+                  checked={challenge.isDailyChallenge || false}
+                  onCheckedChange={(checked) => handleInputChange('isDailyChallenge', checked)}
+                />
+              </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="isPublic">Public Challenge</Label>

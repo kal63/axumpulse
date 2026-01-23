@@ -13,7 +13,10 @@ import {
   Trophy,
   Settings,
   Award,
-  Heart
+  Heart,
+  Flame,
+  Gamepad2,
+  Users
 } from 'lucide-react';
 
 interface NavItem {
@@ -38,6 +41,9 @@ export function Sidebar({ className }: SidebarProps) {
     { id: 'videos', label: 'Videos', icon: Video, href: '/user/videos' },
     { id: 'workouts', label: 'Workouts', icon: Target, href: '/user/workout-plans' },
     { id: 'challenges', label: 'Challenges', icon: Trophy, href: '/user/challenges' },
+    { id: 'daily-challenges', label: 'Daily Challenges', icon: Flame, href: '/user/daily-challenges' },
+    { id: 'games', label: 'Games', icon: Gamepad2, href: '/user/games' },
+    { id: 'leaderboard', label: 'Leaderboard', icon: Users, href: '/user/leaderboard' },
     { id: 'progress', label: 'Progress', icon: BarChart3, href: '/user/progress' },
     { id: 'medical', label: 'Medical', icon: Heart, href: '/user/medical' },
     { id: 'profile', label: 'Profile', icon: User, href: '/user/profile' },

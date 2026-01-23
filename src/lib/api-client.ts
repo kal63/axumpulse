@@ -113,8 +113,59 @@ export interface Challenge {
   trainerId?: number
   startDate?: string
   endDate?: string
+  // Daily challenge fields
+  isDailyChallenge?: boolean
+  fitnessLevel?: 'beginner' | 'intermediate' | 'advanced' | null
+  recurrencePattern?: { days: number[] } | null
+  autoAssign?: boolean
   createdAt: string
   updatedAt: string
+}
+
+export interface DailyChallenge {
+  id: number
+  title: string
+  description?: string
+  type?: 'fitness' | 'nutrition' | 'wellness' | 'achievement'
+  difficulty?: 'beginner' | 'intermediate' | 'advanced'
+  fitnessLevel?: 'beginner' | 'intermediate' | 'advanced' | null
+  xpReward?: number
+  requirements?: string
+  completed: boolean
+  completedAt?: string | null
+  xpEarned?: number
+}
+
+export interface Game {
+  id: number
+  gameType: 'spin_win' | 'quiz_battle' | 'memory_game'
+  title: string
+  description?: string
+  configJson?: Record<string, unknown>
+  xpReward: number
+  active: boolean
+  difficulty?: 'beginner' | 'intermediate' | 'advanced'
+  useAiGeneration?: boolean
+  aiPromptTemplate?: string
+  cachedContent?: Record<string, unknown> | null
+  cacheExpiresAt?: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface LeaderboardEntry {
+  rank: number
+  userId: number
+  name: string
+  profilePicture?: string | null
+  xp: number
+  level: number
+  challengesCompleted: number
+  workoutsCompleted: number
+  streak: number
+  city?: string | null
+  ageGroup?: string | null
+  isCurrentUser?: boolean
 }
 
 export interface Reward {
@@ -252,7 +303,7 @@ export interface PublicTrainer {
   userId: number
   name: string
   slug: string
-  profilePicture: string | null
+  profilePicture?: string | null
   specialties: string[]
 }
 
@@ -2762,52 +2813,238 @@ class ApiClient {
     console.log('[API Client] Fetching trainer detail:', { original: slugOrUserId, param });
     return this.request<PublicTrainerDetail>(`/public/trainers/${param}`)
   }
-}
 
-// Public API interfaces
-export interface PublicTrainer {
-  userId: number
-  name: string
-  slug: string
-  profilePicture?: string | null
-  specialties: string[]
-}
+  // ==================== DAILY CHALLENGES ====================
 
-export interface CertificationFile {
-  id: number
-  fileName: string
-  fileUrl: string
-  fileType: string
-  fileSize: number
-  createdAt: string
-}
-
-export interface PublicTrainerDetail {
-  userId: number
-  user: {
-    id: number
-    name: string
-    email?: string
-    profilePicture?: string
-    phone?: string
-    dateOfBirth?: string
-    gender?: 'male' | 'female'
+  // Get today's available daily challenges
+  async getDailyChallenges(): Promise<ApiResponse<{
+    challenges: DailyChallenge[]
+    date: string
+  }>> {
+    return this.request<{
+      challenges: DailyChallenge[]
+      date: string
+    }>('/user/daily-challenges')
   }
-  trainer: {
-    bio?: string
-    specialties: string[]
-    verified: boolean
-    verifiedAt?: string
+
+  // Get today's challenges with completion status
+  async getTodayChallenges(): Promise<ApiResponse<{
+    challenges: DailyChallenge[]
+    date: string
+    completedCount: number
+    totalCount: number
+  }>> {
+    return this.request<{
+      challenges: DailyChallenge[]
+      date: string
+      completedCount: number
+      totalCount: number
+    }>('/user/daily-challenges/today')
   }
-  application?: {
-    yearsOfExperience?: number
-    languages: string[]
-    certifications: (string | { name: string; date?: string; expiry?: string; issuer?: string })[]
-    portfolio: string[]
-    socialMedia: Record<string, string>
-    preferences: Record<string, any>
-    certificationFiles: CertificationFile[]
-  } | null
+
+  // Complete a daily challenge
+  async completeDailyChallenge(id: number): Promise<ApiResponse<{
+    message: string
+    completion: any
+    xp: number
+    xpAdded: number
+    level: number
+    leveledUp: boolean
+    streak: number
+  }>> {
+    return this.request<{
+      message: string
+      completion: any
+      xp: number
+      xpAdded: number
+      level: number
+      leveledUp: boolean
+      streak: number
+    }>(`/user/daily-challenges/${id}/complete`, {
+      method: 'POST'
+    })
+  }
+
+  // Get user's current streak
+  async getDailyChallengeStreak(): Promise<ApiResponse<{
+    streak: number
+    xp: number
+    level: number
+  }>> {
+    return this.request<{
+      streak: number
+      xp: number
+      level: number
+    }>('/user/daily-challenges/streak')
+  }
+
+  // ==================== GAMES ====================
+
+  // Get available games
+  async getGames(params?: {
+    gameType?: 'spin_win' | 'quiz_battle' | 'memory_game'
+    difficulty?: 'beginner' | 'intermediate' | 'advanced'
+    active?: boolean
+  }): Promise<ApiResponse<{
+    games: Game[]
+  }>> {
+    const query = createPaginationQuery(params)
+    return this.request<{
+      games: Game[]
+    }>(`/user/games${query}`)
+  }
+
+  // Get game details
+  async getGameById(id: number): Promise<ApiResponse<{
+    game: Game
+  }>> {
+    return this.request<{
+      game: Game
+    }>(`/user/games/${id}`)
+  }
+
+  // Start/play a game
+  async playGame(id: number): Promise<ApiResponse<{
+    gameId: number
+    gameType: 'spin_win' | 'quiz_battle' | 'memory_game'
+    sessionId: string
+    content: any
+    xpReward: number
+  }>> {
+    return this.request<{
+      gameId: number
+      gameType: 'spin_win' | 'quiz_battle' | 'memory_game'
+      sessionId: string
+      content: any
+      xpReward: number
+    }>(`/user/games/${id}/play`, {
+      method: 'POST'
+    })
+  }
+
+  // Submit game results
+  async submitGameResults(
+    id: number,
+    gameData: any,
+    sessionId?: string
+  ): Promise<ApiResponse<{
+    message: string
+    score: number
+    maxScore: number
+    xpEarned: number
+    totalXP: number
+    level: number
+    leveledUp: boolean
+    progress: any
+  }>> {
+    return this.request<{
+      message: string
+      score: number
+      maxScore: number
+      xpEarned: number
+      totalXP: number
+      level: number
+      leveledUp: boolean
+      progress: any
+    }>(`/user/games/${id}/submit`, {
+      method: 'POST',
+      body: JSON.stringify({ gameData, sessionId })
+    })
+  }
+
+  // Get user's game history
+  async getGameHistory(params?: {
+    gameType?: 'spin_win' | 'quiz_battle' | 'memory_game'
+    limit?: number
+  }): Promise<ApiResponse<{
+    history: Array<{
+      id: number
+      userId: number
+      gameId: number
+      score: number
+      xpEarned: number
+      completedAt: string
+      gameData: any
+      game: Game | null
+    }>
+  }>> {
+    const query = createPaginationQuery(params)
+    return this.request<{
+      history: Array<{
+        id: number
+        userId: number
+        gameId: number
+        score: number
+        xpEarned: number
+        completedAt: string
+        gameData: any
+        game: Game | null
+      }>
+    }>(`/user/games/history${query}`)
+  }
+
+  // ==================== LEADERBOARD ====================
+
+  // Get global leaderboard
+  async getGlobalLeaderboard(params?: {
+    filterBy?: 'city' | 'ageGroup' | 'friends'
+    period?: 'weekly' | 'monthly' | 'all-time'
+    limit?: number
+    offset?: number
+  }): Promise<ApiResponse<{
+    leaderboard: LeaderboardEntry[]
+    userRank: number | null
+    totalUsers: number
+    period: string
+    filterBy: string
+  }>> {
+    const query = createPaginationQuery(params)
+    return this.request<{
+      leaderboard: LeaderboardEntry[]
+      userRank: number | null
+      totalUsers: number
+      period: string
+      filterBy: string
+    }>(`/user/leaderboard/global${query}`)
+  }
+
+  // Get current user's rank and surrounding users
+  async getMyRank(params?: {
+    filterBy?: 'city' | 'ageGroup' | 'friends'
+    period?: 'weekly' | 'monthly' | 'all-time'
+  }): Promise<ApiResponse<{
+    userRank: number
+    userXP: number
+    userLevel: number
+    leaderboard: LeaderboardEntry[]
+    totalUsers: number
+    period: string
+    filterBy: string
+  }>> {
+    const query = createPaginationQuery(params)
+    return this.request<{
+      userRank: number
+      userXP: number
+      userLevel: number
+      leaderboard: LeaderboardEntry[]
+      totalUsers: number
+      period: string
+      filterBy: string
+    }>(`/user/leaderboard/my-rank${query}`)
+  }
+
+  // Get leaderboard reward information
+  async getLeaderboardRewards(): Promise<ApiResponse<{
+    weekly: Record<string, any>
+    monthly: Record<string, any>
+    note: string
+  }>> {
+    return this.request<{
+      weekly: Record<string, any>
+      monthly: Record<string, any>
+      note: string
+    }>('/user/leaderboard/rewards')
+  }
 }
 
 // Create a singleton instance
@@ -2819,6 +3056,9 @@ export type {
   PaginatedResponse as PaginatedResponseType,
   User as UserType,
   Challenge as ChallengeType,
+  DailyChallenge as DailyChallengeType,
+  Game as GameType,
+  LeaderboardEntry as LeaderboardEntryType,
   Reward as RewardType,
   Language as LanguageType,
   Trainer as TrainerType,
