@@ -67,8 +67,8 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
       '-=0.3'
     );
 
-    // Scroll-triggered animations
-    ScrollTrigger.create({
+    // Scroll-triggered animations with cleanup
+    const scrollTrigger = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: 'top center',
       end: 'bottom center',
@@ -87,6 +87,11 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
         });
       },
     });
+
+    return () => {
+      scrollTrigger.kill();
+      tl.kill();
+    };
   }, [prefersReducedMotion]);
 
 

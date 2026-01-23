@@ -354,6 +354,15 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
       onLoaded?.();
     }, 4000);
 
+    // Cleanup function
+    return () => {
+      tl.kill();
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.vars.trigger === sectionRef.current) {
+          trigger.kill();
+        }
+      });
+    };
   }, [onLoaded]);
 
   return (

@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { useOptimizedParticles } from '@/hooks/useOptimizedParticles';
 import { 
   Brain, 
   Users, 
@@ -82,35 +83,12 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<HTMLDivElement>(null);
+  const particlesRef = useOptimizedParticles({
+    interval: 1200, // Reduced from 200ms to 1200ms
+    maxParticles: 8,
+    particleDuration: 6000
+  });
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-
-  // Create floating particles
-  useEffect(() => {
-    const createParticle = () => {
-      const particle = document.createElement('div');
-      particle.className = 'absolute w-2 h-2 bg-blue-400/30 rounded-full pointer-events-none';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.top = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 3 + 's';
-      particle.style.animationDuration = (3 + Math.random() * 4) + 's';
-      particle.style.animation = 'float 6s ease-in-out infinite';
-      
-      if (particlesRef.current) {
-        particlesRef.current.appendChild(particle);
-        
-        // Remove particle after animation
-        setTimeout(() => {
-          if (particle.parentNode) {
-            particle.parentNode.removeChild(particle);
-          }
-        }, 6000);
-      }
-    };
-
-    const interval = setInterval(createParticle, 200);
-    return () => clearInterval(interval);
-  }, []);
 
   useGSAP(() => {
     if (!sectionRef.current || !titleRef.current || !subtitleRef.current || !cardsRef.current) return;

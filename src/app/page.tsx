@@ -7,11 +7,7 @@ import { HeroSection } from "@/components/landing/sections/HeroSection";
 import { FeaturesSection } from "@/components/landing/sections/FeaturesSection";
 import { HowItWorksSection } from "@/components/landing/sections/HowItWorksSection";
 import { PricingSection } from "@/components/landing/sections/PricingSection";
-import { AboutUsSection } from "@/components/landing/sections/AboutUsSection";
-import { ServicesSection } from "@/components/landing/sections/ServicesSection";
-import { TrainersSection } from "@/components/landing/sections/TrainersSection";
-import { ForTrainersSection } from "@/components/landing/sections/ForTrainersSection";
-import { CompanySection } from "@/components/landing/sections/CompanySection";
+// Sections are now lazy loaded below
 import Footer from "@/components/shared/footer";
 import {
   Smartphone,
@@ -58,6 +54,14 @@ import ReactDOM from "react-dom";
 import Link from "next/link";
 import { LoadingScreen } from "@/components/landing/ui/LoadingScreen";
 import { UnifiedBackground } from "@/components/landing/ui/UnifiedBackground";
+import dynamic from "next/dynamic";
+
+// Lazy load below-the-fold sections for better initial performance
+const AboutUsSection = dynamic(() => import("@/components/landing/sections/AboutUsSection").then(mod => ({ default: mod.AboutUsSection })), { ssr: true });
+const ServicesSection = dynamic(() => import("@/components/landing/sections/ServicesSection").then(mod => ({ default: mod.ServicesSection })), { ssr: true });
+const TrainersSection = dynamic(() => import("@/components/landing/sections/TrainersSection").then(mod => ({ default: mod.TrainersSection })), { ssr: true });
+const ForTrainersSection = dynamic(() => import("@/components/landing/sections/ForTrainersSection").then(mod => ({ default: mod.ForTrainersSection })), { ssr: true });
+const CompanySection = dynamic(() => import("@/components/landing/sections/CompanySection").then(mod => ({ default: mod.CompanySection })), { ssr: true });
 
 export default function AxumPulseLandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -140,10 +144,17 @@ export default function AxumPulseLandingPage() {
   }, [loadedSections, onSectionLoaded]);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 50);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 

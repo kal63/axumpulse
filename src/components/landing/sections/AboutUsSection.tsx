@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { useOptimizedParticles } from '@/hooks/useOptimizedParticles';
 import { Card, CardContent } from '@/components/ui/card';
 import { 
   Users, 
@@ -26,45 +27,11 @@ export function AboutUsSection({ onLoaded }: AboutUsSectionProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<HTMLDivElement>(null);
-
-  // Create floating particles
-  useEffect(() => {
-    const createParticle = () => {
-      const particle = document.createElement('div');
-      const size = Math.random() * 4 + 2; // 2-6px
-      const colors = [
-        'from-blue-400 to-purple-500',
-        'from-cyan-400 to-blue-500',
-        'from-purple-400 to-pink-500',
-        'from-cyan-400 to-purple-500'
-      ];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      
-      particle.className = `absolute bg-gradient-to-r ${randomColor} rounded-full opacity-70`;
-      particle.style.width = size + 'px';
-      particle.style.height = size + 'px';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.top = Math.random() * 100 + '%';
-      particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
-      particle.style.animationDelay = Math.random() * 2 + 's';
-      
-      const container = particlesRef.current;
-      if (container) {
-        container.appendChild(particle);
-        
-        // Remove particle after animation
-        setTimeout(() => {
-          if (container.contains(particle)) {
-            container.removeChild(particle);
-          }
-        }, 5000);
-      }
-    };
-
-    const interval = setInterval(createParticle, 500);
-    return () => clearInterval(interval);
-  }, []);
+  const particlesRef = useOptimizedParticles({
+    interval: 1500, // Reduced from 500ms to 1500ms
+    maxParticles: 6,
+    particleDuration: 5000
+  });
 
   useGSAP(() => {
     if (!sectionRef.current) return;

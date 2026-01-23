@@ -11,17 +11,24 @@ export function UnifiedBackground() {
   const [pulseTimings, setPulseTimings] = useState<PulseTiming[]>([]);
 
   // Generate random pulse timings only on the client to avoid SSR hydration mismatches
+  // Reduced from 64 to 32 squares for better performance
   useEffect(() => {
-    const timings: PulseTiming[] = Array.from({ length: 64 }).map(() => ({
+    const timings: PulseTiming[] = Array.from({ length: 32 }).map(() => ({
       duration: `${2 + Math.random() * 2}s`, // 2s - 4s
       delay: `${Math.random() * 2}s`,        // 0s - 2s
     }));
     setPulseTimings(timings);
   }, []);
 
-  // Create floating particles
+  // Create floating particles with performance optimizations
   useEffect(() => {
+    let particleCount = 0;
+    const MAX_PARTICLES = 15; // Limit concurrent particles
+    
     const createParticle = () => {
+      // Skip if too many particles already exist
+      if (particleCount >= MAX_PARTICLES) return;
+      
       const particle = document.createElement('div');
       const size = Math.random() * 4 + 2; // 2-6px
       const colors = [
@@ -39,27 +46,38 @@ export function UnifiedBackground() {
       particle.style.top = Math.random() * 100 + '%';
       particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
       particle.style.animationDelay = Math.random() * 2 + 's';
+      particle.style.willChange = 'transform, opacity';
+      particle.style.transform = 'translateZ(0)'; // GPU acceleration
 
       const container = particlesRef.current;
       if (container) {
         container.appendChild(particle);
+        particleCount++;
 
         // Remove particle after animation
         setTimeout(() => {
           if (container.contains(particle)) {
             container.removeChild(particle);
+            particleCount--;
           }
         }, 5000);
       }
     };
 
-    const interval = setInterval(createParticle, 500); // More frequent
+    // Reduced frequency from 500ms to 1500ms for better performance
+    const interval = setInterval(createParticle, 1500);
     return () => clearInterval(interval);
   }, []);
 
-  // Create bigger squares with very low opacity
+  // Create bigger squares with very low opacity - optimized
   useEffect(() => {
+    let squareCount = 0;
+    const MAX_SQUARES = 8; // Limit concurrent squares
+    
     const createSquare = () => {
+      // Skip if too many squares already exist
+      if (squareCount >= MAX_SQUARES) return;
+      
       const square = document.createElement('div');
       const size = Math.random() * 6 + 6; // 6-12px (bigger)
       const colors = [
@@ -77,15 +95,18 @@ export function UnifiedBackground() {
       square.style.top = Math.random() * 100 + '%';
       square.style.animationDuration = (Math.random() * 3 + 2) + 's';
       square.style.animationDelay = Math.random() * 1 + 's';
+      square.style.willChange = 'transform, opacity';
+      square.style.transform = 'translateZ(0)'; // GPU acceleration
 
       const container = squaresRef.current;
       if (container) {
         container.appendChild(square);
+        squareCount++;
 
         // Animate square appearance (very low opacity)
         setTimeout(() => {
           square.style.opacity = '0.15'; // Very low opacity
-          square.style.transform = 'scale(1.2) rotate(45deg)';
+          square.style.transform = 'scale(1.2) rotate(45deg) translateZ(0)';
           square.style.transition = 'all 1.5s ease-in-out';
         }, 100);
 
@@ -93,12 +114,14 @@ export function UnifiedBackground() {
         setTimeout(() => {
           if (container.contains(square)) {
             container.removeChild(square);
+            squareCount--;
           }
         }, 6000);
       }
     };
 
-    const interval = setInterval(createSquare, 1200);
+    // Reduced frequency from 1200ms to 2500ms
+    const interval = setInterval(createSquare, 2500);
     return () => clearInterval(interval);
   }, []);
 
@@ -132,9 +155,9 @@ export function UnifiedBackground() {
         }}
       />
 
-      {/* Animated grid pattern - bigger squares with very low opacity */}
-      <div className="absolute inset-0 opacity-1">
-        <div className="grid grid-cols-8 gap-8 h-full">
+      {/* Animated grid pattern - reduced for better performance */}
+      <div className="absolute inset-0 opacity-1" style={{ willChange: 'opacity' }}>
+        <div className="grid grid-cols-6 gap-8 h-full">
           {pulseTimings.map((timing, i) => (
             <div
               key={i}
@@ -142,7 +165,9 @@ export function UnifiedBackground() {
               style={{
                 animationDuration: timing.duration,
                 animationDelay: timing.delay,
-                animationIterationCount: 'infinite'
+                animationIterationCount: 'infinite',
+                willChange: 'opacity',
+                transform: 'translateZ(0)'
               }}
             />
           ))}
