@@ -989,14 +989,6 @@ class ApiClient {
     })
   }
 
-  async getChallenges(params?: {
-    page?: number
-    pageSize?: number
-  }): Promise<ApiResponse<PaginatedResponse<Challenge>>> {
-    const query = createPaginationQuery(params)
-    return this.request<PaginatedResponse<Challenge>>(`/admin/challenges${query}`)
-  }
-
   async createChallenge(challenge: Partial<Challenge>): Promise<ApiResponse<{ challenge: Challenge }>> {
     return this.request<{ challenge: Challenge }>('/admin/challenges', {
       method: 'POST',
@@ -1014,6 +1006,79 @@ class ApiClient {
   async deleteChallenge(challengeId: number): Promise<ApiResponse<{ deleted: boolean }>> {
     return this.request<{ deleted: boolean }>(`/admin/challenges/${challengeId}`, {
       method: 'DELETE',
+    })
+  }
+
+  async getChallenges(params?: {
+    page?: number
+    pageSize?: number
+    kind?: string
+    active?: string
+    q?: string
+  }): Promise<ApiResponse<PaginatedResponse<Challenge>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<Challenge>>(`/admin/challenges${query}`)
+  }
+
+  // Admin Games methods
+  async getAdminGames(params?: {
+    page?: number
+    pageSize?: number
+    gameType?: string
+    active?: string
+    search?: string
+  }): Promise<ApiResponse<PaginatedResponse<Game>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<Game>>(`/admin/games${query}`)
+  }
+
+  async getAdminGame(id: number): Promise<ApiResponse<{
+    game: Game
+    stats: {
+      totalPlays: number
+      totalXpAwarded: number
+      averageScore: number
+    }
+  }>> {
+    return this.request<{
+      game: Game
+      stats: {
+        totalPlays: number
+        totalXpAwarded: number
+        averageScore: number
+      }
+    }>(`/admin/games/${id}`)
+  }
+
+  async createGame(game: Partial<Game>): Promise<ApiResponse<{ game: Game }>> {
+    return this.request<{ game: Game }>('/admin/games', {
+      method: 'POST',
+      body: JSON.stringify(game),
+    })
+  }
+
+  async updateGame(gameId: number, game: Partial<Game>): Promise<ApiResponse<{ game: Game }>> {
+    return this.request<{ game: Game }>(`/admin/games/${gameId}`, {
+      method: 'PUT',
+      body: JSON.stringify(game),
+    })
+  }
+
+  async deleteGame(gameId: number): Promise<ApiResponse<{ deleted: boolean }>> {
+    return this.request<{ deleted: boolean }>(`/admin/games/${gameId}`, {
+      method: 'DELETE',
+    })
+  }
+
+  async clearGameCache(gameId: number): Promise<ApiResponse<{ message: string; game: Game }>> {
+    return this.request<{ message: string; game: Game }>(`/admin/games/${gameId}/clear-cache`, {
+      method: 'POST',
+    })
+  }
+
+  async regenerateGameCache(gameId: number): Promise<ApiResponse<{ message: string; game: Game }>> {
+    return this.request<{ message: string; game: Game }>(`/admin/games/${gameId}/regenerate-cache`, {
+      method: 'POST',
     })
   }
 

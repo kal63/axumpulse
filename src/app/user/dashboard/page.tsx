@@ -32,14 +32,23 @@ import {
   Crown,
   Timer,
   MapPin,
-  Globe
+  Globe,
+  AlertCircle
 } from 'lucide-react'
 
 export default function UserDashboardPage() {
   const router = useRouter()
   const { user, isLoading: authLoading } = useAuth()
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [greeting, setGreeting] = useState({ text: 'Good morning', emoji: '☀️' })
+  
+  // Data states
+  const [userInfo, setUserInfo] = useState<any>(null)
+  const [stats, setStats] = useState<any>(null)
+  const [xpHistory, setXPHistory] = useState<any[]>([])
+  const [xpSummary, setXPSummary] = useState<any>(null)
+  const [achievements, setAchievements] = useState<any[]>([])
 
   // Get greeting based on Ethiopian timezone
   const getGreeting = () => {
@@ -74,14 +83,55 @@ export default function UserDashboardPage() {
     return () => clearInterval(interval)
   }, [])
 
+  // Fetch dashboard data
+  useEffect(() => {
+    if (user && !authLoading) {
+      fetchDashboardData()
+    }
+  }, [user, authLoading])
+
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/login')
-    } else if (user) {
-      setLoading(false)
     }
   }, [authLoading, user, router])
+
+  async function fetchDashboardData() {
+    try {
+      setLoading(true)
+      setError(null)
+
+      // Fetch all data in parallel
+      const [statsRes, historyRes, achievementsRes] = await Promise.all([
+        apiClient.getUserStats(),
+        apiClient.getUserXPHistory(30), // Get last 30 days
+        apiClient.getAchievements()
+      ])
+
+      // Handle stats
+      if (statsRes.success && statsRes.data) {
+        setUserInfo(statsRes.data.user)
+        setStats(statsRes.data.stats)
+      }
+
+      // Handle XP history
+      if (historyRes.success && historyRes.data) {
+        setXPHistory(historyRes.data.history)
+        setXPSummary(historyRes.data.summary)
+      }
+
+      // Handle achievements
+      if (achievementsRes.success && achievementsRes.data) {
+        setAchievements(achievementsRes.data.achievements || [])
+      }
+    } catch (err) {
+      console.error('Error fetching dashboard data:', err)
+      setError('Failed to load dashboard data')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   if (authLoading || loading) {
     return (
@@ -98,16 +148,42 @@ export default function UserDashboardPage() {
     return null
   }
 
-  // Mock data - replace with real API calls
-  const userStats = {
-    level: 4,
-    xp: 344,
-    xpProgress: 44,
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+        <div className="text-center">
+          <AlertCircle className="h-16 w-16 mx-auto mb-4 text-red-500 opacity-50" />
+          <p className="text-[var(--neumorphic-text)] text-xl font-semibold mb-2">
+            Oops! Something went wrong
+          </p>
+          <p className="text-[var(--neumorphic-muted)] mb-4">{error}</p>
+          <Button onClick={fetchDashboardData}>
+            Try Again
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  // Calculate user stats from real data
+  const userStats = userInfo ? {
+    level: userInfo.level || 1,
+    xp: userInfo.xp || 0,
+    xpProgress: userInfo.xpProgress || 0,
+    xpNeeded: userInfo.xpNeeded || 100,
+    workoutsCompleted: stats?.workoutPlansCompleted || 0,
+    challengesCompleted: stats?.challengesCompleted || 0,
+    achievementsUnlocked: stats?.achievementsUnlocked || 0,
+    dayStreak: userInfo.dailyStreak || 0
+  } : {
+    level: 1,
+    xp: 0,
+    xpProgress: 0,
     xpNeeded: 100,
-    workoutsCompleted: 5,
-    challengesCompleted: 2,
-    achievementsUnlocked: 8,
-    dayStreak: 7
+    workoutsCompleted: 0,
+    challengesCompleted: 0,
+    achievementsUnlocked: 0,
+    dayStreak: 0
   }
 
   const content = (
@@ -175,22 +251,26 @@ export default function UserDashboardPage() {
               </div>
               <div className="text-2xl font-bold text-[var(--neumorphic-text)]">{userStats.dayStreak}</div>
               <div className="text-sm text-[var(--neumorphic-muted)]">Day Streak</div>
-              <div className="flex items-center justify-center mt-2">
-                <ArrowUp className="w-4 h-4 text-green-500" />
-                <span className="text-xs text-green-500 ml-1">+2</span>
-              </div>
+              {userStats.dayStreak > 0 && (
+                <div className="flex items-center justify-center mt-2">
+                  <Flame className="w-4 h-4 text-orange-500" />
+                  <span className="text-xs text-orange-500 ml-1">Keep it up!</span>
+                </div>
+              )}
             </NeumorphicCard>
 
             <NeumorphicCard variant="raised" className="p-6 text-center">
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Zap className="w-6 h-6 text-white" />
               </div>
-              <div className="text-2xl font-bold text-[var(--neumorphic-text)]">{userStats.xp}</div>
+              <div className="text-2xl font-bold text-[var(--neumorphic-text)]">{userStats.xp.toLocaleString()}</div>
               <div className="text-sm text-[var(--neumorphic-muted)]">XP Points</div>
-              <div className="flex items-center justify-center mt-2">
-                <ArrowUp className="w-4 h-4 text-green-500" />
-                <span className="text-xs text-green-500 ml-1">+150</span>
-              </div>
+              {xpSummary && xpSummary.avgDailyXP > 0 && (
+                <div className="flex items-center justify-center mt-2">
+                  <ArrowUp className="w-4 h-4 text-green-500" />
+                  <span className="text-xs text-green-500 ml-1">+{Math.round(xpSummary.avgDailyXP)} avg/day</span>
+                </div>
+              )}
             </NeumorphicCard>
 
             <NeumorphicCard variant="raised" className="p-6 text-center">
@@ -199,10 +279,12 @@ export default function UserDashboardPage() {
               </div>
               <div className="text-2xl font-bold text-[var(--neumorphic-text)]">{userStats.workoutsCompleted}</div>
               <div className="text-sm text-[var(--neumorphic-muted)]">Workouts</div>
-              <div className="flex items-center justify-center mt-2">
-                <ArrowUp className="w-4 h-4 text-green-500" />
-                <span className="text-xs text-green-500 ml-1">+3</span>
-              </div>
+              {userInfo?.workoutStreak > 0 && (
+                <div className="flex items-center justify-center mt-2">
+                  <Flame className="w-4 h-4 text-orange-500" />
+                  <span className="text-xs text-orange-500 ml-1">{userInfo.workoutStreak} streak</span>
+                </div>
+              )}
             </NeumorphicCard>
 
             <NeumorphicCard variant="raised" className="p-6 text-center">
@@ -211,10 +293,12 @@ export default function UserDashboardPage() {
               </div>
               <div className="text-2xl font-bold text-[var(--neumorphic-text)]">{userStats.challengesCompleted}</div>
               <div className="text-sm text-[var(--neumorphic-muted)]">Challenges</div>
-              <div className="flex items-center justify-center mt-2">
-                <Minus className="w-4 h-4 text-gray-500" />
-                <span className="text-xs text-gray-500 ml-1">0</span>
-              </div>
+              {userInfo?.challengeStreak > 0 && (
+                <div className="flex items-center justify-center mt-2">
+                  <Trophy className="w-4 h-4 text-yellow-500" />
+                  <span className="text-xs text-yellow-500 ml-1">{userInfo.challengeStreak} streak</span>
+                </div>
+              )}
             </NeumorphicCard>
           </div>
 
@@ -234,29 +318,46 @@ export default function UserDashboardPage() {
                 </div>
               </div>
               
-              {/* Mock Bar Chart */}
-              <div className="space-y-4">
-                {[
-                  { label: 'Mon', value: 45, color: 'from-cyan-500 to-blue-500' },
-                  { label: 'Tue', value: 60, color: 'from-blue-500 to-purple-500' },
-                  { label: 'Wed', value: 30, color: 'from-purple-500 to-pink-500' },
-                  { label: 'Thu', value: 80, color: 'from-pink-500 to-red-500' },
-                  { label: 'Fri', value: 55, color: 'from-red-500 to-orange-500' },
-                  { label: 'Sat', value: 70, color: 'from-orange-500 to-yellow-500' },
-                  { label: 'Sun', value: 40, color: 'from-yellow-500 to-green-500' }
-                ].map((day, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <div className="w-8 text-sm text-[var(--neumorphic-muted)]">{day.label}</div>
-                    <div className="flex-1 bg-[var(--neumorphic-surface)] rounded-full h-3 overflow-hidden">
-                      <div 
-                        className={`h-full bg-gradient-to-r ${day.color} rounded-full transition-all duration-1000 ease-out`}
-                        style={{ width: `${day.value}%` }}
-                      />
-                    </div>
-                    <div className="w-8 text-sm font-semibold text-[var(--neumorphic-text)]">{day.value}</div>
-                  </div>
-                ))}
-              </div>
+              {/* Real XP Chart Data */}
+              {xpHistory && xpHistory.length > 0 ? (
+                <div className="space-y-4">
+                  {xpHistory.slice(-7).map((entry, index) => {
+                    const maxXP = Math.max(...xpHistory.map(e => e.xp || 0), 1)
+                    const value = maxXP > 0 ? Math.round(((entry.xp || 0) / maxXP) * 100) : 0
+                    const colors = [
+                      'from-cyan-500 to-blue-500',
+                      'from-blue-500 to-purple-500',
+                      'from-purple-500 to-pink-500',
+                      'from-pink-500 to-red-500',
+                      'from-red-500 to-orange-500',
+                      'from-orange-500 to-yellow-500',
+                      'from-yellow-500 to-green-500'
+                    ]
+                    const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    const date = new Date(entry.date)
+                    const dayLabel = dayLabels[date.getDay() === 0 ? 6 : date.getDay() - 1] || date.toLocaleDateString('en-US', { weekday: 'short' })
+                    
+                    return (
+                      <div key={index} className="flex items-center gap-3">
+                        <div className="w-8 text-sm text-[var(--neumorphic-muted)]">{dayLabel}</div>
+                        <div className="flex-1 bg-[var(--neumorphic-surface)] rounded-full h-3 overflow-hidden">
+                          <div 
+                            className={`h-full bg-gradient-to-r ${colors[index % colors.length]} rounded-full transition-all duration-1000 ease-out`}
+                            style={{ width: `${value}%` }}
+                          />
+                        </div>
+                        <div className="w-8 text-sm font-semibold text-[var(--neumorphic-text)]">{entry.xp || 0}</div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-[var(--neumorphic-muted)]">
+                  <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                  <p>No XP data available</p>
+                  <p className="text-xs mt-1">Start earning XP to see your progress!</p>
+                </div>
+              )}
             </NeumorphicCard>
 
             {/* Recent Achievements */}
@@ -267,74 +368,68 @@ export default function UserDashboardPage() {
               </h3>
               
               <div className="space-y-4">
-                {[
-                  { icon: Flame, title: 'Streak Master', description: '7-day workout streak', xp: 200, date: '2 days ago' },
-                  { icon: Target, title: 'Goal Crusher', description: 'Completed 5 workouts', xp: 150, date: '5 days ago' },
-                  { icon: Crown, title: 'Champion', description: 'Won a challenge', xp: 300, date: '1 week ago' }
-                ].map((achievement, index) => (
-                  <div key={index} className="flex items-center gap-4 p-3 rounded-xl bg-[var(--neumorphic-surface)]">
-                    <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
-                      <achievement.icon className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-[var(--neumorphic-text)]">{achievement.title}</h4>
-                      <p className="text-sm text-[var(--neumorphic-muted)]">{achievement.description}</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-[var(--neumorphic-text)]">+{achievement.xp} XP</div>
-                      <div className="text-xs text-[var(--neumorphic-muted)]">{achievement.date}</div>
-                    </div>
+                {achievements && achievements.length > 0 ? (
+                  achievements
+                    .filter(a => a.unlocked)
+                    .slice(0, 3)
+                    .sort((a, b) => {
+                      const dateA = a.unlockedAt ? new Date(a.unlockedAt).getTime() : 0
+                      const dateB = b.unlockedAt ? new Date(b.unlockedAt).getTime() : 0
+                      return dateB - dateA
+                    })
+                    .map((achievement) => {
+                      const getIcon = (icon: string) => {
+                        const iconMap: Record<string, any> = {
+                          'trophy': Trophy,
+                          'target': Target,
+                          'flame': Flame,
+                          'award': Award,
+                          'dumbbell': Dumbbell,
+                          'calendar': Calendar,
+                          'star': Star,
+                          'zap': Zap,
+                          'crown': Crown
+                        }
+                        return iconMap[icon] || Award
+                      }
+                      const IconComponent = getIcon(achievement.icon || 'award')
+                      const unlockedDate = achievement.unlockedAt ? new Date(achievement.unlockedAt) : null
+                      const getTimeAgo = (date: Date): string => {
+                        const now = new Date()
+                        const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+                        if (diffInSeconds < 60) return 'Just now'
+                        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
+                        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
+                        if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`
+                        if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`
+                        return `${Math.floor(diffInSeconds / 2592000)} months ago`
+                      }
+                      const timeAgo = unlockedDate ? getTimeAgo(unlockedDate) : 'Recently'
+                      
+                      return (
+                        <div key={achievement.id} className="flex items-center gap-4 p-3 rounded-xl bg-[var(--neumorphic-surface)]">
+                          <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
+                            <IconComponent className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-[var(--neumorphic-text)]">{achievement.name}</h4>
+                            <p className="text-sm text-[var(--neumorphic-muted)]">{achievement.description}</p>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sm font-bold text-[var(--neumorphic-text)]">+{achievement.xpReward || 0} XP</div>
+                            <div className="text-xs text-[var(--neumorphic-muted)]">{timeAgo}</div>
+                          </div>
+                        </div>
+                      )
+                    })
+                ) : (
+                  <div className="text-center py-8 text-[var(--neumorphic-muted)]">
+                    No achievements unlocked yet. Keep going!
                   </div>
-                ))}
+                )}
               </div>
             </NeumorphicCard>
           </div>
-
-          {/* Today's Activities */}
-          <NeumorphicCard variant="raised" className="p-6">
-            <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-6 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-green-500" />
-              Today's Activities
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white">
-                <div className="flex items-center gap-3 mb-2">
-                  <Play className="w-5 h-5" />
-                  <span className="font-semibold">Morning Workout</span>
-                </div>
-                <p className="text-sm opacity-90">30 min HIIT session</p>
-                <div className="mt-2 flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  <span className="text-sm">8:00 AM</span>
-                </div>
-              </div>
-              
-              <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                <div className="flex items-center gap-3 mb-2">
-                  <Users className="w-5 h-5" />
-                  <span className="font-semibold">Team Challenge</span>
-                </div>
-                <p className="text-sm opacity-90">Daily step challenge</p>
-                <div className="mt-2 flex items-center gap-2">
-                  <Timer className="w-4 h-4" />
-                  <span className="text-sm">All day</span>
-                </div>
-              </div>
-              
-              <div className="p-4 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-                <div className="flex items-center gap-3 mb-2">
-                  <Heart className="w-5 h-5" />
-                  <span className="font-semibold">Recovery</span>
-                </div>
-                <p className="text-sm opacity-90">Stretching session</p>
-                <div className="mt-2 flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  <span className="text-sm">6:00 PM</span>
-                </div>
-              </div>
-            </div>
-          </NeumorphicCard>
 
           {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
