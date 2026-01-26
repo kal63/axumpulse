@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
 import { Play, ArrowRight, Sparkles } from 'lucide-react';
-import { useState, useEffect } from 'react';
 import { apiClient, SubscriptionPlan } from '@/lib/api-client';
 import { WebGLScene } from '@/components/landing/webgl/WebGLScene';
 import { FallbackHero } from '@/components/landing/fallback/FallbackHero';
