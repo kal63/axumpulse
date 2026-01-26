@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
-import { apiClient } from '@/lib/api-client'
+import { apiClient, UserSubscription } from '@/lib/api-client'
 import { 
     Dumbbell, Search, Filter, Flame, Star, Clock, Target, 
     Users, TrendingUp, Zap, Award, ChevronDown, ChevronRight, Play, 
-    Calendar, MapPin, Sparkles, CheckCircle
+    Calendar, MapPin, Sparkles, CheckCircle, UserCheck
 } from 'lucide-react'
 import { FeaturedBadge } from '@/components/user/FeaturedBadge'
 import type { WorkoutPlan } from '@/lib/api-client'
@@ -45,13 +45,26 @@ export default function WorkoutPlansPage() {
     const [totalPages, setTotalPages] = useState(1)
     const [totalItems, setTotalItems] = useState(0)
     const pageSize = 9
+    const [subscription, setSubscription] = useState<UserSubscription | null>(null)
 
-    // Fetch my plans on mount if user is logged in (for tab count, don't show loading)
+    // Fetch subscription status
     useEffect(() => {
         if (user) {
+            fetchSubscription()
             fetchMyPlans(false) // Don't set loading state on initial mount
         }
     }, [user])
+
+    const fetchSubscription = async () => {
+        try {
+            const response = await apiClient.getMySubscription()
+            if (response.success && response.data) {
+                setSubscription(response.data.subscription)
+            }
+        } catch (error) {
+            console.error('Failed to fetch subscription:', error)
+        }
+    }
 
     useEffect(() => {
         if (activeTab === 'all') {
@@ -193,6 +206,25 @@ export default function WorkoutPlansPage() {
                                 Transform your fitness journey with structured programs designed by certified trainers
                             </p>
                         </div>
+
+                        {/* Subscription Status Indicator */}
+                        {subscription && (
+                            <div className="max-w-4xl mx-auto mb-4">
+                                <NeumorphicCard variant="raised" size="sm" className="p-4 bg-blue-500/10 border-blue-500/30">
+                                    <div className="flex items-center gap-3">
+                                        <UserCheck className="w-5 h-5 text-blue-400" />
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium text-white">
+                                                Showing content from {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
+                                            </p>
+                                            <p className="text-xs text-slate-400">
+                                                Your active subscription expires on {new Date(subscription.expiresAt).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </NeumorphicCard>
+                            </div>
+                        )}
 
                         {/* Search and Quick Actions */}
                         <div className="max-w-4xl mx-auto">

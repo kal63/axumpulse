@@ -12,7 +12,8 @@ import {
   User,
   Award,
   Sparkles,
-  UserCheck
+  UserCheck,
+  UserPlus
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -342,70 +343,87 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
                 const cardBorder = getCardBorder(index);
                 
                 return (
-                  <Link 
+                  <div
                     key={trainer.userId}
-                    href={`/trainers/${trainer.userId}`}
                     className="group flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px]"
                   >
                     <Card className={`bg-gradient-to-br ${cardBg} backdrop-blur-sm border-transparent hover:bg-white/10 transition-all duration-300 hover:scale-105 relative overflow-hidden hover:shadow-lg hover:shadow-blue-500/20 h-full min-h-[100px] !rounded-md`}>
                       {/* Enhanced glowing effect with unique color */}
                       <div className={`absolute inset-0 bg-gradient-to-r ${cardBg} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                       
-                      <CardContent className="p-4 relative z-10 flex flex-row items-center gap-4 h-full">
-                        {/* Profile Picture - Left Side */}
-                        <div className="flex-shrink-0">
-                          <div className={`relative w-16 h-16 rounded-full overflow-hidden border-2 ${cardBorder} group-hover:border-opacity-60 transition-colors`}>
-                            {profileImageUrl ? (
-                              <Image
-                                src={profileImageUrl}
-                                alt={trainer.name}
-                                fill
-                                className="object-cover"
-                                sizes="64px"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-                                <User className="w-8 h-8 text-white/60" />
+                      <CardContent className="p-4 relative z-10 flex flex-col h-full">
+                        <Link href={`/trainers/${trainer.userId}`} className="flex flex-row items-center gap-4 mb-3">
+                          {/* Profile Picture - Left Side */}
+                          <div className="flex-shrink-0">
+                            <div className={`relative w-16 h-16 rounded-full overflow-hidden border-2 ${cardBorder} group-hover:border-opacity-60 transition-colors`}>
+                              {profileImageUrl ? (
+                                <Image
+                                  src={profileImageUrl}
+                                  alt={trainer.name}
+                                  fill
+                                  className="object-cover"
+                                  sizes="64px"
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
+                                  <User className="w-8 h-8 text-white/60" />
+                                </div>
+                              )}
+                              {/* Verified badge */}
+                              <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-0.5 border-2 border-slate-900">
+                                <UserCheck className="w-3 h-3 text-white" />
                               </div>
-                            )}
-                            {/* Verified badge */}
-                            <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-0.5 border-2 border-slate-900">
-                              <UserCheck className="w-3 h-3 text-white" />
                             </div>
                           </div>
-                        </div>
-                        
-                        {/* Trainer Info - Right Side */}
-                        <div className="flex-1 min-w-0">
-                          {/* Trainer Name */}
-                          <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors truncate">
-                            {trainer.name}
-                          </h3>
                           
-                          {/* Specialties */}
-                          {trainer.specialties && trainer.specialties.length > 0 ? (
-                            <div className="flex flex-wrap gap-1.5">
-                              {trainer.specialties.slice(0, 2).map((specialty, idx) => (
-                                <span
-                                  key={idx}
-                                  className="px-2 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full"
-                                >
-                                  {formatSpecialty(specialty)}
-                                </span>
-                              ))}
-                              {trainer.specialties.length > 2 && (
-                                <span className="px-2 py-0.5 text-xs font-medium text-white/60">
-                                  +{trainer.specialties.length - 2}
-                                </span>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-xs text-white/40">No specialties listed</span>
-                          )}
-                        </div>
+                          {/* Trainer Info - Right Side */}
+                          <div className="flex-1 min-w-0">
+                            {/* Trainer Name */}
+                            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors truncate">
+                              {trainer.name}
+                            </h3>
+                            
+                            {/* Specialties */}
+                            {trainer.specialties && trainer.specialties.length > 0 ? (
+                              <div className="flex flex-wrap gap-1.5">
+                                {trainer.specialties.slice(0, 2).map((specialty, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="px-2 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full"
+                                  >
+                                    {formatSpecialty(specialty)}
+                                  </span>
+                                ))}
+                                {trainer.specialties.length > 2 && (
+                                  <span className="px-2 py-0.5 text-xs font-medium text-white/60">
+                                    +{trainer.specialties.length - 2}
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-xs text-white/40">No specialties listed</span>
+                            )}
+                          </div>
+                        </Link>
+
+                        {/* Subscribe Button */}
+                        <Link
+                          href={`/register?trainerId=${trainer.userId}&trainerName=${encodeURIComponent(trainer.name)}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="mt-auto"
+                        >
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-4 py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm"
+                          >
+                            <UserPlus className="w-4 h-4" />
+                            Subscribe
+                          </motion.button>
+                        </Link>
                       </CardContent>
                     </Card>
-                  </Link>
+                  </div>
                 );
               })}
             </div>

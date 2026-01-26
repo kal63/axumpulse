@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { apiClient } from '@/lib/api-client'
+import { apiClient, UserSubscription } from '@/lib/api-client'
+import { useAuth } from '@/contexts/auth-context'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { ContentCard } from '@/components/user/ContentCard'
 import { SearchBar } from '@/components/user/SearchBar'
@@ -30,18 +31,21 @@ import {
   Sparkles,
   Target,
   Users,
-  Trophy
+  Trophy,
+  UserCheck
 } from 'lucide-react'
 import { FeaturedBadge } from '@/components/user/FeaturedBadge'
 import type { ContentItem } from '@/lib/api-client'
 
 export default function VideosPage() {
   const router = useRouter()
+  const { user } = useAuth()
   const [content, setContent] = useState<ContentItem[]>([])
   const [featuredContent, setFeaturedContent] = useState<ContentItem[]>([])
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState<string[]>([])
   const [sortBy, setSortBy] = useState<'newest' | 'popular' | 'trending'>('newest')
+  const [subscription, setSubscription] = useState<UserSubscription | null>(null)
   
   // Filters
   const [selectedCategory, setSelectedCategory] = useState<string>('')
@@ -55,6 +59,24 @@ export default function VideosPage() {
   const [totalPages, setTotalPages] = useState(1)
   const [totalItems, setTotalItems] = useState(0)
   const pageSize = 12
+
+  // Fetch subscription status
+  useEffect(() => {
+    if (user) {
+      fetchSubscription()
+    }
+  }, [user])
+
+  const fetchSubscription = async () => {
+    try {
+      const response = await apiClient.getMySubscription()
+      if (response.success && response.data) {
+        setSubscription(response.data.subscription)
+      }
+    } catch (error) {
+      console.error('Failed to fetch subscription:', error)
+    }
+  }
 
   useEffect(() => {
     fetchContent()
@@ -169,6 +191,25 @@ export default function VideosPage() {
                 Explore our wide range of training videos, earn XP, and level up your fitness journey
               </p>
             </div>
+
+            {/* Subscription Status Indicator */}
+            {subscription && (
+              <div className="max-w-4xl mx-auto mb-4">
+                <NeumorphicCard variant="raised" size="sm" className="p-4 bg-blue-500/10 border-blue-500/30">
+                  <div className="flex items-center gap-3">
+                    <UserCheck className="w-5 h-5 text-blue-400" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-white">
+                        Showing content from {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        Your active subscription expires on {new Date(subscription.expiresAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </NeumorphicCard>
+              </div>
+            )}
 
             {/* Search and Quick Actions */}
             <div className="max-w-4xl mx-auto">

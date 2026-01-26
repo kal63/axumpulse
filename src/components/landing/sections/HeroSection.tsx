@@ -6,7 +6,9 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
-import { Play, ArrowRight } from 'lucide-react';
+import { Play, ArrowRight, Sparkles } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { apiClient, SubscriptionPlan } from '@/lib/api-client';
 import { WebGLScene } from '@/components/landing/webgl/WebGLScene';
 import { FallbackHero } from '@/components/landing/fallback/FallbackHero';
 import { LoadingScreen } from '@/components/landing/ui/LoadingScreen';
@@ -24,9 +26,26 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const packagesRef = useRef<HTMLDivElement>(null);
   
   const webglSupported = useWebGLSupport();
   const prefersReducedMotion = useReducedMotion();
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+
+  // Load subscription plans
+  useEffect(() => {
+    const loadPlans = async () => {
+      try {
+        const response = await apiClient.getSubscriptionPlans();
+        if (response.success && response.data) {
+          setPlans(response.data.items || []);
+        }
+      } catch (error) {
+        console.error('Failed to load subscription plans:', error);
+      }
+    };
+    loadPlans();
+  }, []);
 
   // Report loaded when WebGL is ready or fallback is loaded
   useEffect(() => {
@@ -59,6 +78,12 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
       { y: 50, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
       '-=0.5'
+    )
+    .fromTo(
+      packagesRef.current,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' },
+      '-=0.4'
     )
     .fromTo(
       ctaRef.current,
@@ -177,6 +202,65 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                   <div className="text-slate-400 text-sm">Languages Supported</div>
                 </div>
               </motion.div>
+
+              {/* Compact Packages Display */}
+              {plans.length > 0 && (
+                <motion.div
+                  ref={packagesRef}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1 }}
+                  className="pt-4"
+                >
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-2">
+                    {plans.map((plan) => {
+                      const getIcon = (level: string) => {
+                        switch (level) {
+                          case 'silver': return '🥈'
+                          case 'gold': return '🥇'
+                          case 'diamond': return '💎'
+                          case 'platinum': return '👑'
+                          default: return '⭐'
+                        }
+                      }
+                      const startingPrice = parseFloat(plan.dailyPrice.toString())
+                      return (
+                        <Link
+                          key={plan.id}
+                          href="/register"
+                          className="group"
+                        >
+                          <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="px-3 py-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:border-blue-500/50 transition-all cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg">{getIcon(plan.level)}</span>
+                              <div className="text-left">
+                                <div className="text-xs font-semibold text-white group-hover:text-blue-400 transition-colors">
+                                  {plan.name}
+                                </div>
+                                <div className="text-xs text-slate-400">
+                                  From {new Intl.NumberFormat('en-ET', { style: 'currency', currency: 'ETB', minimumFractionDigits: 0 }).format(startingPrice)}/day
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                  <Link href="/register">
+                    <motion.p
+                      whileHover={{ x: 5 }}
+                      className="text-xs text-blue-400 hover:text-blue-300 text-center lg:text-left mt-2 cursor-pointer inline-flex items-center gap-1"
+                    >
+                      View All Packages <ArrowRight className="w-3 h-3" />
+                    </motion.p>
+                  </Link>
+                </motion.div>
+              )}
 
               {/* CTA Buttons */}
               <div

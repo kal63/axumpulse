@@ -511,6 +511,72 @@ export interface ApplicationStatsResponse {
   underReview: number
 }
 
+export interface SubscriptionPlan {
+  id: number
+  name: string
+  level: 'silver' | 'gold' | 'diamond' | 'platinum'
+  dailyPrice: number
+  monthlyPrice: number
+  threeMonthPrice: number
+  sixMonthPrice: number
+  nineMonthPrice: number
+  yearlyPrice: number
+  discounts: {
+    monthly: number
+    threeMonth: number
+    sixMonth: number
+    nineMonth: number
+    yearly: number
+  }
+  features: string[]
+  minDuration: 'daily' | 'monthly' | 'threeMonth'
+  active: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface UserSubscription {
+  id: number
+  userId: number
+  trainerId: number
+  subscriptionPlanId: number
+  duration: 'daily' | 'monthly' | 'threeMonth' | 'sixMonth' | 'nineMonth' | 'yearly'
+  startedAt: string
+  expiresAt: string
+  status: 'active' | 'expired' | 'cancelled'
+  lastPaymentReference?: string
+  subscriptionPlan?: SubscriptionPlan
+  trainer?: {
+    id: number
+    name: string
+    email?: string
+    profilePicture?: string
+  }
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PaymentInitRequest {
+  subscription_plan_id: number
+  trainer_id: number
+  duration: 'daily' | 'monthly' | 'threeMonth' | 'sixMonth' | 'nineMonth' | 'yearly'
+  phone_number: string
+}
+
+export interface PaymentInitResponse {
+  checkout_url: string
+  tx_ref: string
+}
+
+export interface RegisterRequest {
+  phone: string
+  email?: string
+  password: string
+  name?: string
+  dateOfBirth?: string
+  gender?: 'male' | 'female'
+}
+
 
 export interface Language {
   id: number
@@ -3110,6 +3176,62 @@ class ApiClient {
       note: string
     }>('/user/leaderboard/rewards')
   }
+
+  // ==================== SUBSCRIPTION API ====================
+
+  // Get all subscription plans
+  async getSubscriptionPlans(): Promise<ApiResponse<{ items: SubscriptionPlan[] }>> {
+    return this.request<{ items: SubscriptionPlan[] }>('/subscription/plans')
+  }
+
+  // Get subscription plan by ID
+  async getSubscriptionPlan(id: number): Promise<ApiResponse<{ plan: SubscriptionPlan }>> {
+    return this.request<{ plan: SubscriptionPlan }>(`/subscription/plans/${id}`)
+  }
+
+  // Get user's current subscription
+  async getMySubscription(): Promise<ApiResponse<{ subscription: UserSubscription | null }>> {
+    return this.request<{ subscription: UserSubscription | null }>('/subscription/my-subscription')
+  }
+
+  // Initialize subscription (validate data)
+  async initializeSubscription(data: {
+    subscription_plan_id: number
+    trainer_id: number
+    duration: string
+    phone_number: string
+  }): Promise<ApiResponse<any>> {
+    return this.request('/subscription/subscribe', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // ==================== PAYMENT API ====================
+
+  // Initialize payment for subscription
+  async initializePayment(data: PaymentInitRequest): Promise<ApiResponse<PaymentInitResponse>> {
+    return this.request<PaymentInitResponse>('/payments/subscription/initialize', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // ==================== AUTH API ====================
+
+  // Register new user
+  async registerUser(data: RegisterRequest): Promise<ApiResponse<LoginResponse>> {
+    const response = await this.request<LoginResponse>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+
+    if (response.success && response.data) {
+      this.setToken(response.data.token)
+    }
+
+    return response
+  }
 }
 
 // Create a singleton instance
@@ -3137,4 +3259,9 @@ export type {
   ApplicationStatusResponse as ApplicationStatusResponseType,
   ApplicationListResponse as ApplicationListResponseType,
   ApplicationStatsResponse as ApplicationStatsResponseType,
+  SubscriptionPlan as SubscriptionPlanType,
+  UserSubscription as UserSubscriptionType,
+  PaymentInitRequest as PaymentInitRequestType,
+  PaymentInitResponse as PaymentInitResponseType,
+  RegisterRequest as RegisterRequestType,
 }
