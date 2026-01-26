@@ -21,7 +21,7 @@ type Step = 'user-info' | 'package' | 'trainer'
 function RegisterPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { user, isAuthenticated } = useAuth()
+  const { user, isAuthenticated, refreshUser } = useAuth()
   
   const [currentStep, setCurrentStep] = useState<Step>('user-info')
   const [loading, setLoading] = useState(false)
@@ -139,7 +139,15 @@ function RegisterPageContent() {
         })
 
         if (response.success) {
-          // Registration successful, proceed to package selection
+          // Registration successful - refresh auth context to update user state
+          // The token is already set by registerUser, just need to refresh user data
+          try {
+            await refreshUser()
+          } catch (error) {
+            console.error('Failed to refresh auth context:', error)
+          }
+          
+          // Proceed to package selection
           setCurrentStep('package')
         } else {
           setError(response.error?.message || 'Registration failed')

@@ -27,33 +27,44 @@ export default function CheckoutPage() {
   const [trainerName, setTrainerName] = useState<string>('')
   const [duration, setDuration] = useState<'daily' | 'monthly' | 'threeMonth' | 'sixMonth' | 'nineMonth' | 'yearly'>('monthly')
   const [phoneNumber, setPhoneNumber] = useState('')
+  const [email, setEmail] = useState('')
 
   useEffect(() => {
-    // Redirect if not authenticated
-    if (!isAuthenticated) {
-      router.push('/login?redirect=/checkout')
-      return
-    }
-
-    // Get data from URL params
+    // Get data from URL params first
     const planId = searchParams.get('planId')
     const trainerIdParam = searchParams.get('trainerId')
     const durationParam = searchParams.get('duration')
     const trainerNameParam = searchParams.get('trainerName')
 
+    // Set user email if available
+    if (user?.email) {
+      setEmail(user.email)
+    }
+
+    // If we have all required params, proceed (user might have just registered)
+    if (planId && trainerIdParam) {
+      setTrainerId(parseInt(trainerIdParam))
+      setTrainerName(trainerNameParam || '')
+      if (durationParam) {
+        setDuration(durationParam as any)
+      }
+
+      // Load plan details
+      loadPlan(parseInt(planId))
+      return
+    }
+
+    // If no params and not authenticated, redirect to login
+    if (!isAuthenticated) {
+      router.push('/login?redirect=/checkout')
+      return
+    }
+
+    // If authenticated but no params, show error
     if (!planId || !trainerIdParam) {
       setError('Missing required information. Please start over.')
       return
     }
-
-    setTrainerId(parseInt(trainerIdParam))
-    setTrainerName(trainerNameParam || '')
-    if (durationParam) {
-      setDuration(durationParam as any)
-    }
-
-    // Load plan details
-    loadPlan(parseInt(planId))
   }, [searchParams, isAuthenticated, router])
 
   const loadPlan = async (planId: number) => {
@@ -95,6 +106,11 @@ export default function CheckoutPage() {
     return phoneRegex.test(phone)
   }
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
   const handlePayment = async () => {
     if (!plan || !trainerId) {
       setError('Missing required information')
@@ -111,6 +127,16 @@ export default function CheckoutPage() {
       return
     }
 
+    if (!email) {
+      setError('Email is required for payment')
+      return
+    }
+
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address')
+      return
+    }
+
     setLoading(true)
     setError('')
 
@@ -119,7 +145,8 @@ export default function CheckoutPage() {
         subscription_plan_id: plan.id,
         trainer_id: trainerId,
         duration: duration,
-        phone_number: phoneNumber
+        phone_number: phoneNumber,
+        email: email
       })
 
       if (response.success && response.data) {
@@ -218,6 +245,28 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
+                {/* Email Input */}
+                <div>
+                  <Label htmlFor="email" className="text-slate-300 mb-2 block">
+                    Email Address <span className="text-red-400">*</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      if (error) setError('')
+                    }}
+                    className="bg-slate-700 border-slate-600 text-white"
+                    placeholder="your.email@example.com"
+                    required
+                  />
+                  <p className="text-xs text-slate-400 mt-1">
+                    Required for payment processing
+                  </p>
+                </div>
+
                 {/* Phone Number Input */}
                 <div>
                   <Label htmlFor="phone" className="text-slate-300 mb-2 block">
@@ -264,7 +313,7 @@ export default function CheckoutPage() {
                   </Link>
                   <Button
                     onClick={handlePayment}
-                    disabled={loading || !phoneNumber || !validatePhoneNumber(phoneNumber)}
+                    disabled={loading || !phoneNumber || !validatePhoneNumber(phoneNumber) || !email || !validateEmail(email)}
                     className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     {loading ? (

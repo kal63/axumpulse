@@ -561,6 +561,7 @@ export interface PaymentInitRequest {
   trainer_id: number
   duration: 'daily' | 'monthly' | 'threeMonth' | 'sixMonth' | 'nineMonth' | 'yearly'
   phone_number: string
+  email?: string
 }
 
 export interface PaymentInitResponse {

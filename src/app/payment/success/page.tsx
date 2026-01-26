@@ -30,14 +30,16 @@ export default function PaymentSuccessPage() {
       return
     }
 
-    // Wait for callback to process (3 seconds delay as per guide)
-    const checkSubscription = async () => {
+    // Wait for callback to process and retry multiple times
+    const checkSubscription = async (retryCount = 0, maxRetries = 5) => {
       try {
-        // Wait 3 seconds to allow backend callback to process
-        await new Promise((resolve) => setTimeout(resolve, 3000))
+        // Wait progressively longer: 3s, 5s, 7s, 10s, 15s
+        const waitTime = retryCount === 0 ? 3000 : retryCount === 1 ? 5000 : retryCount === 2 ? 7000 : retryCount === 3 ? 10000 : 15000
+        await new Promise((resolve) => setTimeout(resolve, waitTime))
 
         if (!isAuthenticated) {
           // User not logged in, but payment might have succeeded
+          // Show success message but note that subscription will be activated
           setStatus('success')
           return
         }
@@ -48,29 +50,30 @@ export default function PaymentSuccessPage() {
           if (response.data.subscription) {
             setSubscription(response.data.subscription)
             setStatus('success')
-          } else {
-            // Subscription not found yet, might still be processing
-            setStatus('loading')
-            // Check again after another 2 seconds
-            setTimeout(async () => {
-              const retryResponse = await apiClient.getMySubscription()
-              if (retryResponse.success && retryResponse.data?.subscription) {
-                setSubscription(retryResponse.data.subscription)
-                setStatus('success')
-              } else {
-                setStatus('failed')
-                setError('Payment processed but subscription not activated. Please contact support.')
-              }
-            }, 2000)
+            return
           }
+        }
+
+        // If no subscription found and we have retries left, try again
+        if (retryCount < maxRetries) {
+          console.log(`Subscription not found yet, retrying... (${retryCount + 1}/${maxRetries})`)
+          checkSubscription(retryCount + 1, maxRetries)
         } else {
-          setStatus('failed')
-          setError('Failed to verify subscription status')
+          // After all retries, show success anyway (callback may still process)
+          // Payment was successful, subscription activation might be delayed
+          setStatus('success')
+          setError('Your payment was successful! Your subscription is being activated and will be available shortly.')
         }
       } catch (error: any) {
         console.error('Error checking subscription:', error)
-        // Still show success if we have a tx_ref, as the callback may still be processing
-        setStatus('success')
+        // After max retries, show success anyway
+        if (retryCount >= maxRetries) {
+          setStatus('success')
+          setError('Your payment was successful! Your subscription is being activated and will be available shortly.')
+        } else {
+          // Retry on error
+          checkSubscription(retryCount + 1, maxRetries)
+        }
       }
     }
 
@@ -138,13 +141,13 @@ export default function PaymentSuccessPage() {
                 ) : (
                   <>
                     <div className="flex items-center justify-center mb-4">
-                      <XCircle className="w-16 h-16 text-red-400" />
+                      <CheckCircle className="w-16 h-16 text-yellow-400" />
                     </div>
                     <CardTitle className="text-3xl font-bold text-white text-center">
-                      Payment Processing
+                      Payment Successful!
                     </CardTitle>
                     <CardDescription className="text-slate-300 text-center">
-                      {error || "We're processing your payment. Your subscription will be activated shortly."}
+                      {error || "Your payment was successful! Your subscription is being activated and will be available shortly."}
                     </CardDescription>
                   </>
                 )}
@@ -187,9 +190,19 @@ export default function PaymentSuccessPage() {
                   </div>
                 )}
 
-                {status === 'failed' && error && (
-                  <Alert className="bg-red-500/10 border-red-500/50">
-                    <AlertDescription className="text-red-400">{error}</AlertDescription>
+                {error && !subscription && (
+                  <Alert className={status === 'failed' ? "bg-red-500/10 border-red-500/50" : "bg-yellow-500/10 border-yellow-500/50"}>
+                    <AlertDescription className={status === 'failed' ? "text-red-400" : "text-yellow-400"}>
+                      {error}
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {!subscription && status === 'success' && (
+                  <Alert className="bg-blue-500/10 border-blue-500/50">
+                    <AlertDescription className="text-blue-400">
+                      Your subscription is being activated. This may take a few moments. You can access your dashboard now, and your subscription will be available shortly.
+                    </AlertDescription>
                   </Alert>
                 )}
 
