@@ -164,11 +164,11 @@ export default function CheckoutPage() {
 
   if (!plan || !trainerId) {
     return (
-      <div className="min-h-screen bg-slate-900">
+      <div className="min-h-screen bg-slate-900 flex flex-col">
         <UnifiedBackground />
         <Header />
-        <div className="container mx-auto px-4 py-16 relative z-10">
-          <Card className="max-w-2xl mx-auto bg-slate-800/50 backdrop-blur-sm border-slate-700">
+        <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center relative z-10">
+          <Card className="max-w-2xl mx-auto w-full bg-slate-800/50 backdrop-blur-sm border-slate-700">
             <CardContent className="pt-6">
               <Alert className="bg-red-500/10 border-red-500/50">
                 <AlertDescription className="text-red-400">
@@ -193,12 +193,12 @@ export default function CheckoutPage() {
   const totalPrice = getPriceForDuration(plan, duration)
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-slate-900 flex flex-col">
       <UnifiedBackground />
       <Header />
       
-      <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="max-w-3xl mx-auto">
+      <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center relative z-10">
+        <div className="max-w-3xl mx-auto w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

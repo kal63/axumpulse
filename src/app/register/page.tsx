@@ -229,12 +229,12 @@ function RegisterPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-slate-900 flex flex-col">
       <UnifiedBackground />
       <Header />
       
-      <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="max-w-4xl mx-auto">
+      <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center relative z-10">
+        <div className="max-w-4xl mx-auto w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
