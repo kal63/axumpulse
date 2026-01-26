@@ -328,7 +328,7 @@ export default function GamesPage() {
       header: 'Cache',
       render: (game: ApiGame) => {
         const hasCache = game.cachedContent && game.cacheExpiresAt
-        const isExpired = hasCache && new Date(game.cacheExpiresAt) < new Date()
+        const isExpired = hasCache && game.cacheExpiresAt && new Date(game.cacheExpiresAt) < new Date()
         
         if (!game.useAiGeneration) {
           return <span className="text-sm text-gray-500">N/A</span>
