@@ -47,7 +47,9 @@ export function MemoryGame({ pairs, onComplete, xpReward }: MemoryGameProps) {
   const [gameComplete, setGameComplete] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [timeTaken, setTimeTaken] = useState(0);
+  const [initialReveal, setInitialReveal] = useState(true);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const revealTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize tiles from pairs
   useEffect(() => {
@@ -80,9 +82,29 @@ export function MemoryGame({ pairs, onComplete, xpReward }: MemoryGameProps) {
     setTiles(newTiles);
   }, [pairs]);
 
+  // Initial reveal - show all cards for 3 seconds when game starts
+  useEffect(() => {
+    if (gameStarted && initialReveal) {
+      // Show all tiles initially
+      setTiles(prev => prev.map(t => ({ ...t, flipped: true })));
+      
+      // Hide them after 3 seconds
+      revealTimeoutRef.current = setTimeout(() => {
+        setTiles(prev => prev.map(t => ({ ...t, flipped: false })));
+        setInitialReveal(false);
+      }, 3000);
+    }
+
+    return () => {
+      if (revealTimeoutRef.current) {
+        clearTimeout(revealTimeoutRef.current);
+      }
+    };
+  }, [gameStarted, initialReveal]);
+
   // Timer
   useEffect(() => {
-    if (gameStarted && !gameComplete && startTime) {
+    if (gameStarted && !gameComplete && startTime && !initialReveal) {
       timerRef.current = setInterval(() => {
         setTimeTaken(Math.floor((Date.now() - startTime) / 1000));
       }, 1000);
@@ -93,7 +115,7 @@ export function MemoryGame({ pairs, onComplete, xpReward }: MemoryGameProps) {
         clearInterval(timerRef.current);
       }
     };
-  }, [gameStarted, gameComplete, startTime]);
+  }, [gameStarted, gameComplete, startTime, initialReveal]);
 
   const handleStart = () => {
     setGameStarted(true);
@@ -101,7 +123,7 @@ export function MemoryGame({ pairs, onComplete, xpReward }: MemoryGameProps) {
   };
 
   const handleTileClick = (tileId: number) => {
-    if (!gameStarted || gameComplete) return;
+    if (!gameStarted || gameComplete || initialReveal) return;
     
     const tile = tiles.find(t => t.id === tileId);
     if (!tile || tile.flipped || tile.matched) return;
@@ -124,7 +146,7 @@ export function MemoryGame({ pairs, onComplete, xpReward }: MemoryGameProps) {
       const secondTile = tiles.find(t => t.id === secondId);
 
       if (firstTile && secondTile && firstTile.pairId === secondTile.pairId) {
-        // Match found
+        // Match found - keep them visible
         setTimeout(() => {
           setTiles(prev => prev.map(t => 
             t.pairId === firstTile.pairId ? { ...t, matched: true, flipped: true } : t
@@ -142,13 +164,13 @@ export function MemoryGame({ pairs, onComplete, xpReward }: MemoryGameProps) {
           setFlippedTiles([]);
         }, 500);
       } else {
-        // No match, flip back
+        // No match, show for 2 seconds then flip back
         setTimeout(() => {
           setTiles(prev => prev.map(t => 
             newFlippedTiles.includes(t.id) ? { ...t, flipped: false } : t
           ));
           setFlippedTiles([]);
-        }, 1000);
+        }, 2000); // Show for 2 seconds before hiding
       }
     }
   };
@@ -213,69 +235,78 @@ export function MemoryGame({ pairs, onComplete, xpReward }: MemoryGameProps) {
 
   return (
     <div className="w-full">
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <NeumorphicCard variant="raised" className="p-4 text-center">
-          <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+      {/* Stats - Compact */}
+      <div className="grid grid-cols-3 gap-2 mb-3">
+        <NeumorphicCard variant="raised" className="p-2 text-center">
+          <div className="text-lg font-bold text-[var(--neumorphic-text)]">
             {matches}/{pairs.length}
           </div>
-          <div className="text-xs text-[var(--neumorphic-muted)]">Matches</div>
+          <div className="text-[10px] text-[var(--neumorphic-muted)]">Matches</div>
         </NeumorphicCard>
-        <NeumorphicCard variant="raised" className="p-4 text-center">
-          <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+        <NeumorphicCard variant="raised" className="p-2 text-center">
+          <div className="text-lg font-bold text-[var(--neumorphic-text)]">
             {attempts}
           </div>
-          <div className="text-xs text-[var(--neumorphic-muted)]">Attempts</div>
+          <div className="text-[10px] text-[var(--neumorphic-muted)]">Attempts</div>
         </NeumorphicCard>
-        <NeumorphicCard variant="raised" className="p-4 text-center">
-          <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+        <NeumorphicCard variant="raised" className="p-2 text-center">
+          <div className="text-lg font-bold text-[var(--neumorphic-text)]">
             {formatTime(timeTaken)}
           </div>
-          <div className="text-xs text-[var(--neumorphic-muted)]">Time</div>
+          <div className="text-[10px] text-[var(--neumorphic-muted)]">Time</div>
         </NeumorphicCard>
       </div>
 
-      {/* Game Grid */}
-      <div className="grid grid-cols-4 gap-3">
+      {/* Game Grid - More compact */}
+      <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-6 gap-1.5 sm:gap-2 max-w-5xl mx-auto">
         {tiles.map((tile) => (
           <motion.button
             key={tile.id}
             onClick={() => handleTileClick(tile.id)}
-            disabled={tile.matched || flippedTiles.length >= 2}
+            disabled={tile.matched || flippedTiles.length >= 2 || initialReveal}
             className={`
-              aspect-square rounded-lg p-3 transition-all
+              aspect-square rounded-md p-1 sm:p-1.5 transition-all
               ${tile.matched 
-                ? 'bg-green-500/20 border-2 border-green-500' 
+                ? 'bg-green-500/20 border border-green-500' 
                 : tile.flipped
-                ? 'bg-[var(--neumorphic-surface)] border-2 border-cyan-500'
+                ? 'bg-[var(--neumorphic-surface)] border border-cyan-500'
                 : 'bg-[var(--neumorphic-surface)] border border-[var(--neumorphic-border)] hover:border-cyan-500/50'
               }
+              ${initialReveal ? 'cursor-not-allowed' : 'cursor-pointer'}
             `}
-            whileHover={!tile.flipped && !tile.matched ? { scale: 1.05 } : {}}
-            whileTap={!tile.flipped && !tile.matched ? { scale: 0.95 } : {}}
+            whileHover={!tile.flipped && !tile.matched && !initialReveal ? { scale: 1.05 } : {}}
+            whileTap={!tile.flipped && !tile.matched && !initialReveal ? { scale: 0.95 } : {}}
           >
             {tile.flipped || tile.matched ? (
-              <div className="h-full flex flex-col items-center justify-center text-center">
-                <div className="font-semibold text-sm text-[var(--neumorphic-text)] mb-1">
+              <div className="h-full flex flex-col items-center justify-center text-center space-y-0.5">
+                <div className="font-semibold text-[10px] sm:text-[11px] text-[var(--neumorphic-text)] line-clamp-2 leading-tight">
                   {tile.exercise.name}
                 </div>
                 {tile.exercise.muscleGroup && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-[8px] px-0.5 py-0 h-3 leading-tight">
                     {tile.exercise.muscleGroup}
                   </Badge>
                 )}
                 {tile.matched && (
-                  <CheckCircle className="h-6 w-6 text-green-500 mt-2" />
+                  <CheckCircle className="h-3 w-3 text-green-500" />
                 )}
               </div>
             ) : (
               <div className="h-full flex items-center justify-center">
-                <span className="text-2xl">?</span>
+                <span className="text-lg sm:text-xl">?</span>
               </div>
             )}
           </motion.button>
         ))}
       </div>
+      
+      {initialReveal && (
+        <div className="text-center mt-2">
+          <p className="text-xs text-[var(--neumorphic-muted)]">
+            Memorize the pairs... Cards will hide in a moment!
+          </p>
+        </div>
+      )}
     </div>
   );
 }

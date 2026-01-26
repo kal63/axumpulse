@@ -157,7 +157,7 @@ export default function MemoryPage() {
             </p>
           </NeumorphicCard>
         ) : pairs.length > 0 ? (
-          <NeumorphicCard variant="raised" className="p-6">
+          <NeumorphicCard variant="raised" className="p-3 sm:p-4">
             <MemoryGame
               pairs={pairs}
               onComplete={handleComplete}
