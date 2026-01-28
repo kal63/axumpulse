@@ -293,7 +293,7 @@ function RegisterPageContent() {
                 {currentStep === 'user-info' && (
                   <form onSubmit={handleUserInfoSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
+                      <div className="space-y-2">
                         <Label htmlFor="name" className="text-slate-300">Full Name</Label>
                         <Input
                           id="name"
@@ -305,7 +305,7 @@ function RegisterPageContent() {
                           placeholder="John Doe"
                         />
                       </div>
-                      <div>
+                      <div className="space-y-2">
                         <Label htmlFor="phone" className="text-slate-300">Phone Number *</Label>
                         <Input
                           id="phone"
@@ -320,7 +320,7 @@ function RegisterPageContent() {
                       </div>
                     </div>
 
-                    <div>
+                    <div className="space-y-2">
                       <Label htmlFor="email" className="text-slate-300">Email (Optional)</Label>
                       <Input
                         id="email"
@@ -334,7 +334,7 @@ function RegisterPageContent() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
+                      <div className="space-y-2">
                         <Label htmlFor="password" className="text-slate-300">Password *</Label>
                         <div className="relative">
                           <Input
@@ -356,7 +356,7 @@ function RegisterPageContent() {
                           </button>
                         </div>
                       </div>
-                      <div>
+                      <div className="space-y-2">
                         <Label htmlFor="confirmPassword" className="text-slate-300">Confirm Password *</Label>
                         <Input
                           id="confirmPassword"
@@ -372,7 +372,7 @@ function RegisterPageContent() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
+                      <div className="space-y-2">
                         <Label htmlFor="dateOfBirth" className="text-slate-300">Date of Birth (Optional)</Label>
                         <Input
                           id="dateOfBirth"
@@ -383,7 +383,7 @@ function RegisterPageContent() {
                           className="bg-slate-700 border-slate-600 text-white"
                         />
                       </div>
-                      <div>
+                      <div className="space-y-2">
                         <Label htmlFor="gender" className="text-slate-300">Gender (Optional)</Label>
                         <select
                           id="gender"
