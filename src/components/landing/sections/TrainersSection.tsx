@@ -12,19 +12,16 @@ import {
   User,
   Award,
   Sparkles,
-  UserCheck,
-  UserPlus
+  UserCheck
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 interface TrainersSectionProps {
   onLoaded?: () => void;
 }
 
 export function TrainersSection({ onLoaded }: TrainersSectionProps) {
-  const router = useRouter();
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -407,20 +404,6 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
                             )}
                           </div>
                         </Link>
-
-                        {/* Subscribe Button */}
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            router.push(`/register?trainerId=${trainer.userId}&trainerName=${encodeURIComponent(trainer.name)}`)
-                          }}
-                          className="mt-auto w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-4 py-2.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm"
-                        >
-                          <UserPlus className="w-4 h-4" />
-                          Subscribe
-                        </motion.button>
                       </CardContent>
                     </Card>
                   </div>

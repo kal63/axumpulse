@@ -21,10 +21,12 @@ import {
   Briefcase,
   FileText,
   CheckCircle,
-  Loader2
+  Loader2,
+  UserPlus
 } from 'lucide-react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import { motion } from 'framer-motion';
 import '../pdf-viewer.css';
 
 // Dynamically import react-pdf with SSR disabled to avoid DOMMatrix error
@@ -317,6 +319,22 @@ export default function TrainerDetailPage() {
                     </div>
                   </div>
                 )}
+
+                {/* Subscribe Button */}
+                <div className="mt-6">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      const trainerUserId = parseInt(userIdParam);
+                      router.push(`/register?trainerId=${trainerUserId}&trainerName=${encodeURIComponent(trainer.user.name)}`);
+                    }}
+                    className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-500/50"
+                  >
+                    <UserPlus className="w-5 h-5" />
+                    Subscribe to This Trainer
+                  </motion.button>
+                </div>
               </div>
             </div>
 
