@@ -4,14 +4,27 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { NeumorphicCard } from '@/components/user/NeumorphicCard';
 import { Button } from '@/components/ui/button';
-import { Zap, RotateCw, Trophy } from 'lucide-react';
+import { Zap, RotateCw, Trophy, Target } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface SpinAndWinProps {
   exercise: {
-    name: string;
+    name?: string;
+    title?: string; // Challenge format (like "5 Push-ups")
     description?: string;
+    requirements?: string; // Challenge requirements (like "Perform 5 push-ups with proper form")
     muscleGroup?: string;
+    muscleGroups?: string[];
+    sets?: number;
+    reps?: string;
+    duration?: number;
+    restTime?: number;
+    equipment?: string;
+    category?: string;
+    weight?: string;
+    // Some APIs might return these variants
+    instructions?: string;
+    difficulty?: 'beginner' | 'intermediate' | 'advanced' | string;
   };
   onSpin: () => void;
   spinning: boolean;
@@ -40,25 +53,30 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
     'Mountain Climbers'
   ];
   
+  // Get the exercise identifier (title or name) for matching
+  const getExerciseIdentifier = () => {
+    return exercise?.title?.trim() || exercise?.name?.trim() || '';
+  };
+
   // Ensure the current backend-selected exercise is representable on the wheel
   const wheelPrizes = useMemo(() => {
     const base = (prizes && prizes.length > 0) ? prizes : defaultPrizes;
-    const exName = exercise?.name?.trim();
+    const exIdentifier = getExerciseIdentifier();
 
     // If backend returns something outside the base list, include it so we can land on it.
-    const merged = exName && !base.includes(exName) ? [...base, exName] : [...base];
+    const merged = exIdentifier && !base.includes(exIdentifier) ? [...base, exIdentifier] : [...base];
 
     // Keep wheel size reasonable (8 segments). Ensure exercise stays included.
     const unique = Array.from(new Set(merged));
     if (unique.length <= 8) return unique;
 
-    if (exName && unique.includes(exName)) {
-      const withoutEx = unique.filter(x => x !== exName).slice(0, 7);
-      return [...withoutEx, exName];
+    if (exIdentifier && unique.includes(exIdentifier)) {
+      const withoutEx = unique.filter(x => x !== exIdentifier).slice(0, 7);
+      return [...withoutEx, exIdentifier];
     }
 
     return unique.slice(0, 8);
-  }, [exercise?.name, prizes]);
+  }, [exercise?.title, exercise?.name, prizes]);
 
   const numSegments = wheelPrizes.length;
   const segmentAngle = 360 / numSegments;
@@ -97,10 +115,10 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
     if (!pendingSpin) return;
     if (spinning) return;
 
-    const exName = exercise?.name?.trim();
-    if (!exName) return;
+    const exIdentifier = getExerciseIdentifier();
+    if (!exIdentifier) return;
 
-    const targetIndex = wheelPrizes.indexOf(exName);
+    const targetIndex = wheelPrizes.indexOf(exIdentifier);
     if (targetIndex === -1) return;
 
     const baseRotations = 6; // feel-good spin
@@ -112,7 +130,7 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
     const finalRotation = current + baseRotations * 360 + targetRotation;
     currentRotationRef.current = finalRotation;
 
-    setWinningSegment(exName);
+    setWinningSegment(exIdentifier);
 
     void controls.start({
       rotate: finalRotation,
@@ -238,29 +256,113 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <NeumorphicCard variant="raised" className="p-6 text-center">
+          <NeumorphicCard variant="raised" className="p-6">
             <div className="mb-4">
-              <Trophy className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-2">
-                {exercise.name}
+              <div className="flex items-center justify-center mb-4">
+                <Trophy className="h-12 w-12 text-yellow-500" />
+              </div>
+              <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-2 text-center">
+                {exercise.title || exercise.name || 'Challenge'}
               </h3>
-              {exercise.muscleGroup && (
-                <Badge variant="secondary" className="mb-2">
-                  {exercise.muscleGroup}
-                </Badge>
-              )}
               {exercise.description && (
-                <p className="text-sm text-[var(--neumorphic-muted)]">
+                <p className="text-sm text-[var(--neumorphic-muted)] mb-3 text-center">
                   {exercise.description}
+                </p>
+              )}
+              
+              {/* Requirements section - like daily challenges */}
+              {exercise.requirements && (
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="h-4 w-4 text-[var(--neumorphic-muted)]" />
+                    <span className="text-sm font-medium text-[var(--neumorphic-text)]">
+                      Requirements:
+                    </span>
+                  </div>
+                  <p className="text-sm text-[var(--neumorphic-muted)] ml-6">
+                    {exercise.requirements}
+                  </p>
+                </div>
+              )}
+              
+              <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
+                {exercise.category && (
+                  <Badge variant="secondary">
+                    {exercise.category}
+                  </Badge>
+                )}
+                {exercise.muscleGroup && (
+                  <Badge variant="secondary">
+                    {exercise.muscleGroup}
+                  </Badge>
+                )}
+                {Array.isArray(exercise.muscleGroups) && exercise.muscleGroups.length > 0 && (
+                  <Badge variant="secondary">
+                    {exercise.muscleGroups.join(', ')}
+                  </Badge>
+                )}
+                {exercise.difficulty && (
+                  <Badge variant="secondary" className="capitalize">
+                    {exercise.difficulty}
+                  </Badge>
+                )}
+              </div>
+              
+              {exercise.instructions && !exercise.description && (
+                <p className="text-sm text-[var(--neumorphic-muted)] mb-3 text-center">
+                  {exercise.instructions}
                 </p>
               )}
             </div>
 
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Zap className="h-5 w-5 text-yellow-500" />
-              <span className="text-lg font-semibold text-[var(--neumorphic-text)]">
-                +{xpReward} XP
-              </span>
+            {/* Extra details (only show if present) */}
+            {(exercise.sets || exercise.reps || exercise.duration || exercise.restTime || exercise.equipment || exercise.weight) && (
+              <div className="grid grid-cols-2 gap-2 text-sm text-[var(--neumorphic-muted)] mb-4">
+                {typeof exercise.sets === 'number' && (
+                  <div className="rounded-md border border-[var(--neumorphic-border)] px-3 py-2">
+                    <span className="font-semibold text-[var(--neumorphic-text)]">Sets:</span> {exercise.sets}
+                  </div>
+                )}
+                {exercise.reps && (
+                  <div className="rounded-md border border-[var(--neumorphic-border)] px-3 py-2">
+                    <span className="font-semibold text-[var(--neumorphic-text)]">Reps:</span> {exercise.reps}
+                  </div>
+                )}
+                {typeof exercise.duration === 'number' && (
+                  <div className="rounded-md border border-[var(--neumorphic-border)] px-3 py-2">
+                    <span className="font-semibold text-[var(--neumorphic-text)]">Duration:</span> {exercise.duration}s
+                  </div>
+                )}
+                {typeof exercise.restTime === 'number' && (
+                  <div className="rounded-md border border-[var(--neumorphic-border)] px-3 py-2">
+                    <span className="font-semibold text-[var(--neumorphic-text)]">Rest:</span> {exercise.restTime}s
+                  </div>
+                )}
+                {exercise.equipment && (
+                  <div className="rounded-md border border-[var(--neumorphic-border)] px-3 py-2 col-span-2">
+                    <span className="font-semibold text-[var(--neumorphic-text)]">Equipment:</span> {exercise.equipment}
+                  </div>
+                )}
+                {exercise.weight && (
+                  <div className="rounded-md border border-[var(--neumorphic-border)] px-3 py-2 col-span-2">
+                    <span className="font-semibold text-[var(--neumorphic-text)]">Weight:</span> {exercise.weight}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between mb-4 pt-4 border-t border-[var(--neumorphic-border)]">
+              <div className="flex items-center gap-1">
+                <Zap className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                  +{xpReward} XP
+                </span>
+              </div>
+              {exercise.difficulty && (
+                <Badge variant="secondary" className="text-xs capitalize">
+                  {exercise.difficulty}
+                </Badge>
+              )}
             </div>
 
             <Button
