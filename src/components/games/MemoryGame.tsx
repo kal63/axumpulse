@@ -292,8 +292,43 @@ export function MemoryGame({ pairs, onComplete, xpReward }: MemoryGameProps) {
                 )}
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center">
-                <span className="text-lg sm:text-xl">?</span>
+              <div className="h-full flex items-center justify-center relative overflow-hidden rounded">
+                {/* Card back gradient background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700"></div>
+                
+                {/* Diagonal stripe pattern */}
+                <div className="absolute inset-0 opacity-30" style={{
+                  backgroundImage: `repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 8px,
+                    rgba(255, 255, 255, 0.15) 8px,
+                    rgba(255, 255, 255, 0.15) 16px
+                  )`
+                }}></div>
+                
+                {/* Corner decorative elements */}
+                <div className="absolute top-1 left-1 w-3 h-3 border-l-2 border-t-2 border-white/40 rounded-tl"></div>
+                <div className="absolute top-1 right-1 w-3 h-3 border-r-2 border-t-2 border-white/40 rounded-tr"></div>
+                <div className="absolute bottom-1 left-1 w-3 h-3 border-l-2 border-b-2 border-white/40 rounded-bl"></div>
+                <div className="absolute bottom-1 right-1 w-3 h-3 border-r-2 border-b-2 border-white/40 rounded-br"></div>
+                
+                {/* Center logo/icon */}
+                <div className="relative z-10 flex flex-col items-center justify-center">
+                  <svg 
+                    className="w-6 h-6 sm:w-8 sm:h-8 text-white/90" 
+                    fill="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                  <div className="text-[7px] sm:text-[9px] text-white/90 font-bold tracking-wider mt-0.5">
+                    FITNESS
+                  </div>
+                </div>
+                
+                {/* Subtle shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/0 to-white/10 pointer-events-none"></div>
               </div>
             )}
           </motion.button>
