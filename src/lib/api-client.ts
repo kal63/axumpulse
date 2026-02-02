@@ -1122,67 +1122,6 @@ class ApiClient {
     return this.request<PaginatedResponse<Challenge>>(`/admin/challenges${query}`)
   }
 
-  // Admin Games methods
-  async getAdminGames(params?: {
-    page?: number
-    pageSize?: number
-    gameType?: string
-    active?: string
-    search?: string
-  }): Promise<ApiResponse<PaginatedResponse<Game>>> {
-    const query = createPaginationQuery(params)
-    return this.request<PaginatedResponse<Game>>(`/admin/games${query}`)
-  }
-
-  async getAdminGame(id: number): Promise<ApiResponse<{
-    game: Game
-    stats: {
-      totalPlays: number
-      totalXpAwarded: number
-      averageScore: number
-    }
-  }>> {
-    return this.request<{
-      game: Game
-      stats: {
-        totalPlays: number
-        totalXpAwarded: number
-        averageScore: number
-      }
-    }>(`/admin/games/${id}`)
-  }
-
-  async createGame(game: Partial<Game>): Promise<ApiResponse<{ game: Game }>> {
-    return this.request<{ game: Game }>('/admin/games', {
-      method: 'POST',
-      body: JSON.stringify(game),
-    })
-  }
-
-  async updateGame(gameId: number, game: Partial<Game>): Promise<ApiResponse<{ game: Game }>> {
-    return this.request<{ game: Game }>(`/admin/games/${gameId}`, {
-      method: 'PUT',
-      body: JSON.stringify(game),
-    })
-  }
-
-  async deleteGame(gameId: number): Promise<ApiResponse<{ deleted: boolean }>> {
-    return this.request<{ deleted: boolean }>(`/admin/games/${gameId}`, {
-      method: 'DELETE',
-    })
-  }
-
-  async clearGameCache(gameId: number): Promise<ApiResponse<{ message: string; game: Game }>> {
-    return this.request<{ message: string; game: Game }>(`/admin/games/${gameId}/clear-cache`, {
-      method: 'POST',
-    })
-  }
-
-  async regenerateGameCache(gameId: number): Promise<ApiResponse<{ message: string; game: Game }>> {
-    return this.request<{ message: string; game: Game }>(`/admin/games/${gameId}/regenerate-cache`, {
-      method: 'POST',
-    })
-  }
 
   async getRewards(params?: {
     page?: number
@@ -3046,109 +2985,7 @@ class ApiClient {
   }
 
   // ==================== GAMES ====================
-
-  // Get available games
-  async getGames(params?: {
-    gameType?: 'spin_win' | 'quiz_battle' | 'memory_game'
-    difficulty?: 'beginner' | 'intermediate' | 'advanced'
-    active?: boolean
-  }): Promise<ApiResponse<{
-    games: Game[]
-  }>> {
-    const query = createPaginationQuery(params)
-    return this.request<{
-      games: Game[]
-    }>(`/user/games${query}`)
-  }
-
-  // Get game details
-  async getGameById(id: number): Promise<ApiResponse<{
-    game: Game
-  }>> {
-    return this.request<{
-      game: Game
-    }>(`/user/games/${id}`)
-  }
-
-  // Start/play a game
-  async playGame(id: number): Promise<ApiResponse<{
-    gameId: number
-    gameType: 'spin_win' | 'quiz_battle' | 'memory_game'
-    sessionId: string
-    content: any
-    xpReward: number
-  }>> {
-    return this.request<{
-      gameId: number
-      gameType: 'spin_win' | 'quiz_battle' | 'memory_game'
-      sessionId: string
-      content: any
-      xpReward: number
-    }>(`/user/games/${id}/play`, {
-      method: 'POST'
-    })
-  }
-
-  // Submit game results
-  async submitGameResults(
-    id: number,
-    gameData: any,
-    sessionId?: string
-  ): Promise<ApiResponse<{
-    message: string
-    score: number
-    maxScore: number
-    xpEarned: number
-    totalXP: number
-    level: number
-    leveledUp: boolean
-    progress: any
-  }>> {
-    return this.request<{
-      message: string
-      score: number
-      maxScore: number
-      xpEarned: number
-      totalXP: number
-      level: number
-      leveledUp: boolean
-      progress: any
-    }>(`/user/games/${id}/submit`, {
-      method: 'POST',
-      body: JSON.stringify({ gameData, sessionId })
-    })
-  }
-
-  // Get user's game history
-  async getGameHistory(params?: {
-    gameType?: 'spin_win' | 'quiz_battle' | 'memory_game'
-    limit?: number
-  }): Promise<ApiResponse<{
-    history: Array<{
-      id: number
-      userId: number
-      gameId: number
-      score: number
-      xpEarned: number
-      completedAt: string
-      gameData: any
-      game: Game | null
-    }>
-  }>> {
-    const query = createPaginationQuery(params)
-    return this.request<{
-      history: Array<{
-        id: number
-        userId: number
-        gameId: number
-        score: number
-        xpEarned: number
-        completedAt: string
-        gameData: any
-        game: Game | null
-      }>
-    }>(`/user/games/history${query}`)
-  }
+  // Note: User games methods are defined in the USER GAMES API section below
 
   // ==================== LEADERBOARD ====================
 
@@ -3216,7 +3053,19 @@ class ApiClient {
   // ==================== USER GAMES API ====================
 
   // Get all games (user)
-  async getGames(): Promise<ApiResponse<{ games: Game[] }>> {
+  async getGames(params?: {
+    gameType?: 'spin_win' | 'quiz_battle' | 'memory_game'
+    difficulty?: 'beginner' | 'intermediate' | 'advanced'
+    active?: boolean
+  }): Promise<ApiResponse<{ games: Game[] }>> {
+    if (params) {
+      const queryParams = new URLSearchParams()
+      if (params.gameType) queryParams.append('gameType', params.gameType)
+      if (params.difficulty) queryParams.append('difficulty', params.difficulty)
+      if (params.active !== undefined) queryParams.append('active', params.active.toString())
+      const query = queryParams.toString()
+      return this.request<{ games: Game[] }>(`/user/games${query ? `?${query}` : ''}`)
+    }
     return this.request<{ games: Game[] }>('/user/games')
   }
 

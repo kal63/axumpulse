@@ -61,7 +61,7 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
     if (prizes && Array.isArray(prizes) && prizes.length > 0) {
       // Check if first item is string or object
       if (typeof prizes[0] === 'string') {
-        normalizedPrizes = prizes.map((p: string) => ({ title: p, xpReward: 50 }));
+        normalizedPrizes = (prizes as string[]).map((p: string) => ({ title: p, xpReward: 50 }));
       } else {
         normalizedPrizes = prizes as Array<{ title: string; xpReward: number }>;
       }
