@@ -30,48 +30,80 @@ export default function PaymentSuccessPage() {
       return
     }
 
-    // Wait for callback to process and retry multiple times
-    const checkSubscription = async (retryCount = 0, maxRetries = 5) => {
+    // Automatically verify payment and activate subscription
+    const checkSubscription = async (retryCount = 0, maxRetries = 3) => {
       try {
-        // Wait progressively longer: 3s, 5s, 7s, 10s, 15s
-        const waitTime = retryCount === 0 ? 3000 : retryCount === 1 ? 5000 : retryCount === 2 ? 7000 : retryCount === 3 ? 10000 : 15000
-        await new Promise((resolve) => setTimeout(resolve, waitTime))
-
         if (!isAuthenticated) {
-          // User not logged in, but payment might have succeeded
-          // Show success message but note that subscription will be activated
           setStatus('success')
           return
         }
 
+        // Immediately verify and activate subscription on first attempt
+        if (txRef && retryCount === 0) {
+          try {
+            // Call verify endpoint which automatically activates subscription
+            const verifyResponse = await apiClient.verifyPayment(txRef)
+            
+            if (verifyResponse.success && verifyResponse.data) {
+              // If subscription was activated, use it immediately
+              if (verifyResponse.data.subscription) {
+                setSubscription(verifyResponse.data.subscription)
+                setStatus('success')
+                return
+              }
+              
+              // If payment was successful but subscription not created yet, wait a moment and check again
+              if (verifyResponse.data.transaction?.status === 'success') {
+                // Wait 2 seconds for activation to complete, then check subscription
+                await new Promise(resolve => setTimeout(resolve, 2000))
+              }
+            }
+          } catch (verifyError) {
+            console.error('[Payment Success] Error verifying payment:', verifyError)
+          }
+        }
+
         // Check subscription status
         const response = await apiClient.getMySubscription()
-        if (response.success && response.data) {
-          if (response.data.subscription) {
-            setSubscription(response.data.subscription)
-            setStatus('success')
-            return
-          }
+        if (response.success && response.data?.subscription) {
+          setSubscription(response.data.subscription)
+          setStatus('success')
+          return
         }
 
         // If no subscription found and we have retries left, try again
         if (retryCount < maxRetries) {
-          console.log(`Subscription not found yet, retrying... (${retryCount + 1}/${maxRetries})`)
+          const waitTime = (retryCount + 1) * 2000 // 2s, 4s, 6s
+          await new Promise(resolve => setTimeout(resolve, waitTime))
+          
+          // Try verify again (in case callback processed in background)
+          if (txRef) {
+            try {
+              const verifyResponse = await apiClient.verifyPayment(txRef)
+              if (verifyResponse.success && verifyResponse.data?.subscription) {
+                setSubscription(verifyResponse.data.subscription)
+                setStatus('success')
+                return
+              }
+            } catch (e) {
+              // Continue to retry
+            }
+          }
+          
           checkSubscription(retryCount + 1, maxRetries)
         } else {
-          // After all retries, show success anyway (callback may still process)
-          // Payment was successful, subscription activation might be delayed
+          // After all retries, show success (subscription may activate in background)
           setStatus('success')
           setError('Your payment was successful! Your subscription is being activated and will be available shortly.')
         }
       } catch (error: any) {
-        console.error('Error checking subscription:', error)
-        // After max retries, show success anyway
+        console.error('[Payment Success] Error:', error)
         if (retryCount >= maxRetries) {
           setStatus('success')
           setError('Your payment was successful! Your subscription is being activated and will be available shortly.')
         } else {
-          // Retry on error
+          const waitTime = (retryCount + 1) * 2000
+          await new Promise(resolve => setTimeout(resolve, waitTime))
           checkSubscription(retryCount + 1, maxRetries)
         }
       }

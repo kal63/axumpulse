@@ -3252,6 +3252,31 @@ class ApiClient {
     })
   }
 
+  // Verify payment and activate subscription
+  async verifyPayment(txRef: string): Promise<ApiResponse<{
+    transaction: {
+      id: number
+      txRef: string
+      status: string
+      amount: number
+      createdAt: string
+      completedAt?: string
+    }
+    subscription: UserSubscription | null
+  }>> {
+    return this.request<{
+      transaction: {
+        id: number
+        txRef: string
+        status: string
+        amount: number
+        createdAt: string
+        completedAt?: string
+      }
+      subscription: UserSubscription | null
+    }>(`/payments/verify/${txRef}`)
+  }
+
   // ==================== AUTH API ====================
 
   // Register new user
