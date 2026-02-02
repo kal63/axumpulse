@@ -30,7 +30,7 @@ interface SpinAndWinProps {
   spinning: boolean;
   onComplete: () => void;
   xpReward: number;
-  prizes?: string[]; // Optional array of prizes/challenges to display
+  prizes?: Array<{ title: string; xpReward: number }> | string[]; // Optional array of challenges or prize strings
 }
 
 export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, prizes }: SpinAndWinProps) {
@@ -41,42 +41,61 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
   const controls = useAnimation();
   const currentRotationRef = useRef(0);
 
-  // Default prizes/challenges if not provided
-  const defaultPrizes = [
-    'Push-ups',
-    'Sit-ups',
-    'Squats',
-    'Plank',
-    'Jumping Jacks',
-    'Burpees',
-    'Lunges',
-    'Mountain Climbers'
-  ];
-  
   // Get the exercise identifier (title or name) for matching
   const getExerciseIdentifier = () => {
     return exercise?.title?.trim() || exercise?.name?.trim() || '';
   };
 
-  // Ensure the current backend-selected exercise is representable on the wheel
+  // Build wheel prizes from challenges if provided, otherwise use default
   const wheelPrizes = useMemo(() => {
-    const base = (prizes && prizes.length > 0) ? prizes : defaultPrizes;
-    const exIdentifier = getExerciseIdentifier();
-
-    // If backend returns something outside the base list, include it so we can land on it.
-    const merged = exIdentifier && !base.includes(exIdentifier) ? [...base, exIdentifier] : [...base];
-
-    // Keep wheel size reasonable (8 segments). Ensure exercise stays included.
-    const unique = Array.from(new Set(merged));
-    if (unique.length <= 8) return unique;
-
-    if (exIdentifier && unique.includes(exIdentifier)) {
-      const withoutEx = unique.filter(x => x !== exIdentifier).slice(0, 7);
-      return [...withoutEx, exIdentifier];
+    // Normalize prizes to object format
+    let normalizedPrizes: Array<{ title: string; xpReward: number }> = [];
+    
+    if (prizes && Array.isArray(prizes) && prizes.length > 0) {
+      // Check if first item is string or object
+      if (typeof prizes[0] === 'string') {
+        normalizedPrizes = prizes.map((p: string) => ({ title: p, xpReward: 50 }));
+      } else {
+        normalizedPrizes = prizes as Array<{ title: string; xpReward: number }>;
+      }
     }
 
-    return unique.slice(0, 8);
-  }, [exercise?.title, exercise?.name, prizes]);
+    // If we have challenges, use them (ensure exactly 8)
+    if (normalizedPrizes.length > 0) {
+      if (normalizedPrizes.length < 8) {
+        // Fill remaining slots with placeholders
+        const placeholders = Array(8 - normalizedPrizes.length).fill(null).map((_, i) => ({
+          title: `Challenge ${i + 1}`,
+          xpReward: 50
+        }));
+        return [...normalizedPrizes, ...placeholders].slice(0, 8);
+      }
+      return normalizedPrizes.slice(0, 8);
+    }
+
+    // Fallback to default if no challenges provided
+    const defaultPrizes: Array<{ title: string; xpReward: number }> = [
+      { title: 'Push-ups', xpReward: 50 },
+      { title: 'Sit-ups', xpReward: 50 },
+      { title: 'Squats', xpReward: 50 },
+      { title: 'Plank', xpReward: 50 },
+      { title: 'Jumping Jacks', xpReward: 50 },
+      { title: 'Burpees', xpReward: 50 },
+      { title: 'Lunges', xpReward: 50 },
+      { title: 'Mountain Climbers', xpReward: 50 }
+    ];
+
+    const exIdentifier = getExerciseIdentifier();
+    if (exIdentifier) {
+      // Try to find matching challenge or add it
+      const found = defaultPrizes.find(p => p.title === exIdentifier);
+      if (!found) {
+        defaultPrizes[7] = { title: exIdentifier, xpReward: exercise?.xpReward || 50 };
+      }
+    }
+
+    return defaultPrizes;
+  }, [exercise?.title, exercise?.name, exercise?.xpReward, prizes]);
 
   const numSegments = wheelPrizes.length;
   const segmentAngle = 360 / numSegments;
@@ -118,7 +137,8 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
     const exIdentifier = getExerciseIdentifier();
     if (!exIdentifier) return;
 
-    const targetIndex = wheelPrizes.indexOf(exIdentifier);
+    // Find target index - wheelPrizes is now always array of objects
+    const targetIndex = wheelPrizes.findIndex((p) => p.title === exIdentifier);
     if (targetIndex === -1) return;
 
     const baseRotations = 6; // feel-good spin
@@ -130,7 +150,7 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
     const finalRotation = current + baseRotations * 360 + targetRotation;
     currentRotationRef.current = finalRotation;
 
-    setWinningSegment(exIdentifier);
+    setWinningSegment(wheelPrizes[targetIndex].title);
 
     void controls.start({
       rotate: finalRotation,
@@ -215,6 +235,10 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
               const textX = 200 + textRadius * Math.cos(segmentCenterAngle);
               const textY = 200 + textRadius * Math.sin(segmentCenterAngle);
               
+              // wheelPrizes is now always array of objects
+              const prizeTitle = prize.title;
+              const prizeXP = prize.xpReward;
+              
               return (
                 <div
                   key={i}
@@ -225,16 +249,32 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
                     transform: 'translate(-50%, -50%)',
                   }}
                 >
-                  <span 
-                    className="text-sm font-bold text-white whitespace-nowrap block"
+                  <div
+                    className="text-center"
                     style={{
-                      textShadow: '2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8)',
                       transform: `rotate(${i * segmentAngle + segmentAngle / 2}deg)`,
                       transformOrigin: 'center center'
                     }}
                   >
-                    {prize}
-                  </span>
+                    <span 
+                      className="text-sm font-bold text-white whitespace-nowrap block"
+                      style={{
+                        textShadow: '2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8)',
+                      }}
+                    >
+                      {prizeTitle}
+                    </span>
+                    {prizeXP && (
+                      <span 
+                        className="text-xs font-semibold text-white whitespace-nowrap block mt-0.5"
+                        style={{
+                          textShadow: '2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8)',
+                        }}
+                      >
+                        +{prizeXP} XP
+                      </span>
+                    )}
+                  </div>
                 </div>
               );
             })}
@@ -355,7 +395,7 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
               <div className="flex items-center gap-1">
                 <Zap className="h-4 w-4 text-yellow-500" />
                 <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
-                  +{xpReward} XP
+                  +{exercise?.xpReward || xpReward} XP
                 </span>
               </div>
               {exercise.difficulty && (

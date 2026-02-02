@@ -3213,6 +3213,76 @@ class ApiClient {
     }>('/user/leaderboard/rewards')
   }
 
+  // ==================== USER GAMES API ====================
+
+  // Get all games (user)
+  async getGames(): Promise<ApiResponse<{ games: Game[] }>> {
+    return this.request<{ games: Game[] }>('/user/games')
+  }
+
+  // Get game by ID (user)
+  async getGameById(id: number): Promise<ApiResponse<{ game: Game }>> {
+    return this.request<{ game: Game }>(`/user/games/${id}`)
+  }
+
+  // Play a game (start game session)
+  async playGame(gameId: number): Promise<ApiResponse<{
+    gameId: number
+    gameType: string
+    sessionId: string
+    content: any
+    xpReward: number
+  }>> {
+    return this.request<{
+      gameId: number
+      gameType: string
+      sessionId: string
+      content: any
+      xpReward: number
+    }>(`/user/games/${gameId}/play`, {
+      method: 'POST'
+    })
+  }
+
+  // Submit game results
+  async submitGameResults(
+    gameId: number,
+    gameData: any,
+    sessionId: string
+  ): Promise<ApiResponse<{
+    message: string
+    score: number
+    maxScore: number
+    xpEarned: number
+    totalXP: number
+    level: number
+    leveledUp: boolean
+    progress: any
+  }>> {
+    return this.request<{
+      message: string
+      score: number
+      maxScore: number
+      xpEarned: number
+      totalXP: number
+      level: number
+      leveledUp: boolean
+      progress: any
+    }>(`/user/games/${gameId}/submit`, {
+      method: 'POST',
+      body: JSON.stringify({ gameData, sessionId })
+    })
+  }
+
+  // Get game history
+  async getGameHistory(params?: {
+    gameType?: string
+    limit?: number
+  }): Promise<ApiResponse<{ history: any[] }>> {
+    const query = params ? `?${new URLSearchParams(params as any).toString()}` : ''
+    return this.request<{ history: any[] }>(`/user/games/history${query}`)
+  }
+
   // ==================== ADMIN GAMES API ====================
 
   // Get all games (admin)

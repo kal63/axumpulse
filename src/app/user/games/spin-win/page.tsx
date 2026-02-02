@@ -19,6 +19,7 @@ export default function SpinWinPage() {
   const [exercise, setExercise] = useState<any>(null);
   const [spinning, setSpinning] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [challenges, setChallenges] = useState<Array<{ id: number; title: string; xpReward: number }>>([]);
 
   const gameId = searchParams.get('id');
 
@@ -33,13 +34,29 @@ export default function SpinWinPage() {
   const loadGame = async () => {
     try {
       setLoading(true);
-      const res = await apiClient.getGameById(parseInt(gameId!));
+      const [gameRes, challengesRes] = await Promise.all([
+        apiClient.getGameById(parseInt(gameId!)),
+        apiClient.getUserChallenges({ page: 1, pageSize: 100 })
+      ]);
 
-      if (res.success && res.data) {
-        setGame(res.data.game);
+      if (gameRes.success && gameRes.data) {
+        setGame(gameRes.data.game);
       } else {
         toast.error('Game not found');
         router.push('/user/games');
+        return;
+      }
+
+      // Fetch challenges marked as game challenges
+      if (challengesRes.success && challengesRes.data) {
+        const gameChallenges = challengesRes.data.items
+          .filter((ch: any) => ch.isGameChallenge === true)
+          .map((ch: any) => ({
+            id: ch.id,
+            title: ch.title,
+            xpReward: ch.xpReward || 50
+          }));
+        setChallenges(gameChallenges);
       }
     } catch (error) {
       console.error('Error loading game:', error);
@@ -76,8 +93,9 @@ export default function SpinWinPage() {
 
     try {
       const res = await apiClient.submitGameResults(game.id, {
-        exercise: exercise.name,
-        completed: true
+        exercise: exercise.name || exercise.title,
+        completed: true,
+        challengeXp: exercise.xpReward // Pass challenge XP to use instead of game XP
       }, sessionId);
 
       if (res.success && res.data) {
@@ -142,7 +160,8 @@ export default function SpinWinPage() {
             onSpin={handleSpin}
             spinning={spinning}
             onComplete={handleComplete}
-            xpReward={game.xpReward}
+            xpReward={exercise?.xpReward || game.xpReward || 50}
+            prizes={challenges}
           />
         </NeumorphicCard>
 
@@ -150,7 +169,11 @@ export default function SpinWinPage() {
         <div className="mt-6 text-center">
           <div className="inline-flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
             <Zap className="h-4 w-4 text-yellow-500" />
-            <span>Earn {game.xpReward} XP for completing the exercise</span>
+            <span>
+              {exercise?.xpReward 
+                ? `Earn ${exercise.xpReward} XP for completing this challenge`
+                : 'XP reward varies by challenge'}
+            </span>
           </div>
         </div>
       </div>
