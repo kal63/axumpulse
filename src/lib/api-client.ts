@@ -3226,7 +3226,10 @@ class ApiClient {
   }
 
   // Play a game (start game session)
-  async playGame(gameId: number): Promise<ApiResponse<{
+  async playGame(gameId: number, options?: {
+    wheelChallenges?: Array<{ id: number; title: string; challengeId?: number }>
+    recentSelections?: number[]
+  }): Promise<ApiResponse<{
     gameId: number
     gameType: string
     sessionId: string
@@ -3240,7 +3243,8 @@ class ApiClient {
       content: any
       xpReward: number
     }>(`/user/games/${gameId}/play`, {
-      method: 'POST'
+      method: 'POST',
+      body: JSON.stringify(options || {})
     })
   }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { NeumorphicCard } from '@/components/user/NeumorphicCard';
 import { Button } from '@/components/ui/button';
@@ -25,6 +25,9 @@ interface SpinAndWinProps {
     // Some APIs might return these variants
     instructions?: string;
     difficulty?: 'beginner' | 'intermediate' | 'advanced' | string;
+    xpReward?: number; // XP reward from the challenge
+    challengeXp?: number; // Alternative XP field
+    challengeId?: number; // Challenge ID
   };
   onSpin: () => void;
   spinning: boolean;
@@ -41,10 +44,14 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
   const controls = useAnimation();
   const currentRotationRef = useRef(0);
 
+  // Get the actual XP reward from exercise, fallback to prop
+  const actualXpReward = exercise?.xpReward || (exercise as any)?.challengeXp || xpReward;
+
   // Get the exercise identifier (title or name) for matching
-  const getExerciseIdentifier = () => {
+  // Use useCallback to prevent dependency issues
+  const getExerciseIdentifier = useCallback(() => {
     return exercise?.title?.trim() || exercise?.name?.trim() || '';
-  };
+  }, [exercise?.title, exercise?.name]);
 
   // Build wheel prizes from challenges if provided, otherwise use default
   const wheelPrizes = useMemo(() => {
@@ -62,13 +69,20 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
 
     // If we have challenges, use them (ensure exactly 8)
     if (normalizedPrizes.length > 0) {
+      // If we have fewer than 8, duplicate some challenges to fill the wheel
+      // This ensures all challenges on the wheel can be selected
       if (normalizedPrizes.length < 8) {
-        // Fill remaining slots with placeholders
-        const placeholders = Array(8 - normalizedPrizes.length).fill(null).map((_, i) => ({
-          title: `Challenge ${i + 1}`,
-          xpReward: 50
-        }));
-        return [...normalizedPrizes, ...placeholders].slice(0, 8);
+        const needed = 8 - normalizedPrizes.length;
+        // Duplicate challenges to fill remaining slots (shuffle them for variety)
+        const duplicates: Array<{ title: string; xpReward: number }> = [];
+        for (let i = 0; i < needed; i++) {
+          const sourceIndex = i % normalizedPrizes.length;
+          duplicates.push({
+            ...normalizedPrizes[sourceIndex],
+            title: normalizedPrizes[sourceIndex].title // Keep same title so backend can match it
+          });
+        }
+        return [...normalizedPrizes, ...duplicates].slice(0, 8);
       }
       return normalizedPrizes.slice(0, 8);
     }
@@ -135,11 +149,27 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
     if (spinning) return;
 
     const exIdentifier = getExerciseIdentifier();
-    if (!exIdentifier) return;
+    if (!exIdentifier) {
+      console.warn('No exercise identifier found');
+      setPendingSpin(false);
+      return;
+    }
 
     // Find target index - wheelPrizes is now always array of objects
-    const targetIndex = wheelPrizes.findIndex((p) => p.title === exIdentifier);
-    if (targetIndex === -1) return;
+    let targetIndex = wheelPrizes.findIndex((p) => p.title === exIdentifier);
+    
+    // If not found, try case-insensitive match
+    if (targetIndex === -1) {
+      targetIndex = wheelPrizes.findIndex((p) => 
+        p.title.toLowerCase().trim() === exIdentifier.toLowerCase().trim()
+      );
+    }
+    
+    // If still not found, use random index as fallback (shouldn't happen with new backend logic)
+    if (targetIndex === -1) {
+      console.warn(`Challenge "${exIdentifier}" not found on wheel, using random selection`);
+      targetIndex = Math.floor(Math.random() * wheelPrizes.length);
+    }
 
     const baseRotations = 6; // feel-good spin
     const targetRotation = rotationForTargetIndex(targetIndex);
@@ -159,10 +189,37 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
         ease: [0.17, 0.67, 0.83, 0.67],
       },
     }).then(() => {
-      setTimeout(() => setShowResult(true), 300);
-      setPendingSpin(false);
+      // Wait a bit more to ensure exercise prop is updated
+      setTimeout(() => {
+        // Verify exercise has valid data before showing modal
+        const exIdentifier = getExerciseIdentifier();
+        if (exIdentifier && exercise && (exercise.title || exercise.name)) {
+          setShowResult(true);
+        } else {
+          console.warn('Exercise data not ready, waiting...', { exercise, exIdentifier });
+          // Retry after a short delay
+          setTimeout(() => {
+            const retryIdentifier = getExerciseIdentifier();
+            if (retryIdentifier && exercise && (exercise.title || exercise.name)) {
+              setShowResult(true);
+            } else {
+              console.error('Exercise data still not ready after retry');
+              setShowResult(true); // Show anyway to avoid stuck state
+            }
+          }, 200);
+        }
+        setPendingSpin(false);
+      }, 300);
     });
-  }, [controls, exercise?.name, pendingSpin, spinning, wheelPrizes, segmentAngle]);
+  }, [controls, exercise?.title, exercise?.name, exercise?.xpReward, pendingSpin, spinning, wheelPrizes, segmentAngle, getExerciseIdentifier]);
+
+  // Ensure modal only shows when we have valid exercise data
+  useEffect(() => {
+    if (showResult && !exercise) {
+      // If modal is shown but exercise is null/undefined, hide it
+      setShowResult(false);
+    }
+  }, [exercise, showResult]);
 
   const handleComplete = () => {
     onComplete();
@@ -290,7 +347,7 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
       </div>
 
       {/* Result Display */}
-      {showResult && exercise ? (
+      {showResult && exercise && (exercise.title || exercise.name) ? (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -395,7 +452,7 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
               <div className="flex items-center gap-1">
                 <Zap className="h-4 w-4 text-yellow-500" />
                 <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
-                  +{exercise?.xpReward || xpReward} XP
+                  +{actualXpReward} XP
                 </span>
               </div>
               {exercise.difficulty && (

@@ -20,6 +20,7 @@ export default function SpinWinPage() {
   const [spinning, setSpinning] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [challenges, setChallenges] = useState<Array<{ id: number; title: string; xpReward: number }>>([]);
+  const [recentSelections, setRecentSelections] = useState<number[]>([]); // Track recently selected challenge IDs
 
   const gameId = searchParams.get('id');
 
@@ -70,13 +71,45 @@ export default function SpinWinPage() {
   const handleSpin = async () => {
     if (!game || spinning) return;
 
+    // Ensure we have at least one challenge
+    if (!challenges || challenges.length === 0) {
+      toast.error('No challenges available. Please contact an admin to add challenges to the game.');
+      return;
+    }
+
     try {
       setSpinning(true);
-      const res = await apiClient.playGame(game.id);
+      
+      // Prepare wheel challenges (the 8 displayed on the wheel)
+      const wheelChallenges = challenges.slice(0, 8).map(ch => ({
+        id: ch.id,
+        title: ch.title,
+        challengeId: ch.id
+      }));
+
+      // Call playGame with wheel challenges and recent selections
+      const res = await apiClient.playGame(game.id, {
+        wheelChallenges,
+        recentSelections: recentSelections.slice(-3) // Only avoid last 3 selections
+      });
 
       if (res.success && res.data) {
-        setExercise(res.data.content.exercise);
+        const selectedExercise = res.data.content.exercise;
+        // Ensure xpReward is set from challengeXp if available
+        if (res.data.content.challengeXp && !selectedExercise.xpReward) {
+          selectedExercise.xpReward = res.data.content.challengeXp;
+        }
+        setExercise(selectedExercise);
         setSessionId(res.data.sessionId);
+        
+        // Track this selection to avoid immediate repeats
+        if (selectedExercise.challengeId) {
+          setRecentSelections(prev => {
+            const updated = [...prev, selectedExercise.challengeId];
+            // Keep only last 5 selections
+            return updated.slice(-5);
+          });
+        }
       } else {
         toast.error('Failed to spin wheel');
       }
@@ -156,7 +189,7 @@ export default function SpinWinPage() {
         {/* Game */}
         <NeumorphicCard variant="raised" className="p-8">
           <SpinAndWin
-            exercise={exercise || { name: '', description: '' }}
+            exercise={exercise || undefined}
             onSpin={handleSpin}
             spinning={spinning}
             onComplete={handleComplete}
