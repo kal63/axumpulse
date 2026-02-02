@@ -736,7 +736,14 @@ export default function GamesPage() {
             showPagination={true}
             showPageSizeSelector={true}
             showInfo={true}
-            onRowClick={(game) => handleViewDetails(game)}
+            onRowClick={(game) => {
+              // If spin_win game, navigate to challenges page
+              if (game.gameType === 'spin_win') {
+                window.location.href = `/admin/games/${game.id}/challenges`
+              } else {
+                handleViewDetails(game)
+              }
+            }}
           />
         </CardContent>
       </Card>
