@@ -793,11 +793,36 @@ class ApiClient {
       }
 
       if (!response.ok) {
+        // Extract error message from response body if available
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        let errorCode = 'HTTP_ERROR'
+        
+        if (data && typeof data === 'object') {
+          // Check for common error message formats
+          if (data.message) {
+            errorMessage = data.message
+          }
+          if (data.code) {
+            errorCode = data.code
+          }
+        }
+        
+        // Provide user-friendly messages for common HTTP status codes
+        if (response.status === 401) {
+          errorMessage = data?.message || 'Invalid phone number or password. Please check your credentials and try again.'
+        } else if (response.status === 403) {
+          errorMessage = data?.message || 'You do not have permission to perform this action.'
+        } else if (response.status === 404) {
+          errorMessage = data?.message || 'The requested resource was not found.'
+        } else if (response.status === 500) {
+          errorMessage = data?.message || 'An internal server error occurred. Please try again later.'
+        }
+        
         return {
           success: false,
           error: {
-            code: 'HTTP_ERROR',
-            message: `HTTP ${response.status}: ${response.statusText}`,
+            code: errorCode,
+            message: errorMessage,
             status: response.status,
             statusText: response.statusText,
             // Provide response text (if any) and parsed data (if JSON)

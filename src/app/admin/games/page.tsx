@@ -492,10 +492,10 @@ export default function GamesPage() {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            {/* <Button>
               <Plus className="h-4 w-4 mr-2" />
               Add Game
-            </Button>
+            </Button> */}
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
