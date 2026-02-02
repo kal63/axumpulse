@@ -153,11 +153,16 @@ export default function CheckoutPage() {
         // Redirect to Chapa checkout
         window.location.href = response.data.checkout_url
       } else {
-        setError(response.error?.message || 'Failed to initialize payment')
+        // Display the user-friendly error message from the API
+        setError(response.error?.message || 'Failed to initialize payment. Please try again.')
         setLoading(false)
       }
     } catch (error: any) {
-      setError(error.message || 'Failed to initialize payment')
+      // Handle both API errors and network errors
+      const errorMessage = error?.message || 
+                          error?.error?.message || 
+                          'Failed to initialize payment. Please check your connection and try again.'
+      setError(errorMessage)
       setLoading(false)
     }
   }

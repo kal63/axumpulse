@@ -33,7 +33,9 @@ import {
   Timer,
   MapPin,
   Globe,
-  AlertCircle
+  AlertCircle,
+  UserCheck,
+  Package
 } from 'lucide-react'
 
 export default function UserDashboardPage() {
@@ -49,6 +51,7 @@ export default function UserDashboardPage() {
   const [xpHistory, setXPHistory] = useState<any[]>([])
   const [xpSummary, setXPSummary] = useState<any>(null)
   const [achievements, setAchievements] = useState<any[]>([])
+  const [subscription, setSubscription] = useState<any>(null)
 
   // Get greeting based on Ethiopian timezone
   const getGreeting = () => {
@@ -103,10 +106,11 @@ export default function UserDashboardPage() {
       setError(null)
 
       // Fetch all data in parallel
-      const [statsRes, historyRes, achievementsRes] = await Promise.all([
+      const [statsRes, historyRes, achievementsRes, subscriptionRes] = await Promise.all([
         apiClient.getUserStats(),
         apiClient.getUserXPHistory(30), // Get last 30 days
-        apiClient.getAchievements()
+        apiClient.getAchievements(),
+        apiClient.getMySubscription()
       ])
 
       // Handle stats
@@ -124,6 +128,11 @@ export default function UserDashboardPage() {
       // Handle achievements
       if (achievementsRes.success && achievementsRes.data) {
         setAchievements(achievementsRes.data.achievements || [])
+      }
+
+      // Handle subscription
+      if (subscriptionRes.success && subscriptionRes.data) {
+        setSubscription(subscriptionRes.data.subscription)
       }
     } catch (err) {
       console.error('Error fetching dashboard data:', err)
@@ -242,6 +251,84 @@ export default function UserDashboardPage() {
               />
             </NeumorphicCard>
           </div>
+
+          {/* Subscription Info Card */}
+          {subscription && (
+            <NeumorphicCard variant="raised" className="p-6 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-pink-500/10 border-2 border-cyan-500/20">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <Package className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-[var(--neumorphic-text)]">Active Subscription</h3>
+                    <p className="text-sm text-[var(--neumorphic-muted)]">Your current plan</p>
+                  </div>
+                </div>
+                <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+                  Active
+                </Badge>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                {/* Subscription Plan */}
+                <div className="p-4 rounded-xl bg-[var(--neumorphic-surface)]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Package className="w-4 h-4 text-cyan-500" />
+                    <span className="text-xs text-[var(--neumorphic-muted)] uppercase tracking-wide">Package</span>
+                  </div>
+                  <p className="text-lg font-bold text-[var(--neumorphic-text)]">
+                    {subscription.subscriptionPlan?.name || 'N/A'}
+                  </p>
+                  <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
+                    {subscription.duration === 'daily' ? 'Daily' : 
+                     subscription.duration === 'monthly' ? 'Monthly' : 
+                     subscription.duration === 'threeMonth' ? '3 Months' :
+                     subscription.duration === 'sixMonth' ? '6 Months' :
+                     subscription.duration === 'nineMonth' ? '9 Months' : '1 Year'} Plan
+                  </p>
+                </div>
+
+                {/* Subscribed Trainer */}
+                <div className="p-4 rounded-xl bg-[var(--neumorphic-surface)]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <UserCheck className="w-4 h-4 text-purple-500" />
+                    <span className="text-xs text-[var(--neumorphic-muted)] uppercase tracking-wide">Trainer</span>
+                  </div>
+                  <p className="text-lg font-bold text-[var(--neumorphic-text)]">
+                    {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
+                  </p>
+                  {subscription.trainer?.profilePicture && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <img 
+                        src={subscription.trainer.profilePicture} 
+                        alt={subscription.trainer.name}
+                        className="w-6 h-6 rounded-full"
+                      />
+                      <span className="text-xs text-[var(--neumorphic-muted)]">Verified Trainer</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Expiration Date */}
+              <div className="mt-4 pt-4 border-t border-[var(--neumorphic-border)]">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-[var(--neumorphic-muted)]" />
+                    <span className="text-sm text-[var(--neumorphic-muted)]">Expires on</span>
+                  </div>
+                  <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                    {new Date(subscription.expiresAt).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </span>
+                </div>
+              </div>
+            </NeumorphicCard>
+          )}
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

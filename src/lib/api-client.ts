@@ -798,24 +798,33 @@ class ApiClient {
         let errorCode = 'HTTP_ERROR'
         
         if (data && typeof data === 'object') {
-          // Check for common error message formats
-          if (data.message) {
+          // Check for our API error format: { success: false, error: { code, message, details } }
+          if (data.error) {
+            errorMessage = data.error.message || errorMessage
+            errorCode = data.error.code || errorCode
+          } 
+          // Fallback to direct message property (for other API formats)
+          else if (data.message) {
             errorMessage = data.message
           }
-          if (data.code) {
+          if (data.code && !data.error) {
             errorCode = data.code
           }
         }
         
-        // Provide user-friendly messages for common HTTP status codes
-        if (response.status === 401) {
-          errorMessage = data?.message || 'Invalid phone number or password. Please check your credentials and try again.'
-        } else if (response.status === 403) {
-          errorMessage = data?.message || 'You do not have permission to perform this action.'
-        } else if (response.status === 404) {
-          errorMessage = data?.message || 'The requested resource was not found.'
-        } else if (response.status === 500) {
-          errorMessage = data?.message || 'An internal server error occurred. Please try again later.'
+        // Provide user-friendly messages for common HTTP status codes (only if no specific message was found)
+        if (errorMessage === `HTTP ${response.status}: ${response.statusText}`) {
+          if (response.status === 401) {
+            errorMessage = 'Invalid phone number or password. Please check your credentials and try again.'
+          } else if (response.status === 403) {
+            errorMessage = 'You do not have permission to perform this action.'
+          } else if (response.status === 404) {
+            errorMessage = 'The requested resource was not found.'
+          } else if (response.status === 400) {
+            errorMessage = 'Invalid request. Please check your input and try again.'
+          } else if (response.status === 500) {
+            errorMessage = 'An internal server error occurred. Please try again later.'
+          }
         }
         
         return {
