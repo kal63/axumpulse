@@ -354,8 +354,16 @@ export default function GamesPage() {
       key: 'xp',
       header: 'XP Reward',
       render: (game: ApiGame) => (
-        <div className="text-sm font-medium">
-          {game.xpReward || 0} XP
+        <div className="space-y-1">
+          <div className="text-sm font-medium">
+            {game.xpReward || 0} XP
+          </div>
+          {game.gameType === 'spin_win' && (
+            <Badge variant="outline" className="text-xs">
+              <Target className="h-3 w-3 mr-1" />
+              Derived from challenges
+            </Badge>
+          )}
         </div>
       )
     },

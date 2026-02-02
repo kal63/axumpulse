@@ -210,6 +210,49 @@ export default function ChallengesPage() {
       )
     },
     {
+      key: 'gameChallenge',
+      header: 'Game Challenge',
+      render: (challenge: ApiChallenge) => (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={async (e) => {
+            e.stopPropagation()
+            try {
+              setActionLoading(challenge.id)
+              const response = await apiClient.updateChallenge(challenge.id, {
+                isGameChallenge: !challenge.isGameChallenge
+              })
+              
+              if (response.success && response.data) {
+                refetch()
+                toast.success(`Challenge ${!challenge.isGameChallenge ? 'marked as' : 'removed from'} game challenge`)
+              } else {
+                toast.error(response.error?.message || 'Failed to update challenge')
+              }
+            } catch (err) {
+              toast.error('Failed to update challenge')
+            } finally {
+              setActionLoading(null)
+            }
+          }}
+          disabled={actionLoading === challenge.id}
+          className={challenge.isGameChallenge ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200" : ""}
+        >
+          {actionLoading === challenge.id ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : challenge.isGameChallenge ? (
+            <>
+              <Target className="h-4 w-4 mr-1" />
+              Game Challenge
+            </>
+          ) : (
+            'Mark for Games'
+          )}
+        </Button>
+      )
+    },
+    {
       key: 'created',
       header: 'Created',
       render: (challenge: ApiChallenge) => (
@@ -538,6 +581,24 @@ export default function ChallengesPage() {
                       </Badge>
                     </div>
                   </div>
+                  <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                    <p className="text-sm font-medium">Game Challenge</p>
+                    <div className="mt-1">
+                      <Badge 
+                        variant={selectedChallenge.isGameChallenge ? "default" : "secondary"}
+                        className={selectedChallenge.isGameChallenge ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200" : ""}
+                      >
+                        {selectedChallenge.isGameChallenge ? (
+                          <>
+                            <Target className="h-3 w-3 mr-1" />
+                            Available for Games
+                          </>
+                        ) : (
+                          'Not for Games'
+                        )}
+                      </Badge>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -631,6 +692,46 @@ export default function ChallengesPage() {
 
               {/* Actions */}
               <div className="flex justify-end space-x-3 pt-4 border-t">
+                <Button
+                  variant="outline"
+                  onClick={async (e) => {
+                    e.stopPropagation()
+                    try {
+                      setActionLoading(selectedChallenge.id)
+                      const response = await apiClient.updateChallenge(selectedChallenge.id, {
+                        isGameChallenge: !selectedChallenge.isGameChallenge
+                      })
+                      
+                      if (response.success && response.data) {
+                        refetch()
+                        toast.success(`Challenge ${!selectedChallenge.isGameChallenge ? 'marked as' : 'removed from'} game challenge`)
+                        handleCloseDetailsModal()
+                      } else {
+                        toast.error(response.error?.message || 'Failed to update challenge')
+                      }
+                    } catch (err) {
+                      toast.error('Failed to update challenge')
+                    } finally {
+                      setActionLoading(null)
+                    }
+                  }}
+                  disabled={actionLoading === selectedChallenge.id}
+                  className={selectedChallenge.isGameChallenge ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200" : ""}
+                >
+                  {actionLoading === selectedChallenge.id ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : selectedChallenge.isGameChallenge ? (
+                    <>
+                      <Target className="h-4 w-4 mr-2" />
+                      Remove from Games
+                    </>
+                  ) : (
+                    <>
+                      <Target className="h-4 w-4 mr-2" />
+                      Mark for Games
+                    </>
+                  )}
+                </Button>
                 <Button
                   variant="outline"
                   onClick={(e) => {

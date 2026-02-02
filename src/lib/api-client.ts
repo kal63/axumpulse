@@ -118,6 +118,7 @@ export interface Challenge {
   fitnessLevel?: 'beginner' | 'intermediate' | 'advanced' | null
   recurrencePattern?: { days: number[] } | null
   autoAssign?: boolean
+  isGameChallenge?: boolean
   createdAt: string
   updatedAt: string
 }
@@ -3211,6 +3212,93 @@ class ApiClient {
       note: string
     }>('/user/leaderboard/rewards')
   }
+
+  // ==================== ADMIN GAMES API ====================
+
+  // Get all games (admin)
+  async getAdminGames(params?: {
+    page?: number
+    pageSize?: number
+    gameType?: string
+    active?: string
+    search?: string
+  }): Promise<ApiResponse<PaginatedResponse<Game>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<Game>>(`/admin/games${query}`)
+  }
+
+  // Get game by ID (admin)
+  async getAdminGame(id: number): Promise<ApiResponse<{
+    game: Game
+    stats: {
+      totalPlays: number
+      totalXpAwarded: number
+      averageScore: number
+    }
+  }>> {
+    return this.request<{
+      game: Game
+      stats: any
+    }>(`/admin/games/${id}`)
+  }
+
+  // Create game (admin)
+  async createGame(data: {
+    title: string
+    description?: string
+    gameType: 'spin_win' | 'quiz_battle' | 'memory_game'
+    difficulty?: 'beginner' | 'intermediate' | 'advanced'
+    xpReward?: number
+    active?: boolean
+    useAiGeneration?: boolean
+    aiPromptTemplate?: string
+    configJson?: Record<string, any>
+  }): Promise<ApiResponse<{ game: Game }>> {
+    return this.request<{ game: Game }>('/admin/games', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Update game (admin)
+  async updateGame(id: number, data: Partial<{
+    title: string
+    description: string
+    gameType: 'spin_win' | 'quiz_battle' | 'memory_game'
+    difficulty: 'beginner' | 'intermediate' | 'advanced'
+    xpReward: number
+    active: boolean
+    useAiGeneration: boolean
+    aiPromptTemplate: string
+    configJson: Record<string, any>
+  }>): Promise<ApiResponse<{ game: Game }>> {
+    return this.request<{ game: Game }>(`/admin/games/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Delete game (admin)
+  async deleteGame(id: number): Promise<ApiResponse<{ deleted: boolean }>> {
+    return this.request<{ deleted: boolean }>(`/admin/games/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
+  // Clear game cache (admin)
+  async clearGameCache(id: number): Promise<ApiResponse<{ message: string; game: Game }>> {
+    return this.request<{ message: string; game: Game }>(`/admin/games/${id}/clear-cache`, {
+      method: 'POST'
+    })
+  }
+
+  // Regenerate game cache (admin)
+  async regenerateGameCache(id: number): Promise<ApiResponse<{ message: string; game: Game }>> {
+    return this.request<{ message: string; game: Game }>(`/admin/games/${id}/regenerate-cache`, {
+      method: 'POST'
+    })
+  }
+
 
   // ==================== SUBSCRIPTION API ====================
 
