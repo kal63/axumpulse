@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "../styles/animations.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Toaster as CustomToaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/contexts/auth-context";

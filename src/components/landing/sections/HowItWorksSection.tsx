@@ -572,18 +572,8 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
                   <div className="step-number text-6xl font-bold text-slate-700/30 mb-4 group-hover:text-slate-600/50 transition-colors duration-300 relative">
                     {step.number}
                     
-                    {/* Rotating ring around number */}
-                    <motion.div
-                      className="absolute inset-0 border-2 border-blue-400/30 rounded-full"
-                      animate={{
-                        rotate: 360
-                      }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: 'linear'
-                      }}
-                    />
+                    {/* Rotating ring around number - using CSS animation for better performance */}
+                    <div className="absolute inset-0 border-2 border-blue-400/30 rounded-full rotate-slow" />
                   </div>
 
                   {/* Icon with INSANE animations */}
@@ -595,30 +585,14 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
                   `}>
                     <step.icon className="w-12 h-12 text-white relative z-10" />
                     
-                    {/* Rotating ring around icon */}
-                    <motion.div
-                      className="absolute inset-0 border-2 border-white/30 rounded-2xl"
-                      animate={{
-                        rotate: 360
-                      }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: 'linear'
-                      }}
-                    />
+                    {/* Rotating ring around icon - using CSS animation for better performance */}
+                    <div className="absolute inset-0 border-2 border-white/30 rounded-2xl rotate-slow" />
                     
-                    {/* Pulsing glow */}
-                    <motion.div
-                      className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${step.color} opacity-50`}
-                      animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.3, 0.6, 0.3]
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: index * 0.3
+                    {/* Pulsing glow - using CSS animation for better performance */}
+                    <div 
+                      className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${step.color} opacity-50 pulse-glow`}
+                      style={{
+                        animationDelay: `${index * 0.3}s`
                       }}
                     />
                   </div>

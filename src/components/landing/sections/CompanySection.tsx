@@ -225,23 +225,12 @@ export function CompanySection({ onLoaded }: CompanySectionProps) {
             ref={titleRef}
             className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 relative"
           >
-            {/* Animated background text */}
-            <motion.span
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20"
-              animate={{
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'linear'
-              }}
-              style={{
-                backgroundSize: '200% 200%'
-              }}
+            {/* Animated background text - using CSS animation for better performance */}
+            <span
+              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20 gradient-animation"
             >
               About Compound BST
-            </motion.span>
+            </span>
             
             {/* Main text */}
             <span className="relative z-10 text-white">About</span>
@@ -250,39 +239,17 @@ export function CompanySection({ onLoaded }: CompanySectionProps) {
               Compound BST
             </span>
             
-            {/* Floating sparkles */}
+            {/* Floating sparkles - using CSS animations for better performance */}
             <div className="absolute -top-4 -right-4">
-              <motion.div
-                animate={{
-                  rotate: 360,
-                  scale: [1, 1.2, 1]
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: 'linear'
-                }}
-                className="w-8 h-8"
-              >
+              <div className="w-8 h-8 sparkle-animation-1">
                 <Sparkles className="w-8 h-8 text-yellow-400" />
-              </motion.div>
+              </div>
             </div>
             
             <div className="absolute -bottom-2 -left-4">
-              <motion.div
-                animate={{
-                  rotate: -360,
-                  scale: [1, 1.1, 1]
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'linear'
-                }}
-                className="w-6 h-6"
-              >
+              <div className="w-6 h-6 sparkle-animation-2">
                 <Sparkles className="w-6 h-6 text-yellow-400" />
-              </motion.div>
+              </div>
             </div>
           </motion.h2>
 

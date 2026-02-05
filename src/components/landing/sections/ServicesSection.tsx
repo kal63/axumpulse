@@ -281,39 +281,17 @@ export function ServicesSection({ onLoaded }: ServicesSectionProps) {
               Services
             </span>
             
-            {/* Floating sparkles */}
+            {/* Floating sparkles - using CSS animations for better performance */}
             <div className="absolute -top-4 -right-4">
-              <motion.div
-                animate={{
-                  rotate: 360,
-                  scale: [1, 1.2, 1]
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: 'linear'
-                }}
-                className="w-8 h-8"
-              >
+              <div className="w-8 h-8 sparkle-animation-1">
                 <Sparkles className="w-8 h-8 text-yellow-400" />
-              </motion.div>
+              </div>
             </div>
             
             <div className="absolute -bottom-2 -left-4">
-              <motion.div
-                animate={{
-                  rotate: -360,
-                  scale: [1, 1.1, 1]
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'linear'
-                }}
-                className="w-6 h-6"
-              >
+              <div className="w-6 h-6 sparkle-animation-2">
                 <Sparkles className="w-6 h-6 text-yellow-400" />
-              </motion.div>
+              </div>
             </div>
           </motion.h2>
 

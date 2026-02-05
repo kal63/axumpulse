@@ -243,8 +243,10 @@ export default function TrainerDetailPage() {
                       alt={trainer.user.name}
                       fill
                       className="object-cover"
-                      sizes="160px"
-                      unoptimized
+                      sizes="(max-width: 768px) 128px, 160px"
+                      loading="eager"
+                      priority
+                      quality={90}
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">

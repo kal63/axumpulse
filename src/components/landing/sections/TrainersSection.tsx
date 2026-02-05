@@ -57,7 +57,7 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
     fetchTrainers();
   }, []);
 
-  // Hide scrollbar for horizontal scroll container
+  // Hide scrollbar and add CSS animations for sparkles
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -67,6 +67,22 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
       .trainers-scroll-container {
         -ms-overflow-style: none;
         scrollbar-width: none;
+      }
+      @keyframes sparkle-rotate {
+        from { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(180deg) scale(1.2); }
+        to { transform: rotate(360deg) scale(1); }
+      }
+      @keyframes sparkle-rotate-reverse {
+        from { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(-180deg) scale(1.1); }
+        to { transform: rotate(-360deg) scale(1); }
+      }
+      .sparkle-animation-1 {
+        animation: sparkle-rotate 4s linear infinite;
+      }
+      .sparkle-animation-2 {
+        animation: sparkle-rotate-reverse 3s linear infinite;
       }
     `;
     document.head.appendChild(style);
@@ -249,23 +265,12 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
             ref={titleRef}
             className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-3 relative"
           >
-            {/* Animated background text */}
-            <motion.span
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20"
-              animate={{
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'linear'
-              }}
-              style={{
-                backgroundSize: '200% 200%'
-              }}
+            {/* Animated background text - using CSS animation for better performance */}
+            <span
+              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20 gradient-animation"
             >
               Our Trainers
-            </motion.span>
+            </span>
             
             {/* Main text */}
             <span className="relative z-10 text-white">Our</span>
@@ -274,39 +279,17 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
               Expert Trainers
             </span>
             
-            {/* Floating sparkles */}
+            {/* Floating sparkles - using CSS animations for better performance */}
             <div className="absolute -top-4 -right-4">
-              <motion.div
-                animate={{
-                  rotate: 360,
-                  scale: [1, 1.2, 1]
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: 'linear'
-                }}
-                className="w-8 h-8"
-              >
+              <div className="w-8 h-8 sparkle-animation-1">
                 <Sparkles className="w-8 h-8 text-yellow-400" />
-              </motion.div>
+              </div>
             </div>
             
             <div className="absolute -bottom-2 -left-4">
-              <motion.div
-                animate={{
-                  rotate: -360,
-                  scale: [1, 1.1, 1]
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'linear'
-                }}
-                className="w-6 h-6"
-              >
+              <div className="w-6 h-6 sparkle-animation-2">
                 <Sparkles className="w-6 h-6 text-yellow-400" />
-              </motion.div>
+              </div>
             </div>
           </motion.h2>
 
@@ -356,13 +339,15 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
                           <div className="flex-shrink-0">
                             <div className={`relative w-16 h-16 rounded-full overflow-hidden border-2 ${cardBorder} group-hover:border-opacity-60 transition-colors`}>
                               {profileImageUrl ? (
-                                <Image
-                                  src={profileImageUrl}
-                                  alt={trainer.name}
-                                  fill
-                                  className="object-cover"
-                                  sizes="64px"
-                                />
+                              <Image
+                                src={profileImageUrl}
+                                alt={trainer.name}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 640px) 64px, 64px"
+                                loading="lazy"
+                                quality={85}
+                              />
                               ) : (
                                 <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
                                   <User className="w-8 h-8 text-white/60" />
