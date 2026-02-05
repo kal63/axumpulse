@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -11,8 +12,10 @@ import {
   Zap, 
   Smartphone, 
   Sparkles,
-  Play
+  Play,
+  ArrowRight
 } from 'lucide-react';
+import { apiClient, SubscriptionPlan } from '@/lib/api-client';
 
 
 interface PricingSectionProps {
@@ -23,8 +26,27 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<HTMLDivElement>(null);
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch subscription plans
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await apiClient.getSubscriptionPlans();
+        if (response.success && response.data) {
+          setPlans(response.data.items || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch subscription plans:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPlans();
+  }, []);
 
   // Create floating particles
   useEffect(() => {
@@ -54,13 +76,13 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
   }, []);
 
   useGSAP(() => {
-    if (!sectionRef.current) return;
+    if (!sectionRef.current || loading) return;
 
     const title = titleRef.current;
     const subtitle = subtitleRef.current;
-    const card = cardRef.current;
+    const cards = cardsRef.current?.children;
 
-    if (!title || !subtitle || !card) return;
+    if (!title || !subtitle) return;
 
     // Create a timeline to track all animations
     const tl = gsap.timeline({
@@ -122,35 +144,82 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
       "-=0.8" // Start 0.8s before the previous animation ends
     );
 
-    // Card entrance animation
-    tl.fromTo(card,
-      { 
-        y: 150, 
-        opacity: 0,
-        scale: 0.8,
-        rotationX: 15
-      },
-      {
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        rotationX: 0,
-        duration: 1,
-        ease: 'power3.out'
-      },
-      "-=0.6" // Start 0.6s before the previous animation ends
-    );
+    // Cards entrance animation (only if cards exist)
+    if (cards && cards.length > 0) {
+      tl.fromTo(cards,
+        { 
+          y: 150, 
+          opacity: 0,
+          scale: 0.8,
+          rotationX: 15
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          rotationX: 0,
+          duration: 1,
+          stagger: 0.15,
+          ease: 'power3.out'
+        },
+        "-=0.6" // Start 0.6s before the previous animation ends
+      );
+    } else {
+      // If no cards, just report loaded after title/subtitle
+      tl.call(() => {
+        onLoaded?.();
+      });
+    }
 
-  }, [onLoaded]);
+  }, [onLoaded, loading, plans]);
 
-  const pricingFeatures = [
-    "24/7 AI Virtual Coach with personalized guidance",
-    "Unlimited access to workout programs & meal plans",
-    "Browse and book certified trainers",
-    "Medical Q&A and e-consultation booking",
-    "Community challenges and progress tracking",
-    "Full content in 4 languages"
-  ];
+  const getPackageIcon = (level: string) => {
+    switch (level) {
+      case 'silver': return '🥈'
+      case 'gold': return '🥇'
+      case 'diamond': return '💎'
+      case 'platinum': return '👑'
+      default: return '⭐'
+    }
+  }
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-ET', { 
+      style: 'currency', 
+      currency: 'ETB', 
+      minimumFractionDigits: 0 
+    }).format(price)
+  }
+
+  const getPackageGradient = (level: string) => {
+    switch (level) {
+      case 'silver': return 'from-slate-500/20 via-slate-600/20 to-slate-700/20'
+      case 'gold': return 'from-yellow-500/20 via-amber-600/20 to-orange-600/20'
+      case 'diamond': return 'from-cyan-500/20 via-blue-600/20 to-indigo-600/20'
+      case 'platinum': return 'from-purple-500/20 via-pink-600/20 to-rose-600/20'
+      default: return 'from-blue-500/20 via-purple-600/20 to-pink-600/20'
+    }
+  }
+
+  const getPackageBorder = (level: string) => {
+    switch (level) {
+      case 'silver': return 'border-slate-500/50'
+      case 'gold': return 'border-yellow-500/50'
+      case 'diamond': return 'border-cyan-500/50'
+      case 'platinum': return 'border-purple-500/50'
+      default: return 'border-blue-500/50'
+    }
+  }
+
+  const getPackageTextColor = (level: string) => {
+    switch (level) {
+      case 'silver': return 'text-slate-300'
+      case 'gold': return 'text-yellow-300'
+      case 'diamond': return 'text-cyan-300'
+      case 'platinum': return 'text-purple-300'
+      default: return 'text-blue-300'
+    }
+  }
 
   return (
     <section
@@ -239,99 +308,120 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
             ref={subtitleRef}
             className="text-xl text-white/80 leading-relaxed max-w-3xl mx-auto"
           >
-            No hidden fees. No contracts. Just 2 ETB daily via direct carrier billing.
+            Choose the perfect plan for your fitness journey. Flexible pricing with multiple subscription options.
           </motion.p>
         </div>
 
-        {/* Single Pricing Card */}
-        <div className="max-w-lg mx-auto">
-          <motion.div ref={cardRef}>
-            <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 group-hover:scale-105 relative overflow-hidden group">
-              <CardContent className="p-8 text-center">
-                {/* Most Popular Badge */}
+        {/* Pricing Cards Grid */}
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-white/60">Loading packages...</div>
+          </div>
+        ) : plans.length === 0 ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-white/60">No packages available at the moment.</div>
+          </div>
+        ) : (
+          <div 
+            ref={cardsRef}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto"
+          >
+            {plans.map((plan, index) => {
+              const features = typeof plan.features === 'string' 
+                ? JSON.parse(plan.features) 
+                : plan.features || []
+              const dailyPrice = parseFloat(plan.dailyPrice.toString())
+              const monthlyPrice = parseFloat(plan.monthlyPrice.toString())
+              const isPopular = plan.level === 'gold' || plan.level === 'diamond'
+              
+              return (
                 <motion.div
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full px-4 py-1 mb-4"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9, duration: 0.6 }}
+                  key={plan.id}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="h-full"
                 >
-                  <span className="text-white text-sm font-medium">Most Popular</span>
-                </motion.div>
-
-                {/* Daily Access Label */}
-                <motion.div
-                  className="text-white/80 text-sm mb-4"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1, duration: 0.6 }}
-                >
-                  Daily Access
-                </motion.div>
-
-                {/* Price Display */}
-                <div className="mb-8">
-                  <motion.div
-                    className="text-6xl font-bold mb-2 flex items-center justify-center"
-                    initial={{ scale: 0.5, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 1.1, duration: 0.6, type: "spring", bounce: 0.4 }}
-                  >
-                    <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                      2ETB
-                    </span>
-                    <span className="text-white/80 text-2xl ml-2">/day</span>
-                  </motion.div>
-                  
-                  <motion.div
-                    className="inline-flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-full px-4 py-2"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.3, duration: 0.6 }}
-                  >
-                    <span className="text-green-400 text-sm font-medium">• First 3 days free!</span>
-                  </motion.div>
-                </div>
-                <ul className="space-y-4 mb-8">
-                  {pricingFeatures.map((feature, index) => (
-                    <motion.li
-                      key={index}
-                      className="flex items-start group/item"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0 group-hover/item:scale-110 transition-transform duration-200">
-                        <Check className="w-4 h-4 text-blue-400" />
+                  <Card className={`bg-gradient-to-br ${getPackageGradient(plan.level)} backdrop-blur-sm border ${getPackageBorder(plan.level)} hover:border-opacity-100 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 relative overflow-hidden group h-full flex flex-col`}>
+                    {/* Popular Badge */}
+                    {isPopular && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full px-3 py-1">
+                          <span className="text-xs font-bold text-white">Popular</span>
+                        </div>
                       </div>
-                      <span className="text-white/90 group-hover/item:text-blue-400 transition-colors duration-200">
-                        {feature}
-                      </span>
-                    </motion.li>
-                  ))}
-                </ul>
+                    )}
 
-                <Button 
-                  size="lg"
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 text-lg px-8 py-6 rounded-xl font-semibold group relative overflow-hidden"
-                >
-                  <span className="relative z-10 flex items-center justify-center">
-                    <Play className="mr-2 h-5 w-5" />
-                    Text "OK" to Subscribe
-                  </span>
-                  {/* Button shine effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                </Button>
+                    <CardContent className="p-6 flex flex-col h-full">
+                      {/* Package Icon & Name */}
+                      <div className="text-center mb-4">
+                        <div className="text-5xl mb-2">{getPackageIcon(plan.level)}</div>
+                        <h3 className={`text-2xl font-bold ${getPackageTextColor(plan.level)} mb-1`}>
+                          {plan.name}
+                        </h3>
+                        <p className="text-white/60 text-sm capitalize">{plan.level} Level</p>
+                      </div>
 
-                <div className="mt-6 p-4 bg-white/5 backdrop-blur-sm rounded-lg group-hover:bg-white/10 transition-colors duration-300">
-                  <p className="text-sm text-white/70 text-center">
-                    <strong className="text-white">Easy Payment:</strong> Paid via Ethio Telecom direct carrier billing. Cancel anytime by texting 'STOP' to the short code.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                      {/* Price Display */}
+                      <div className="text-center mb-6">
+                        <div className="mb-2">
+                          <span className={`text-4xl font-bold ${getPackageTextColor(plan.level)}`}>
+                            {formatPrice(dailyPrice)}
+                          </span>
+                          <span className="text-white/60 text-lg ml-1">/day</span>
+                        </div>
+                        <div className="text-white/70 text-sm">
+                          or {formatPrice(monthlyPrice)}/month
+                        </div>
+                      </div>
 
-        </div>
+                      {/* Features List */}
+                      <ul className="space-y-3 mb-6 flex-1">
+                        {features.slice(0, 4).map((feature: string, idx: number) => (
+                          <li key={idx} className="flex items-start">
+                            <Check className={`w-5 h-5 ${getPackageTextColor(plan.level)} mr-2 flex-shrink-0 mt-0.5`} />
+                            <span className="text-white/90 text-sm">{feature}</span>
+                          </li>
+                        ))}
+                        {features.length > 4 && (
+                          <li className="text-white/60 text-xs italic">
+                            +{features.length - 4} more features
+                          </li>
+                        )}
+                      </ul>
+
+                      {/* CTA Button */}
+                      <Link href="/register" className="mt-auto">
+                        <Button 
+                          className={`w-full bg-gradient-to-r ${plan.level === 'silver' ? 'from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800' : plan.level === 'gold' ? 'from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700' : plan.level === 'diamond' ? 'from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700' : 'from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'} text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold`}
+                        >
+                          Get Started
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* View All Packages Link */}
+        {!loading && plans.length > 0 && (
+          <div className="text-center mt-12">
+            <Link href="/register">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 mx-auto"
+              >
+                <Sparkles className="w-5 h-5" />
+                View All Packages & Details
+                <ArrowRight className="w-5 h-5" />
+              </motion.button>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );
