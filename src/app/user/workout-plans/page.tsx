@@ -46,34 +46,45 @@ export default function WorkoutPlansPage() {
     const [totalItems, setTotalItems] = useState(0)
     const pageSize = 9
     const [subscription, setSubscription] = useState<UserSubscription | null>(null)
+    const [subscriptionLoading, setSubscriptionLoading] = useState(true)
 
     // Fetch subscription status
     useEffect(() => {
         if (user) {
             fetchSubscription()
-            fetchMyPlans(false) // Don't set loading state on initial mount
         }
     }, [user])
 
     const fetchSubscription = async () => {
         try {
+            setSubscriptionLoading(true)
             const response = await apiClient.getMySubscription()
             if (response.success && response.data) {
-                setSubscription(response.data.subscription)
+                if (response.data.subscription===null) {
+                    setSubscription(null);
+                }else{
+                    setSubscription(response.data.subscription)
+                }
             }
         } catch (error) {
             console.error('Failed to fetch subscription:', error)
+            setSubscription(null)
+        } finally {
+            setSubscriptionLoading(false)
         }
     }
 
     useEffect(() => {
-        if (activeTab === 'all') {
-            fetchAllPlans()
-            fetchCategories()
-        } else {
-            fetchMyPlans()
+        // Only fetch plans if subscription exists
+        if (!subscriptionLoading && subscription) {
+            if (activeTab === 'all') {
+                fetchAllPlans()
+                fetchCategories()
+            } else {
+                fetchMyPlans()
+            }
         }
-    }, [activeTab, currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery])
+    }, [subscription, subscriptionLoading, activeTab, currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery])
 
     const fetchAllPlans = async () => {
         try {
@@ -226,8 +237,49 @@ export default function WorkoutPlansPage() {
                             </div>
                         )}
 
-                        {/* Search and Quick Actions */}
-                        <div className="max-w-4xl mx-auto">
+                        {/* No Subscription Message */}
+                        {!subscriptionLoading && !subscription && (
+                            <div className="max-w-2xl mx-auto">
+                                <NeumorphicCard variant="raised" size="lg" className="p-12 border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/10">
+                                    <div className="text-center">
+                                        <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                                            <UserCheck className="w-10 h-10 text-white" />
+                                        </div>
+                                        <h2 className="text-3xl md:text-4xl font-bold text-[var(--neumorphic-text)] mb-4">
+                                            Subscription Required
+                                        </h2>
+                                        <div className="space-y-4 mb-8">
+                                            <p className="text-lg text-[var(--neumorphic-muted)]">
+                                                You need an active subscription to access workout plans.
+                                            </p>
+                                            <p className="text-base text-[var(--neumorphic-muted)]">
+                                                Subscribe to a trainer to unlock personalized workout programs, track your progress, and achieve your fitness goals.
+                                            </p>
+                                        </div>
+                                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                            <button
+                                                onClick={() => router.push('/user/trainers')}
+                                                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                                            >
+                                                <Users className="w-5 h-5" />
+                                                Browse Trainers
+                                            </button>
+                                            <button
+                                                onClick={() => router.push('/user/subscriptions')}
+                                                className="px-8 py-4 bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] rounded-xl font-semibold hover:bg-[var(--neumorphic-hover)] transition-all duration-200 flex items-center justify-center gap-2"
+                                            >
+                                                <CheckCircle className="w-5 h-5" />
+                                                My Subscriptions
+                                            </button>
+                                        </div>
+                                    </div>
+                                </NeumorphicCard>
+                            </div>
+                        )}
+
+                        {/* Search and Quick Actions - Only show if subscription exists */}
+                        {subscription && (
+                            <div className="max-w-4xl mx-auto">
                             <NeumorphicCard variant="raised" size="lg" className="p-6">
                                 <div className="flex flex-col md:flex-row gap-4">
                                     <div className="flex-1">
@@ -250,14 +302,16 @@ export default function WorkoutPlansPage() {
                                     </button>
                                 </div>
                             </NeumorphicCard>
-                        </div>
+                            </div>
+                        )}
 
-                        {/* Filters Section - Slides out from search */}
-                        <div className={`max-w-4xl mx-auto transition-all duration-700 ease-in-out overflow-hidden ${
-                            showFilters 
-                                ? 'mt-4 max-h-[800px] opacity-100' 
-                                : 'mt-0 max-h-0 opacity-0'
-                        }`}>
+                        {/* Filters Section - Slides out from search - Only show if subscription exists */}
+                        {subscription && (
+                            <div className={`max-w-4xl mx-auto transition-all duration-700 ease-in-out overflow-hidden ${
+                                showFilters 
+                                    ? 'mt-4 max-h-[800px] opacity-100' 
+                                    : 'mt-0 max-h-0 opacity-0'
+                            }`}>
                             <div className={`transform transition-transform duration-700 ease-in-out ${
                                 showFilters ? 'translate-y-0' : '-translate-y-4'
                             }`}>
@@ -361,12 +415,13 @@ export default function WorkoutPlansPage() {
                                 </NeumorphicCard>
                             </div>
                         </div>
+                        )}
                     </div>
                 </div>
             </div>
 
-            {/* Featured Plans Section */}
-            {!hasActiveFilters && featuredPlans.length > 0 && (
+            {/* Featured Plans Section - Only show if subscription exists */}
+            {subscription && !hasActiveFilters && featuredPlans.length > 0 && (
                 <div className="px-4 md:px-8 py-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="flex items-center justify-between mb-6">
@@ -406,9 +461,10 @@ export default function WorkoutPlansPage() {
                 </div>
             )}
 
-            {/* Tabs */}
-            <div className="px-4 md:px-8 py-8">
-                <div className="max-w-7xl mx-auto">
+            {/* Tabs - Only show if subscription exists */}
+            {subscription && (
+                <div className="px-4 md:px-8 py-8">
+                    <div className="max-w-7xl mx-auto">
                     {/* Content Section Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center space-x-4">
@@ -544,8 +600,9 @@ export default function WorkoutPlansPage() {
                             )}
                         </TabsContent>
                     </Tabs>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     )
 }
