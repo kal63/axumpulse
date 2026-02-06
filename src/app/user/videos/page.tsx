@@ -247,7 +247,7 @@ export default function VideosPage() {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                       <button
-                        onClick={() => router.push('/user/trainers')}
+                        onClick={() => router.push('/trainers')}
                         className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                       >
                         <Users className="w-5 h-5" />
