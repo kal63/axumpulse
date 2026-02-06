@@ -36,7 +36,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (response.success && response.data?.user) {
             setUser(response.data.user)
           } else {
-            console.error('Failed to fetch user data:', response.error)
+            // Provide more detailed error information
+            let errorInfo: Record<string, unknown>
+            
+            if (response.error) {
+              // Extract meaningful error properties, filtering out empty objects
+              const error = response.error
+              errorInfo = {
+                message: error.message || 'Unknown error',
+                code: error.code || 'UNKNOWN',
+                ...(error.status && { status: error.status }),
+                ...(error.statusText && { statusText: error.statusText }),
+              }
+              
+              // If error object is essentially empty, provide a default message
+              if (!error.message && !error.code && !error.status) {
+                errorInfo.message = 'Authentication failed - token may be invalid or expired'
+              }
+            } else {
+              errorInfo = { 
+                message: 'Failed to fetch user data - no error details available',
+                code: 'UNKNOWN_ERROR'
+              }
+            }
+            
+            console.error('Failed to fetch user data:', errorInfo)
             apiClient.clearToken()
           }
         }
