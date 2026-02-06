@@ -32,7 +32,8 @@ import {
   Target,
   Users,
   Trophy,
-  UserCheck
+  UserCheck,
+  CheckCircle
 } from 'lucide-react'
 import { FeaturedBadge } from '@/components/user/FeaturedBadge'
 import type { ContentItem } from '@/lib/api-client'
@@ -46,6 +47,7 @@ export default function VideosPage() {
   const [categories, setCategories] = useState<string[]>([])
   const [sortBy, setSortBy] = useState<'newest' | 'popular' | 'trending'>('newest')
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true)
   
   // Filters
   const [selectedCategory, setSelectedCategory] = useState<string>('')
@@ -69,24 +71,37 @@ export default function VideosPage() {
 
   const fetchSubscription = async () => {
     try {
+      setSubscriptionLoading(true)
       const response = await apiClient.getMySubscription()
       if (response.success && response.data) {
-        setSubscription(response.data.subscription)
+        if (response.data.subscription === null) {
+          setSubscription(null)
+        } else {
+          setSubscription(response.data.subscription)
+        }
       }
     } catch (error) {
       console.error('Failed to fetch subscription:', error)
+      setSubscription(null)
+    } finally {
+      setSubscriptionLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchContent()
-    fetchCategories()
-  }, [currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery, sortBy])
+    // Only fetch content if subscription exists
+    if (!subscriptionLoading && subscription) {
+      fetchContent()
+      fetchCategories()
+    }
+  }, [subscription, subscriptionLoading, currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery, sortBy])
 
-  // Fetch featured content separately on mount
+  // Fetch featured content separately on mount - only if subscription exists
   useEffect(() => {
-    fetchFeaturedContent()
-  }, [])
+    if (!subscriptionLoading && subscription) {
+      fetchFeaturedContent()
+    }
+  }, [subscription, subscriptionLoading])
 
   const fetchContent = async () => {
     try {
@@ -211,8 +226,49 @@ export default function VideosPage() {
               </div>
             )}
 
-            {/* Search and Quick Actions */}
-            <div className="max-w-4xl mx-auto">
+            {/* No Subscription Message */}
+            {!subscriptionLoading && !subscription && (
+              <div className="max-w-2xl mx-auto">
+                <NeumorphicCard variant="raised" size="lg" className="p-12 border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/10">
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                      <UserCheck className="w-10 h-10 text-white" />
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-bold text-[var(--neumorphic-text)] mb-4">
+                      Subscription Required
+                    </h2>
+                    <div className="space-y-4 mb-8">
+                      <p className="text-lg text-[var(--neumorphic-muted)]">
+                        You need an active subscription to access video content.
+                      </p>
+                      <p className="text-base text-[var(--neumorphic-muted)]">
+                        Subscribe to a trainer to unlock training videos, earn XP, and level up your fitness journey.
+                      </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <button
+                        onClick={() => router.push('/user/trainers')}
+                        className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                      >
+                        <Users className="w-5 h-5" />
+                        Browse Trainers
+                      </button>
+                      <button
+                        onClick={() => router.push('/user/subscriptions')}
+                        className="px-8 py-4 bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] rounded-xl font-semibold hover:bg-[var(--neumorphic-hover)] transition-all duration-200 flex items-center justify-center gap-2"
+                      >
+                        <CheckCircle className="w-5 h-5" />
+                        My Subscriptions
+                      </button>
+                    </div>
+                  </div>
+                </NeumorphicCard>
+              </div>
+            )}
+
+            {/* Search and Quick Actions - Only show if subscription exists */}
+            {subscription && (
+              <div className="max-w-4xl mx-auto">
               <NeumorphicCard variant="raised" size="lg" className="p-6">
                 <div className="flex flex-col md:flex-row gap-4">
                   <div className="flex-1">
@@ -235,10 +291,12 @@ export default function VideosPage() {
                   </button>
                 </div>
               </NeumorphicCard>
-            </div>
+              </div>
+            )}
 
-            {/* Filters Section - Slides out from search */}
-            <div className={`max-w-4xl mx-auto transition-all duration-700 ease-in-out overflow-hidden ${
+            {/* Filters Section - Slides out from search - Only show if subscription exists */}
+            {subscription && (
+              <div className={`max-w-4xl mx-auto transition-all duration-700 ease-in-out overflow-hidden ${
               showFilters 
                 ? 'mt-4 max-h-[800px] opacity-100' 
                 : 'mt-0 max-h-0 opacity-0'
@@ -370,12 +428,13 @@ export default function VideosPage() {
                 </NeumorphicCard>
               </div>
             </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Featured Content Section */}
-      {featuredContent.length > 0 && (
+      {/* Featured Content Section - Only show if subscription exists */}
+      {subscription && featuredContent.length > 0 && (
         <div className={`px-4 md:px-8 py-8 transition-all duration-300 ease-in-out overflow-hidden ${
           selectedCategory || selectedDifficulty || selectedDuration || searchQuery
             ? 'max-h-0 opacity-0 py-0'
@@ -424,9 +483,10 @@ export default function VideosPage() {
       )}
 
 
-      {/* Content Section */}
-      <div className="px-4 md:px-8 py-8">
-        <div className="max-w-7xl mx-auto">
+      {/* Content Section - Only show if subscription exists */}
+      {subscription && (
+        <div className="px-4 md:px-8 py-8">
+          <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">
@@ -487,8 +547,9 @@ export default function VideosPage() {
               />
             </div>
           )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
