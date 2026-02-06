@@ -66,7 +66,7 @@ function CertificateDisplay({ file }: { file: CertificationFile }) {
   }
 
   if (isPDF) {
-    return <PDFViewer fileUrl={file.fileUrl} fileName={file.fileName} />;
+    return <PDFViewer fileUrl={fileUrl} fileName={file.fileName} />;
   }
 
   return (

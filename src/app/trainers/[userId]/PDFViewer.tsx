@@ -28,6 +28,11 @@ export function PDFViewer({ fileUrl, fileName }: PDFViewerProps) {
   const fullUrl = getImageUrl(fileUrl) || fileUrl;
 
   useEffect(() => {
+    console.log('[PDFViewer] Original URL:', fileUrl);
+    console.log('[PDFViewer] Processed URL:', fullUrl);
+  }, [fileUrl, fullUrl]);
+
+  useEffect(() => {
     const updateWidth = () => {
       setContainerWidth(Math.min(1200, window.innerWidth - 64));
     };
@@ -43,8 +48,8 @@ export function PDFViewer({ fileUrl, fileName }: PDFViewerProps) {
   }
 
   function onDocumentLoadError(error: Error) {
-    console.error('Error loading PDF:', error);
-    setError('Failed to load PDF document');
+    console.error('Error loading PDF:', error, 'URL:', fullUrl);
+    setError('Failed to load PDF document. You can download it instead.');
     setLoading(false);
   }
 
@@ -81,8 +86,17 @@ export function PDFViewer({ fileUrl, fileName }: PDFViewerProps) {
         </Document>
       </div>
       {error && (
-        <div className="flex items-center justify-center py-20 text-red-400">
-          <p>{error}</p>
+        <div className="flex flex-col items-center justify-center py-20 text-red-400">
+          <p className="mb-4">{error}</p>
+          <a
+            href={fullUrl}
+            download={fileName}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download PDF
+          </a>
         </div>
       )}
     </div>
