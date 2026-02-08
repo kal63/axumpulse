@@ -18,7 +18,8 @@ import {
   Zap,
   Dumbbell,
   LogOut,
-  User
+  User,
+  Globe
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import DashboardHeader from '@/components/shared/dashboard-header'
@@ -37,6 +38,7 @@ const navigation = [
   },
   { name: 'Workout Plans', href: '/trainer/workout-plans', icon: Dumbbell },
   { name: 'Challenges', href: '/trainer/challenges', icon: Trophy },
+  { name: 'My Site', href: '/trainer/customize-site', icon: Globe },
   { name: 'Analytics', href: '/trainer/analytics', icon: BarChart3 },
   { name: 'Settings', href: '/trainer/settings', icon: Settings },
 ]

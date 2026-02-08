@@ -48,12 +48,18 @@ export default function WorkoutPlansPage() {
     const [subscription, setSubscription] = useState<UserSubscription | null>(null)
     const [subscriptionLoading, setSubscriptionLoading] = useState(true)
 
-    // Fetch subscription status
+    // Check if user is a medical professional
+    const isMedicalPro = user?.isMedical || false
+
+    // Fetch subscription status (skip for medical professionals)
     useEffect(() => {
-        if (user) {
+        if (user && !isMedicalPro) {
             fetchSubscription()
+        } else if (isMedicalPro) {
+            // Medical professionals don't need subscription, mark as loaded
+            setSubscriptionLoading(false)
         }
-    }, [user])
+    }, [user, isMedicalPro])
 
     const fetchSubscription = async () => {
         try {
@@ -75,8 +81,8 @@ export default function WorkoutPlansPage() {
     }
 
     useEffect(() => {
-        // Only fetch plans if subscription exists
-        if (!subscriptionLoading && subscription) {
+        // Fetch plans if subscription exists OR if user is a medical professional
+        if (!subscriptionLoading && (subscription || isMedicalPro)) {
             if (activeTab === 'all') {
                 fetchAllPlans()
                 fetchCategories()
@@ -84,7 +90,7 @@ export default function WorkoutPlansPage() {
                 fetchMyPlans()
             }
         }
-    }, [subscription, subscriptionLoading, activeTab, currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery])
+    }, [subscription, subscriptionLoading, isMedicalPro, activeTab, currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery])
 
     const fetchAllPlans = async () => {
         try {
@@ -237,8 +243,8 @@ export default function WorkoutPlansPage() {
                             </div>
                         )}
 
-                        {/* No Subscription Message */}
-                        {!subscriptionLoading && !subscription && (
+                        {/* No Subscription Message - Only show for non-medical professionals */}
+                        {!subscriptionLoading && !subscription && !isMedicalPro && (
                             <div className="max-w-2xl mx-auto">
                                 <NeumorphicCard variant="raised" size="lg" className="p-12 border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/10">
                                     <div className="text-center">
@@ -277,8 +283,8 @@ export default function WorkoutPlansPage() {
                             </div>
                         )}
 
-                        {/* Search and Quick Actions - Only show if subscription exists */}
-                        {subscription && (
+                        {/* Search and Quick Actions - Show if subscription exists OR if medical professional */}
+                        {(subscription || isMedicalPro) && (
                             <div className="max-w-4xl mx-auto">
                             <NeumorphicCard variant="raised" size="lg" className="p-6">
                                 <div className="flex flex-col md:flex-row gap-4">
@@ -305,8 +311,8 @@ export default function WorkoutPlansPage() {
                             </div>
                         )}
 
-                        {/* Filters Section - Slides out from search - Only show if subscription exists */}
-                        {subscription && (
+                        {/* Filters Section - Slides out from search - Show if subscription exists OR if medical professional */}
+                        {(subscription || isMedicalPro) && (
                             <div className={`max-w-4xl mx-auto transition-all duration-700 ease-in-out overflow-hidden ${
                                 showFilters 
                                     ? 'mt-4 max-h-[800px] opacity-100' 
@@ -420,8 +426,8 @@ export default function WorkoutPlansPage() {
                 </div>
             </div>
 
-            {/* Featured Plans Section - Only show if subscription exists */}
-            {subscription && !hasActiveFilters && featuredPlans.length > 0 && (
+            {/* Featured Plans Section - Show if subscription exists OR if medical professional */}
+            {(subscription || isMedicalPro) && !hasActiveFilters && featuredPlans.length > 0 && (
                 <div className="px-4 md:px-8 py-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="flex items-center justify-between mb-6">
@@ -461,8 +467,8 @@ export default function WorkoutPlansPage() {
                 </div>
             )}
 
-            {/* Tabs - Only show if subscription exists */}
-            {subscription && (
+            {/* Tabs - Show if subscription exists OR if medical professional */}
+            {(subscription || isMedicalPro) && (
                 <div className="px-4 md:px-8 py-8">
                     <div className="max-w-7xl mx-auto">
                     {/* Content Section Header */}

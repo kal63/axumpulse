@@ -311,3 +311,74 @@ export const ALLOWED_FILE_TYPES = {
   DOCUMENT: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
   AUDIO: ['audio/mp3', 'audio/wav', 'audio/ogg', 'audio/m4a'],
 } as const
+
+/**
+ * Upload a gallery image for trainer site
+ * @param file - The image file to upload
+ * @param caption - Optional caption for the image
+ * @returns Promise with the upload response
+ */
+export async function uploadGalleryImage(
+  file: File,
+  caption?: string
+): Promise<{ success: boolean; data?: any; error?: any }> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1'
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
+    
+    const formData = new FormData()
+    formData.append('image', file)
+    if (caption) {
+      formData.append('caption', caption)
+    }
+    
+    const response = await fetch(`${baseUrl}/trainer/site/gallery`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData,
+    })
+    
+    const result = await response.json()
+    
+    if (response.ok && result.success) {
+      return { success: true, data: result.data }
+    } else {
+      return { success: false, error: result.error }
+    }
+  } catch (error) {
+    return { success: false, error: { message: 'Upload failed', details: error } }
+  }
+}
+
+/**
+ * Upload a hero background image for trainer site
+ * @param file - The image file to upload
+ * @returns Promise with the upload response
+ */
+export async function uploadHeroBackground(
+  file: File
+): Promise<{ success: boolean; data?: any; error?: any }> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1'
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
+    
+    const formData = new FormData()
+    formData.append('image', file)
+    
+    const response = await fetch(`${baseUrl}/trainer/site/hero-background`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: formData,
+    })
+    
+    const result = await response.json()
+    
+    if (response.ok && result.success) {
+      return { success: true, data: result.data }
+    } else {
+      return { success: false, error: result.error }
+    }
+  } catch (error) {
+    return { success: false, error: { message: 'Upload failed', details: error } }
+  }
+}

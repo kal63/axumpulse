@@ -600,6 +600,128 @@ export interface Trainer {
   User?: User
 }
 
+// TrainerSite interfaces
+export interface TrainerSiteTheme {
+  primaryColor?: string
+  secondaryColor?: string
+  fontFamily?: string
+  layout?: string
+  ctaColor?: string
+}
+
+export interface TrainerSiteSection {
+  type: string
+  enabled: boolean
+  order: number
+}
+
+export interface TrainerSiteGalleryImage {
+  id: string
+  url: string
+  caption?: string
+  order: number
+}
+
+export interface TrainerSiteContent {
+  id: string
+  title: string
+  description?: string
+  url: string
+  type: 'article' | 'video' | 'post' | 'reel'
+  order: number
+}
+
+export interface TrainerSiteSocialLinks {
+  instagram?: string
+  facebook?: string
+  twitter?: string
+  linkedin?: string
+  youtube?: string
+  website?: string
+}
+
+export interface TrainerSite {
+  id: number
+  userId: number
+  slug?: string
+  headline?: string
+  subheadline?: string
+  bio?: string
+  philosophy?: string
+  targetAudience?: string
+  heroBackgroundImage?: string
+  galleryImages: TrainerSiteGalleryImage[]
+  theme: TrainerSiteTheme
+  sections: TrainerSiteSection[]
+  trainerContent: TrainerSiteContent[]
+  socialLinks: TrainerSiteSocialLinks
+  ctaText?: string
+  status: 'draft' | 'published' | 'archived'
+  viewCount: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PublicTrainer {
+  userId: number
+  name: string
+  slug: string
+  profilePicture?: string
+  specialties: string[]
+}
+
+export interface PublicTrainerDetail {
+  userId: number
+  user: {
+    id: number
+    name: string
+    email?: string
+    profilePicture?: string
+    phone?: string
+    dateOfBirth?: string
+    gender?: 'male' | 'female'
+  }
+  trainer: {
+    bio?: string
+    specialties: string[]
+    verified: boolean
+    verifiedAt?: string
+  }
+  application?: {
+    yearsOfExperience?: number
+    languages: string[]
+    certifications: Array<string | {
+      name?: string
+      issuer?: string
+      date?: string
+      expiry?: string
+    }>
+    portfolio: Array<string | {
+      title?: string
+      description?: string
+      url?: string
+    }>
+    socialMedia: Record<string, any>
+    preferences: Record<string, any>
+    certificationFiles: CertificationFile[]
+  }
+  site?: {
+    slug?: string
+    headline?: string
+    subheadline?: string
+    bio?: string
+    philosophy?: string
+    targetAudience?: string
+    heroBackgroundImage?: string
+    galleryImages: TrainerSiteGalleryImage[]
+    theme: TrainerSiteTheme
+    sections: TrainerSiteSection[]
+    trainerContent: TrainerSiteContent[]
+    socialLinks: TrainerSiteSocialLinks
+    ctaText?: string
+  }
+}
+
 export interface LoginRequest {
   phone: string
   password: string
@@ -2996,6 +3118,95 @@ class ApiClient {
     return this.request<PublicTrainerDetail>(`/public/trainers/${param}`)
   }
 
+  // ==================== TRAINER SITE ====================
+
+  // Get trainer's site customization
+  async getTrainerSite(): Promise<ApiResponse<TrainerSite>> {
+    return this.request<TrainerSite>('/trainer/site')
+  }
+
+  // Update trainer's site customization
+  async updateTrainerSite(data: Partial<TrainerSite>): Promise<ApiResponse<TrainerSite>> {
+    return this.request<TrainerSite>('/trainer/site', {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Upload gallery image
+  async uploadGalleryImage(file: File, caption?: string): Promise<ApiResponse<{ image: TrainerSiteGalleryImage; galleryImages: TrainerSiteGalleryImage[] }>> {
+    const formData = new FormData()
+    formData.append('image', file)
+    if (caption) {
+      formData.append('caption', caption)
+    }
+    return this.request<{ image: TrainerSiteGalleryImage; galleryImages: TrainerSiteGalleryImage[] }>('/trainer/site/gallery', {
+      method: 'POST',
+      body: formData,
+      headers: {} // Let browser set Content-Type with boundary for FormData
+    })
+  }
+
+  // Update gallery image (caption, order)
+  async updateGalleryImage(imageId: string, data: { caption?: string; order?: number }): Promise<ApiResponse<{ galleryImages: TrainerSiteGalleryImage[] }>> {
+    return this.request<{ galleryImages: TrainerSiteGalleryImage[] }>(`/trainer/site/gallery/${imageId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Delete gallery image
+  async deleteGalleryImage(imageId: string): Promise<ApiResponse<{ message: string; galleryImages: TrainerSiteGalleryImage[] }>> {
+    return this.request<{ message: string; galleryImages: TrainerSiteGalleryImage[] }>(`/trainer/site/gallery/${imageId}`, {
+      method: 'DELETE'
+    })
+  }
+
+  // Upload hero background image
+  async uploadHeroBackground(file: File): Promise<ApiResponse<{ heroBackgroundImage: string }>> {
+    const formData = new FormData()
+    formData.append('image', file)
+    return this.request<{ heroBackgroundImage: string }>('/trainer/site/hero-background', {
+      method: 'POST',
+      body: formData,
+      headers: {} // Let browser set Content-Type with boundary for FormData
+    })
+  }
+
+  // Add trainer-authored content item
+  async addTrainerContent(data: {
+    title: string
+    description?: string
+    url: string
+    type: 'article' | 'video' | 'post' | 'reel'
+  }): Promise<ApiResponse<{ content: TrainerSiteContent; trainerContent: TrainerSiteContent[] }>> {
+    return this.request<{ content: TrainerSiteContent; trainerContent: TrainerSiteContent[] }>('/trainer/site/trainer-content', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Update trainer content item
+  async updateTrainerContent(id: string, data: {
+    title?: string
+    description?: string
+    url?: string
+    type?: 'article' | 'video' | 'post' | 'reel'
+    order?: number
+  }): Promise<ApiResponse<{ trainerContent: TrainerSiteContent[] }>> {
+    return this.request<{ trainerContent: TrainerSiteContent[] }>(`/trainer/site/trainer-content/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Delete trainer content item
+  async deleteTrainerContent(id: string): Promise<ApiResponse<{ message: string; trainerContent: TrainerSiteContent[] }>> {
+    return this.request<{ message: string; trainerContent: TrainerSiteContent[] }>(`/trainer/site/trainer-content/${id}`, {
+      method: 'DELETE'
+    })
+  }
+
   // ==================== DAILY CHALLENGES ====================
 
   // Get today's available daily challenges
@@ -3427,4 +3638,12 @@ export type {
   PaymentInitRequest as PaymentInitRequestType,
   PaymentInitResponse as PaymentInitResponseType,
   RegisterRequest as RegisterRequestType,
+  TrainerSite as TrainerSiteType,
+  TrainerSiteTheme as TrainerSiteThemeType,
+  TrainerSiteSection as TrainerSiteSectionType,
+  TrainerSiteGalleryImage as TrainerSiteGalleryImageType,
+  TrainerSiteContent as TrainerSiteContentType,
+  TrainerSiteSocialLinks as TrainerSiteSocialLinksType,
+  PublicTrainer as PublicTrainerType,
+  PublicTrainerDetail as PublicTrainerDetailType,
 }

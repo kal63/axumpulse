@@ -62,12 +62,18 @@ export default function VideosPage() {
   const [totalItems, setTotalItems] = useState(0)
   const pageSize = 12
 
-  // Fetch subscription status
+  // Check if user is a medical professional
+  const isMedicalPro = user?.isMedical || false
+
+  // Fetch subscription status (skip for medical professionals)
   useEffect(() => {
-    if (user) {
+    if (user && !isMedicalPro) {
       fetchSubscription()
+    } else if (isMedicalPro) {
+      // Medical professionals don't need subscription, mark as loaded
+      setSubscriptionLoading(false)
     }
-  }, [user])
+  }, [user, isMedicalPro])
 
   const fetchSubscription = async () => {
     try {
@@ -89,19 +95,19 @@ export default function VideosPage() {
   }
 
   useEffect(() => {
-    // Only fetch content if subscription exists
-    if (!subscriptionLoading && subscription) {
+    // Fetch content if subscription exists OR if user is a medical professional
+    if (!subscriptionLoading && (subscription || isMedicalPro)) {
       fetchContent()
       fetchCategories()
     }
-  }, [subscription, subscriptionLoading, currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery, sortBy])
+  }, [subscription, subscriptionLoading, isMedicalPro, currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery, sortBy])
 
-  // Fetch featured content separately on mount - only if subscription exists
+  // Fetch featured content separately on mount - if subscription exists OR if medical professional
   useEffect(() => {
-    if (!subscriptionLoading && subscription) {
+    if (!subscriptionLoading && (subscription || isMedicalPro)) {
       fetchFeaturedContent()
     }
-  }, [subscription, subscriptionLoading])
+  }, [subscription, subscriptionLoading, isMedicalPro])
 
   const fetchContent = async () => {
     try {
@@ -226,8 +232,8 @@ export default function VideosPage() {
               </div>
             )}
 
-            {/* No Subscription Message */}
-            {!subscriptionLoading && !subscription && (
+            {/* No Subscription Message - Only show for non-medical professionals */}
+            {!subscriptionLoading && !subscription && !isMedicalPro && (
               <div className="max-w-2xl mx-auto">
                 <NeumorphicCard variant="raised" size="lg" className="p-12 border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/10">
                   <div className="text-center">
@@ -266,8 +272,8 @@ export default function VideosPage() {
               </div>
             )}
 
-            {/* Search and Quick Actions - Only show if subscription exists */}
-            {subscription && (
+            {/* Search and Quick Actions - Show if subscription exists OR if medical professional */}
+            {(subscription || isMedicalPro) && (
               <div className="max-w-4xl mx-auto">
               <NeumorphicCard variant="raised" size="lg" className="p-6">
                 <div className="flex flex-col md:flex-row gap-4">
@@ -294,8 +300,8 @@ export default function VideosPage() {
               </div>
             )}
 
-            {/* Filters Section - Slides out from search - Only show if subscription exists */}
-            {subscription && (
+            {/* Filters Section - Slides out from search - Show if subscription exists OR if medical professional */}
+            {(subscription || isMedicalPro) && (
               <div className={`max-w-4xl mx-auto transition-all duration-700 ease-in-out overflow-hidden ${
               showFilters 
                 ? 'mt-4 max-h-[800px] opacity-100' 
@@ -433,8 +439,8 @@ export default function VideosPage() {
         </div>
       </div>
 
-      {/* Featured Content Section - Only show if subscription exists */}
-      {subscription && featuredContent.length > 0 && (
+      {/* Featured Content Section - Show if subscription exists OR if medical professional */}
+      {(subscription || isMedicalPro) && featuredContent.length > 0 && (
         <div className={`px-4 md:px-8 py-8 transition-all duration-300 ease-in-out overflow-hidden ${
           selectedCategory || selectedDifficulty || selectedDuration || searchQuery
             ? 'max-h-0 opacity-0 py-0'
@@ -483,8 +489,8 @@ export default function VideosPage() {
       )}
 
 
-      {/* Content Section - Only show if subscription exists */}
-      {subscription && (
+      {/* Content Section - Show if subscription exists OR if medical professional */}
+      {(subscription || isMedicalPro) && (
         <div className="px-4 md:px-8 py-8">
           <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
