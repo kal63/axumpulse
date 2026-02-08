@@ -44,6 +44,8 @@ export default function BookConsultPage() {
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null)
   const [notes, setNotes] = useState('')
   const [booking, setBooking] = useState(false)
+  const [availableConsults, setAvailableConsults] = useState<number>(0)
+  const [loadingBalance, setLoadingBalance] = useState(true)
   const [weekStart, setWeekStart] = useState<Date>(() => {
     // Get current week's Monday
     const now = new Date()
@@ -60,8 +62,23 @@ export default function BookConsultPage() {
       router.push('/login')
     } else if (user) {
       fetchDoctors()
+      fetchConsultBalance()
     }
   }, [authLoading, user, router])
+
+  async function fetchConsultBalance() {
+    try {
+      setLoadingBalance(true)
+      const response = await apiClient.getConsultBalance()
+      if (response.success && response.data) {
+        setAvailableConsults(response.data.availableConsults || 0)
+      }
+    } catch (error) {
+      console.error('Error fetching consult balance:', error)
+    } finally {
+      setLoadingBalance(false)
+    }
+  }
 
   useEffect(() => {
     if (selectedDoctor) {
@@ -161,17 +178,35 @@ export default function BookConsultPage() {
       return
     }
 
+    if (availableConsults <= 0) {
+      toast.error('You do not have any available consults. Please purchase consults first.')
+      router.push('/user/medical/consults/purchase')
+      return
+    }
+
     try {
       setBooking(true)
       const response = await apiClient.bookConsult({ startAt: selectedSlot.startAt, providerId: selectedDoctor, notes })
       if (response.success) {
         toast.success('Consultation booked successfully')
+        // Refresh balance after booking
+        await fetchConsultBalance()
         router.push('/user/medical/consults')
       } else {
-        throw new Error(response.error?.message || 'Failed to book consult')
+        if (response.error?.code === 'INSUFFICIENT_CONSULTS') {
+          toast.error('You do not have enough consults. Please purchase more consults.')
+          router.push('/user/medical/consults/purchase')
+        } else {
+          throw new Error(response.error?.message || 'Failed to book consult')
+        }
       }
     } catch (error: any) {
-      toast.error(error.message || 'Failed to book consultation')
+      if (error?.code === 'INSUFFICIENT_CONSULTS' || error?.message?.includes('consults')) {
+        toast.error('You do not have enough consults. Please purchase more consults.')
+        router.push('/user/medical/consults/purchase')
+      } else {
+        toast.error(error.message || 'Failed to book consultation')
+      }
     } finally {
       setBooking(false)
     }
@@ -219,6 +254,42 @@ export default function BookConsultPage() {
                 </h1>
               </div>
             </div>
+            
+            {/* Available Consults Warning */}
+            {!loadingBalance && (
+              <div className={`mt-4 p-4 rounded-lg border ${
+                availableConsults > 0 
+                  ? 'bg-cyan-500/10 border-cyan-500/20' 
+                  : 'bg-orange-500/10 border-orange-500/20'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Calendar className={`w-5 h-5 ${
+                      availableConsults > 0 ? 'text-cyan-500' : 'text-orange-500'
+                    }`} />
+                    <span className={`font-semibold ${
+                      availableConsults > 0 ? 'text-cyan-500' : 'text-orange-500'
+                    }`}>
+                      Available Consults: {availableConsults}
+                    </span>
+                  </div>
+                  {availableConsults === 0 && (
+                    <Button
+                      onClick={() => router.push('/user/medical/consults/purchase')}
+                      size="sm"
+                      className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
+                    >
+                      Purchase Consults
+                    </Button>
+                  )}
+                </div>
+                {availableConsults === 0 && (
+                  <p className="text-sm text-orange-600 mt-2">
+                    You need to purchase consults before booking a consultation.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

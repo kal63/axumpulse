@@ -28,6 +28,7 @@ const navigation = [
   { name: 'Q&A Inbox', href: '/medical/questions', icon: MessageSquare },
   { name: 'Consults', href: '/medical/consults', icon: Calendar },
   { name: 'Clients', href: '/medical/clients', icon: Users },
+  { name: 'Settings', href: '/medical/settings', icon: Settings },
 ]
 
 export default function MedicalLayout({ children }: { children: React.ReactNode }) {

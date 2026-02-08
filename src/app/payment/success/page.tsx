@@ -21,6 +21,9 @@ export default function PaymentSuccessPage() {
   const [status, setStatus] = useState<'loading' | 'success' | 'failed'>('loading')
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
   const [error, setError] = useState('')
+  const [isConsultPurchase, setIsConsultPurchase] = useState(false)
+  const [consultQuantity, setConsultQuantity] = useState<number>(0)
+  const [availableConsults, setAvailableConsults] = useState<number>(0)
   const txRef = searchParams.get('tx_ref')
 
   useEffect(() => {
@@ -41,10 +44,38 @@ export default function PaymentSuccessPage() {
         // Immediately verify and activate subscription on first attempt
         if (txRef && retryCount === 0) {
           try {
-            // Call verify endpoint which automatically activates subscription
+            // Call verify endpoint which automatically activates subscription or processes consult purchase
             const verifyResponse = await apiClient.verifyPayment(txRef)
             
             if (verifyResponse.success && verifyResponse.data) {
+              // Check if this is a consult purchase
+              const callbackData = verifyResponse.data.transaction?.callbackData
+              let parsedCallbackData = callbackData
+              if (callbackData && typeof callbackData === 'string') {
+                try {
+                  parsedCallbackData = JSON.parse(callbackData)
+                } catch (e) {
+                  // If parsing fails, check if it's a string containing consult_purchase
+                  if (callbackData.includes('consult_purchase')) {
+                    parsedCallbackData = { type: 'consult_purchase' }
+                  }
+                }
+              }
+              
+              if (parsedCallbackData && parsedCallbackData.type === 'consult_purchase') {
+                setIsConsultPurchase(true)
+                setConsultQuantity(parsedCallbackData.quantity || 0)
+                
+                // Fetch updated consult balance
+                const balanceResponse = await apiClient.getConsultBalance()
+                if (balanceResponse.success && balanceResponse.data) {
+                  setAvailableConsults(balanceResponse.data.availableConsults || 0)
+                }
+                
+                setStatus('success')
+                return
+              }
+              
               // If subscription was activated, use it immediately
               if (verifyResponse.data.subscription) {
                 setSubscription(verifyResponse.data.subscription)
@@ -60,6 +91,43 @@ export default function PaymentSuccessPage() {
             }
           } catch (verifyError) {
             console.error('[Payment Success] Error verifying payment:', verifyError)
+          }
+        }
+
+        // Check if this might be a consult purchase (if no subscription found)
+        if (!subscription) {
+          // Try to get consult balance to see if consults were added
+          try {
+            const balanceResponse = await apiClient.getConsultBalance()
+            if (balanceResponse.success && balanceResponse.data) {
+              const newBalance = balanceResponse.data.availableConsults || 0
+              // If balance increased, this might be a consult purchase
+              // We'll check the transaction callbackData in verify response
+              if (txRef) {
+                const verifyResponse = await apiClient.verifyPayment(txRef)
+                const callbackData = verifyResponse.data?.transaction?.callbackData
+                let parsedCallbackData = callbackData
+                if (callbackData && typeof callbackData === 'string') {
+                  try {
+                    parsedCallbackData = JSON.parse(callbackData)
+                  } catch (e) {
+                    if (callbackData.includes('consult_purchase')) {
+                      parsedCallbackData = { type: 'consult_purchase' }
+                    }
+                  }
+                }
+                
+                if (parsedCallbackData && parsedCallbackData.type === 'consult_purchase') {
+                  setIsConsultPurchase(true)
+                  setConsultQuantity(parsedCallbackData.quantity || 0)
+                  setAvailableConsults(newBalance)
+                  setStatus('success')
+                  return
+                }
+              }
+            }
+          } catch (e) {
+            // Not a consult purchase, continue with subscription check
           }
         }
 
@@ -167,7 +235,10 @@ export default function PaymentSuccessPage() {
                       Payment Successful!
                     </CardTitle>
                     <CardDescription className="text-slate-300 text-center">
-                      Your subscription has been activated successfully
+                      {isConsultPurchase 
+                        ? `You have successfully purchased ${consultQuantity} consult(s)!`
+                        : 'Your subscription has been activated successfully'
+                      }
                     </CardDescription>
                   </>
                 ) : (
@@ -186,7 +257,22 @@ export default function PaymentSuccessPage() {
               </CardHeader>
 
               <CardContent className="space-y-6">
-                {status === 'success' && subscription && (
+                {status === 'success' && isConsultPurchase && (
+                  <div className="bg-slate-700/50 rounded-lg p-4 space-y-3">
+                    <h3 className="text-lg font-semibold text-white">Consult Purchase Details</h3>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="text-slate-400">Consults Purchased:</div>
+                      <div className="text-white font-medium">{consultQuantity}</div>
+                      <div className="text-slate-400">Available Consults:</div>
+                      <div className="text-white font-medium">{availableConsults}</div>
+                    </div>
+                    <p className="text-sm text-slate-300 mt-3">
+                      You can now book consultations with medical professionals using your available consults.
+                    </p>
+                  </div>
+                )}
+
+                {status === 'success' && subscription && !isConsultPurchase && (
                   <div className="bg-slate-700/50 rounded-lg p-4 space-y-3">
                     <h3 className="text-lg font-semibold text-white">Subscription Details</h3>
                     <div className="grid grid-cols-2 gap-2 text-sm">
@@ -249,11 +335,22 @@ export default function PaymentSuccessPage() {
                     </Button>
                   </Link>
                   {isAuthenticated && (
-                    <Link href="/user/dashboard" className="flex-1">
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                        View Dashboard
-                      </Button>
-                    </Link>
+                    <>
+                      {isConsultPurchase ? (
+                        <Link href="/user/medical/consults/book" className="flex-1">
+                          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                            <Calendar className="w-4 h-4 mr-2" />
+                            Book Consult
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Link href="/user/dashboard" className="flex-1">
+                          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                            View Dashboard
+                          </Button>
+                        </Link>
+                      )}
+                    </>
                   )}
                 </div>
               </CardContent>

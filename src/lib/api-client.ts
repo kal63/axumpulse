@@ -2860,8 +2860,61 @@ class ApiClient {
   }
 
   // Get available doctors for booking
-  async getConsultDoctors(): Promise<ApiResponse<any[]>> {
-    return this.request<any[]>('/user/medical/consults/doctors')
+  async getConsultDoctors(): Promise<ApiResponse<Array<{
+    id: number
+    name: string
+    email?: string
+    profilePicture?: string
+    medicalProfessional?: {
+      professionalType: string
+      specialties: string[]
+      verified: boolean
+      consultFee?: number
+    }
+  }>>> {
+    return this.request<Array<{
+      id: number
+      name: string
+      email?: string
+      profilePicture?: string
+      medicalProfessional?: {
+        professionalType: string
+        specialties: string[]
+        verified: boolean
+        consultFee?: number
+      }
+    }>>('/user/medical/consults/doctors')
+  }
+
+  // Get user's consult balance
+  async getConsultBalance(): Promise<ApiResponse<{ availableConsults: number }>> {
+    return this.request<{ availableConsults: number }>('/user/medical/consults/balance')
+  }
+
+  // Update medical professional consult fee
+  async updateMedicalConsultFee(fee: number): Promise<ApiResponse<{ consultFee: number; message: string }>> {
+    return this.request<{ consultFee: number; message: string }>('/medical/settings/consult-fee', {
+      method: 'PUT',
+      body: JSON.stringify({ consultFee: fee })
+    })
+  }
+
+  // Get medical professional consult fee
+  async getMedicalConsultFee(): Promise<ApiResponse<{ consultFee: number | null }>> {
+    return this.request<{ consultFee: number | null }>('/medical/settings/consult-fee')
+  }
+
+  // Initialize consult purchase payment
+  async initializeConsultPayment(data: {
+    doctorId: number
+    quantity: number
+    phone_number: string
+    email: string
+  }): Promise<ApiResponse<{ checkout_url: string; tx_ref: string }>> {
+    return this.request<{ checkout_url: string; tx_ref: string }>('/payments/consult/initialize', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
   }
 
   // Get available slots for booking (generated from schedules)
@@ -3309,6 +3362,7 @@ class ApiClient {
       amount: number
       createdAt: string
       completedAt?: string
+      callbackData?: any
     }
     subscription: UserSubscription | null
   }>> {
@@ -3320,6 +3374,7 @@ class ApiClient {
         amount: number
         createdAt: string
         completedAt?: string
+        callbackData?: any
       }
       subscription: UserSubscription | null
     }>(`/payments/verify/${txRef}`)

@@ -29,6 +29,9 @@ export default function MedicalHubPage() {
   const [recentTriage, setRecentTriage] = useState<any>(null)
   const [upcomingConsults, setUpcomingConsults] = useState<any[]>([])
   const [activeAlerts, setActiveAlerts] = useState<any[]>([])
+  const [availableConsults, setAvailableConsults] = useState<number>(0)
+  const [doctors, setDoctors] = useState<any[]>([])
+  const [loadingDoctors, setLoadingDoctors] = useState(false)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -37,6 +40,20 @@ export default function MedicalHubPage() {
       fetchMedicalData()
     }
   }, [authLoading, user, router])
+
+  async function fetchDoctors() {
+    try {
+      setLoadingDoctors(true)
+      const response = await apiClient.getConsultDoctors()
+      if (response.success && response.data) {
+        setDoctors(response.data)
+      }
+    } catch (error) {
+      console.error('Error fetching doctors:', error)
+    } finally {
+      setLoadingDoctors(false)
+    }
+  }
 
   async function fetchMedicalData() {
     try {
@@ -71,6 +88,15 @@ export default function MedicalHubPage() {
       if (alertsRes.success && alertsRes.data?.items) {
         setActiveAlerts(alertsRes.data.items)
       }
+
+      // Get consult balance
+      const balanceRes = await apiClient.getConsultBalance()
+      if (balanceRes.success && balanceRes.data) {
+        setAvailableConsults(balanceRes.data.availableConsults || 0)
+      }
+
+      // Get doctors list
+      await fetchDoctors()
     } catch (error) {
       console.error('Error fetching medical data:', error)
     } finally {
@@ -133,7 +159,7 @@ export default function MedicalHubPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="space-y-8">
           {/* Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Medical Profile Status */}
             <NeumorphicCard variant="raised" className="p-6">
               <div className="flex items-center justify-between mb-4">
@@ -249,7 +275,113 @@ export default function MedicalHubPage() {
                 View Alerts
               </Button>
             </NeumorphicCard>
+
+            {/* Available Consults Counter */}
+            <NeumorphicCard variant="raised" className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                {availableConsults > 0 && (
+                  <Badge className="bg-cyan-500 text-white">
+                    {availableConsults}
+                  </Badge>
+                )}
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+                Available Consults
+              </h3>
+              <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+                {availableConsults > 0 
+                  ? `${availableConsults} consult(s) available`
+                  : 'No consults available'
+                }
+              </p>
+              <Button
+                onClick={() => router.push('/user/medical/consults/book')}
+                variant="outline"
+                className="w-full"
+                disabled={availableConsults === 0}
+              >
+                {availableConsults > 0 ? 'Book Consult' : 'Purchase Consults'}
+              </Button>
+            </NeumorphicCard>
           </div>
+
+          {/* Available Doctors Section */}
+          <NeumorphicCard variant="raised" className="p-6">
+            <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-6 flex items-center gap-2">
+              <Stethoscope className="w-6 h-6 text-teal-500" />
+              Available Doctors
+            </h2>
+            {loadingDoctors ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mx-auto"></div>
+                <p className="mt-4 text-[var(--neumorphic-muted)]">Loading doctors...</p>
+              </div>
+            ) : doctors.length === 0 ? (
+              <div className="text-center py-8">
+                <Stethoscope className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                <p className="text-[var(--neumorphic-muted)]">
+                  No doctors available at the moment. Please check back later.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {doctors.map((doctor) => (
+                  <NeumorphicCard
+                    key={doctor.id}
+                    variant="recessed"
+                    className="p-4 hover:shadow-lg transition-all duration-300"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-[var(--neumorphic-text)]">
+                            {doctor.name}
+                          </h3>
+                          {doctor.medicalProfessional?.professionalType && (
+                            <p className="text-sm text-[var(--neumorphic-muted)] capitalize">
+                              {doctor.medicalProfessional.professionalType.replace('_', ' ')}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {doctor.medicalProfessional?.specialties && doctor.medicalProfessional.specialties.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {doctor.medicalProfessional.specialties.slice(0, 2).map((specialty: string, idx: number) => (
+                            <Badge key={idx} variant="outline" className="text-xs">
+                              {specialty}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between pt-2 border-t border-[var(--neumorphic-border)]">
+                        <div>
+                          <p className="text-xs text-[var(--neumorphic-muted)]">Consult Fee</p>
+                          <p className="text-xl font-bold text-[var(--neumorphic-text)]">
+                            {doctor.medicalProfessional?.consultFee 
+                              ? `${parseFloat(doctor.medicalProfessional.consultFee).toFixed(2)} ETB`
+                              : 'N/A'
+                            }
+                          </p>
+                        </div>
+                        <Button
+                          onClick={() => router.push(`/user/medical/consults/purchase?doctorId=${doctor.id}`)}
+                          className="bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white"
+                          size="sm"
+                        >
+                          Purchase
+                        </Button>
+                      </div>
+                    </div>
+                  </NeumorphicCard>
+                ))}
+              </div>
+            )}
+          </NeumorphicCard>
 
           {/* Quick Actions */}
           <NeumorphicCard variant="raised" className="p-6">
