@@ -3260,6 +3260,19 @@ class ApiClient {
   }
 
 
+  // ==================== PUBLIC API ====================
+
+  // Get all public trainers
+  async getPublicTrainers(): Promise<ApiResponse<{ items: PublicTrainer[] } | PublicTrainer[]>> {
+    return this.request<{ items: PublicTrainer[] } | PublicTrainer[]>('/public/trainers')
+  }
+
+  // Get public trainer detail by ID or slug
+  async getPublicTrainerDetail(identifier: number | string): Promise<ApiResponse<PublicTrainerDetail>> {
+    // The backend endpoint /public/trainers/:slug accepts both ID and slug
+    return this.request<PublicTrainerDetail>(`/public/trainers/${encodeURIComponent(String(identifier))}`)
+  }
+
   // ==================== SUBSCRIPTION API ====================
 
   // Get all subscription plans

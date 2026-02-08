@@ -97,38 +97,42 @@ function TrainerDetailPageContent() {
 
   useEffect(() => {
     if (!userIdParam) {
-      setError('Invalid trainer ID');
+      setError('Invalid trainer identifier');
       setLoading(false);
       return;
     }
 
-    const userId = parseInt(userIdParam);
-    if (isNaN(userId)) {
-      setError('Invalid trainer ID');
-      setLoading(false);
-      return;
-    }
+    // Helper function to check if string is a valid integer
+    const isInteger = (str: string): boolean => {
+      const num = parseInt(str, 10);
+      return !isNaN(num) && num.toString() === str;
+    };
+
+    // Determine if param is ID (integer) or slug (name)
+    const isId = isInteger(userIdParam);
+    const identifier: number | string = isId ? parseInt(userIdParam, 10) : userIdParam;
 
     const fetchTrainer = async () => {
       try {
         setLoading(true);
-        console.log('[TrainerDetailPage] Fetching trainer with userId:', userId);
-        // Use userId for API call (reliable)
-        const response = await apiClient.getPublicTrainerDetail(userId);
+        console.log(`[TrainerDetailPage] Fetching trainer with ${isId ? 'userId' : 'slug'}:`, identifier);
+        
+        // API call accepts both ID and slug
+        const response = await apiClient.getPublicTrainerDetail(identifier);
         console.log('[TrainerDetailPage] API response:', response);
 
         if (response.success && response.data) {
           setTrainer(response.data);
           
           // Update URL to show trainer name (pretty URL) without reloading
-          // This is just for display - the actual route still uses userId
-          if (!urlUpdated && typeof window !== 'undefined') {
+          // Only update if we came with an ID, not if we already have a slug
+          if (!urlUpdated && isId && typeof window !== 'undefined') {
             const slug = createSlug(response.data.user.name);
             const prettyUrl = `/trainers/${slug}`;
             // Update URL without reloading using replaceState
             // Store the userId in state so we can still use it if needed
             window.history.replaceState(
-              { ...window.history.state, userId: userId, as: prettyUrl },
+              { ...window.history.state, userId: response.data.userId, as: prettyUrl },
               '',
               prettyUrl
             );
@@ -139,11 +143,11 @@ function TrainerDetailPageContent() {
           const errorMessage = response.error?.message || response.error?.code || 'Failed to load trainer profile';
           
           if (response.error?.code === 'TRAINER_NOT_FOUND' || response.error?.status === 404) {
-            setError(`Trainer not found (userId: ${userId}). The trainer may not be verified or may not exist.`);
+            setError(`Trainer not found (${isId ? 'userId' : 'slug'}: ${identifier}). The trainer may not be verified or may not exist.`);
           } else if (response.error?.code === 'NETWORK_ERROR' || response.error?.code === 'HTTP_ERROR') {
             setError(`Cannot connect to server: ${response.error?.message || 'Network error'}. Status: ${response.error?.status}`);
           } else {
-            setError(`${errorMessage} (userId: ${userId})`);
+            setError(`${errorMessage} (${isId ? 'userId' : 'slug'}: ${identifier})`);
           }
         }
       } catch (err) {
