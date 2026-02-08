@@ -192,12 +192,13 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                   <div className="text-2xl font-bold text-blue-400">24/7</div>
                   <div className="text-slate-400 text-sm">AI Coach Available</div>
                 </div>
+                
                 <div className="space-y-2">
                   <div className="text-2xl font-bold text-purple-400">2 ETB</div>
                   <div className="text-slate-400 text-sm">Daily Subscription</div>
                 </div>
                 <div className="space-y-2">
-                  <div className="text-2xl font-bold text-green-400">4</div>
+                  <div className="text-2xl font-bold text-green-400">4+</div>
                   <div className="text-slate-400 text-sm">Languages Supported</div>
                 </div>
               </motion.div>

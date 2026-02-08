@@ -269,6 +269,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
             </span>
             
             {/* Floating sparkles */}
+            {/*
             <div className="absolute -top-4 -right-4">
               <motion.div
                 animate={{
@@ -284,8 +285,8 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
               >
                 <Sparkles className="w-8 h-8 text-yellow-400" />
               </motion.div>
-            </div>
-            
+            </div>*/}
+            {/*
             <div className="absolute -bottom-2 -left-4">
               <motion.div
                 animate={{
@@ -301,7 +302,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
               >
                 <Sparkles className="w-full h-full text-purple-400" />
               </motion.div>
-            </div>
+            </div>*/}
           </motion.h2>
 
           <motion.p
@@ -324,7 +325,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
         ) : (
           <div 
             ref={cardsRef}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto"
           >
             {plans.map((plan, index) => {
               const features = typeof plan.features === 'string' 

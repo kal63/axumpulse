@@ -363,6 +363,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
             <span className="text-white relative z-10">to Succeed</span>
             
             {/* Floating sparkles */}
+            {/*
             <div className="absolute -top-4 -right-4">
               <motion.div
                 animate={{
@@ -377,7 +378,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
               >
                 <Sparkles className="w-8 h-8 text-yellow-400" />
               </motion.div>
-            </div>
+            </div>*/}
           </motion.h2>
           
           <div className="relative">
@@ -547,6 +548,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
         </div>
 
         {/* INSANE Bottom CTA */}
+        {/*
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -554,7 +556,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
           viewport={{ once: true }}
           className="text-center mt-20 relative"
         >
-          {/* Animated background */}
+          
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 rounded-3xl blur-xl" />
           
           <div className="relative z-10 p-8">
@@ -571,7 +573,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
               Ready to experience the future of fitness?
             </motion.p>
           </div>
-        </motion.div>
+        </motion.div>*/}
       </div>
 
       {/* Custom CSS for animations */}

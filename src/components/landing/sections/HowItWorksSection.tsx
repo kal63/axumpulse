@@ -415,6 +415,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
             </span>
             
             {/* Floating sparkles */}
+            {/*
             <div className="absolute -top-4 -right-4">
               <motion.div
                 animate={{
@@ -429,7 +430,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
               >
                 <Sparkles className="w-8 h-8 text-yellow-400" />
               </motion.div>
-            </div>
+            </div>*/}
           </motion.h2>
           
           <div className="relative">

@@ -240,6 +240,7 @@ export function CompanySection({ onLoaded }: CompanySectionProps) {
             </span>
             
             {/* Floating sparkles - using CSS animations for better performance */}
+            {/*
             <div className="absolute -top-4 -right-4">
               <div className="w-8 h-8 sparkle-animation-1">
                 <Sparkles className="w-8 h-8 text-yellow-400" />
@@ -250,7 +251,7 @@ export function CompanySection({ onLoaded }: CompanySectionProps) {
               <div className="w-6 h-6 sparkle-animation-2">
                 <Sparkles className="w-6 h-6 text-yellow-400" />
               </div>
-            </div>
+            </div>*/}
           </motion.h2>
 
           <motion.p
