@@ -227,7 +227,7 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                       return (
                         <Link
                           key={plan.id}
-                          href="/register"
+                          href={`/packages/${plan.id}`}
                           className="group"
                         >
                           <motion.div

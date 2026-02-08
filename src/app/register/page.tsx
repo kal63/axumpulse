@@ -43,23 +43,53 @@ function RegisterPageContent() {
   })
   const [showPassword, setShowPassword] = useState(false)
 
-  // Get trainer from URL params if coming from trainer page
+  // Get trainer and package from URL params
   useEffect(() => {
     const trainerId = searchParams.get('trainerId')
     const trainerName = searchParams.get('trainerName')
+    const planIdParam = searchParams.get('planId')
+    const durationParam = searchParams.get('duration')
     
     if (trainerId) {
       setSelectedTrainerId(parseInt(trainerId))
       setSelectedTrainerName(trainerName || '')
     }
 
-    // If user is already authenticated, skip to package selection
-    if (isAuthenticated && user) {
-      setCurrentStep('package')
-    }
-
-    // Load subscription plans
-    loadPlans()
+    // Load subscription plans first
+    loadPlans().then((plans) => {
+      // If planId is provided, auto-select that package
+      if (planIdParam) {
+        const planId = parseInt(planIdParam)
+        const foundPlan = plans.find((p: SubscriptionPlan) => p.id === planId)
+        if (foundPlan) {
+          setSelectedPlan(foundPlan)
+          if (durationParam) {
+            setSelectedDuration(durationParam as any)
+          } else {
+            // Set default duration based on minDuration
+            if (foundPlan.minDuration === 'daily') {
+              setSelectedDuration('daily')
+            } else if (foundPlan.minDuration === 'monthly') {
+              setSelectedDuration('monthly')
+            } else {
+              setSelectedDuration('threeMonth')
+            }
+          }
+          // If planId is provided, skip package selection step
+          if (isAuthenticated && user) {
+            setCurrentStep('trainer')
+          } else {
+            // If not authenticated, stay on user-info step
+            setCurrentStep('user-info')
+          }
+        }
+      } else {
+        // If user is already authenticated and no planId, skip to package selection
+        if (isAuthenticated && user) {
+          setCurrentStep('package')
+        }
+      }
+    })
   }, [searchParams, isAuthenticated, user])
 
   const loadPlans = async () => {
@@ -67,9 +97,12 @@ function RegisterPageContent() {
       const response = await apiClient.getSubscriptionPlans()
       if (response.success && response.data) {
         setPlans(response.data.items || [])
+        return response.data.items || []
       }
+      return []
     } catch (error) {
       console.error('Failed to load subscription plans:', error)
+      return []
     }
   }
 
@@ -147,8 +180,13 @@ function RegisterPageContent() {
             console.error('Failed to refresh auth context:', error)
           }
           
-          // Proceed to package selection
-          setCurrentStep('package')
+          // If planId is already selected (from URL params), go to trainer selection
+          // Otherwise, go to package selection
+          if (selectedPlan) {
+            setCurrentStep('trainer')
+          } else {
+            setCurrentStep('package')
+          }
         } else {
           setError(response.error?.message || 'Registration failed')
         }

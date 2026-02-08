@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { apiClient } from '@/lib/api-client'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { SearchBar } from '@/components/user/SearchBar'
@@ -30,8 +30,9 @@ interface PublicTrainer {
   specialties: string[]
 }
 
-export default function TrainersPage() {
+function TrainersPageContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [trainers, setTrainers] = useState<PublicTrainer[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -80,7 +81,20 @@ export default function TrainersPage() {
   })
 
   const handleTrainerClick = (trainer: PublicTrainer) => {
-    router.push(`/trainers/${trainer.userId}`)
+    // Preserve planId and duration params if they exist
+    const planId = searchParams.get('planId')
+    const duration = searchParams.get('duration')
+    
+    let url = `/trainers/${trainer.userId}`
+    const params = new URLSearchParams()
+    if (planId) params.set('planId', planId)
+    if (duration) params.set('duration', duration)
+    
+    if (params.toString()) {
+      url += `?${params.toString()}`
+    }
+    
+    router.push(url)
   }
 
   return (
@@ -256,6 +270,18 @@ export default function TrainersPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function TrainersPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center">
+        <div className="text-[var(--neumorphic-text)]">Loading...</div>
+      </div>
+    }>
+      <TrainersPageContent />
+    </Suspense>
   )
 }
 

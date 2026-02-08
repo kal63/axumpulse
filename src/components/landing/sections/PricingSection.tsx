@@ -391,7 +391,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
                       </ul>
 
                       {/* CTA Button */}
-                      <Link href="/register" className="mt-auto">
+                      <Link href={`/packages/${plan.id}`} className="mt-auto">
                         <Button 
                           className={`w-full bg-gradient-to-r ${plan.level === 'silver' ? 'from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800' : plan.level === 'gold' ? 'from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700' : plan.level === 'diamond' ? 'from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700' : 'from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'} text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold`}
                         >

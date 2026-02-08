@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { apiClient, PublicTrainerDetail, CertificationFile } from '@/lib/api-client';
 import { getImageUrl } from '@/lib/upload-utils';
 import { createSlug } from '@/lib/slug-utils';
@@ -84,9 +84,10 @@ function CertificateDisplay({ file }: { file: CertificationFile }) {
   );
 }
 
-export default function TrainerDetailPage() {
+function TrainerDetailPageContent() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const userIdParam = params?.userId as string;
   
   const [trainer, setTrainer] = useState<PublicTrainerDetail | null>(null);
@@ -329,7 +330,22 @@ export default function TrainerDetailPage() {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => {
                       const trainerUserId = parseInt(userIdParam);
-                      router.push(`/register?trainerId=${trainerUserId}&trainerName=${encodeURIComponent(trainer.user.name)}`);
+                      const planId = searchParams.get('planId');
+                      const duration = searchParams.get('duration');
+                      
+                      // If planId and duration are provided (coming from package selection), go directly to checkout
+                      if (planId && duration) {
+                        const params = new URLSearchParams({
+                          planId: planId,
+                          trainerId: trainerUserId.toString(),
+                          duration: duration,
+                          trainerName: trainer.user.name
+                        });
+                        router.push(`/checkout?${params.toString()}`);
+                      } else {
+                        // Otherwise, go to register page (existing behavior for trainer-first flow)
+                        router.push(`/register?trainerId=${trainerUserId}&trainerName=${encodeURIComponent(trainer.user.name)}`);
+                      }
                     }}
                     className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-500/50"
                   >
@@ -456,6 +472,18 @@ export default function TrainerDetailPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function TrainerDetailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
+      </div>
+    }>
+      <TrainerDetailPageContent />
+    </Suspense>
   );
 }
 
