@@ -140,6 +140,21 @@ function PackageDetailContent() {
     }
   }
 
+  const getDiscountForDuration = (plan: SubscriptionPlan, duration: Duration): number => {
+    const discounts = typeof plan.discounts === 'string' 
+      ? JSON.parse(plan.discounts) 
+      : plan.discounts || {}
+    
+    switch (duration) {
+      case 'monthly': return discounts.monthly || 0
+      case 'threeMonth': return discounts.threeMonth || 0
+      case 'sixMonth': return discounts.sixMonth || 0
+      case 'nineMonth': return discounts.nineMonth || 0
+      case 'yearly': return discounts.yearly || 0
+      default: return 0
+    }
+  }
+
   const handleContinue = () => {
     if (!plan) return
 
@@ -262,7 +277,14 @@ function PackageDetailContent() {
                             : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
                         }`}
                       >
-                        <div className="text-white font-semibold">Monthly</div>
+                        <div className="flex items-center justify-between">
+                          <div className="text-white font-semibold">Monthly</div>
+                          {getDiscountForDuration(plan, 'monthly') > 0 && (
+                            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                              -{getDiscountForDuration(plan, 'monthly')}%
+                            </span>
+                          )}
+                        </div>
                         <div className="text-blue-400 text-sm mt-1">
                           {formatPrice(getPriceForDuration(plan, 'monthly'))}
                         </div>
@@ -277,7 +299,14 @@ function PackageDetailContent() {
                             : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
                         }`}
                       >
-                        <div className="text-white font-semibold">3 Months</div>
+                        <div className="flex items-center justify-between">
+                          <div className="text-white font-semibold">3 Months</div>
+                          {getDiscountForDuration(plan, 'threeMonth') > 0 && (
+                            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                              -{getDiscountForDuration(plan, 'threeMonth')}%
+                            </span>
+                          )}
+                        </div>
                         <div className="text-blue-400 text-sm mt-1">
                           {formatPrice(getPriceForDuration(plan, 'threeMonth'))}
                         </div>
@@ -291,7 +320,14 @@ function PackageDetailContent() {
                           : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
                       }`}
                     >
-                      <div className="text-white font-semibold">6 Months</div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-white font-semibold">6 Months</div>
+                        {getDiscountForDuration(plan, 'sixMonth') > 0 && (
+                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                            -{getDiscountForDuration(plan, 'sixMonth')}%
+                          </span>
+                        )}
+                      </div>
                       <div className="text-blue-400 text-sm mt-1">
                         {formatPrice(getPriceForDuration(plan, 'sixMonth'))}
                       </div>
@@ -304,7 +340,14 @@ function PackageDetailContent() {
                           : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
                       }`}
                     >
-                      <div className="text-white font-semibold">9 Months</div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-white font-semibold">9 Months</div>
+                        {getDiscountForDuration(plan, 'nineMonth') > 0 && (
+                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                            -{getDiscountForDuration(plan, 'nineMonth')}%
+                          </span>
+                        )}
+                      </div>
                       <div className="text-blue-400 text-sm mt-1">
                         {formatPrice(getPriceForDuration(plan, 'nineMonth'))}
                       </div>
@@ -317,7 +360,14 @@ function PackageDetailContent() {
                           : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
                       }`}
                     >
-                      <div className="text-white font-semibold">1 Year</div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-white font-semibold">1 Year</div>
+                        {getDiscountForDuration(plan, 'yearly') > 0 && (
+                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                            -{getDiscountForDuration(plan, 'yearly')}%
+                          </span>
+                        )}
+                      </div>
                       <div className="text-blue-400 text-sm mt-1">
                         {formatPrice(getPriceForDuration(plan, 'yearly'))}
                       </div>
@@ -330,8 +380,15 @@ function PackageDetailContent() {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-slate-400 text-sm">Selected Duration</div>
-                      <div className="text-white font-semibold text-lg">
-                        {getDurationLabel(selectedDuration)}
+                      <div className="flex items-center gap-2">
+                        <div className="text-white font-semibold text-lg">
+                          {getDurationLabel(selectedDuration)}
+                        </div>
+                        {getDiscountForDuration(plan, selectedDuration) > 0 && (
+                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full font-medium">
+                            Save {getDiscountForDuration(plan, selectedDuration)}%
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="text-right">

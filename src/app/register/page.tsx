@@ -266,6 +266,21 @@ function RegisterPageContent() {
     }
   }
 
+  const getDiscountForDuration = (plan: SubscriptionPlan, duration: string): number => {
+    const discounts = typeof plan.discounts === 'string' 
+      ? JSON.parse(plan.discounts) 
+      : plan.discounts || {}
+    
+    switch (duration) {
+      case 'monthly': return discounts.monthly || 0
+      case 'threeMonth': return discounts.threeMonth || 0
+      case 'sixMonth': return discounts.sixMonth || 0
+      case 'nineMonth': return discounts.nineMonth || 0
+      case 'yearly': return discounts.yearly || 0
+      default: return 0
+    }
+  }
+
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col">
       <UnifiedBackground />
@@ -499,11 +514,30 @@ function RegisterPageContent() {
                                     onClick={(e) => e.stopPropagation()}
                                   >
                                     {plan.minDuration === 'daily' && <option value="daily">Daily - {formatPrice(parseFloat(plan.dailyPrice.toString()))}</option>}
-                                    {plan.minDuration !== 'threeMonth' && <option value="monthly">Monthly - {formatPrice(parseFloat(plan.monthlyPrice.toString()))}</option>}
-                                    {plan.minDuration !== 'daily' && <option value="threeMonth">3 Months - {formatPrice(parseFloat(plan.threeMonthPrice.toString()))}</option>}
-                                    <option value="sixMonth">6 Months - {formatPrice(parseFloat(plan.sixMonthPrice.toString()))}</option>
-                                    <option value="nineMonth">9 Months - {formatPrice(parseFloat(plan.nineMonthPrice.toString()))}</option>
-                                    <option value="yearly">1 Year - {formatPrice(parseFloat(plan.yearlyPrice.toString()))}</option>
+                                    {plan.minDuration !== 'threeMonth' && (
+                                      <option value="monthly">
+                                        Monthly - {formatPrice(parseFloat(plan.monthlyPrice.toString()))}
+                                        {getDiscountForDuration(plan, 'monthly') > 0 && ` (${getDiscountForDuration(plan, 'monthly')}% off)`}
+                                      </option>
+                                    )}
+                                    {plan.minDuration !== 'daily' && (
+                                      <option value="threeMonth">
+                                        3 Months - {formatPrice(parseFloat(plan.threeMonthPrice.toString()))}
+                                        {getDiscountForDuration(plan, 'threeMonth') > 0 && ` (${getDiscountForDuration(plan, 'threeMonth')}% off)`}
+                                      </option>
+                                    )}
+                                    <option value="sixMonth">
+                                      6 Months - {formatPrice(parseFloat(plan.sixMonthPrice.toString()))}
+                                      {getDiscountForDuration(plan, 'sixMonth') > 0 && ` (${getDiscountForDuration(plan, 'sixMonth')}% off)`}
+                                    </option>
+                                    <option value="nineMonth">
+                                      9 Months - {formatPrice(parseFloat(plan.nineMonthPrice.toString()))}
+                                      {getDiscountForDuration(plan, 'nineMonth') > 0 && ` (${getDiscountForDuration(plan, 'nineMonth')}% off)`}
+                                    </option>
+                                    <option value="yearly">
+                                      1 Year - {formatPrice(parseFloat(plan.yearlyPrice.toString()))}
+                                      {getDiscountForDuration(plan, 'yearly') > 0 && ` (${getDiscountForDuration(plan, 'yearly')}% off)`}
+                                    </option>
                                   </select>
                                 </div>
                               </div>
