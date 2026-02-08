@@ -1972,6 +1972,11 @@ class ApiClient {
     }>(`/user/activity/stats${query}`)
   }
 
+  // Get available languages
+  async getLanguages(): Promise<ApiResponse<Language[]>> {
+    return this.request<Language[]>('/user/languages')
+  }
+
   // Get user XP history
   async getUserXPHistory(period?: number): Promise<ApiResponse<{
     history: Array<{

@@ -152,9 +152,13 @@ export default function MedicalApplyPage() {
       const response = await apiClient.getLanguages()
       if (response.success && response.data) {
         setLanguages(response.data)
+      } else {
+        console.error('Failed to fetch languages:', response.error)
+        toast.error('Failed to load languages')
       }
     } catch (error) {
       console.error('Error fetching languages:', error)
+      toast.error('Failed to load languages')
     } finally {
       setLoadingLanguages(false)
     }
@@ -429,7 +433,7 @@ export default function MedicalApplyPage() {
               </p>
             </div>
 
-            <div>
+            <div className='space-y-2'>
               <Label className="text-[var(--neumorphic-text)]">Professional Type *</Label>
               <Select value={formData.professionalType} onValueChange={(v) => setFormData({ ...formData, professionalType: v })}>
                 <SelectTrigger>
@@ -470,7 +474,7 @@ export default function MedicalApplyPage() {
               </div>
             </div>
 
-            <div>
+            <div className='space-y-2'>
               <Label className="text-[var(--neumorphic-text)]">Years of Experience</Label>
               <Input
                 type="number"
@@ -480,7 +484,7 @@ export default function MedicalApplyPage() {
               />
             </div>
 
-            <div>
+            <div className='space-y-2'>
               <Label className="text-[var(--neumorphic-text)]">Bio *</Label>
               <Textarea
                 value={formData.bio}
@@ -497,9 +501,11 @@ export default function MedicalApplyPage() {
               </p>
               {loadingLanguages ? (
                 <p className="text-sm text-[var(--neumorphic-muted)]">Loading languages...</p>
+              ) : languages.length === 0 ? (
+                <p className="text-sm text-yellow-500">No languages available. Please contact support.</p>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {languages.filter(lang => lang.isActive).map(lang => (
+                  {languages.map(lang => (
                     <Badge
                       key={lang.code}
                       onClick={() => toggleLanguage(lang.code)}
@@ -524,7 +530,7 @@ export default function MedicalApplyPage() {
         {/* Step 2: License & Credentials */}
         {currentStep === 2 && (
           <NeumorphicCard variant="raised" className="p-6 space-y-6">
-            <div>
+            <div className='space-y-2'>
               <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-2 flex items-center gap-2">
                 <FileText className="w-6 h-6 text-teal-500" />
                 License & Credentials
@@ -535,7 +541,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+              <div className='space-y-2'>
                 <Label className="text-[var(--neumorphic-text)]">License Number</Label>
                 <Input
                   value={formData.licenseInfo.licenseNumber || ''}
@@ -546,7 +552,7 @@ export default function MedicalApplyPage() {
                   placeholder="Enter license number"
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label className="text-[var(--neumorphic-text)]">Issuing Authority</Label>
                 <Input
                   value={formData.licenseInfo.issuingAuthority || ''}
@@ -557,7 +563,7 @@ export default function MedicalApplyPage() {
                   placeholder="e.g., Medical Board"
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label className="text-[var(--neumorphic-text)]">State/Province</Label>
                 <Input
                   value={formData.licenseInfo.state || ''}
@@ -568,7 +574,7 @@ export default function MedicalApplyPage() {
                   placeholder="State or province"
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label className="text-[var(--neumorphic-text)]">Country</Label>
                 <Input
                   value={formData.licenseInfo.country || ''}
@@ -579,7 +585,7 @@ export default function MedicalApplyPage() {
                   placeholder="Country"
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label className="text-[var(--neumorphic-text)]">Expiry Date</Label>
                 <Input
                   type="date"
@@ -689,7 +695,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+              <div className='space-y-2'>
                 <Label className="text-[var(--neumorphic-text)]">LinkedIn</Label>
                 <Input
                   value={formData.socialMedia.linkedin || ''}
@@ -700,7 +706,7 @@ export default function MedicalApplyPage() {
                   placeholder="LinkedIn profile URL"
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label className="text-[var(--neumorphic-text)]">Website</Label>
                 <Input
                   value={formData.socialMedia.website || ''}
@@ -711,7 +717,7 @@ export default function MedicalApplyPage() {
                   placeholder="Personal or professional website"
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label className="text-[var(--neumorphic-text)]">Instagram</Label>
                 <Input
                   value={formData.socialMedia.instagram || ''}
@@ -722,7 +728,7 @@ export default function MedicalApplyPage() {
                   placeholder="Instagram profile URL"
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label className="text-[var(--neumorphic-text)]">Facebook</Label>
                 <Input
                   value={formData.socialMedia.facebook || ''}
@@ -733,7 +739,7 @@ export default function MedicalApplyPage() {
                   placeholder="Facebook profile URL"
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label className="text-[var(--neumorphic-text)]">Twitter/X</Label>
                 <Input
                   value={formData.socialMedia.twitter || ''}
@@ -761,7 +767,7 @@ export default function MedicalApplyPage() {
               </p>
             </div>
 
-            <div>
+            <div className='space-y-2'>
               <Label className="text-[var(--neumorphic-text)]">Consult Types You Offer *</Label>
               <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
                 Select all that apply
@@ -786,7 +792,7 @@ export default function MedicalApplyPage() {
               </div>
             </div>
 
-            <div>
+            <div className='space-y-2'>
               <Label className="text-[var(--neumorphic-text)]">Availability</Label>
               <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
                 When are you typically available for consultations?
