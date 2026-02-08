@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { apiClient } from '@/lib/api-client'
 import { 
   ArrowLeft, Dumbbell, Clock, CheckCircle, PlayCircle, TrendingUp, 
@@ -34,6 +34,7 @@ import { useAuth } from '@/contexts/auth-context'
 export default function WorkoutPlanDetailPage() {
     const params = useParams()
     const router = useRouter()
+    const searchParams = useSearchParams()
     const { toast } = useToast()
     const { user } = useAuth()
     
@@ -45,6 +46,10 @@ export default function WorkoutPlanDetailPage() {
     const [exerciseCanComplete, setExerciseCanComplete] = useState<Map<number, boolean>>(new Map()) // Track if exercise reached 80% threshold
     const [loading, setLoading] = useState(true)
     const [starting, setStarting] = useState(false)
+    
+    // Check if coming from spin & win game
+    const fromGame = searchParams.get('fromGame') === 'true'
+    const gameId = searchParams.get('gameId') ? parseInt(searchParams.get('gameId')!) : null
 
     // Insight-related state
     const [insight, setInsight] = useState<WorkoutPlanInsight | null>(null)
@@ -133,7 +138,8 @@ export default function WorkoutPlanDetailPage() {
     const handleStartPlan = async () => {
         try {
             setStarting(true)
-            const response = await apiClient.startWorkoutPlan(planId)
+            // Pass gameId if coming from game
+            const response = await apiClient.startWorkoutPlan(planId, gameId || undefined)
             
             if (response.success) {
                 // Immediately update startedAt if backend returned it
@@ -153,11 +159,18 @@ export default function WorkoutPlanDetailPage() {
                 
                 toast({
                     title: '🎉 Plan Started!',
-                    description: 'Your workout journey begins now. Good luck!'
+                    description: fromGame 
+                        ? 'Complete this workout plan to earn bonus XP from the game!' 
+                        : 'Your workout journey begins now. Good luck!'
                 })
                 
                 // Refresh to show full progress (backend will set startedAt for first exercise)
                 await fetchProgress()
+                
+                // Remove query params after starting to clean up URL
+                if (fromGame) {
+                    router.replace(`/user/workout-plans/${planId}`)
+                }
             }
         } catch (error) {
             console.error('Error starting plan:', error)
@@ -460,7 +473,10 @@ export default function WorkoutPlanDetailPage() {
         ? Math.round((userProgress.completedExercises / userProgress.totalExercises) * 100)
         : 0
 
-    const estimatedXP = (workoutPlan.totalExercises || 0) * 25 + 100
+    // Calculate estimated XP: base (totalExercises * 25 + 100) + 50 bonus if from game
+    const baseXP = (workoutPlan.totalExercises || 0) * 25 + 100
+    const gameBonus = fromGame ? 50 : 0
+    const estimatedXP = baseXP + gameBonus
 
     return (
         <div className="min-h-screen bg-[var(--neumorphic-bg)]">
@@ -480,6 +496,30 @@ export default function WorkoutPlanDetailPage() {
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Back to Workout Plans
                     </Button>
+
+                    {/* Game Banner - Show if coming from spin & win */}
+                    {fromGame && (
+                        <NeumorphicCard variant="raised" className="p-4 mb-6 border-l-4 border-l-cyan-500 bg-gradient-to-r from-cyan-500/10 to-purple-500/10">
+                            <div className="flex items-start gap-3">
+                                <div className="p-2 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-lg">
+                                    <Trophy className="h-5 w-5 text-white" />
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="font-bold text-[var(--neumorphic-text)] mb-1 flex items-center gap-2">
+                                        <Sparkles className="h-4 w-4 text-cyan-500" />
+                                        Won from Spin & Win Game!
+                                    </h3>
+                                    <p className="text-sm text-[var(--neumorphic-muted)] mb-2">
+                                        You won this workout plan from the Spin & Win game. Start and complete this workout plan to earn bonus XP!
+                                    </p>
+                                    <div className="flex items-center gap-2 text-xs text-[var(--neumorphic-muted)]">
+                                        <Zap className="h-3 w-3 text-yellow-500" />
+                                        <span>Complete the workout plan to earn: Base XP + 50 XP bonus</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </NeumorphicCard>
+                    )}
 
                     {/* Hero Content */}
                     <div className="space-y-8">
@@ -578,6 +618,11 @@ export default function WorkoutPlanDetailPage() {
                                                 </h3>
                                                 <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
                                                     Begin your fitness journey and earn {estimatedXP} XP
+                                                    {fromGame && (
+                                                        <span className="block mt-1 text-cyan-500 font-semibold">
+                                                            +50 XP bonus from game!
+                                                        </span>
+                                                    )}
                                                 </p>
                                             </div>
                                             <Button

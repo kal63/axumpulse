@@ -1627,7 +1627,7 @@ class ApiClient {
   // ==================== USER PROGRESS ====================
 
   // Start a workout plan
-  async startWorkoutPlan(workoutPlanId: number): Promise<ApiResponse<{
+  async startWorkoutPlan(workoutPlanId: number, gameId?: number): Promise<ApiResponse<{
     planProgress: any
     firstExerciseProgress?: {
       exerciseId: number
@@ -1644,7 +1644,7 @@ class ApiClient {
       } | null
     }>('/user/progress/workout-plan/start', {
       method: 'POST',
-      body: JSON.stringify({ workoutPlanId })
+      body: JSON.stringify({ workoutPlanId, gameId })
     })
   }
 

@@ -123,7 +123,14 @@ export default function SpinWinPage() {
   };
 
   const handleComplete = async () => {
+    // For workout plans, this should not be called (user navigates to workout plan page instead)
+    // This is kept for backward compatibility with challenges if any remain
     if (!game || !exercise || !sessionId) return;
+
+    // If it's a workout plan, don't complete here - user should go to workout plan page
+    if (exercise.workoutPlanId) {
+      return;
+    }
 
     try {
       const res = await apiClient.submitGameResults(game.id, {
@@ -148,6 +155,12 @@ export default function SpinWinPage() {
     } catch (error) {
       console.error('Error completing exercise:', error);
       toast.error('Failed to complete exercise');
+    }
+  };
+
+  const handleViewWorkoutPlan = () => {
+    if (exercise?.workoutPlanId && game) {
+      router.push(`/user/workout-plans/${exercise.workoutPlanId}?fromGame=true&gameId=${game.id}`);
     }
   };
 
@@ -194,6 +207,7 @@ export default function SpinWinPage() {
             onSpin={handleSpin}
             spinning={spinning}
             onComplete={handleComplete}
+            onViewWorkoutPlan={exercise?.workoutPlanId ? handleViewWorkoutPlan : undefined}
             xpReward={exercise?.xpReward || game.xpReward || 50}
             prizes={workoutPlans}
           />

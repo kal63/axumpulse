@@ -28,15 +28,17 @@ interface SpinAndWinProps {
     xpReward?: number; // XP reward from the challenge
     challengeXp?: number; // Alternative XP field
     challengeId?: number; // Challenge ID
+    workoutPlanId?: number; // Workout plan ID if this is a workout plan
   };
   onSpin: () => void;
   spinning: boolean;
   onComplete: () => void;
+  onViewWorkoutPlan?: () => void; // Optional callback for viewing workout plan
   xpReward: number;
   prizes?: Array<{ title: string; xpReward: number }> | string[]; // Optional array of challenges or prize strings
 }
 
-export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, prizes }: SpinAndWinProps) {
+export function SpinAndWin({ exercise, onSpin, spinning, onComplete, onViewWorkoutPlan, xpReward, prizes }: SpinAndWinProps) {
   const [hasSpun, setHasSpun] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [winningSegment, setWinningSegment] = useState<string | null>(null);
@@ -462,12 +464,23 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, xpReward, p
               )}
             </div>
 
-            <Button
-              onClick={handleComplete}
-              className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
-            >
-              Complete Exercise
-            </Button>
+            {/* Show different button for workout plans vs regular exercises */}
+            {(exercise as any)?.workoutPlanId && onViewWorkoutPlan ? (
+              <Button
+                onClick={onViewWorkoutPlan}
+                className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+              >
+                <Trophy className="h-4 w-4 mr-2" />
+                Continue to Workout Plan
+              </Button>
+            ) : (
+              <Button
+                onClick={handleComplete}
+                className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+              >
+                Complete Exercise
+              </Button>
+            )}
           </NeumorphicCard>
         </motion.div>
       ) : (
