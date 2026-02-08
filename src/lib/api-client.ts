@@ -1972,8 +1972,8 @@ class ApiClient {
     }>(`/user/activity/stats${query}`)
   }
 
-  // Get available languages
-  async getLanguages(): Promise<ApiResponse<Language[]>> {
+  // Get available languages (user endpoint)
+  async getUserLanguages(): Promise<ApiResponse<Language[]>> {
     return this.request<Language[]>('/user/languages')
   }
 
@@ -3259,19 +3259,6 @@ class ApiClient {
     })
   }
 
-
-  // ==================== PUBLIC API ====================
-
-  // Get all public trainers
-  async getPublicTrainers(): Promise<ApiResponse<{ items: PublicTrainer[] } | PublicTrainer[]>> {
-    return this.request<{ items: PublicTrainer[] } | PublicTrainer[]>('/public/trainers')
-  }
-
-  // Get public trainer detail by ID or slug
-  async getPublicTrainerDetail(identifier: number | string): Promise<ApiResponse<PublicTrainerDetail>> {
-    // The backend endpoint /public/trainers/:slug accepts both ID and slug
-    return this.request<PublicTrainerDetail>(`/public/trainers/${encodeURIComponent(String(identifier))}`)
-  }
 
   // ==================== SUBSCRIPTION API ====================
 
