@@ -46,10 +46,16 @@ export default function MedicalHubPage() {
       setLoadingDoctors(true)
       const response = await apiClient.getConsultDoctors()
       if (response.success && response.data) {
-        setDoctors(response.data)
+        // Ensure response.data is an array
+        const doctorsList = Array.isArray(response.data) ? response.data : []
+        setDoctors(doctorsList)
+      } else {
+        console.error('Failed to fetch doctors:', response.error)
+        setDoctors([])
       }
     } catch (error) {
       console.error('Error fetching doctors:', error)
+      setDoctors([])
     } finally {
       setLoadingDoctors(false)
     }
@@ -368,13 +374,25 @@ export default function MedicalHubPage() {
                             }
                           </p>
                         </div>
-                        <Button
-                          onClick={() => router.push(`/user/medical/consults/purchase?doctorId=${doctor.id}`)}
-                          className="bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white"
-                          size="sm"
-                        >
-                          Purchase
-                        </Button>
+                        {doctor.medicalProfessional?.consultFee ? (
+                          <Button
+                            onClick={() => router.push(`/user/medical/consults/purchase?doctorId=${doctor.id}`)}
+                            className="bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white"
+                            size="sm"
+                          >
+                            Purchase
+                          </Button>
+                        ) : (
+                          <Button
+                            disabled
+                            variant="outline"
+                            size="sm"
+                            className="opacity-50"
+                            title="Doctor has not set a consult fee yet"
+                          >
+                            Fee Not Set
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </NeumorphicCard>
