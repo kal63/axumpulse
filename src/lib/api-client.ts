@@ -663,6 +663,7 @@ export interface WorkoutPlan {
   approvedAt?: string
   rejectedBy?: number
   rejectedAt?: string
+  isGameChallenge?: boolean
   trainer?: {
     id: number
     name: string
@@ -1122,6 +1123,23 @@ class ApiClient {
     return this.request<PaginatedResponse<Challenge>>(`/admin/challenges${query}`)
   }
 
+  async getAdminWorkoutPlans(params?: {
+    page?: number
+    pageSize?: number
+    status?: string
+    difficulty?: string
+    q?: string
+  }): Promise<ApiResponse<PaginatedResponse<WorkoutPlan>>> {
+    const query = createPaginationQuery(params)
+    return this.request<PaginatedResponse<WorkoutPlan>>(`/admin/workout-plans${query}`)
+  }
+
+  async updateAdminWorkoutPlan(workoutPlanId: number, workoutPlan: Partial<WorkoutPlan>): Promise<ApiResponse<{ workoutPlan: WorkoutPlan }>> {
+    return this.request<{ workoutPlan: WorkoutPlan }>(`/admin/workout-plans/${workoutPlanId}`, {
+      method: 'PUT',
+      body: JSON.stringify(workoutPlan),
+    })
+  }
 
   async getRewards(params?: {
     page?: number

@@ -28,7 +28,7 @@ import {
   Minus
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { apiClient, type Game, type Challenge } from '@/lib/api-client'
+import { apiClient, type Game, type WorkoutPlan } from '@/lib/api-client'
 import { usePaginatedData } from '@/hooks/usePaginatedData'
 import { PaginatedTable } from '@/components/pagination/PaginatedTable'
 import {
@@ -46,13 +46,13 @@ export default function GameChallengesPage() {
   
   const [game, setGame] = useState<Game | null>(null)
   const [isLoadingGame, setIsLoadingGame] = useState(true)
-  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null)
-  const [isChallengeModalOpen, setIsChallengeModalOpen] = useState(false)
+  const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState<WorkoutPlan | null>(null)
+  const [isWorkoutPlanModalOpen, setIsWorkoutPlanModalOpen] = useState(false)
   const [actionLoading, setActionLoading] = useState<number | null>(null)
   
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [typeFilter, setTypeFilter] = useState<string>('all')
+  const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all')
   const [showAddedOnly, setShowAddedOnly] = useState(false)
 
@@ -81,75 +81,77 @@ export default function GameChallengesPage() {
     }
   }, [gameId, router])
 
-  // Fetch challenges - show added ones (isGameChallenge: true) or all
-  const fetchChallenges = useCallback(async (params: any) => {
+  // Fetch workout plans - show added ones (isGameChallenge: true) or all
+  const fetchWorkoutPlans = useCallback(async (params: any) => {
     const fetchParams = {
       ...params,
-      search: searchQuery || undefined,
+      q: searchQuery || undefined,
       status: statusFilter !== 'all' ? statusFilter : undefined,
-      type: typeFilter !== 'all' ? typeFilter : undefined,
       difficulty: difficultyFilter !== 'all' ? difficultyFilter : undefined
     }
-    const response = await apiClient.getChallenges(fetchParams)
+    const response = await apiClient.getAdminWorkoutPlans(fetchParams)
     if (response.success && response.data) {
-      // Filter based on showAddedOnly
-      let challenges = response.data.items || []
+      // Filter based on showAddedOnly and category
+      let workoutPlans = response.data.items || []
+      if (categoryFilter !== 'all') {
+        workoutPlans = workoutPlans.filter((wp: WorkoutPlan) => wp.category === categoryFilter)
+      }
       if (showAddedOnly) {
-        challenges = challenges.filter((c: Challenge) => c.isGameChallenge === true)
+        workoutPlans = workoutPlans.filter((wp: WorkoutPlan) => wp.isGameChallenge === true)
       }
       return {
-        items: challenges,
+        items: workoutPlans,
         pagination: response.data.pagination || {
           page: 1,
-          pageSize: challenges.length,
-          totalItems: challenges.length,
+          pageSize: workoutPlans.length,
+          totalItems: workoutPlans.length,
           totalPages: 1,
           hasNext: false,
           hasPrev: false
         }
       }
     }
-    throw new Error(response.error?.message || 'Failed to fetch challenges')
-  }, [searchQuery, statusFilter, typeFilter, difficultyFilter, showAddedOnly])
+    throw new Error(response.error?.message || 'Failed to fetch workout plans')
+  }, [searchQuery, statusFilter, categoryFilter, difficultyFilter, showAddedOnly])
 
   const {
-    data: challenges,
+    data: workoutPlans,
     pagination,
-    loading: isLoadingChallenges,
-    refetch: refetchChallenges
-  } = usePaginatedData<Challenge>({
-    fetchFunction: fetchChallenges,
+    loading: isLoadingWorkoutPlans,
+    refetch: refetchWorkoutPlans
+  } = usePaginatedData<WorkoutPlan>({
+    fetchFunction: fetchWorkoutPlans,
     initialPage: 1,
     initialPageSize: 100
   })
 
-  // Separate added and available challenges
-  const addedChallenges = challenges.filter(c => c.isGameChallenge === true)
-  const availableChallenges = challenges.filter(c => c.isGameChallenge !== true)
+  // Separate added and available workout plans
+  const addedWorkoutPlans = workoutPlans.filter(wp => wp.isGameChallenge === true)
+  const availableWorkoutPlans = workoutPlans.filter(wp => wp.isGameChallenge !== true)
 
-  const handleToggleChallenge = async (challengeId: number, currentValue: boolean) => {
+  const handleToggleWorkoutPlan = async (workoutPlanId: number, currentValue: boolean) => {
     try {
-      setActionLoading(challengeId)
-      const response = await apiClient.updateChallenge(challengeId, {
+      setActionLoading(workoutPlanId)
+      const response = await apiClient.updateAdminWorkoutPlan(workoutPlanId, {
         isGameChallenge: !currentValue
       })
       
       if (response.success) {
-        toast.success(`Challenge ${!currentValue ? 'added to' : 'removed from'} game`)
-        refetchChallenges()
+        toast.success(`Workout plan ${!currentValue ? 'added to' : 'removed from'} game`)
+        refetchWorkoutPlans()
       } else {
-        toast.error(response.error?.message || 'Failed to update challenge')
+        toast.error(response.error?.message || 'Failed to update workout plan')
       }
     } catch (error) {
-      toast.error('Failed to update challenge')
+      toast.error('Failed to update workout plan')
     } finally {
       setActionLoading(null)
     }
   }
 
-  const handleViewChallenge = (challenge: Challenge) => {
-    setSelectedChallenge(challenge)
-    setIsChallengeModalOpen(true)
+  const handleViewWorkoutPlan = (workoutPlan: WorkoutPlan) => {
+    setSelectedWorkoutPlan(workoutPlan)
+    setIsWorkoutPlanModalOpen(true)
   }
 
   const getStatusBadge = (status: string) => {
@@ -167,14 +169,15 @@ export default function GameChallengesPage() {
     }
   }
 
-  const getTypeBadge = (type: string) => {
+  const getCategoryBadge = (category: string) => {
     const colors: Record<string, string> = {
       fitness: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      nutrition: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      wellness: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      achievement: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+      strength: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      cardio: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+      yoga: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      wellness: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200'
     }
-    return <Badge className={colors[type] || 'bg-gray-100 text-gray-800'}>{type}</Badge>
+    return <Badge className={colors[category || ''] || 'bg-gray-100 text-gray-800'}>{category || 'Uncategorized'}</Badge>
   }
 
   const getDifficultyBadge = (difficulty: string) => {
@@ -213,16 +216,16 @@ export default function GameChallengesPage() {
     )
   }
 
-  // Define columns for challenges table
-  const challengeColumns = [
+  // Define columns for workout plans table
+  const workoutPlanColumns = [
     {
       key: 'title',
-      header: 'Challenge',
-      render: (challenge: Challenge) => (
+      header: 'Workout Plan',
+      render: (workoutPlan: WorkoutPlan) => (
         <div>
-          <p className="font-medium">{challenge.title}</p>
-          {challenge.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">{challenge.description}</p>
+          <p className="font-medium">{workoutPlan.title}</p>
+          {workoutPlan.description && (
+            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">{workoutPlan.description}</p>
           )}
         </div>
       )
@@ -230,48 +233,48 @@ export default function GameChallengesPage() {
     {
       key: 'details',
       header: 'Details',
-      render: (challenge: Challenge) => (
+      render: (workoutPlan: WorkoutPlan) => (
         <div className="space-y-1">
-          {getTypeBadge(challenge.type || 'fitness')}
-          {getDifficultyBadge(challenge.difficulty || 'beginner')}
+          {getCategoryBadge(workoutPlan.category || '')}
+          {getDifficultyBadge(workoutPlan.difficulty || 'beginner')}
         </div>
       )
     },
     {
-      key: 'xp',
-      header: 'XP Reward',
-      render: (challenge: Challenge) => (
+      key: 'exercises',
+      header: 'Exercises',
+      render: (workoutPlan: WorkoutPlan) => (
         <div className="text-sm font-medium">
-          {challenge.xpReward || 0} XP
+          {workoutPlan.totalExercises || 0} exercises
         </div>
       )
     },
     {
       key: 'status',
       header: 'Status',
-      render: (challenge: Challenge) => getStatusBadge(challenge.status || 'draft')
+      render: (workoutPlan: WorkoutPlan) => getStatusBadge(workoutPlan.status || 'draft')
     },
     {
       key: 'actions',
       header: 'Actions',
-      render: (challenge: Challenge) => (
+      render: (workoutPlan: WorkoutPlan) => (
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handleViewChallenge(challenge)}
+            onClick={() => handleViewWorkoutPlan(workoutPlan)}
           >
             <Eye className="h-4 w-4" />
           </Button>
-          {challenge.isGameChallenge ? (
+          {workoutPlan.isGameChallenge ? (
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleToggleChallenge(challenge.id, true)}
-              disabled={actionLoading === challenge.id}
+              onClick={() => handleToggleWorkoutPlan(workoutPlan.id, true)}
+              disabled={actionLoading === workoutPlan.id}
               className="text-red-600 hover:text-red-700"
             >
-              {actionLoading === challenge.id ? (
+              {actionLoading === workoutPlan.id ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <>
@@ -283,10 +286,10 @@ export default function GameChallengesPage() {
           ) : (
             <Button
               size="sm"
-              onClick={() => handleToggleChallenge(challenge.id, false)}
-              disabled={actionLoading === challenge.id}
+              onClick={() => handleToggleWorkoutPlan(workoutPlan.id, false)}
+              disabled={actionLoading === workoutPlan.id}
             >
-              {actionLoading === challenge.id ? (
+              {actionLoading === workoutPlan.id ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : (
                 <>
@@ -317,7 +320,7 @@ export default function GameChallengesPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{game.title}</h1>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Manage challenges for Spin & Win game
+              Manage workout plans for Spin & Win game
             </p>
           </div>
         </div>
@@ -342,44 +345,44 @@ export default function GameChallengesPage() {
               <Badge className="mt-1">{game.difficulty || 'beginner'}</Badge>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Challenges Added</p>
-              <p className="text-2xl font-bold mt-1">{addedChallenges.length}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Workout Plans Added</p>
+              <p className="text-2xl font-bold mt-1">{addedWorkoutPlans.length}</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Currently Added Challenges */}
+      {/* Currently Added Workout Plans */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Award className="h-5 w-5 text-emerald-600" />
-            <span>Currently Added Challenges ({addedChallenges.length})</span>
+            <span>Currently Added Workout Plans ({addedWorkoutPlans.length})</span>
           </CardTitle>
           <CardDescription>
-            Challenges that are currently part of this Spin & Win game
+            Workout plans that are currently part of this Spin & Win game
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoadingChallenges ? (
+          {isLoadingWorkoutPlans ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
             </div>
-          ) : addedChallenges.length === 0 ? (
+          ) : addedWorkoutPlans.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No challenges added yet. Add challenges from the list below.</p>
+              <p>No workout plans added yet. Add workout plans from the list below.</p>
             </div>
           ) : (
             <PaginatedTable
-              data={addedChallenges}
-              columns={challengeColumns}
+              data={addedWorkoutPlans}
+              columns={workoutPlanColumns}
               loading={false}
-              emptyMessage="No challenges added"
+              emptyMessage="No workout plans added"
               currentPage={1}
               totalPages={1}
-              pageSize={addedChallenges.length}
-              totalItems={addedChallenges.length}
+              pageSize={addedWorkoutPlans.length}
+              totalItems={addedWorkoutPlans.length}
               onPageChange={() => {}}
               onPageSizeChange={() => {}}
               showPagination={false}
@@ -390,15 +393,15 @@ export default function GameChallengesPage() {
         </CardContent>
       </Card>
 
-      {/* All Challenges */}
+      {/* All Workout Plans */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Plus className="h-5 w-5 text-emerald-600" />
-            <span>All Challenges</span>
+            <span>All Workout Plans</span>
           </CardTitle>
           <CardDescription>
-            Select challenges to add to this Spin & Win game. Toggle the "Add to Game" button to add or remove challenges.
+            Select workout plans to add to this Spin & Win game. Toggle the "Add to Game" button to add or remove workout plans.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -408,7 +411,7 @@ export default function GameChallengesPage() {
               <Label htmlFor="search">Search</Label>
               <Input
                 id="search"
-                placeholder="Search challenges..."
+                placeholder="Search workout plans..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -424,21 +427,23 @@ export default function GameChallengesPage() {
                   <SelectItem value="approved">Approved</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label htmlFor="type">Type</Label>
-              <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <Label htmlFor="category">Category</Label>
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="fitness">Fitness</SelectItem>
-                  <SelectItem value="nutrition">Nutrition</SelectItem>
+                  <SelectItem value="strength">Strength</SelectItem>
+                  <SelectItem value="cardio">Cardio</SelectItem>
+                  <SelectItem value="yoga">Yoga</SelectItem>
                   <SelectItem value="wellness">Wellness</SelectItem>
-                  <SelectItem value="achievement">Achievement</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -463,7 +468,7 @@ export default function GameChallengesPage() {
                 onClick={() => {
                   setSearchQuery('')
                   setStatusFilter('all')
-                  setTypeFilter('all')
+                  setCategoryFilter('all')
                   setDifficultyFilter('all')
                   setShowAddedOnly(false)
                 }}
@@ -473,21 +478,21 @@ export default function GameChallengesPage() {
             </div>
           </div>
 
-          {isLoadingChallenges ? (
+          {isLoadingWorkoutPlans ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
             </div>
-          ) : challenges.length === 0 ? (
+          ) : workoutPlans.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No challenges found.</p>
+              <p>No workout plans found.</p>
             </div>
           ) : (
             <PaginatedTable
-              data={challenges}
-              columns={challengeColumns}
-              loading={isLoadingChallenges}
-              emptyMessage="No challenges available"
+              data={workoutPlans}
+              columns={workoutPlanColumns}
+              loading={isLoadingWorkoutPlans}
+              emptyMessage="No workout plans available"
               currentPage={pagination.pagination.page}
               totalPages={pagination.pagination.totalPages}
               pageSize={pagination.pagination.pageSize}
@@ -506,76 +511,76 @@ export default function GameChallengesPage() {
         </CardContent>
       </Card>
 
-      {/* Challenge Details Modal */}
-      <Dialog open={isChallengeModalOpen} onOpenChange={setIsChallengeModalOpen}>
+      {/* Workout Plan Details Modal */}
+      <Dialog open={isWorkoutPlanModalOpen} onOpenChange={setIsWorkoutPlanModalOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{selectedChallenge?.title}</DialogTitle>
+            <DialogTitle>{selectedWorkoutPlan?.title}</DialogTitle>
             <DialogDescription>
-              Challenge details and information
+              Workout plan details and information
             </DialogDescription>
           </DialogHeader>
           
-          {selectedChallenge && (
+          {selectedWorkoutPlan && (
             <div className="space-y-4">
               <div>
                 <Label>Description</Label>
                 <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
-                  {selectedChallenge.description || 'No description provided'}
+                  {selectedWorkoutPlan.description || 'No description provided'}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Type</Label>
-                  <div className="mt-1">{getTypeBadge(selectedChallenge.type || 'fitness')}</div>
+                  <Label>Category</Label>
+                  <div className="mt-1">{getCategoryBadge(selectedWorkoutPlan.category || '')}</div>
                 </div>
                 <div>
                   <Label>Difficulty</Label>
-                  <div className="mt-1">{getDifficultyBadge(selectedChallenge.difficulty || 'beginner')}</div>
+                  <div className="mt-1">{getDifficultyBadge(selectedWorkoutPlan.difficulty || 'beginner')}</div>
                 </div>
                 <div>
-                  <Label>XP Reward</Label>
-                  <p className="text-sm font-medium mt-1">{selectedChallenge.xpReward || 0} XP</p>
+                  <Label>Total Exercises</Label>
+                  <p className="text-sm font-medium mt-1">{selectedWorkoutPlan.totalExercises || 0} exercises</p>
                 </div>
                 <div>
                   <Label>Status</Label>
-                  <div className="mt-1">{getStatusBadge(selectedChallenge.status || 'draft')}</div>
+                  <div className="mt-1">{getStatusBadge(selectedWorkoutPlan.status || 'draft')}</div>
                 </div>
               </div>
 
-              {selectedChallenge.requirements && (
+              {selectedWorkoutPlan.estimatedDuration && (
                 <div>
-                  <Label>Requirements</Label>
+                  <Label>Estimated Duration</Label>
                   <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
-                    {selectedChallenge.requirements}
+                    {selectedWorkoutPlan.estimatedDuration} minutes
                   </p>
                 </div>
               )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Duration</Label>
-                  <p className="text-sm mt-1">{selectedChallenge.duration || 7} days</p>
+                  <Label>Language</Label>
+                  <p className="text-sm mt-1">{selectedWorkoutPlan.language || 'en'}</p>
                 </div>
                 <div>
-                  <Label>Language</Label>
-                  <p className="text-sm mt-1">{selectedChallenge.language || 'en'}</p>
+                  <Label>Public</Label>
+                  <p className="text-sm mt-1">{selectedWorkoutPlan.isPublic ? 'Yes' : 'No'}</p>
                 </div>
               </div>
             </div>
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsChallengeModalOpen(false)}>
+            <Button variant="outline" onClick={() => setIsWorkoutPlanModalOpen(false)}>
               Close
             </Button>
-            {selectedChallenge && (
+            {selectedWorkoutPlan && (
               <Button onClick={() => {
-                handleToggleChallenge(selectedChallenge.id, selectedChallenge.isGameChallenge || false)
-                setIsChallengeModalOpen(false)
+                handleToggleWorkoutPlan(selectedWorkoutPlan.id, selectedWorkoutPlan.isGameChallenge || false)
+                setIsWorkoutPlanModalOpen(false)
               }}>
-                {selectedChallenge.isGameChallenge ? (
+                {selectedWorkoutPlan.isGameChallenge ? (
                   <>
                     <Minus className="h-4 w-4 mr-2" />
                     Remove from Game

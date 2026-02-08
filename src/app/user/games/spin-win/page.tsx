@@ -19,8 +19,8 @@ export default function SpinWinPage() {
   const [exercise, setExercise] = useState<any>(null);
   const [spinning, setSpinning] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [challenges, setChallenges] = useState<Array<{ id: number; title: string; xpReward: number }>>([]);
-  const [recentSelections, setRecentSelections] = useState<number[]>([]); // Track recently selected challenge IDs
+  const [workoutPlans, setWorkoutPlans] = useState<Array<{ id: number; title: string; xpReward: number }>>([]);
+  const [recentSelections, setRecentSelections] = useState<number[]>([]); // Track recently selected workout plan IDs
 
   const gameId = searchParams.get('id');
 
@@ -35,9 +35,9 @@ export default function SpinWinPage() {
   const loadGame = async () => {
     try {
       setLoading(true);
-      const [gameRes, challengesRes] = await Promise.all([
+      const [gameRes, workoutPlansRes] = await Promise.all([
         apiClient.getGameById(parseInt(gameId!)),
-        apiClient.getUserChallenges({ page: 1, pageSize: 100 })
+        apiClient.getUserWorkoutPlans({ page: 1, pageSize: 100 })
       ]);
 
       if (gameRes.success && gameRes.data) {
@@ -48,16 +48,16 @@ export default function SpinWinPage() {
         return;
       }
 
-      // Fetch challenges marked as game challenges
-      if (challengesRes.success && challengesRes.data) {
-        const gameChallenges = challengesRes.data.items
-          .filter((ch: any) => ch.isGameChallenge === true)
-          .map((ch: any) => ({
-            id: ch.id,
-            title: ch.title,
-            xpReward: ch.xpReward || 50
+      // Fetch workout plans marked as game challenges
+      if (workoutPlansRes.success && workoutPlansRes.data) {
+        const gameWorkoutPlans = workoutPlansRes.data.items
+          .filter((wp: any) => wp.isGameChallenge === true)
+          .map((wp: any) => ({
+            id: wp.id,
+            title: wp.title,
+            xpReward: gameRes.data?.game?.xpReward || 50 // Use game XP since workout plans don't have xpReward
           }));
-        setChallenges(gameChallenges);
+        setWorkoutPlans(gameWorkoutPlans);
       }
     } catch (error) {
       console.error('Error loading game:', error);
@@ -71,31 +71,31 @@ export default function SpinWinPage() {
   const handleSpin = async () => {
     if (!game || spinning) return;
 
-    // Ensure we have at least one challenge
-    if (!challenges || challenges.length === 0) {
-      toast.error('No challenges available. Please contact an admin to add challenges to the game.');
+    // Ensure we have at least one workout plan
+    if (!workoutPlans || workoutPlans.length === 0) {
+      toast.error('No workout plans available. Please contact an admin to add workout plans to the game.');
       return;
     }
 
     try {
       setSpinning(true);
       
-      // Prepare wheel challenges (the 8 displayed on the wheel)
-      const wheelChallenges = challenges.slice(0, 8).map(ch => ({
-        id: ch.id,
-        title: ch.title,
-        challengeId: ch.id
+      // Prepare wheel workouts (the 8 displayed on the wheel)
+      const wheelWorkouts = workoutPlans.slice(0, 8).map(wp => ({
+        id: wp.id,
+        title: wp.title,
+        workoutPlanId: wp.id
       }));
 
-      // Call playGame with wheel challenges and recent selections
+      // Call playGame with wheel workouts and recent selections
       const res = await apiClient.playGame(game.id, {
-        wheelChallenges,
+        wheelWorkouts,
         recentSelections: recentSelections.slice(-3) // Only avoid last 3 selections
       });
 
       if (res.success && res.data) {
         const selectedExercise = res.data.content.exercise;
-        // Ensure xpReward is set from challengeXp if available
+        // Ensure xpReward is set from challengeXp if available (for backward compatibility)
         if (res.data.content.challengeXp && !selectedExercise.xpReward) {
           selectedExercise.xpReward = res.data.content.challengeXp;
         }
@@ -103,9 +103,10 @@ export default function SpinWinPage() {
         setSessionId(res.data.sessionId);
         
         // Track this selection to avoid immediate repeats
-        if (selectedExercise.challengeId) {
+        if (selectedExercise.workoutPlanId || selectedExercise.challengeId) {
+          const id = selectedExercise.workoutPlanId || selectedExercise.challengeId;
           setRecentSelections(prev => {
-            const updated = [...prev, selectedExercise.challengeId];
+            const updated = [...prev, id];
             // Keep only last 5 selections
             return updated.slice(-5);
           });
@@ -194,7 +195,7 @@ export default function SpinWinPage() {
             spinning={spinning}
             onComplete={handleComplete}
             xpReward={exercise?.xpReward || game.xpReward || 50}
-            prizes={challenges}
+            prizes={workoutPlans}
           />
         </NeumorphicCard>
 
@@ -204,8 +205,8 @@ export default function SpinWinPage() {
             <Zap className="h-4 w-4 text-yellow-500" />
             <span>
               {exercise?.xpReward 
-                ? `Earn ${exercise.xpReward} XP for completing this challenge`
-                : 'XP reward varies by challenge'}
+                ? `Earn ${exercise.xpReward} XP for completing this workout plan`
+                : 'XP reward varies by workout plan'}
             </span>
           </div>
         </div>

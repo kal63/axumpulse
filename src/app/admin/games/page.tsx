@@ -737,7 +737,7 @@ export default function GamesPage() {
             showPageSizeSelector={true}
             showInfo={true}
             onRowClick={(game) => {
-              // If spin_win game, navigate to challenges page
+              // If spin_win game, navigate to workout plans management page
               if (game.gameType === 'spin_win') {
                 window.location.href = `/admin/games/${game.id}/challenges`
               } else {
