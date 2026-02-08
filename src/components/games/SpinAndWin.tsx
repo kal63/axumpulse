@@ -36,9 +36,11 @@ interface SpinAndWinProps {
   onViewWorkoutPlan?: () => void; // Optional callback for viewing workout plan
   xpReward: number;
   prizes?: Array<{ title: string; xpReward: number }> | string[]; // Optional array of challenges or prize strings
+  availableSpins?: number; // Number of available spins
+  canSpin?: boolean; // Whether user can spin
 }
 
-export function SpinAndWin({ exercise, onSpin, spinning, onComplete, onViewWorkoutPlan, xpReward, prizes }: SpinAndWinProps) {
+export function SpinAndWin({ exercise, onSpin, spinning, onComplete, onViewWorkoutPlan, xpReward, prizes, availableSpins = 0, canSpin = true }: SpinAndWinProps) {
   const [hasSpun, setHasSpun] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [winningSegment, setWinningSegment] = useState<string | null>(null);
@@ -492,13 +494,25 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, onViewWorko
           <p className="text-[var(--neumorphic-muted)] mb-4">
             Spin the wheel to get a random exercise!
           </p>
+          {availableSpins === 0 && (
+            <p className="text-sm text-yellow-500 mb-3 font-semibold">
+              No spins available. Come back tomorrow for 1 free spin!
+            </p>
+          )}
+          {availableSpins > 0 && (
+            <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
+              You have {availableSpins} {availableSpins === 1 ? 'spin' : 'spins'} available
+            </p>
+          )}
           <Button
             onClick={handleSpin}
-            disabled={spinning || hasSpun}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+            disabled={spinning || hasSpun || !canSpin || availableSpins === 0}
+            className={`bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white ${
+              (!canSpin || availableSpins === 0) ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             <RotateCw className={`h-4 w-4 mr-2 ${spinning ? 'animate-spin' : ''}`} />
-            {spinning ? 'Spinning...' : hasSpun ? 'Already Spun' : 'Spin the Wheel!'}
+            {spinning ? 'Spinning...' : hasSpun ? 'Already Spun' : (!canSpin || availableSpins === 0) ? 'No Spins Available' : 'Spin the Wheel!'}
           </Button>
         </NeumorphicCard>
       )}

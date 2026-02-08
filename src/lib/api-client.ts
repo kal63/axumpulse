@@ -3095,6 +3095,7 @@ class ApiClient {
   // Play a game (start game session)
   async playGame(gameId: number, options?: {
     wheelChallenges?: Array<{ id: number; title: string; challengeId?: number }>
+    wheelWorkouts?: Array<{ id: number; title: string; workoutPlanId?: number }>
     recentSelections?: number[]
   }): Promise<ApiResponse<{
     gameId: number
@@ -3113,6 +3114,19 @@ class ApiClient {
       method: 'POST',
       body: JSON.stringify(options || {})
     })
+  }
+
+  // Get spin status (for spin_win games)
+  async getSpinStatus(gameId: number): Promise<ApiResponse<{
+    availableSpins: number
+    canSpin: boolean
+    lastAccrualDate: string | null
+  }>> {
+    return this.request<{
+      availableSpins: number
+      canSpin: boolean
+      lastAccrualDate: string | null
+    }>(`/user/games/${gameId}/spin-status`)
   }
 
   // Submit game results

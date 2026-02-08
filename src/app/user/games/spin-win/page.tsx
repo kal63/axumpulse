@@ -7,7 +7,7 @@ import { apiClient, type Game } from '@/lib/api-client';
 import { SpinAndWin } from '@/components/games/SpinAndWin';
 import { NeumorphicCard } from '@/components/user/NeumorphicCard';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Zap } from 'lucide-react';
+import { ArrowLeft, Zap, Gift } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function SpinWinPage() {
@@ -21,6 +21,9 @@ export default function SpinWinPage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [workoutPlans, setWorkoutPlans] = useState<Array<{ id: number; title: string; xpReward: number }>>([]);
   const [recentSelections, setRecentSelections] = useState<number[]>([]); // Track recently selected workout plan IDs
+  const [availableSpins, setAvailableSpins] = useState<number>(0);
+  const [canSpin, setCanSpin] = useState<boolean>(false);
+  const [loadingSpinStatus, setLoadingSpinStatus] = useState<boolean>(false);
 
   const gameId = searchParams.get('id');
 
@@ -35,9 +38,10 @@ export default function SpinWinPage() {
   const loadGame = async () => {
     try {
       setLoading(true);
-      const [gameRes, workoutPlansRes] = await Promise.all([
+      const [gameRes, workoutPlansRes, spinStatusRes] = await Promise.all([
         apiClient.getGameById(parseInt(gameId!)),
-        apiClient.getUserWorkoutPlans({ page: 1, pageSize: 100 })
+        apiClient.getUserWorkoutPlans({ page: 1, pageSize: 100 }),
+        apiClient.getSpinStatus(parseInt(gameId!))
       ]);
 
       if (gameRes.success && gameRes.data) {
@@ -59,12 +63,34 @@ export default function SpinWinPage() {
           }));
         setWorkoutPlans(gameWorkoutPlans);
       }
+
+      // Update spin status
+      if (spinStatusRes.success && spinStatusRes.data) {
+        setAvailableSpins(spinStatusRes.data.availableSpins);
+        setCanSpin(spinStatusRes.data.canSpin);
+      }
     } catch (error) {
       console.error('Error loading game:', error);
       toast.error('Failed to load game');
       router.push('/user/games');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refreshSpinStatus = async () => {
+    if (!gameId) return;
+    try {
+      setLoadingSpinStatus(true);
+      const res = await apiClient.getSpinStatus(parseInt(gameId));
+      if (res.success && res.data) {
+        setAvailableSpins(res.data.availableSpins);
+        setCanSpin(res.data.canSpin);
+      }
+    } catch (error) {
+      console.error('Error refreshing spin status:', error);
+    } finally {
+      setLoadingSpinStatus(false);
     }
   };
 
@@ -111,8 +137,17 @@ export default function SpinWinPage() {
             return updated.slice(-5);
           });
         }
+
+        // Refresh spin status after successful spin
+        await refreshSpinStatus();
       } else {
-        toast.error('Failed to spin wheel');
+        // Handle NO_SPINS_AVAILABLE error
+        if (res.error?.code === 'NO_SPINS_AVAILABLE') {
+          toast.error(res.error.message || "You don't have any spins available. You'll get 1 spin tomorrow!");
+          await refreshSpinStatus();
+        } else {
+          toast.error('Failed to spin wheel');
+        }
       }
     } catch (error) {
       console.error('Error spinning:', error);
@@ -192,12 +227,33 @@ export default function SpinWinPage() {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-2">
-            {game.title}
-          </h1>
-          <p className="text-[var(--neumorphic-muted)]">
-            {game.description || 'Spin the wheel to get a random exercise!'}
-          </p>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-2">
+                {game.title}
+              </h1>
+              <p className="text-[var(--neumorphic-muted)]">
+                {game.description || 'Spin the wheel to get a random exercise!'}
+              </p>
+            </div>
+            {/* Available Spins Badge */}
+            <NeumorphicCard variant="raised" className="p-4 min-w-[140px]">
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <Gift className="h-5 w-5 text-cyan-500" />
+                  <span className="text-sm font-semibold text-[var(--neumorphic-muted)]">Spins</span>
+                </div>
+                <div className="text-3xl font-bold text-cyan-500">
+                  {availableSpins}
+                </div>
+                {availableSpins === 0 && (
+                  <p className="text-xs text-[var(--neumorphic-muted)] text-center">
+                    Come back tomorrow!
+                  </p>
+                )}
+              </div>
+            </NeumorphicCard>
+          </div>
         </div>
 
         {/* Game */}
@@ -210,6 +266,8 @@ export default function SpinWinPage() {
             onViewWorkoutPlan={exercise?.workoutPlanId ? handleViewWorkoutPlan : undefined}
             xpReward={exercise?.xpReward || game.xpReward || 50}
             prizes={workoutPlans}
+            availableSpins={availableSpins}
+            canSpin={canSpin}
           />
         </NeumorphicCard>
 
