@@ -290,14 +290,17 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, onViewWorko
           <div className="absolute inset-0">
             {wheelPrizes.map((prize, i) => {
               const segmentCenterAngle = (i * segmentAngle + segmentAngle / 2 - 90) * (Math.PI / 180);
-              const textRadius = 130; // Slightly reduced radius to give more room
+              const textRadius = 140; // Back to original radius
               const textX = 200 + textRadius * Math.cos(segmentCenterAngle);
               const textY = 200 + textRadius * Math.sin(segmentCenterAngle);
               
               // Calculate maximum width based on segment arc length
               // Arc length = radius * angle (in radians)
               const segmentAngleRad = (segmentAngle * Math.PI) / 180;
-              const maxWidth = Math.min(textRadius * segmentAngleRad * 0.85, 120); // 85% of arc length, max 120px
+              // Calculate arc length and use a reasonable percentage
+              const arcLength = textRadius * segmentAngleRad;
+              // Use 95% of arc length but with a reasonable minimum and maximum
+              const maxWidth = Math.max(Math.min(arcLength * 0.95, 180), 80); // Between 80px and 180px
               
               // wheelPrizes is now always array of objects
               const prizeTitle = prize.title;
@@ -311,23 +314,24 @@ export function SpinAndWin({ exercise, onSpin, spinning, onComplete, onViewWorko
                     left: `${textX}px`,
                     top: `${textY}px`,
                     transform: 'translate(-50%, -50%)',
-                    width: `${maxWidth}px`,
                   }}
                 >
                   <div
                     className="text-center"
                     style={{
                       transform: `rotate(${i * segmentAngle + segmentAngle / 2}deg)`,
-                      transformOrigin: 'center center'
+                      transformOrigin: 'center center',
                     }}
                   >
                     <span 
-                      className="text-xs font-bold text-white block overflow-hidden text-ellipsis"
+                      className="text-xs font-bold text-white block"
                       style={{
                         textShadow: '2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8)',
                         maxWidth: `${maxWidth}px`,
                         whiteSpace: 'nowrap',
-                        display: 'block',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: 'inline-block',
                       }}
                       title={prizeTitle}
                     >
