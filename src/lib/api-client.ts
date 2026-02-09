@@ -874,6 +874,18 @@ class ApiClient {
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`
     
+    // Debug logging for content update requests
+    if (endpoint.includes('/trainer/content/') && options.method === 'PUT') {
+      console.log('🔵 Making PUT request to:', {
+        fullUrl: url,
+        endpoint,
+        baseURL: this.baseURL,
+        method: options.method,
+        bodyPreview: options.body ? String(options.body).substring(0, 200) : 'no body',
+        constructedUrl: `${this.baseURL}${endpoint}`
+      })
+    }
+    
     const headers: Record<string, string> = {
       ...(options.headers as Record<string, string>),
     }
@@ -888,33 +900,99 @@ class ApiClient {
       headers.Authorization = `Bearer ${this.token}`
     }
 
-    try {
-      // Create AbortController for timeout (30 seconds)
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 30000)
-      
-      const response = await fetch(url, {
-        ...options,
-        headers,
-        signal: controller.signal
-      })
-      
-      clearTimeout(timeoutId)
-
-      // Try to safely read the response body. Some servers may return
-      // non-JSON (HTML error pages, plain text), so we attempt to parse
-      // JSON but fall back to text for diagnostics.
-      let data: any = undefined
-      let responseText: string | undefined = undefined
-
       try {
-        // Use text() first so we can attempt JSON parse and keep the raw text
-        responseText = await response.text()
-        data = responseText ? JSON.parse(responseText) : undefined
-      } catch (parseError) {
-        // Not JSON or empty body – keep the raw text for error reporting
-        data = undefined
-      }
+        // Create AbortController for timeout (30 seconds)
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 30000)
+        
+        // Log the actual fetch call for content updates
+        if (endpoint.includes('/trainer/content/') && options.method === 'PUT') {
+          console.log('🟢 Actually calling fetch with:', {
+            url,
+            method: options.method,
+            hasBody: !!options.body,
+            headers: Object.keys(headers)
+          })
+        }
+        
+        const response = await fetch(url, {
+          ...options,
+          headers,
+          signal: controller.signal
+        })
+        
+        clearTimeout(timeoutId)
+        
+        // Log response for content updates
+        if (endpoint.includes('/trainer/content/') && options.method === 'PUT') {
+          console.log('🟡 Fetch response received:', {
+            url,
+            status: response.status,
+            statusText: response.statusText,
+            ok: response.ok,
+            redirected: response.redirected,
+            urlAfterRedirect: response.url
+          })
+        }
+
+        // Try to safely read the response body. Some servers may return
+        // non-JSON (HTML error pages, plain text), so we attempt to parse
+        // JSON but fall back to text for diagnostics.
+        let data: any = undefined
+        let responseText: string | undefined = undefined
+
+        try {
+          // Use text() first so we can attempt JSON parse and keep the raw text
+          responseText = await response.text()
+          if (responseText) {
+            try {
+              data = JSON.parse(responseText)
+            } catch (parseError) {
+              // Not valid JSON - keep as text
+              console.warn('Failed to parse JSON response:', {
+                url,
+                status: response.status,
+                statusText: response.statusText,
+                responseText: responseText.substring(0, 500), // First 500 chars
+                parseError
+              })
+              data = undefined
+            }
+          }
+        } catch (readError) {
+          // Failed to read response text
+          console.error('Failed to read response text:', readError)
+          data = undefined
+        }
+        
+        // Debug logging for all requests (to help diagnose issues)
+        if (url.includes('/trainer/content/') && (options.method === 'PUT' || url.includes('PUT'))) {
+          console.log('API request details:', {
+            url,
+            method: options.method || 'GET',
+            status: response.status,
+            statusText: response.statusText,
+            ok: response.ok,
+            responseText: responseText?.substring(0, 500),
+            parsedData: data,
+            hasSuccess: data && 'success' in data,
+            successValue: data?.success,
+            hasData: data && 'data' in data,
+            hasError: data && 'error' in data
+          })
+        }
+        
+        // Debug logging for failed requests
+        if (!response.ok) {
+          console.error('API request failed:', {
+            url,
+            status: response.status,
+            statusText: response.statusText,
+            responseText: responseText?.substring(0, 500),
+            parsedData: data,
+            headers: Object.fromEntries(response.headers.entries())
+          })
+        }
 
       if (!response.ok) {
         // Extract error message from response body if available
@@ -966,8 +1044,45 @@ class ApiClient {
         }
       }
 
+      // Handle successful responses
+      if (data && typeof data === 'object') {
+        // If response has success field, use it directly
+        if ('success' in data) {
+          // Ensure it's properly formatted
+          if (data.success === true) {
+            // If it has data field, return as-is
+            if ('data' in data) {
+              return data as ApiResponse<T>
+            }
+            // If success is true but no data field, wrap the whole object
+            return { success: true, data: data as T } as ApiResponse<T>
+          }
+          // If success is false but we're here (response.ok was true), something is wrong
+          // Return the data anyway but log a warning
+          if (data.success === false) {
+            console.warn('API returned success: false but HTTP status was OK:', {
+              url,
+              status: response.status,
+              data
+            })
+            return data as ApiResponse<T>
+          }
+        }
+        // If response has data field, wrap it
+        if ('data' in data) {
+          return { success: true, data: data.data } as ApiResponse<T>
+        }
+        // If response is the data itself (e.g., { content: {...} })
+        return { success: true, data: data as T } as ApiResponse<T>
+      }
+      
       // If the server returned JSON we return it, otherwise return the raw text
-      return data ?? ({ success: true, data: responseText } as any)
+      if (responseText) {
+        return { success: true, data: responseText as any } as ApiResponse<T>
+      }
+      
+      // Empty response
+      return { success: true, data: undefined as any } as ApiResponse<T>
     } catch (error: any) {
       // Network-level errors (CORS/preflight failure, network down, TLS mismatch)
       // All show up here as thrown by fetch. Include the original error message
@@ -1077,10 +1192,35 @@ class ApiClient {
   }
 
   async updateTrainerContent(id: number, payload: Partial<ContentItem>): Promise<ApiResponse<{ content: ContentItem }>> {
-    return this.request<{ content: ContentItem }>(`/trainer/content/${id}`, {
+    // Ensure we're using the correct endpoint - NOT trainer/site/trainer-content
+    const endpoint = `/trainer/content/${id}`
+    console.log('🔵 updateTrainerContent called:', { 
+      id, 
+      endpoint,
+      payload,
+      constructedEndpoint: endpoint,
+      baseURL: this.baseURL,
+      fullUrl: `${this.baseURL}${endpoint}`
+    })
+    
+    // Double-check the endpoint is correct
+    if (endpoint.includes('/site/') || endpoint.includes('trainer-content')) {
+      console.error('❌ ERROR: Wrong endpoint detected!', endpoint)
+      throw new Error(`Invalid endpoint: ${endpoint}. Should be /trainer/content/${id}`)
+    }
+    
+    const result = await this.request<{ content: ContentItem }>(endpoint, {
       method: 'PUT',
       body: JSON.stringify(payload),
     })
+    console.log('🟢 updateTrainerContent result:', {
+      success: result.success,
+      hasData: !!result.data,
+      hasError: !!result.error,
+      errorKeys: result.error ? Object.keys(result.error) : [],
+      fullResult: result
+    })
+    return result
   }
 
   async deleteTrainerContent(id: number): Promise<ApiResponse<{ deleted: boolean }>> {
@@ -3187,7 +3327,8 @@ class ApiClient {
   }
 
   // Update trainer content item
-  async updateTrainerContent(id: string, data: {
+  // Update trainer site content item (NOT regular content - this is for trainer portfolio sites)
+  async updateTrainerSiteContent(id: string, data: {
     title?: string
     description?: string
     url?: string
@@ -3200,8 +3341,8 @@ class ApiClient {
     })
   }
 
-  // Delete trainer content item
-  async deleteTrainerContent(id: string): Promise<ApiResponse<{ message: string; trainerContent: TrainerSiteContent[] }>> {
+  // Delete trainer site content item (NOT regular content - this is for trainer portfolio sites)
+  async deleteTrainerSiteContent(id: string): Promise<ApiResponse<{ message: string; trainerContent: TrainerSiteContent[] }>> {
     return this.request<{ message: string; trainerContent: TrainerSiteContent[] }>(`/trainer/site/trainer-content/${id}`, {
       method: 'DELETE'
     })

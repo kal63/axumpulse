@@ -62,18 +62,19 @@ export default function VideosPage() {
   const [totalItems, setTotalItems] = useState(0)
   const pageSize = 12
 
-  // Check if user is a medical professional
+  // Check if user is a medical professional or trainer
   const isMedicalPro = user?.isMedical || false
+  const isTrainer = user?.isTrainer || false
 
-  // Fetch subscription status (skip for medical professionals)
+  // Fetch subscription status (skip for medical professionals and trainers)
   useEffect(() => {
-    if (user && !isMedicalPro) {
+    if (user && !isMedicalPro && !isTrainer) {
       fetchSubscription()
-    } else if (isMedicalPro) {
-      // Medical professionals don't need subscription, mark as loaded
+    } else if (isMedicalPro || isTrainer) {
+      // Medical professionals and trainers don't need subscription, mark as loaded
       setSubscriptionLoading(false)
     }
-  }, [user, isMedicalPro])
+  }, [user, isMedicalPro, isTrainer])
 
   const fetchSubscription = async () => {
     try {
@@ -95,19 +96,19 @@ export default function VideosPage() {
   }
 
   useEffect(() => {
-    // Fetch content if subscription exists OR if user is a medical professional
-    if (!subscriptionLoading && (subscription || isMedicalPro)) {
+    // Fetch content if subscription exists OR if user is a medical professional or trainer
+    if (!subscriptionLoading && (subscription || isMedicalPro || isTrainer)) {
       fetchContent()
       fetchCategories()
     }
-  }, [subscription, subscriptionLoading, isMedicalPro, currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery, sortBy])
+  }, [subscription, subscriptionLoading, isMedicalPro, isTrainer, currentPage, selectedCategory, selectedDifficulty, selectedDuration, searchQuery, sortBy])
 
-  // Fetch featured content separately on mount - if subscription exists OR if medical professional
+  // Fetch featured content separately on mount - if subscription exists OR if medical professional or trainer
   useEffect(() => {
-    if (!subscriptionLoading && (subscription || isMedicalPro)) {
+    if (!subscriptionLoading && (subscription || isMedicalPro || isTrainer)) {
       fetchFeaturedContent()
     }
-  }, [subscription, subscriptionLoading, isMedicalPro])
+  }, [subscription, subscriptionLoading, isMedicalPro, isTrainer])
 
   const fetchContent = async () => {
     try {
@@ -232,8 +233,8 @@ export default function VideosPage() {
               </div>
             )}
 
-            {/* No Subscription Message - Only show for non-medical professionals */}
-            {!subscriptionLoading && !subscription && !isMedicalPro && (
+            {/* No Subscription Message - Only show for non-medical professionals and non-trainers */}
+            {!subscriptionLoading && !subscription && !isMedicalPro && !isTrainer && (
               <div className="max-w-2xl mx-auto">
                 <NeumorphicCard variant="raised" size="lg" className="p-12 border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/10">
                   <div className="text-center">
@@ -272,8 +273,8 @@ export default function VideosPage() {
               </div>
             )}
 
-            {/* Search and Quick Actions - Show if subscription exists OR if medical professional */}
-            {(subscription || isMedicalPro) && (
+            {/* Search and Quick Actions - Show if subscription exists OR if medical professional or trainer */}
+            {(subscription || isMedicalPro || isTrainer) && (
               <div className="max-w-4xl mx-auto">
               <NeumorphicCard variant="raised" size="lg" className="p-6">
                 <div className="flex flex-col md:flex-row gap-4">
@@ -300,8 +301,8 @@ export default function VideosPage() {
               </div>
             )}
 
-            {/* Filters Section - Slides out from search - Show if subscription exists OR if medical professional */}
-            {(subscription || isMedicalPro) && (
+            {/* Filters Section - Slides out from search - Show if subscription exists OR if medical professional or trainer */}
+            {(subscription || isMedicalPro || isTrainer) && (
               <div className={`max-w-4xl mx-auto transition-all duration-700 ease-in-out overflow-hidden ${
               showFilters 
                 ? 'mt-4 max-h-[800px] opacity-100' 
@@ -439,8 +440,8 @@ export default function VideosPage() {
         </div>
       </div>
 
-      {/* Featured Content Section - Show if subscription exists OR if medical professional */}
-      {(subscription || isMedicalPro) && featuredContent.length > 0 && (
+      {/* Featured Content Section - Show if subscription exists OR if medical professional or trainer */}
+      {(subscription || isMedicalPro || isTrainer) && featuredContent.length > 0 && (
         <div className={`px-4 md:px-8 py-8 transition-all duration-300 ease-in-out overflow-hidden ${
           selectedCategory || selectedDifficulty || selectedDuration || searchQuery
             ? 'max-h-0 opacity-0 py-0'
@@ -489,8 +490,8 @@ export default function VideosPage() {
       )}
 
 
-      {/* Content Section - Show if subscription exists OR if medical professional */}
-      {(subscription || isMedicalPro) && (
+      {/* Content Section - Show if subscription exists OR if medical professional or trainer */}
+      {(subscription || isMedicalPro || isTrainer) && (
         <div className="px-4 md:px-8 py-8">
           <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">

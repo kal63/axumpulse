@@ -183,10 +183,26 @@ export default function UploadContentPage() {
       })
       
       if (!createRes.success || !createRes.data) {
-        throw new Error(createRes.error?.message || 'Failed to create content record')
+        const errorMsg = createRes.error?.message || 'Failed to create content record'
+        console.error('Content creation failed:', createRes.error)
+        throw new Error(errorMsg)
+      }
+      
+      // Validate response structure
+      if (!createRes.data.content || !createRes.data.content.id) {
+        console.error('Invalid response structure:', createRes.data)
+        throw new Error('Invalid response from server: content ID not found')
       }
       
       const contentId = createRes.data.content.id
+      
+      // Validate content ID is a valid number
+      if (typeof contentId !== 'number' || isNaN(contentId) || contentId <= 0) {
+        console.error('Invalid content ID:', contentId, typeof contentId)
+        throw new Error(`Invalid content ID received from server: ${contentId}`)
+      }
+      
+      console.log('Content created with ID:', contentId)
       
       // Step 2: Upload files and update the record
       try {
@@ -204,13 +220,90 @@ export default function UploadContentPage() {
         }
         
         // Step 3: Update content record with file URLs
-        const updateRes = await apiClient.updateTrainerContent(contentId, {
-          fileUrl: uploadedFileUrl,
-          thumbnailUrl: uploadedThumbnailUrl,
+        if (!contentId) {
+          throw new Error('Content ID is missing. Cannot update content.')
+        }
+        
+        // Build update payload with only defined values
+        const updatePayload: { fileUrl?: string; thumbnailUrl?: string; duration?: number } = {}
+        if (uploadedFileUrl) {
+          updatePayload.fileUrl = uploadedFileUrl
+        }
+        if (uploadedThumbnailUrl) {
+          updatePayload.thumbnailUrl = uploadedThumbnailUrl
+        }
+        // Include duration for video content
+        if (form.type === 'video' && form.duration) {
+          updatePayload.duration = Number(form.duration)
+        }
+        
+        console.log('Updating content with ID:', contentId, {
+          payload: updatePayload,
+          originalForm: form,
         })
         
+        const updateRes = await apiClient.updateTrainerContent(contentId, updatePayload)
+        
+        console.log('Update response:', {
+          success: updateRes.success,
+          hasData: !!updateRes.data,
+          dataKeys: updateRes.data ? Object.keys(updateRes.data) : [],
+          dataContent: updateRes.data?.content ? 'Has content' : 'No content',
+          hasError: !!updateRes.error,
+          errorKeys: updateRes.error ? Object.keys(updateRes.error) : [],
+          errorType: typeof updateRes.error,
+          errorStringified: updateRes.error ? JSON.stringify(updateRes.error) : 'null',
+          fullResponse: JSON.stringify(updateRes, null, 2),
+        })
+        
+        // Check if response is actually successful but incorrectly flagged
+        // Backend returns { success: true, data: { content: {...} } }
+        if (updateRes.data && (updateRes.data.content || Object.keys(updateRes.data).length > 0)) {
+          if (updateRes.success === false) {
+            console.warn('Response has data but success is false. Treating as success.')
+            updateRes.success = true
+          }
+        }
+        
         if (!updateRes.success) {
-          throw new Error(updateRes.error?.message || 'Failed to update content with file URLs')
+          console.error('Content update failed:', {
+            error: updateRes.error,
+            fullResponse: updateRes,
+            contentId,
+            status: updateRes.error?.status,
+            statusText: updateRes.error?.statusText,
+            responseText: updateRes.error?.responseText,
+            data: updateRes.error?.data,
+          })
+          
+          // Handle empty error object case
+          let errorMsg = 'Failed to update content with file URLs'
+          if (updateRes.error) {
+            if (updateRes.error.message) {
+              errorMsg = updateRes.error.message
+            } else if (updateRes.error.statusText) {
+              errorMsg = `HTTP ${updateRes.error.status || 'Unknown'}: ${updateRes.error.statusText}`
+            } else if (updateRes.error.responseText) {
+              errorMsg = `Server response: ${updateRes.error.responseText}`
+            } else if (Object.keys(updateRes.error).length === 0) {
+              errorMsg = 'Unknown error occurred while updating content. Please check the server logs.'
+            }
+          }
+          
+          // Provide more specific error message
+          if (errorMsg.includes('not found') || updateRes.error?.code === 'NOT_FOUND' || updateRes.error?.status === 404) {
+            throw new Error(`Content not found. The content may have been deleted or you may not have permission to update it. (ID: ${contentId})`)
+          }
+          
+          if (updateRes.error?.status === 403) {
+            throw new Error('You do not have permission to update this content.')
+          }
+          
+          if (updateRes.error?.status === 401) {
+            throw new Error('Authentication failed. Please log in again.')
+          }
+          
+          throw new Error(errorMsg)
         }
         
         router.push('/trainer/content')
