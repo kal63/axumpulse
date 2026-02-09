@@ -568,10 +568,9 @@ function TrainerDetailPageContent() {
           </section>
         )}
 
+        <Footer />
       </div>
-
-      <Footer />
-    </div>
+    </ThemeProvider>
   );
 }
 
