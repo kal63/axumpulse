@@ -923,15 +923,16 @@ class ApiClient {
         
         clearTimeout(timeoutId)
         
-        // Log response for content updates
-        if (endpoint.includes('/trainer/content/') && options.method === 'PUT') {
+        // Log response for debugging (especially for workout plan start)
+        if (endpoint.includes('/progress/workout-plan/start') || endpoint.includes('/trainer/content/')) {
           console.log('🟡 Fetch response received:', {
             url,
             status: response.status,
             statusText: response.statusText,
             ok: response.ok,
             redirected: response.redirected,
-            urlAfterRedirect: response.url
+            urlAfterRedirect: response.url,
+            hasBody: !!response.body
           })
         }
 
@@ -984,21 +985,32 @@ class ApiClient {
         
         // Debug logging for failed requests
         if (!response.ok) {
-          const errorInfo: any = {}
-          
-          // Always include basic info
-          if (url) errorInfo.url = url
-          if (response?.status !== undefined) errorInfo.status = response.status
-          if (response?.statusText) errorInfo.statusText = response.statusText
+          // Build error info with guaranteed properties
+          const errorInfo: any = {
+            url: String(url || 'unknown'),
+            status: response?.status ?? 'unknown',
+            statusText: String(response?.statusText || 'unknown'),
+            ok: Boolean(response?.ok ?? false),
+            endpoint: String(endpoint || 'unknown'),
+            method: String(options.method || 'GET')
+          }
           
           // Safely add response text if available
-          if (responseText !== undefined && responseText !== null) {
-            errorInfo.responseText = responseText.substring(0, 500)
+          if (responseText !== undefined && responseText !== null && responseText.length > 0) {
+            errorInfo.responseText = String(responseText).substring(0, 500)
+          } else {
+            errorInfo.responseText = 'No response text available'
           }
           
           // Safely add parsed data if available
           if (data !== undefined && data !== null) {
-            errorInfo.parsedData = data
+            try {
+              errorInfo.parsedData = data
+            } catch (e) {
+              errorInfo.parsedDataError = String(e)
+            }
+          } else {
+            errorInfo.parsedData = null
           }
           
           // Safely add headers if available
@@ -1007,17 +1019,13 @@ class ApiClient {
               errorInfo.headers = Object.fromEntries(response.headers.entries())
             }
           } catch (headerError) {
-            // Headers might not be accessible in some cases
             errorInfo.headersError = String(headerError)
           }
           
-          // Only log non-404 errors (404s are often expected for missing resources)
-          // Also ensure we have at least some information before logging
-          if (response.status !== 404 && Object.keys(errorInfo).length > 0) {
-            console.error('API request failed:', errorInfo)
-          } else if (response.status !== 404) {
-            // Fallback: log at least the URL if nothing else is available
-            console.error('API request failed (limited info available):', { url: url || 'unknown' })
+          // Always log non-404 errors
+          if (response?.status !== 404) {
+            console.error('API request failed:', JSON.stringify(errorInfo, null, 2))
+            console.error('API request failed (object):', errorInfo)
           }
         }
 
@@ -2136,7 +2144,9 @@ class ApiClient {
       unlocked: boolean
       unlockedAt: string | null
     }>
-    stats: {
+    totalUnlocked: number
+    totalAchievements: number
+    stats?: {
       total: number
       unlocked: number
       locked: number
@@ -2155,13 +2165,15 @@ class ApiClient {
         unlocked: boolean
         unlockedAt: string | null
       }>
-      stats: {
+      totalUnlocked: number
+      totalAchievements: number
+      stats?: {
         total: number
         unlocked: number
         locked: number
         progress: number
       }
-    }>('/user/achievements')
+    }>('/user/profile/achievements')
   }
 
   // Refresh all achievements (re-check criteria)
@@ -3921,6 +3933,31 @@ class ApiClient {
     return this.request<{
       subscription: UserSubscription | null
     }>('/subscription/my-subscription')
+  }
+
+  // ==================== MEDICAL PROFESSIONAL METHODS ====================
+
+  // Get medical professional consult fee
+  async getMedicalConsultFee(): Promise<ApiResponse<{
+    consultFee: number | null
+  }>> {
+    return this.request<{
+      consultFee: number | null
+    }>('/medical/settings/consult-fee')
+  }
+
+  // Update medical professional consult fee
+  async updateMedicalConsultFee(consultFee: number): Promise<ApiResponse<{
+    consultFee: number
+    message: string
+  }>> {
+    return this.request<{
+      consultFee: number
+      message: string
+    }>('/medical/settings/consult-fee', {
+      method: 'PUT',
+      body: JSON.stringify({ consultFee })
+    })
   }
 }
 

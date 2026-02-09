@@ -34,8 +34,11 @@ export default function MedicalSettingsPage() {
       setLoading(true)
       const response = await apiClient.getMedicalConsultFee()
       if (response.success && response.data) {
-        setCurrentFee(response.data.consultFee)
-        setConsultFee(response.data.consultFee ? response.data.consultFee.toString() : '')
+        const fee = response.data.consultFee
+        // Convert to number if it's not null/undefined
+        const feeNumber = fee !== null && fee !== undefined ? Number(fee) : null
+        setCurrentFee(feeNumber)
+        setConsultFee(feeNumber !== null ? feeNumber.toString() : '')
       }
     } catch (error) {
       console.error('Error fetching consult fee:', error)
@@ -58,7 +61,10 @@ export default function MedicalSettingsPage() {
       const response = await apiClient.updateMedicalConsultFee(feeValue)
       
       if (response.success && response.data) {
-        setCurrentFee(response.data.consultFee)
+        const fee = response.data.consultFee
+        const feeNumber = fee !== null && fee !== undefined ? Number(fee) : null
+        setCurrentFee(feeNumber)
+        setConsultFee(feeNumber !== null ? feeNumber.toString() : '')
         toast.success('Consult fee updated successfully')
       } else {
         toast.error(response.error?.message || 'Failed to update consult fee')
@@ -142,7 +148,7 @@ export default function MedicalSettingsPage() {
               </p>
             </div>
 
-            {currentFee !== null && (
+            {currentFee !== null && typeof currentFee === 'number' && !isNaN(currentFee) && (
               <div className="p-4 rounded-lg bg-[var(--neumorphic-surface)]">
                 <p className="text-sm text-[var(--neumorphic-muted)] mb-1">Current Fee:</p>
                 <p className="text-2xl font-bold text-[var(--neumorphic-text)]">

@@ -105,11 +105,16 @@ export default function ProgressPage() {
 
       // Handle achievements
       if (achievementsRes.success && achievementsRes.data) {
-        setAchievements(achievementsRes.data.achievements)
+        setAchievements(achievementsRes.data.achievements || [])
+        // Handle both response formats (with stats object or direct properties)
+        const totalUnlocked = achievementsRes.data.stats?.unlocked ?? achievementsRes.data.totalUnlocked ?? 0
+        const totalAchievements = achievementsRes.data.stats?.total ?? achievementsRes.data.totalAchievements ?? 0
+        const progress = achievementsRes.data.stats?.progress ?? (totalAchievements > 0 ? (totalUnlocked / totalAchievements) * 100 : 0)
+        
         setAchievementStats({
-          totalUnlocked: achievementsRes.data.stats.unlocked,
-          totalAchievements: achievementsRes.data.stats.total,
-          progress: achievementsRes.data.stats.progress
+          totalUnlocked,
+          totalAchievements,
+          progress
         })
       }
 
