@@ -984,14 +984,41 @@ class ApiClient {
         
         // Debug logging for failed requests
         if (!response.ok) {
-          console.error('API request failed:', {
-            url,
-            status: response.status,
-            statusText: response.statusText,
-            responseText: responseText?.substring(0, 500),
-            parsedData: data,
-            headers: Object.fromEntries(response.headers.entries())
-          })
+          const errorInfo: any = {}
+          
+          // Always include basic info
+          if (url) errorInfo.url = url
+          if (response?.status !== undefined) errorInfo.status = response.status
+          if (response?.statusText) errorInfo.statusText = response.statusText
+          
+          // Safely add response text if available
+          if (responseText !== undefined && responseText !== null) {
+            errorInfo.responseText = responseText.substring(0, 500)
+          }
+          
+          // Safely add parsed data if available
+          if (data !== undefined && data !== null) {
+            errorInfo.parsedData = data
+          }
+          
+          // Safely add headers if available
+          try {
+            if (response?.headers) {
+              errorInfo.headers = Object.fromEntries(response.headers.entries())
+            }
+          } catch (headerError) {
+            // Headers might not be accessible in some cases
+            errorInfo.headersError = String(headerError)
+          }
+          
+          // Only log non-404 errors (404s are often expected for missing resources)
+          // Also ensure we have at least some information before logging
+          if (response.status !== 404 && Object.keys(errorInfo).length > 0) {
+            console.error('API request failed:', errorInfo)
+          } else if (response.status !== 404) {
+            // Fallback: log at least the URL if nothing else is available
+            console.error('API request failed (limited info available):', { url: url || 'unknown' })
+          }
         }
 
       if (!response.ok) {
@@ -1029,18 +1056,36 @@ class ApiClient {
           }
         }
         
+        const errorResponse: any = {
+          code: errorCode,
+          message: errorMessage,
+          status: response.status,
+          statusText: response.statusText,
+        }
+        
+        // Safely add response text if available
+        if (responseText !== undefined) {
+          errorResponse.responseText = responseText
+        }
+        
+        // Safely add parsed data if available
+        if (data !== undefined) {
+          errorResponse.data = data
+        }
+        
+        // Safely add headers if available
+        try {
+          if (response?.headers) {
+            errorResponse.headers = Object.fromEntries(response.headers.entries())
+          }
+        } catch (headerError) {
+          // Headers might not be accessible in some cases
+          errorResponse.headersError = String(headerError)
+        }
+        
         return {
           success: false,
-          error: {
-            code: errorCode,
-            message: errorMessage,
-            status: response.status,
-            statusText: response.statusText,
-            // Provide response text (if any) and parsed data (if JSON)
-            responseText: responseText,
-            data: data,
-            headers: Object.fromEntries(response.headers.entries()),
-          },
+          error: errorResponse,
         }
       }
 
@@ -3746,6 +3791,136 @@ class ApiClient {
     }
 
     return response
+  }
+
+  // ==================== USER PROFILE & STATS API ====================
+
+  // Get user stats
+  async getUserStats(): Promise<ApiResponse<{
+    user: {
+      id: number
+      name?: string
+      email?: string
+      profilePicture?: string
+      level: number
+      xp: number
+      xpProgress: number
+      xpNeeded: number
+      memberSince: string
+    }
+    stats: {
+      contentWatched: number
+      contentSaved: number
+      totalWatchTime: number
+      workoutPlansStarted: number
+      workoutPlansCompleted: number
+      challengesJoined: number
+      challengesCompleted: number
+      achievementsUnlocked: number
+    }
+  }>> {
+    return this.request<{
+      user: {
+        id: number
+        name?: string
+        email?: string
+        profilePicture?: string
+        level: number
+        xp: number
+        xpProgress: number
+        xpNeeded: number
+        memberSince: string
+      }
+      stats: {
+        contentWatched: number
+        contentSaved: number
+        totalWatchTime: number
+        workoutPlansStarted: number
+        workoutPlansCompleted: number
+        challengesJoined: number
+        challengesCompleted: number
+        achievementsUnlocked: number
+      }
+    }>('/user/profile/stats')
+  }
+
+  // Get user XP history
+  async getUserXPHistory(period: number = 30): Promise<ApiResponse<{
+    history: Array<{
+      date: string
+      xp: number
+      breakdown: {
+        content: number
+        challenge: number
+        workout: number
+      }
+      cumulativeXP: number
+    }>
+    summary: {
+      totalXP: number
+      avgDailyXP: number
+      period: number
+      entries: number
+    }
+  }>> {
+    return this.request<{
+      history: Array<{
+        date: string
+        xp: number
+        breakdown: {
+          content: number
+          challenge: number
+          workout: number
+        }
+        cumulativeXP: number
+      }>
+      summary: {
+        totalXP: number
+        avgDailyXP: number
+        period: number
+        entries: number
+      }
+    }>(`/user/profile/history?period=${period}`)
+  }
+
+  // Get user achievements
+  async getAchievements(): Promise<ApiResponse<{
+    achievements: Array<{
+      id: number
+      name: string
+      description: string
+      icon: string
+      xpReward: number
+      rarity: string
+      unlocked: boolean
+      unlockedAt?: string | null
+    }>
+    totalUnlocked: number
+    totalAchievements: number
+  }>> {
+    return this.request<{
+      achievements: Array<{
+        id: number
+        name: string
+        description: string
+        icon: string
+        xpReward: number
+        rarity: string
+        unlocked: boolean
+        unlockedAt?: string | null
+      }>
+      totalUnlocked: number
+      totalAchievements: number
+    }>('/user/profile/achievements')
+  }
+
+  // Get user's active subscription
+  async getMySubscription(): Promise<ApiResponse<{
+    subscription: UserSubscription | null
+  }>> {
+    return this.request<{
+      subscription: UserSubscription | null
+    }>('/subscription/my-subscription')
   }
 }
 

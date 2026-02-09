@@ -297,7 +297,7 @@ export function revokeFilePreview(url: string): void {
  */
 export const FILE_SIZE_LIMITS = {
   PROFILE_IMAGE: 10, // 10MB
-  CONTENT_FILE: 100, // 100MB
+  CONTENT_FILE: 500, // 500MB
   THUMBNAIL: 10, // 10MB
 } as const
 

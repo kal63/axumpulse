@@ -119,13 +119,21 @@ export default function UserDashboardPage() {
         setStats(statsRes.data.stats)
       }
 
-      // Handle XP history
+      // Handle XP history - map backend format to frontend format
       if (historyRes.success && historyRes.data) {
-        setXPHistory(historyRes.data.history)
+        // Backend returns history with breakdown, frontend expects simple date/xp format
+        const mappedHistory = historyRes.data.history.map((entry: any) => ({
+          date: entry.date,
+          xp: entry.xp,
+          source: entry.breakdown?.content > 0 ? 'content' : 
+                 entry.breakdown?.challenge > 0 ? 'challenge' : 
+                 entry.breakdown?.workout > 0 ? 'workout' : 'other'
+        }))
+        setXPHistory(mappedHistory)
         setXPSummary(historyRes.data.summary)
       }
 
-      // Handle achievements
+      // Handle achievements - map backend format to frontend format
       if (achievementsRes.success && achievementsRes.data) {
         setAchievements(achievementsRes.data.achievements || [])
       }
@@ -183,7 +191,7 @@ export default function UserDashboardPage() {
     workoutsCompleted: stats?.workoutPlansCompleted || 0,
     challengesCompleted: stats?.challengesCompleted || 0,
     achievementsUnlocked: stats?.achievementsUnlocked || 0,
-    dayStreak: userInfo.dailyStreak || 0
+    dayStreak: 0 // Backend doesn't return dailyStreak in stats, will need to get from profile if needed
   } : {
     level: 1,
     xp: 0,
