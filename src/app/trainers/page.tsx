@@ -22,13 +22,7 @@ import { getImageUrl } from '@/lib/upload-utils'
 import Image from 'next/image'
 import Link from 'next/link'
 
-interface PublicTrainer {
-  userId: number
-  name: string
-  slug: string
-  profilePicture: string | null
-  specialties: string[]
-}
+import { PublicTrainer } from '@/lib/api-client'
 
 function TrainersPageContent() {
   const router = useRouter()
@@ -50,7 +44,12 @@ function TrainersPageContent() {
         const trainersList = Array.isArray(response.data) 
           ? response.data 
           : (response.data.items || [])
-        setTrainers(trainersList)
+        // Ensure profilePicture is properly typed
+        const typedTrainers = trainersList.map(trainer => ({
+          ...trainer,
+          profilePicture: trainer.profilePicture ?? null
+        }))
+        setTrainers(typedTrainers)
       }
     } catch (error) {
       console.error('Failed to fetch trainers:', error)
@@ -209,7 +208,7 @@ function TrainersPageContent() {
                       <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center ring-4 ring-[var(--neumorphic-surface)]">
                         {trainer.profilePicture ? (
                           <Image
-                            src={getImageUrl(trainer.profilePicture)}
+                            src={getImageUrl(trainer.profilePicture) || ''}
                             alt={trainer.name}
                             width={96}
                             height={96}

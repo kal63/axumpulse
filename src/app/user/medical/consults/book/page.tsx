@@ -17,12 +17,13 @@ const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'F
 interface Doctor {
   id: number
   name: string
-  email: string
+  email?: string
   profilePicture?: string
   medicalProfessional?: {
     professionalType: string
     specialties: string[]
     verified: boolean
+    consultFee?: number
   }
 }
 
@@ -93,7 +94,12 @@ export default function BookConsultPage() {
       setLoading(true)
       const response = await apiClient.getConsultDoctors()
       if (response.success && response.data) {
-        setDoctors(response.data)
+        // Ensure email is properly typed (can be undefined)
+        const typedDoctors = response.data.map(doctor => ({
+          ...doctor,
+          email: doctor.email ?? undefined
+        }))
+        setDoctors(typedDoctors)
       }
     } catch (error) {
       console.error('Error fetching doctors:', error)

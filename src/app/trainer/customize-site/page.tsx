@@ -266,7 +266,7 @@ export default function CustomizeSitePage() {
   const handleDeleteTrainerContent = async (id: string) => {
     try {
       setSaving(true)
-      const response = await apiClient.deleteTrainerContent(id)
+      const response = await apiClient.deleteTrainerSiteContent(id)
       if (response.success && response.data) {
         setFormData(prev => ({
           ...prev,

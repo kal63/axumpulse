@@ -337,8 +337,17 @@ export interface PublicTrainerDetail {
   application: {
     yearsOfExperience?: number
     languages: string[]
-    certifications: string[]
-    portfolio: string[]
+    certifications: Array<string | {
+      name?: string
+      issuer?: string
+      date?: string
+      expiry?: string
+    }>
+    portfolio: Array<string | {
+      title?: string
+      description?: string
+      url?: string
+    }>
     socialMedia: Record<string, any>
     preferences: Record<string, any>
     certificationFiles: CertificationFile[]
@@ -666,7 +675,7 @@ export interface PublicTrainer {
   userId: number
   name: string
   slug: string
-  profilePicture?: string
+  profilePicture?: string | null
   specialties: string[]
 }
 
@@ -687,7 +696,7 @@ export interface PublicTrainerDetail {
     verified: boolean
     verifiedAt?: string
   }
-  application?: {
+  application: {
     yearsOfExperience?: number
     languages: string[]
     certifications: Array<string | {
@@ -704,7 +713,7 @@ export interface PublicTrainerDetail {
     socialMedia: Record<string, any>
     preferences: Record<string, any>
     certificationFiles: CertificationFile[]
-  }
+  } | null
   site?: {
     slug?: string
     headline?: string
@@ -2084,39 +2093,6 @@ class ApiClient {
     })
   }
 
-  // Get user stats
-  async getUserStats(): Promise<ApiResponse<{
-    user: {
-      id: number
-      name: string
-      email: string
-      profilePicture: string
-      xp: number
-      level: number
-      xpProgress: number
-      xpNeeded: number
-      levelProgress: number
-      dailyStreak: number
-      workoutStreak: number
-      challengeStreak: number
-      memberSince: string
-    }
-    stats: {
-      contentWatched: number
-      contentSaved: number
-      totalWatchTime: number
-      workoutPlansStarted: number
-      workoutPlansCompleted: number
-      challengesJoined: number
-      challengesCompleted: number
-      achievementsUnlocked: number
-    }
-  }>> {
-    return this.request<{
-      user: any
-      stats: any
-    }>('/user/profile/stats')
-  }
 
   // Get user achievements (legacy - use getAchievements instead)
   async getUserAchievements(): Promise<ApiResponse<{
@@ -2131,50 +2107,6 @@ class ApiClient {
     }>('/user/profile/achievements')
   }
 
-  // Get all achievements with unlock status
-  async getAchievements(): Promise<ApiResponse<{
-    achievements: Array<{
-      id: number
-      name: string
-      description: string
-      icon: string
-      rarity: 'common' | 'rare' | 'epic' | 'legendary'
-      xpReward: number
-      criteria: Record<string, unknown>
-      unlocked: boolean
-      unlockedAt: string | null
-    }>
-    totalUnlocked: number
-    totalAchievements: number
-    stats?: {
-      total: number
-      unlocked: number
-      locked: number
-      progress: number
-    }
-  }>> {
-    return this.request<{
-      achievements: Array<{
-        id: number
-        name: string
-        description: string
-        icon: string
-        rarity: 'common' | 'rare' | 'epic' | 'legendary'
-        xpReward: number
-        criteria: Record<string, unknown>
-        unlocked: boolean
-        unlockedAt: string | null
-      }>
-      totalUnlocked: number
-      totalAchievements: number
-      stats?: {
-        total: number
-        unlocked: number
-        locked: number
-        progress: number
-      }
-    }>('/user/profile/achievements')
-  }
 
   // Refresh all achievements (re-check criteria)
   async refreshAchievements(): Promise<ApiResponse<{
@@ -2294,46 +2226,6 @@ class ApiClient {
   // Get available languages (user endpoint)
   async getUserLanguages(): Promise<ApiResponse<Language[]>> {
     return this.request<Language[]>('/user/languages')
-  }
-
-  // Get user XP history
-  async getUserXPHistory(period?: number): Promise<ApiResponse<{
-    history: Array<{
-      date: string
-      xp: number
-      cumulativeXP: number
-      breakdown: {
-        content: number
-        challenge: number
-        workout: number
-      }
-    }>
-    summary: {
-      totalXP: number
-      avgDailyXP: number
-      period: number
-      entries: number
-    }
-  }>> {
-    const query = period ? `?period=${period}` : ''
-    return this.request<{
-      history: Array<{
-        date: string
-        xp: number
-        cumulativeXP: number
-        breakdown: {
-          content: number
-          challenge: number
-          workout: number
-        }
-      }>
-      summary: {
-        totalXP: number
-        avgDailyXP: number
-        period: number
-        entries: number
-      }
-    }>(`/user/profile/history${query}`)
   }
 
   // Add XP to user
@@ -3210,18 +3102,6 @@ class ApiClient {
     return this.request<{ availableConsults: number }>('/user/medical/consults/balance')
   }
 
-  // Update medical professional consult fee
-  async updateMedicalConsultFee(fee: number): Promise<ApiResponse<{ consultFee: number; message: string }>> {
-    return this.request<{ consultFee: number; message: string }>('/medical/settings/consult-fee', {
-      method: 'PUT',
-      body: JSON.stringify({ consultFee: fee })
-    })
-  }
-
-  // Get medical professional consult fee
-  async getMedicalConsultFee(): Promise<ApiResponse<{ consultFee: number | null }>> {
-    return this.request<{ consultFee: number | null }>('/medical/settings/consult-fee')
-  }
 
   // Initialize consult purchase payment
   async initializeConsultPayment(data: {
@@ -3734,10 +3614,6 @@ class ApiClient {
     return this.request<{ plan: SubscriptionPlan }>(`/subscription/plans/${id}`)
   }
 
-  // Get user's current subscription
-  async getMySubscription(): Promise<ApiResponse<{ subscription: UserSubscription | null }>> {
-    return this.request<{ subscription: UserSubscription | null }>('/subscription/my-subscription')
-  }
 
   // Initialize subscription (validate data)
   async initializeSubscription(data: {
