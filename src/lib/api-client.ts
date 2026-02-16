@@ -1,3 +1,4 @@
+
 // API Client for Compound 360 Backend
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'
 
@@ -3835,7 +3836,22 @@ class ApiClient {
       body: JSON.stringify({ consultFee })
     })
   }
+
+    /**
+   * Submits an email for newsletter subscription
+   */
+  async subscribeToNewsletter(email: string): Promise<ApiResponse<{ message: string }>> {
+    const response = await this.request<{ message: string }>('/subscription/email', {
+      method: 'POST',
+      body: JSON.stringify({ email: email }),
+    })
+
+    return response
 }
+}
+
+
+
 
 // Create a singleton instance
 export const apiClient = new ApiClient()

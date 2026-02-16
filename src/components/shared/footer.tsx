@@ -14,9 +14,36 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { Logo } from '@/components/shared/Logo';
+import {useState} from 'react';
+import { apiClient} from '@/lib/api-client'
+
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+
+  const [email, setEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const { subscribeToNewsletter } = require('@/lib/api-client');
+
+  const handleSubscribe = async () => {
+    setSubmitting(true);
+    setMessage('');
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      setMessage('Please enter a valid email address.');
+      setSubmitting(false);
+      return;
+    }
+    const result = await apiClient.subscribeToNewsletter(email);
+    if (result.success) {
+      setMessage(result.data?.message || 'Subscription successful!');
+      setEmail('');
+    } else {
+      setMessage(result.error?.message || 'Subscription failed.');
+    }
+    setSubmitting(false);
+  };
 
   const footerLinks = {
     product: [
@@ -188,18 +215,26 @@ export default function Footer() {
               <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                 <input
                   type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={submitting}
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-semibold transition-all duration-300 flex items-center justify-center"
+                  onClick={handleSubscribe}
+                  disabled={submitting}
                 >
-                  Subscribe
+                  {submitting ? 'Subscribing...' : 'Subscribe'}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </motion.button>
               </div>
+              {message && (
+                <div className="mt-3 text-sm text-white/80">{message}</div>
+              )}
             </div>
           </motion.div>
         </div>
