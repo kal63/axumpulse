@@ -10,7 +10,7 @@ import {
   Phone,
   MapPin,
   ArrowRight,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Logo } from '@/components/shared/Logo';
@@ -40,9 +40,9 @@ export default function Footer() {
   };
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
+    { icon: Facebook, href: 'https://facebook.com/bitappstech', label: 'Facebook' },
+    { icon: Instagram, href: 'https://www.instagram.com/bitapps.tech/', label: 'Instagram' },
+    { icon: ArrowRight, href: 'https://t.me/s/bitapps', label: 'Telegram' },
     { icon: Youtube, href: '#', label: 'YouTube' }
   ];
 
