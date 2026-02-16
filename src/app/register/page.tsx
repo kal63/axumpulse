@@ -179,7 +179,24 @@ function RegisterPageContent() {
           } catch (error) {
             console.error('Failed to refresh auth context:', error)
           }
-          
+
+          // If user came from a package detail page with a pre-selected plan & duration
+          // but without a trainer, redirect them to the trainers listing so they can
+          // complete the normal subscription flow (select trainer -> checkout).
+          const planIdFromUrl = searchParams.get('planId')
+          const durationFromUrl = searchParams.get('duration')
+          const trainerIdFromUrl = searchParams.get('trainerId')
+
+          if (planIdFromUrl && durationFromUrl && !trainerIdFromUrl) {
+            const params = new URLSearchParams({
+              planId: planIdFromUrl,
+              duration: durationFromUrl
+            })
+            router.push(`/trainers?${params.toString()}`)
+            return
+          }
+
+          // Fallback: continue with the internal multi-step flow
           // If planId is already selected (from URL params), go to trainer selection
           // Otherwise, go to package selection
           if (selectedPlan) {
