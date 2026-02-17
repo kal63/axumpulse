@@ -251,14 +251,14 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                       )
                     })}
                   </div>
-                  <Link href="/register">
+                  {/* <Link href="/register">
                     <motion.p
                       whileHover={{ x: 5 }}
                       className="text-xs text-blue-400 hover:text-blue-300 text-center lg:text-left mt-2 cursor-pointer inline-flex items-center gap-1"
                     >
                       View All Packages <ArrowRight className="w-3 h-3" />
                     </motion.p>
-                  </Link>
+                  </Link> */}
                 </motion.div>
               )}
 
