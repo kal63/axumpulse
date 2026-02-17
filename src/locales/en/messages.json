@@ -1,3 +1,15 @@
 {
-  "greeting": "Hello"
+  "greeting": "Hello",
+  "dashboard": "Dashboard",
+  "videos": "Videos",
+  "workouts": "Workouts",
+  "challenges": "Challenges",
+  "dailyChallenges": "Daily Challenges",
+  "games": "Games",
+  "leaderboard": "Leaderboard",
+  "progress": "Progress",
+  "medical": "Medical",
+  "profile": "Profile",
+  "trainerView": "Trainer View",
+  "becomeTrainer": "Become a Trainer"
 }

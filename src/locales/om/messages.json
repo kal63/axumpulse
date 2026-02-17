@@ -1,3 +1,15 @@
 {
-  "greeting": "Akkam"
+  "greeting": "Akkam",
+  "dashboard": "Daashboordii",
+  "videos": "Viidiyoo",
+  "workouts": "Shaakala",
+  "challenges": "Muddama",
+  "dailyChallenges": "Muddama guyyaa",
+  "games": "Tapha",
+  "leaderboard": "Dorgommii",
+  "progress": "Guddina",
+  "medical": "Fayyaa",
+  "profile": "Profaayilii",
+  "trainerView": "Mul'ata Leenjisaa",
+  "becomeTrainer": "Leenjisaa ta'i"
 }

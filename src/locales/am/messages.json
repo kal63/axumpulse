@@ -1,3 +1,15 @@
 {
-  "greeting": "ሰላም"
+  "greeting": "ሰላም",
+  "dashboard": "ዳሽቦርድ",
+  "videos": "ቪዲዮዎች",
+  "workouts": "እሴቶች",
+  "challenges": "ተግዳዮች",
+  "dailyChallenges": "ዕለታዊ ተግዳዮች",
+  "games": "ጨዋታዎች",
+  "leaderboard": "አሸናፊዎች ሰንደቅ",
+  "progress": "ግምገማ",
+  "medical": "ህክምና",
+  "profile": "መገለጫ",
+  "trainerView": "አሰልጣኝ እይታ",
+  "becomeTrainer": "አሰልጣኝ ይሁኑ"
 }
