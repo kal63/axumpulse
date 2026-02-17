@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    i18n: {
+        locales: ['en', 'am', 'ti', 'om'],
+        defaultLocale: 'en',
+        localeDetection: true,
+    },
     // Remove static export for Node.js deployment
     // output: 'export',
 
