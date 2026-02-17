@@ -1034,8 +1034,8 @@ class ApiClient {
           
           // Always log non-404 errors
           if (response?.status !== 404) {
-            console.error('API request failed:', JSON.stringify(errorInfo, null, 2))
-            console.error('API request failed (object):', errorInfo)
+            console.log('API request failed:', JSON.stringify(errorInfo, null, 2))
+            console.log('API request failed (object):', errorInfo)
           }
         }
 
