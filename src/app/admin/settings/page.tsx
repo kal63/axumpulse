@@ -284,7 +284,7 @@ export default function SettingsPage() {
                   ⚙️ Settings
                 </h1>
                 <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl">
-                  Manage your account, preferences, and fitness goals
+                  Manage your account, preferences
                 </p>
               </div>
               
@@ -310,13 +310,11 @@ export default function SettingsPage() {
               {/* Sliding Background */}
               <div 
                 className={`absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 transition-all duration-500 ease-out ${
-                  activeTab === 'account' 
-                    ? 'left-2 right-3/4 mr-1' 
+                  activeTab === 'account'
+                    ? 'left-2 right-[66.666%] mr-1'
                     : activeTab === 'preferences'
-                    ? 'left-1/4 right-1/2 ml-1 mr-1'
-                    : activeTab === 'notifications'
-                    ? 'left-1/2 right-1/4 ml-1 mr-1'
-                    : 'left-3/4 right-2 ml-1'
+                    ? 'left-[33.333%] right-[33.333%] ml-1 mr-1'
+                    : 'left-[66.666%] right-2 ml-1'
                 }`}
               />
               
@@ -372,7 +370,7 @@ export default function SettingsPage() {
                   </div>
                 </button>
                 
-                <button
+                {/* <button
                   onClick={() => setActiveTab('fitness')}
                   className={`flex items-center justify-center md:space-x-3 px-3 md:px-6 py-3 rounded-xl transition-all duration-300 transform relative z-10 flex-1 ${
                     activeTab === 'fitness'
@@ -387,7 +385,7 @@ export default function SettingsPage() {
                       Goals & health
                     </div>
                   </div>
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -718,138 +716,6 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {/* Fitness Tab */}
-          {activeTab === 'fitness' && (
-            <div className="space-y-6">
-            <NeumorphicCard variant="raised" className="p-6">
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-6 flex items-center gap-2">
-                <Target className="h-6 w-6 text-green-500" />
-                Fitness Goals & Health
-              </h2>
-              
-              <div className="space-y-6">
-                {/* Fitness Goals */}
-                <div>
-                  <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-4 flex items-center gap-2">
-                    <Heart className="h-5 w-5" />
-                    Fitness Goals
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="primaryGoal">Primary Goal</Label>
-                      <Select
-                        value={formData.fitness?.goals?.primary || 'general_fitness'}
-                        onValueChange={(value) => setFormData((prev: any) => ({
-                          ...prev,
-                          fitness: {
-                            ...prev.fitness,
-                            goals: { ...prev.fitness?.goals, primary: value }
-                          }
-                        }))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="weight_loss">Weight Loss</SelectItem>
-                          <SelectItem value="muscle_gain">Muscle Gain</SelectItem>
-                          <SelectItem value="endurance">Endurance</SelectItem>
-                          <SelectItem value="flexibility">Flexibility</SelectItem>
-                          <SelectItem value="general_fitness">General Fitness</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="targetWeight">Target Weight (kg)</Label>
-                      <Input
-                        id="targetWeight"
-                        type="number"
-                        value={formData.fitness?.goals?.targetWeight || ''}
-                        onChange={(e) => setFormData((prev: any) => ({
-                          ...prev,
-                          fitness: {
-                            ...prev.fitness,
-                            goals: { ...prev.fitness?.goals, targetWeight: e.target.value ? parseFloat(e.target.value) : null }
-                          }
-                        }))}
-                        placeholder="Enter target weight"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Health Metrics */}
-                <div>
-                  <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-4 flex items-center gap-2">
-                    <Activity className="h-5 w-5" />
-                    Health Metrics
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="height">Height (cm)</Label>
-                      <Input
-                        id="height"
-                        type="number"
-                        value={formData.fitness?.healthMetrics?.height || ''}
-                        onChange={(e) => setFormData((prev: any) => ({
-                          ...prev,
-                          fitness: {
-                            ...prev.fitness,
-                            healthMetrics: { ...prev.fitness?.healthMetrics, height: e.target.value ? parseFloat(e.target.value) : null }
-                          }
-                        }))}
-                        placeholder="Enter height"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="weight">Current Weight (kg)</Label>
-                      <Input
-                        id="weight"
-                        type="number"
-                        value={formData.fitness?.healthMetrics?.weight || ''}
-                        onChange={(e) => setFormData((prev: any) => ({
-                          ...prev,
-                          fitness: {
-                            ...prev.fitness,
-                            healthMetrics: { ...prev.fitness?.healthMetrics, weight: e.target.value ? parseFloat(e.target.value) : null }
-                          }
-                        }))}
-                        placeholder="Enter current weight"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="activityLevel">Activity Level</Label>
-                      <Select
-                        value={formData.fitness?.healthMetrics?.activityLevel || 'moderate'}
-                        onValueChange={(value) => setFormData((prev: any) => ({
-                          ...prev,
-                          fitness: {
-                            ...prev.fitness,
-                            healthMetrics: { ...prev.fitness?.healthMetrics, activityLevel: value }
-                          }
-                        }))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="sedentary">Sedentary</SelectItem>
-                          <SelectItem value="light">Light Activity</SelectItem>
-                          <SelectItem value="moderate">Moderate Activity</SelectItem>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="very_active">Very Active</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </NeumorphicCard>
-            </div>
-          )}
 
           {/* Save Button */}
           <div className="flex justify-end">
