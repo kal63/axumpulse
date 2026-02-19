@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    i18n: {
-        locales: ['en', 'am', 'ti', 'om'],
-        defaultLocale: 'en',
-        localeDetection: true,
-    },
+    // NOTE: i18n configuration removed because App Router does not support
+    // next.config.js i18n. Use a client-side or middleware-based solution
+    // such as `next-intl` or a custom middleware for locale detection.
     // Remove static export for Node.js deployment
     // output: 'export',
 
