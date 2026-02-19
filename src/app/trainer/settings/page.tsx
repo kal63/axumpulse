@@ -21,6 +21,7 @@ import {
   Save,
   Loader2
 } from 'lucide-react'
+import { Palette } from 'lucide-react'
 import { apiClient, TrainerSettings, UpdateSettingsRequest } from '@/lib/api-client'
 import { cn, getImageUrl } from '@/lib/utils'
 import { uploadProfileImage, removeProfileImage, validateFileSize, validateImageType, FILE_SIZE_LIMITS, ALLOWED_FILE_TYPES } from '@/lib/upload-utils'
@@ -81,6 +82,29 @@ export default function TrainerSettingsPage() {
   useEffect(() => {
     fetchSettings()
   }, [])
+
+  // Apply theme helper (immediately applies when user changes theme)
+  const applyTheme = (theme: string) => {
+    if (typeof window === 'undefined') return
+    if (theme === 'system') {
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      if (systemPrefersDark) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    } else if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }
+
+  // Apply theme when settings or formData change
+  useEffect(() => {
+    const theme = formData.profile?.preferences?.theme || settings?.profile?.preferences?.theme
+    if (theme) applyTheme(theme)
+  }, [settings, formData.profile?.preferences?.theme])
 
   const handleInputChange = (section: keyof UpdateSettingsRequest, field: string, value: any) => {
     setFormData(prev => ({
@@ -263,10 +287,11 @@ export default function TrainerSettingsPage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="trainer">Trainer Info</TabsTrigger>
-        </TabsList>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger value="trainer">Trainer Info</TabsTrigger>
+            <TabsTrigger value="preferences">Preferences</TabsTrigger>
+          </TabsList>
 
         {/* Profile Tab */}
         <TabsContent value="profile" className="space-y-6">
@@ -520,6 +545,122 @@ export default function TrainerSettingsPage() {
                   </>
                 )}
               </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Preferences Tab */}
+        <TabsContent value="preferences" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Palette className="h-5 w-5" />
+                App Preferences
+              </CardTitle>
+              <CardDescription>
+                Select your preferred language, theme, and display settings
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="language">Language</Label>
+                  <Select
+                    value={formData.profile?.language || 'en'}
+                    onValueChange={(value) => setFormData((prev: any) => ({
+                      ...prev,
+                      profile: { ...prev.profile, language: value }
+                    }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="am">አማርኛ (Amharic)</SelectItem>
+                      <SelectItem value="or">Afaan Oromoo (Oromo)</SelectItem>
+                      <SelectItem value="ti">ትግርኛ (Tigrinya)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="theme">Theme</Label>
+                  <Select
+                    value={formData.profile?.preferences?.theme || 'system'}
+                    onValueChange={(value) => {
+                      setFormData((prev: any) => ({
+                        ...prev,
+                        profile: { ...prev.profile, preferences: { ...prev.profile?.preferences, theme: value } }
+                      }))
+                      applyTheme(value)
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="light">Light</SelectItem>
+                      <SelectItem value="dark">Dark</SelectItem>
+                      <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="units">Units</Label>
+                  <Select
+                    value={formData.profile?.preferences?.units || 'metric'}
+                    onValueChange={(value) => setFormData((prev: any) => ({
+                      ...prev,
+                      profile: { ...prev.profile, preferences: { ...prev.profile?.preferences, units: value } }
+                    }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="metric">Metric (kg, cm)</SelectItem>
+                      <SelectItem value="imperial">Imperial (lbs, ft)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="timeFormat">Time Format</Label>
+                  <Select
+                    value={formData.profile?.preferences?.timeFormat || '12h'}
+                    onValueChange={(value) => setFormData((prev: any) => ({
+                      ...prev,
+                      profile: { ...prev.profile, preferences: { ...prev.profile?.preferences, timeFormat: value } }
+                    }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="12h">12 Hour (AM/PM)</SelectItem>
+                      <SelectItem value="24h">24 Hour</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex justify-end">
+                <Button onClick={handleSaveSettings} disabled={saving}>
+                  {saving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Preferences
+                    </>
+                  )}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
