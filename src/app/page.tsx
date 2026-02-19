@@ -55,6 +55,8 @@ import Link from "next/link";
 import { LoadingScreen } from "@/components/landing/ui/LoadingScreen";
 import { UnifiedBackground } from "@/components/landing/ui/UnifiedBackground";
 import dynamic from "next/dynamic";
+import { apiClient } from "@/lib/api-client";
+import { useRouter } from "next/navigation";
 
 // Lazy load below-the-fold sections for better initial performance
 const AboutUsSection = dynamic(() => import("@/components/landing/sections/AboutUsSection").then(mod => ({ default: mod.AboutUsSection })), { ssr: true });
@@ -241,6 +243,31 @@ export default function AxumPulseLandingPage() {
       description: "Follow your daily workouts, track meals, join challenges, and connect with trainers. Your transformation begins today.",
     },
   ];
+
+  // if user is logged in redirect to dashboard
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAndRedirect = async () => {
+      try {
+        const fullUserResponse = await apiClient.getMe();
+        if (fullUserResponse?.success && fullUserResponse.data) {
+          const currentUser = fullUserResponse.data.user ?? fullUserResponse.data;
+          if (currentUser?.isAdmin) {
+            router.push('/admin/dashboard');
+          } else if (currentUser?.isTrainer) {
+            router.push('/trainer/dashboard');
+          } else {
+            router.push('/user/dashboard');
+          }
+        }
+      } catch (fetchError) {
+        console.warn('Failed to fetch full user data:', fetchError);
+      }
+    };
+
+    checkAndRedirect();
+  }, [router]);
 
   console.log(`Rendering main content - loadedSections: ${loadedSections.size}, isLoading: ${isLoading}`);
 
