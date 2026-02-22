@@ -202,14 +202,19 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                   <div className="text-slate-400 text-sm">Daily Subscription</div>
                 </div>
 
-                {/* Language Selector Dropdown */}
-                <div className="space-y-2">
-                  <div className="relative">
-                    <motion.button
-                      onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
-                      className="px-3 py-1 rounded-md bg-slate-800/50 border border-slate-700 hover:border-green-500/50 text-green-400 text-sm font-medium transition-all duration-200 flex items-center gap-2 min-w-max"
-                      whileHover={{ borderColor: 'rgba(34, 197, 94, 0.5)' }}
-                    >
+                <div className="space-y-2 relative inline-block">
+                  <div className="flex items-center gap-3">
+                    <div>
+                      <div className="text-2xl font-bold text-green-400">4</div>
+                    </div>
+
+                    {/* Language Selector Dropdown */}
+                    <div className="relative">
+                      <motion.button
+                        onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+                        className="px-3 py-1 rounded-md bg-slate-800/50 border border-slate-700 hover:border-green-500/50 text-green-400 text-sm font-medium transition-all duration-200 flex items-center gap-2 min-w-max h-fit"
+                        whileHover={{ borderColor: 'rgba(34, 197, 94, 0.5)' }}
+                      >
                       <span>{selectedLanguage}</span>
                       <motion.svg
                         animate={{ rotate: isLanguageDropdownOpen ? 180 : 0 }}
@@ -251,8 +256,9 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                         ))}
                       </motion.div>
                     )}
+                    </div>
                   </div>
-                  <div className="text-slate-400 text-sm">Select Language</div>
+                  <div className="text-slate-400 text-sm">Languages Supported</div>
                 </div>
               </motion.div>
 
