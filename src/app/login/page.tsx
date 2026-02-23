@@ -38,7 +38,17 @@ export default function LoginPage() {
     if (error) setError('')
   }
 
-  // const handleQuickLogin = async (phone: string, password: string) => {
+  
+
+  const handleQuickLogin = async (role: string) => {
+
+  // Optional: update UI fields so the form visually reflects the login
+  //setFormData({ phone, password })
+
+  await handleQuickSubmit(undefined, {role})
+}
+
+// const handleQuickLogin = async (phone: string, password: string) => {
   //   console.log('Quick login with:', phone, password)
   //   setFormData({ phone, password })
   //   setError('')
@@ -50,14 +60,6 @@ export default function LoginPage() {
   //     preventDefault: () => {},
   //   } as unknown as React.FormEvent)
   // }
-
-  const handleQuickLogin = async (role: string) => {
-
-  // Optional: update UI fields so the form visually reflects the login
-  //setFormData({ phone, password })
-
-  await handleQuickSubmit(undefined, {role})
-}
 
 const handleQuickSubmit = async (
   e?: React.FormEvent<HTMLFormElement>,
