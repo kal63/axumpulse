@@ -15,26 +15,26 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'http',
-                hostname: process.env.SERVER_IP || 'localhost',
-                port: process.env.SERVER_PORT || '3001',
+                hostname: process.env.API_SERVER_IP || 'localhost',
+                port: process.env.API_SERVER_PORT || '3000',
                 pathname: '/api/v1/uploads/**',
             },
             {
                 protocol: 'http',
                 hostname: 'localhost',
-                port: '3001',
+                port: '3000',
                 pathname: '/api/v1/uploads/**',
             },
             {
                 protocol: 'http',
                 hostname: 'localhost',
-                port: '3001',
+                port: '3000',
                 pathname: '/**',
             },
             {
                 protocol: 'http',
                 hostname: 'localhost',
-                port: '3001',
+                port: '3000',
                 pathname: '/**',
             },
         ],
