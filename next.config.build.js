@@ -13,7 +13,7 @@ const nextConfig = {
 
     // Environment variables
     env: {
-        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://yourdomain.com/api/v1'
+        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://172.236.152.170/api/v1'
     },
 
     // Disable ESLint during build to avoid blocking deployment

@@ -11,12 +11,12 @@ const nextConfig = {
 
     // Enable image optimization for Node.js deployment
     images: {
-        domains: ['axum-pulse-api.bitappstech.com', 'localhost'],
+        domains: ['api.compound-360.com', '172.236.152.170','localhost'],
         remotePatterns: [
             {
                 protocol: 'http',
-                hostname: 'localhost',
-                port: '3000',
+                hostname: process.env.SERVER_IP || 'localhost',
+                port: process.env.SERVER_PORT || '3000',
                 pathname: '/api/v1/uploads/**',
             },
             {
