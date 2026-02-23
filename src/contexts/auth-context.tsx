@@ -9,6 +9,7 @@ interface AuthContextType {
   isLoading: boolean
   isAuthenticated: boolean
   login: (credentials: LoginRequest) => Promise<{ success: boolean; error?: string; user?: User }>
+  dev_login: (role: string) => Promise<{ success: boolean; error?: string; user?: User }>
   logout: () => void
   refreshUser: () => Promise<void>
 }
@@ -115,6 +116,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const dev_login = async (role: string) => {
+    try {
+      setIsLoading(true)
+      const response = await apiClient.dev_login(role)
+      
+      if (response.success && response.data) {
+        // Set the basic user data first
+        setUser(response.data.user)
+        
+        // Try to fetch the full user data with profile
+        let finalUser = response.data.user
+        try {
+          const fullUserResponse = await apiClient.getMe()
+          if (fullUserResponse.success && fullUserResponse.data) {
+            finalUser = fullUserResponse.data.user
+            setUser(fullUserResponse.data.user)
+          }
+        } catch (fetchError) {
+          console.warn('Failed to fetch full user data:', fetchError)
+          // Continue with basic user data
+          setUser(response.data.user)
+        }
+        
+        return { success: true, user: finalUser }
+      } else {
+        return { 
+          success: false, 
+          error: response.error?.message || 'Login failed' 
+        }
+      }
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Login failed' 
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const logout = () => {
     setUser(null)
     apiClient.clearToken()
@@ -143,6 +184,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     isAuthenticated,
     login,
+    dev_login,
     logout,
     refreshUser,
   }

@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useRouter, usePathname } from 'next/navigation'
 import { useAuth } from './auth-context'
 
-export type UserRole = 'user' | 'trainer' | 'admin'
+export type UserRole = 'user' | 'trainer' | 'admin' | 'doctor' // Added doctor role
 
 interface RoleContextType {
   currentRole: UserRole

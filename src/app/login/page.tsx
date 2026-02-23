@@ -24,7 +24,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [scrolled, setScrolled] = useState(false)
-  const { login, isLoading } = useAuth()
+  const { login, dev_login, isLoading } = useAuth()
   const { availableRoles } = useRole()
   const router = useRouter()
 
@@ -38,59 +38,104 @@ export default function LoginPage() {
     if (error) setError('')
   }
 
-  const handleQuickLogin = (phone: string, password: string) => {
-    setFormData({ phone, password })
-    setError('')
+  // const handleQuickLogin = async (phone: string, password: string) => {
+  //   console.log('Quick login with:', phone, password)
+  //   setFormData({ phone, password })
+  //   setError('')
+  //   // Directly call the login logic
+  //   // Copy the validation and login logic from handleSubmit
+  //   // Or, better, refactor handleSubmit to accept optional params
+  //   // For now, call handleSubmit with a fake event that matches the type
+  //   await handleSubmit({
+  //     preventDefault: () => {},
+  //   } as unknown as React.FormEvent)
+  // }
+
+  const handleQuickLogin = async (role: string) => {
+
+  // Optional: update UI fields so the form visually reflects the login
+  //setFormData({ phone, password })
+
+  await handleQuickSubmit(undefined, {role})
+}
+
+const handleQuickSubmit = async (
+  e?: React.FormEvent<HTMLFormElement>,
+  override?: { role: string }
+) => {
+  // Only prevent default if this came from a real form submit
+  e?.preventDefault()
+
+  setError('')
+  const role = override?.role;
+
+  if (!role) {
+    setError('quick login role not specified')
+    return
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
+  const result = await dev_login(role);
 
-    // Basic validation
-    if (!formData.phone || !formData.password) {
-      setError('Please fill in all fields')
-      return
-    }
+  if (result.success) {
+    const currentUser = result.user
 
-    // Validate Ethiopian phone number format
-    const phoneRegex = /^(\+251|251|0)?[79][0-9]{8}$/
-    if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) {
-      setError('Please enter a valid Ethiopian phone number')
-      return
-    }
-
-    // Normalize phone number
-    let normalizedPhone = formData.phone.replace(/\s/g, '')
-    if (normalizedPhone.startsWith('0')) {
-      normalizedPhone = '+251' + normalizedPhone.substring(1)
-    } else if (normalizedPhone.startsWith('251')) {
-      normalizedPhone = '+' + normalizedPhone
-    } else if (!normalizedPhone.startsWith('+251')) {
-      normalizedPhone = '+251' + normalizedPhone
-    }
-
-    const result = await login({
-      phone: normalizedPhone,
-      password: formData.password
-    })
-
-    if (result.success) {
-      // Use the user data directly from the login response
-      const currentUser = result.user
-
-      // Redirect based on user permissions
-      if (currentUser?.isAdmin) {
-        router.push('/admin/dashboard')
-      } else if (currentUser?.isTrainer) {
-        router.push('/trainer/dashboard')
-      } else {
-        router.push('/user/dashboard') // Future user dashboard
-      }
-    } else {
-      setError(result.error || 'Login failed')
-    }
+    if (currentUser?.isAdmin) router.push('/admin/dashboard')
+    else if (currentUser?.isTrainer) router.push('/trainer/dashboard')
+    else if(currentUser?.isMedical) router.push('/medical/dashboard')
+    else router.push('/user/dashboard')
+  } else {
+    setError(result.error || 'Login failed')
   }
+}
+
+  const handleSubmit = async (
+  e?: React.FormEvent<HTMLFormElement>,
+  override?: { phone: string; password: string }
+) => {
+  // Only prevent default if this came from a real form submit
+  e?.preventDefault()
+
+  setError('')
+
+  const phoneInput = override?.phone ?? formData.phone
+  const passwordInput = override?.password ?? formData.password
+
+  if (!phoneInput || !passwordInput) {
+    setError('Please fill in all fields')
+    return
+  }
+
+  const phoneRegex = /^(\+251|251|0)?[79][0-9]{8}$/
+  if (!phoneRegex.test(phoneInput.replace(/\s/g, ''))) {
+    setError('Please enter a valid Ethiopian phone number')
+    return
+  }
+
+  let normalizedPhone = phoneInput.replace(/\s/g, '')
+  if (normalizedPhone.startsWith('0')) {
+    normalizedPhone = '+251' + normalizedPhone.substring(1)
+  } else if (normalizedPhone.startsWith('251')) {
+    normalizedPhone = '+' + normalizedPhone
+  } else if (!normalizedPhone.startsWith('+251')) {
+    normalizedPhone = '+251' + normalizedPhone
+  }
+
+  const result = await login({
+    phone: normalizedPhone,
+    password: passwordInput
+  })
+
+  if (result.success) {
+    const currentUser = result.user
+
+    if (currentUser?.isAdmin) router.push('/admin/dashboard')
+    else if (currentUser?.isTrainer) router.push('/trainer/dashboard')
+    else if(currentUser?.isMedical) router.push('/medical/dashboard')
+    else router.push('/user/dashboard')
+  } else {
+    setError(result.error || 'Login failed')
+  }
+}
 
   useEffect(() => {
     const handleScroll = () => {
@@ -414,7 +459,7 @@ export default function LoginPage() {
                         variant="outline"
                         size="lg"
                         className="w-full h-12 text-sm bg-gradient-to-r from-emerald-900/50 to-emerald-800/50 hover:from-emerald-800/70 hover:to-emerald-700/70 border-emerald-500/50 text-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300"
-                        onClick={() => handleQuickLogin('+251911234567', 'admin123')}
+                        onClick={() => handleQuickLogin('admin')}
                         disabled={isLoading}
                       >
                         <Shield className="w-5 h-5 mr-3" />
@@ -431,7 +476,7 @@ export default function LoginPage() {
                         variant="outline"
                         size="lg"
                         className="w-full h-12 text-sm bg-gradient-to-r from-blue-900/50 to-blue-800/50 hover:from-blue-800/70 hover:to-blue-700/70 border-blue-500/50 text-blue-200 shadow-lg hover:shadow-xl transition-all duration-300"
-                        onClick={() => handleQuickLogin('+251912345678', 'trainer123')}
+                        onClick={() => handleQuickLogin('trainer')}
                         disabled={isLoading}
                       >
                         <UserCheck className="w-5 h-5 mr-3" />
@@ -448,11 +493,28 @@ export default function LoginPage() {
                         variant="outline"
                         size="lg"
                         className="w-full h-12 text-sm bg-gradient-to-r from-purple-900/50 to-purple-800/50 hover:from-purple-800/70 hover:to-purple-700/70 border-purple-500/50 text-purple-200 shadow-lg hover:shadow-xl transition-all duration-300"
-                        onClick={() => handleQuickLogin('+251935625037', 'user123')}
+                        onClick={() => handleQuickLogin('user')}
                         disabled={isLoading}
                       >
                         <Users className="w-5 h-5 mr-3" />
                         User Login
+                      </Button>
+                    </motion.div>
+
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="lg"
+                        className="w-full h-12 text-sm bg-gradient-to-r from-purple-900/50 to-purple-800/50 hover:from-purple-800/70 hover:to-purple-700/70 border-purple-500/50 text-purple-200 shadow-lg hover:shadow-xl transition-all duration-300"
+                        onClick={() => handleQuickLogin('medical')}
+                        disabled={isLoading}
+                      >
+                        <Users className="w-5 h-5 mr-3" />
+                        Medical-Professional Login
                       </Button>
                     </motion.div>
                   </div>

@@ -1186,6 +1186,20 @@ class ApiClient {
     return response
   }
 
+  // Auth methods
+  async dev_login(role: string): Promise<ApiResponse<LoginResponse>> {
+    const response = await this.request<LoginResponse>('/auth/dev_login', {
+      method: 'POST',
+      body: JSON.stringify({ role }),
+    })
+
+    if (response.success && response.data) {
+      this.setToken(response.data.token)
+    }
+
+    return response
+  }
+
   setToken(token: string) {
     this.token = token
     if (typeof window !== 'undefined') {
