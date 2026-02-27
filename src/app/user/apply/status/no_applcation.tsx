@@ -465,7 +465,7 @@ export default function ApplicationStatusPage() {
                         )}
                         {application.socialMedia.twitter && (
                           <div>
-                            <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Twitter/X</Label>
+                            <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">TikTok</Label>
                             <p className="text-sm text-[var(--neumorphic-text)] mt-1">{application.socialMedia.twitter}</p>
                           </div>
                         )}

@@ -699,7 +699,7 @@ export default function UserApplyPage() {
             />
           </div>
           <div className="space-y-3">
-            <Label htmlFor="twitter" className="text-[var(--neumorphic-text)]">Twitter/X</Label>
+            <Label htmlFor="twitter" className="text-[var(--neumorphic-text)]">TikTok</Label>
             <Input
               id="twitter"
               placeholder="@username"

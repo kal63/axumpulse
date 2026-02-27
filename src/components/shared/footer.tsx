@@ -187,7 +187,7 @@ export default function Footer() {
               <div className="space-y-3">
                 <div className="flex items-center text-white/70 hover:text-blue-400 transition-colors duration-300">
                   <Mail className="w-4 h-4 mr-3" />
-                  <span className="text-sm">support@axumpulse.com</span>
+                  <span className="text-sm">support@compound-360.com</span>
                 </div>
                 <div className="flex items-center text-white/70 hover:text-blue-400 transition-colors duration-300">
                   <Phone className="w-4 h-4 mr-3" />
@@ -241,23 +241,28 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-white/10">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex flex-col md:flex-row items-center gap-4 text-sm text-white/60">
-                <p>© {currentYear} Compound 360. All rights reserved.</p>
-                <div className="hidden md:block w-1 h-1 bg-white/30 rounded-full" />
-                <p>Powered by Ethio Telecom Value-Added Services</p>
-              </div>
-              <div className="flex items-center gap-6 text-sm">
-                <Link href="#privacy" className="text-white/60 hover:text-blue-400 transition-colors">
-                  Privacy Policy
-                </Link>
-                <Link href="#terms" className="text-white/60 hover:text-blue-400 transition-colors">
-                  Terms of Service
-                </Link>
-                <Link href="#cookies" className="text-white/60 hover:text-blue-400 transition-colors">
-                  Cookie Policy
-                </Link>
+          <div
+            className="block cursor-pointer"
+            onClick={() => window.open('https://bitappstech.com/', '_blank')}
+          >
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex flex-col md:flex-row items-center gap-4 text-sm text-white/60">
+                  <p>© {currentYear} Compound 360. All rights reserved.</p>
+                  <div className="hidden md:block w-1 h-1 bg-white/30 rounded-full" />
+                  <p>Designed and developed by BitApps Tech.</p>
+                </div>
+                <div className="flex items-center gap-6 text-sm">
+                  <Link href="#privacy" className="text-white/60 hover:text-blue-400 transition-colors">
+                    Privacy Policy
+                  </Link>
+                  <Link href="#terms" className="text-white/60 hover:text-blue-400 transition-colors">
+                    Terms of Service
+                  </Link>
+                  <Link href="#cookies" className="text-white/60 hover:text-blue-400 transition-colors">
+                    Cookie Policy
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

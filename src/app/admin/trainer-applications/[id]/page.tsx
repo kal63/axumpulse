@@ -512,7 +512,7 @@ export default function TrainerApplicationDetailPage() {
             )}
             {application.socialMedia.twitter && (
               <div>
-                <Label className="text-sm font-medium text-gray-500">Twitter</Label>
+                <Label className="text-sm font-medium text-gray-500">TikTokk</Label>
                 <a href={application.socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline block">
                   {application.socialMedia.twitter}
                 </a>

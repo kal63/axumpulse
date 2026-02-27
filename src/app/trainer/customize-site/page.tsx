@@ -909,7 +909,7 @@ export default function CustomizeSitePage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="twitter">Twitter</Label>
+                    <Label htmlFor="twitter">TikTok</Label>
                     <Input
                       id="twitter"
                       value={formData.socialLinks?.twitter || ''}

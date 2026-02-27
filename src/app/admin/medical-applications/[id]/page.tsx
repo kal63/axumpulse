@@ -520,7 +520,7 @@ export default function MedicalApplicationDetailPage() {
               )}
               {socialMedia.twitter && (
                 <div>
-                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">Twitter/X</p>
+                  <p className="text-sm font-semibold text-[var(--neumorphic-muted)]">TikTok</p>
                   <a
                     href={socialMedia.twitter}
                     target="_blank"

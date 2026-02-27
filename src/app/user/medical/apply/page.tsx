@@ -740,14 +740,14 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">Twitter/X</Label>
+                <Label className="text-[var(--neumorphic-text)]">TikTok</Label>
                 <Input
                   value={formData.socialMedia.twitter || ''}
                   onChange={(e) => setFormData({
                     ...formData,
                     socialMedia: { ...formData.socialMedia, twitter: e.target.value }
                   })}
-                  placeholder="Twitter/X profile URL"
+                  placeholder="TikTok profile URL"
                 />
               </div>
             </div>
