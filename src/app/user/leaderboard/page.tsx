@@ -15,7 +15,8 @@ import {
   RefreshCw,
   Zap,
   MapPin,
-  Users
+  Users,
+  UserCheck
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -23,6 +24,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function LeaderboardPage() {
   const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
+  const [subscription, setSubscription] = useState<any | null>(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+  const isMedicalPro = user?.isMedical || false;
+  const isTrainer = user?.isTrainer || false;
   const [loading, setLoading] = useState(true);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [userRank, setUserRank] = useState<number | null>(null);
@@ -33,12 +38,39 @@ export default function LeaderboardPage() {
   const limit = 50;
 
   useEffect(() => {
+    if (user && !isMedicalPro && !isTrainer) {
+      fetchSubscription();
+    } else if (isMedicalPro || isTrainer) {
+      setSubscriptionLoading(false);
+    }
+  }, [user, isMedicalPro, isTrainer]);
+
+  const fetchSubscription = async () => {
+    try {
+      setSubscriptionLoading(true);
+      const response = await apiClient.getMySubscription();
+      if (response.success && response.data) {
+        setSubscription(response.data.subscription === null ? null : response.data.subscription);
+      }
+    } catch (err) {
+      console.error('Failed to fetch subscription:', err);
+      setSubscription(null);
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (!authLoading && !user) {
       router.push('/login');
     } else if (user) {
-      loadLeaderboard();
+      if (subscriptionLoading || subscription || isMedicalPro || isTrainer) {
+        loadLeaderboard();
+      } else {
+        setLoading(false);
+      }
     }
-  }, [authLoading, user, router, filterBy, period, offset]);
+  }, [authLoading, user, router, filterBy, period, offset, subscriptionLoading, subscription, isMedicalPro, isTrainer]);
 
   const loadLeaderboard = async () => {
     try {
@@ -89,7 +121,12 @@ export default function LeaderboardPage() {
     }
   };
 
-  if (authLoading || loading) {
+  const hasAccess = subscription || isMedicalPro || isTrainer;
+
+  if (
+    authLoading ||
+    ((loading && hasAccess) || (subscriptionLoading && !isMedicalPro && !isTrainer))
+  ) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
         <div className="text-center">
@@ -105,7 +142,59 @@ export default function LeaderboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)] pb-20">
+    <>
+      {subscription && (
+        <div className="max-w-4xl mx-auto mb-4">
+          <NeumorphicCard variant="raised" size="sm" className="p-4 bg-blue-500/10 border-blue-500/30">
+            <div className="flex items-center gap-3">
+              <UserCheck className="w-5 h-5 text-blue-400" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-white">
+                  Showing content from {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
+                </p>
+                <p className="text-xs text-slate-400">
+                  Your active subscription expires on {new Date(subscription.expiresAt).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </NeumorphicCard>
+        </div>
+      )}
+
+      {!subscriptionLoading && !hasAccess && (
+        <div className="max-w-2xl mx-auto">
+          <NeumorphicCard variant="raised" size="lg" className="p-12 border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/10">
+            <div className="text-center">
+              <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <UserCheck className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[var(--neumorphic-text)] mb-4">
+                Subscription Required
+              </h2>
+              <div className="space-y-4 mb-8">
+                <p className="text-lg text-[var(--neumorphic-muted)]">
+                  You need an active subscription to view the leaderboard.
+                </p>
+                <p className="text-base text-[var(--neumorphic-muted)]">
+                  Subscribe to a trainer to compete with other users and track your rank.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() => router.push('/trainers')}
+                  className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  <Users className="w-5 h-5" />
+                  Browse Trainers
+                </button>
+              </div>
+            </div>
+          </NeumorphicCard>
+        </div>
+      )}
+
+      {(subscriptionLoading || hasAccess) && (
+        <div className="min-h-screen bg-[var(--neumorphic-bg)] pb-20">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -319,6 +408,8 @@ export default function LeaderboardPage() {
         </NeumorphicCard>
       </div>
     </div>
+      )}
+    </>
   );
 }
 

@@ -28,10 +28,11 @@ import {
   Twitter,
   Linkedin,
   Youtube,
-  ExternalLink
+  ExternalLink,
+  Download,
+  File
 } from 'lucide-react';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { ThemeProvider } from '@/components/trainer-site/ThemeProvider';
 import { HeroSection } from '@/components/trainer-site/HeroSection';
@@ -39,59 +40,61 @@ import { PhilosophySection } from '@/components/trainer-site/PhilosophySection';
 import { TargetAudienceSection } from '@/components/trainer-site/TargetAudienceSection';
 import { GallerySection } from '@/components/trainer-site/GallerySection';
 import { TrainerContentSection } from '@/components/trainer-site/TrainerContentSection';
-import '../pdf-viewer.css';
-
-// Dynamically import react-pdf with SSR disabled to avoid DOMMatrix error
-const PDFViewer = dynamic(
-  () => import('./PDFViewer').then((mod) => mod.PDFViewer),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
-      </div>
-    )
-  }
-);
 
 function CertificateDisplay({ file }: { file: CertificationFile }) {
   const isImage = file.fileType.startsWith('image/');
-  // Check for PDF - handle both 'application/pdf' and 'pdf' formats
-  const isPDF = file.fileType === 'application/pdf' || 
-                file.fileType.toLowerCase() === 'pdf' ||
-                file.fileType.toLowerCase().includes('pdf');
   const fileUrl = getImageUrl(file.fileUrl) || file.fileUrl;
 
-  if (isImage) {
-    return (
-      <div className="w-full">
-        <Image
-          src={fileUrl}
-          alt={file.fileName}
-          width={1200}
-          height={800}
-          className="w-full h-auto rounded-lg object-contain"
-          unoptimized
-        />
-      </div>
-    );
-  }
-
-  if (isPDF) {
-    return <PDFViewer fileUrl={fileUrl} fileName={file.fileName} />;
-  }
-
   return (
-    <div className="p-8 text-center text-white/60">
-      <FileText className="w-12 h-12 mx-auto mb-4" />
-      <p>Unsupported file type: {file.fileType}</p>
-      <a
-        href={fileUrl}
-        download={file.fileName}
-        className="mt-4 inline-block text-blue-400 hover:text-blue-300"
-      >
-        Download {file.fileName}
-      </a>
+    <div className="group relative">
+      {/* Image Display */}
+      {isImage && (
+        <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-shadow">
+          <Image
+            src={fileUrl}
+            alt={file.fileName}
+            width={1200}
+            height={800}
+            className="w-full h-auto object-contain"
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
+            <a
+              href={fileUrl}
+              download={file.fileName}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              Download
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Non-Image File Download Card */}
+      {!isImage && (
+        <div className="p-6 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all hover:shadow-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-blue-500/20 rounded-lg">
+                <File className="w-6 h-6 text-blue-500" />
+              </div>
+              <div>
+                <p className="font-semibold text-slate-900 dark:text-white text-balance">{file.fileName}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{file.fileType}</p>
+              </div>
+            </div>
+            <a
+              href={fileUrl}
+              download={file.fileName}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+            >
+              <Download className="w-4 h-4" />
+              Download
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -547,23 +550,39 @@ function TrainerDetailPageContent() {
 
         {/* Certificates Section */}
         {certificationFiles.length > 0 && (
-          <section className="py-16 bg-slate-50 dark:bg-slate-900">
+          <section className="py-20 bg-gradient-to-b from-white via-slate-50 to-white dark:from-slate-800 dark:via-slate-900 dark:to-slate-800">
             <div className="container mx-auto px-4 max-w-7xl">
-              <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
-                <CardContent className="p-8">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                    <FileText className="w-5 h-5" />
-                    Certificates & Documents
-                  </h3>
-                  <div className="space-y-8">
-                    {certificationFiles.map((file) => (
-                      <div key={file.id} className="w-full">
-                        <CertificateDisplay file={file} />
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="mb-12"
+              >
+                <div className="inline-block mb-4">
+                  <span className="px-3 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-full text-sm font-medium">
+                    Qualifications
+                  </span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 text-balance">
+                  Certificates & Documents
+                </h2>
+                <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl">
+                  Professional certifications and credentials that validate expertise and quality training.
+                </p>
+              </motion.div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {certificationFiles.map((file, index) => (
+                  <motion.div
+                    key={file.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <CertificateDisplay file={file} />
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </section>
         )}

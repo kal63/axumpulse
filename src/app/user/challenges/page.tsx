@@ -24,7 +24,8 @@ import {
   Calendar,
   MapPin,
   Star,
-  ChevronRight
+  ChevronRight,
+  UserCheck
 } from 'lucide-react'
 import { FeaturedBadge } from '@/components/user/FeaturedBadge'
 import { Button } from '@/components/ui/button'
@@ -36,6 +37,10 @@ export default function ChallengesPage() {
   const { user } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
+  const [subscription, setSubscription] = useState<any | null>(null)
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true)
+  const isMedicalPro = user?.isMedical || false
+  const isTrainer = user?.isTrainer || false
   const [challenges, setChallenges] = useState<any[]>([])
   const [featuredChallenges, setFeaturedChallenges] = useState<any[]>([])
   const [myChallenges, setMyChallenges] = useState<any[]>([])
@@ -53,6 +58,7 @@ export default function ChallengesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedDifficulty, setSelectedDifficulty] = useState('')
+  const hasActiveFilters = selectedCategory || selectedDifficulty || searchQuery
   const [categories, setCategories] = useState<string[]>([])
   const [showFilters, setShowFilters] = useState(false)
 
@@ -63,14 +69,45 @@ export default function ChallengesPage() {
 
   useEffect(() => {
     if (activeTab === 'all') {
-      fetchChallenges()
-      fetchCategories()
+      // fetch when subscription is loading (optimistic) or when we know user has access
+      if (subscriptionLoading || subscription || isMedicalPro || isTrainer) {
+        fetchChallenges()
+        fetchCategories()
+      }
     } else {
       if (user) {
         fetchMyChallenges()
       }
     }
-  }, [page, activeTab, searchQuery, selectedCategory, selectedDifficulty, user])
+  }, [page, activeTab, searchQuery, selectedCategory, selectedDifficulty, user, subscriptionLoading, subscription, isMedicalPro, isTrainer])
+
+  // Fetch subscription status (skip for medical professionals and trainers)
+  useEffect(() => {
+    if (user && !isMedicalPro && !isTrainer) {
+      fetchSubscription()
+    } else if (isMedicalPro || isTrainer) {
+      setSubscriptionLoading(false)
+    }
+  }, [user, isMedicalPro, isTrainer])
+
+  const fetchSubscription = async () => {
+    try {
+      setSubscriptionLoading(true)
+      const response = await apiClient.getMySubscription()
+      if (response.success && response.data) {
+        if (response.data.subscription === null) {
+          setSubscription(null)
+        } else {
+          setSubscription(response.data.subscription)
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch subscription:', err)
+      setSubscription(null)
+    } finally {
+      setSubscriptionLoading(false)
+    }
+  }
 
   // Fetch my challenges on mount to get the count for the tab
   useEffect(() => {
@@ -252,33 +289,90 @@ export default function ChallengesPage() {
               </p>
             </div>
 
-            {/* Search and Quick Actions */}
-            <div className="max-w-4xl mx-auto">
-              <NeumorphicCard variant="raised" size="lg" className="p-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1">
-                    <SearchBar
-                      value={searchQuery}
-                      onChange={handleSearch}
-                      placeholder="Search challenges, categories, or rewards..."
-                    />
+
+            
+            {/* Subscription Status Indicator */}
+            {subscription && (
+              <div className="max-w-4xl mx-auto mb-4">
+                <NeumorphicCard variant="raised" size="sm" className="p-4 bg-blue-500/10 border-blue-500/30">
+                  <div className="flex items-center gap-3">
+                    <UserCheck className="w-5 h-5 text-blue-400" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-white">
+                        Showing content from {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        Your active subscription expires on {new Date(subscription.expiresAt).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => setShowFilters(!showFilters)}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
-                      showFilters 
-                        ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg' 
-                        : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)]'
-                    }`}
-                  >
-                    <Filter className="w-4 h-4" />
-                    <span>Filters</span>
-                  </button>
-                </div>
-              </NeumorphicCard>
-            </div>
+                </NeumorphicCard>
+              </div>
+            )}
+
+            {/* No Subscription Message - Only show for non-medical professionals and non-trainers */}
+            {!subscriptionLoading && !subscription && !isMedicalPro && !isTrainer && (
+              <div className="max-w-2xl mx-auto">
+                <NeumorphicCard variant="raised" size="lg" className="p-12 border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/10">
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                      <UserCheck className="w-10 h-10 text-white" />
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-bold text-[var(--neumorphic-text)] mb-4">
+                      Subscription Required
+                    </h2>
+                    <div className="space-y-4 mb-8">
+                      <p className="text-lg text-[var(--neumorphic-muted)]">
+                        You need an active subscription to access challenges.
+                      </p>
+                      <p className="text-base text-[var(--neumorphic-muted)]">
+                        Subscribe to a trainer to unlock community challenges, track progress, and earn rewards.
+                      </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <button
+                        onClick={() => router.push('/trainers')}
+                        className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                      >
+                        <Users className="w-5 h-5" />
+                        Browse Trainers
+                      </button>
+                    </div>
+                  </div>
+                </NeumorphicCard>
+              </div>
+            )}
+
+            {/* Search and Quick Actions - Show while subscription is loading or user has access */}
+            {(subscriptionLoading || subscription || isMedicalPro || isTrainer) && (
+              <div className="max-w-4xl mx-auto">
+                <NeumorphicCard variant="raised" size="lg" className="p-6">
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                      <SearchBar
+                        value={searchQuery}
+                        onChange={handleSearch}
+                        placeholder="Search challenges, categories, or rewards..."
+                      />
+                    </div>
+                    <button
+                      onClick={() => setShowFilters(!showFilters)}
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
+                        showFilters 
+                          ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg' 
+                          : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)]'
+                      }`}
+                    >
+                      <Filter className="w-4 h-4" />
+                      <span>Filters</span>
+                    </button>
+                  </div>
+                </NeumorphicCard>
+              </div>
+            )}
 
             {/* Filters Section - Slides out from search */}
+            {(subscriptionLoading || subscription || isMedicalPro || isTrainer) && (
             <div className={`max-w-4xl mx-auto transition-all duration-700 ease-in-out overflow-hidden ${
               showFilters 
                 ? 'mt-4 max-h-[800px] opacity-100' 
@@ -362,13 +456,14 @@ export default function ChallengesPage() {
                 </NeumorphicCard>
               </div>
             </div>
+            )}
 
           </div>
         </div>
       </div>
 
       {/* Trending Section */}
-      {challenges.length > 0 && (
+      {(subscriptionLoading || subscription || isMedicalPro || isTrainer) && challenges.length > 0 && (
         <div className={`px-4 md:px-8 py-8 transition-all duration-300 ease-in-out overflow-hidden ${
           selectedCategory || selectedDifficulty || searchQuery
             ? 'max-h-0 opacity-0 py-0'
@@ -449,6 +544,7 @@ export default function ChallengesPage() {
       )}
 
       {/* Content Section */}
+      {(subscriptionLoading || subscription || isMedicalPro || isTrainer) && (
       <div className="px-4 md:px-8 py-8">
         <div className="max-w-7xl mx-auto">
           {/* Content Section Header */}
@@ -519,7 +615,7 @@ export default function ChallengesPage() {
             {/* All Challenges Tab */}
             <TabsContent value="all" className="space-y-8">
               {/* Loading State */}
-              {loading && <LoadingGrid count={pageSize} />}
+              {(loading && (subscription || isMedicalPro || isTrainer)) && <LoadingGrid count={pageSize} />}
 
               {/* Error State */}
               {error && (
@@ -698,7 +794,7 @@ export default function ChallengesPage() {
             {/* My Active Challenges Tab */}
             <TabsContent value="active" className="space-y-8">
               {/* Loading State */}
-              {loading && <LoadingGrid count={pageSize} />}
+              {(loading && (subscription || isMedicalPro || isTrainer)) && <LoadingGrid count={pageSize} />}
 
               {/* Empty State */}
               {!loading && myChallenges.length === 0 && (
@@ -867,6 +963,7 @@ export default function ChallengesPage() {
           </Tabs>
         </div>
       </div>
+      )}
     </div>
   )
 

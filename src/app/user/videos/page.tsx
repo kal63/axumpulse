@@ -260,13 +260,14 @@ export default function VideosPage() {
                         <Users className="w-5 h-5" />
                         Browse Trainers
                       </button>
+                      {/*}
                       <button
                         onClick={() => router.push('/user/subscriptions')}
                         className="px-8 py-4 bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] rounded-xl font-semibold hover:bg-[var(--neumorphic-hover)] transition-all duration-200 flex items-center justify-center gap-2"
                       >
                         <CheckCircle className="w-5 h-5" />
                         My Subscriptions
-                      </button>
+                      </button>*/}
                     </div>
                   </div>
                 </NeumorphicCard>
