@@ -7,9 +7,9 @@ import { apiClient, type Game } from '@/lib/api-client';
 import { NeumorphicCard } from '@/components/user/NeumorphicCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Gamepad2, 
-  Zap, 
+import {
+  Gamepad2,
+  Zap,
   Trophy,
   Play,
   History,
@@ -17,7 +17,8 @@ import {
   Brain,
   MemoryStick,
   UserCheck,
-  Users
+  Users,
+  Dumbbell
 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -142,17 +143,29 @@ export default function GamesHubPage() {
   }
 
   const gameTypes = ['spin_win', 'quiz_battle', 'memory_game'];
-  const availableGames = gameTypes.map(type => 
+  const availableGames = gameTypes.map(type =>
     games.find(g => g.gameType === type)
   ).filter(Boolean) as Game[];
-  
+
   const hasAccess = subscription || isMedicalPro || isTrainer;
 
   return (
     <>
+      <div className="text-center mt-8 mb-8">
+        {/* <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                                    <Dumbbell className="w-4 h-4" />
+                                    <span>Structured Fitness Programs</span>
+                                </div> */}
+        <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+          🎮 Fitness Games
+        </h1>
+        <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+          Play fun games to earn XP and learn about fitness!
+        </p>
+      </div>
       {subscription && (
         <div className="max-w-4xl mx-auto mb-4">
-          <NeumorphicCard variant="raised" size="sm" className="p-4 bg-blue-500/10 border-blue-500/30">
+          {/* <NeumorphicCard variant="raised" size="sm" className="p-4 bg-blue-500/10 border-blue-500/30">
             <div className="flex items-center gap-3">
               <UserCheck className="w-5 h-5 text-blue-400" />
               <div className="flex-1">
@@ -164,7 +177,7 @@ export default function GamesHubPage() {
                 </p>
               </div>
             </div>
-          </NeumorphicCard>
+          </NeumorphicCard> */}
         </div>
       )}
 
@@ -204,96 +217,96 @@ export default function GamesHubPage() {
         <div className="min-h-screen bg-[var(--neumorphic-bg)] pb-20">
           <div className="container mx-auto px-4 py-8">
             {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-2">
-            Fitness Games
-          </h1>
-          <p className="text-[var(--neumorphic-muted)]">
-            Play fun games to earn XP and learn about fitness!
-          </p>
-        </div>
+            {/* <div className="mb-8">
+              <h1 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-2">
+                🎮 Fitness Games
+              </h1>
+              <p className="text-[var(--neumorphic-muted)]">
+                Play fun games to earn XP and learn about fitness!
+              </p>
+            </div> */}
 
-        {/* Games Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {availableGames.map((game) => {
-            const Icon = getGameIcon(game.gameType);
-            const colorClass = getGameColor(game.gameType);
-            const description = getGameDescription(game.gameType);
+            {/* Games Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {availableGames.map((game) => {
+                const Icon = getGameIcon(game.gameType);
+                const colorClass = getGameColor(game.gameType);
+                const description = getGameDescription(game.gameType);
 
-            return (
-              <NeumorphicCard 
-                key={game.id} 
-                variant="raised" 
-                className="p-6 hover:scale-105 transition-transform cursor-pointer"
-                onClick={() => {
-                  if (game.gameType === 'spin_win') {
-                    router.push(`/user/games/spin-win?id=${game.id}`);
-                  } else if (game.gameType === 'quiz_battle') {
-                    router.push(`/user/games/quiz?id=${game.id}`);
-                  } else if (game.gameType === 'memory_game') {
-                    router.push(`/user/games/memory?id=${game.id}`);
-                  }
-                }}
-              >
-                <div className={`w-16 h-16 bg-gradient-to-br ${colorClass} rounded-xl flex items-center justify-center mb-4 mx-auto`}>
-                  <Icon className="h-8 w-8 text-white" />
-                </div>
-                
-                <h3 className="text-xl font-bold text-[var(--neumorphic-text)] text-center mb-2">
-                  {game.title}
-                </h3>
-                
-                <p className="text-sm text-[var(--neumorphic-muted)] text-center mb-4">
-                  {description}
-                </p>
+                return (
+                  <NeumorphicCard
+                    key={game.id}
+                    variant="raised"
+                    className="p-6 hover:scale-105 transition-transform cursor-pointer"
+                    onClick={() => {
+                      if (game.gameType === 'spin_win') {
+                        router.push(`/user/games/spin-win?id=${game.id}`);
+                      } else if (game.gameType === 'quiz_battle') {
+                        router.push(`/user/games/quiz?id=${game.id}`);
+                      } else if (game.gameType === 'memory_game') {
+                        router.push(`/user/games/memory?id=${game.id}`);
+                      }
+                    }}
+                  >
+                    <div className={`w-16 h-16 bg-gradient-to-br ${colorClass} rounded-xl flex items-center justify-center mb-4 mx-auto`}>
+                      <Icon className="h-8 w-8 text-white" />
+                    </div>
 
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <Zap className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
-                    +{game.xpReward} XP
-                  </span>
-                  {game.difficulty && (
-                    <>
-                      <span className="text-[var(--neumorphic-muted)]">•</span>
-                      <Badge variant="secondary" className="text-xs">
-                        {game.difficulty}
-                      </Badge>
-                    </>
-                  )}
-                </div>
+                    <h3 className="text-xl font-bold text-[var(--neumorphic-text)] text-center mb-2">
+                      {game.title}
+                    </h3>
 
-                <Button 
-                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (game.gameType === 'spin_win') {
-                      router.push(`/user/games/spin-win?id=${game.id}`);
-                    } else if (game.gameType === 'quiz_battle') {
-                      router.push(`/user/games/quiz?id=${game.id}`);
-                    } else if (game.gameType === 'memory_game') {
-                      router.push(`/user/games/memory?id=${game.id}`);
-                    }
-                  }}
-                >
-                  <Play className="h-4 w-4 mr-2" />
-                  Play Now
+                    <p className="text-sm text-[var(--neumorphic-muted)] text-center mb-4">
+                      {description}
+                    </p>
+
+                    <div className="flex items-center justify-center gap-2 mb-4">
+                      <Zap className="h-4 w-4 text-yellow-500" />
+                      <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                        +{game.xpReward} XP
+                      </span>
+                      {game.difficulty && (
+                        <>
+                          <span className="text-[var(--neumorphic-muted)]">•</span>
+                          <Badge variant="secondary" className="text-xs">
+                            {game.difficulty}
+                          </Badge>
+                        </>
+                      )}
+                    </div>
+
+                    <Button
+                      className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (game.gameType === 'spin_win') {
+                          router.push(`/user/games/spin-win?id=${game.id}`);
+                        } else if (game.gameType === 'quiz_battle') {
+                          router.push(`/user/games/quiz?id=${game.id}`);
+                        } else if (game.gameType === 'memory_game') {
+                          router.push(`/user/games/memory?id=${game.id}`);
+                        }
+                      }}
+                    >
+                      <Play className="h-4 w-4 mr-2" />
+                      Play Now
+                    </Button>
+                  </NeumorphicCard>
+                );
+              })}
+            </div>
+
+            {/* Game History Link */}
+            <div className="text-center">
+              <Link href="/user/games/history">
+                <Button variant="outline" className="text-[var(--neumorphic-text)]">
+                  <History className="h-4 w-4 mr-2" />
+                  View Game History
                 </Button>
-              </NeumorphicCard>
-            );
-          })}
+              </Link>
+            </div>
+          </div>
         </div>
-
-        {/* Game History Link */}
-        <div className="text-center">
-          <Link href="/user/games/history">
-            <Button variant="outline" className="text-[var(--neumorphic-text)]">
-              <History className="h-4 w-4 mr-2" />
-              View Game History
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </div>
       )}
     </>
   );
