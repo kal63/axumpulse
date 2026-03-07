@@ -20,7 +20,7 @@ const roleIcons = {
 export function RoleSelector() {
   const { currentRole, switchRole, availableRoles, getRoleTheme, getRoleLabel } = useRole()
 
-  const CurrentIcon = roleIcons[currentRole]
+  const CurrentIcon = roleIcons[currentRole as keyof typeof roleIcons] ?? Users
 
   return (
     <DropdownMenu>
@@ -39,7 +39,7 @@ export function RoleSelector() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
         {availableRoles.map((role) => {
-          const Icon = roleIcons[role]
+          const Icon = roleIcons[role as keyof typeof roleIcons] ?? Users
           const isCurrentRole = role === currentRole
           
           return (

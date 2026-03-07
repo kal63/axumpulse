@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, Key } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { apiClient, PublicTrainerDetail, CertificationFile } from '@/lib/api-client';
 import { getImageUrl } from '@/lib/upload-utils';
@@ -232,19 +232,40 @@ function TrainerDetailPageContent() {
     ? getImageUrl(trainer.user.profilePicture) 
     : null;
 
-  const certificationFiles = trainer.application?.certificationFiles || [];
+  const certificationFiles = Array.isArray(trainer.application?.certificationFiles) ? trainer.application.certificationFiles : [];
   const site = trainer.site;
-  const theme = site?.theme || {};
+
+  // Parse JSON strings from backend
+  const parseJsonField = (field: any, defaultValue: any = []) => {
+    if (Array.isArray(field)) return field;
+    if (typeof field === 'string') {
+      try {
+        return JSON.parse(field);
+      } catch {
+        return defaultValue;
+      }
+    }
+    return defaultValue;
+  };
+
+  const theme = parseJsonField(site?.theme, {});
 
   // Get enabled sections in order
-  const sections = site?.sections || [];
+  const sections = parseJsonField(site?.sections);
   const enabledSections = sections
-    .filter(s => s.enabled)
-    .sort((a, b) => (a.order || 0) - (b.order || 0));
+    .filter((s: any) => s.enabled)
+    .sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+
+  // Parse social links
+  const socialLinks = parseJsonField(site?.socialLinks, {});
+
+  // Parse application fields
+  const languages = parseJsonField(trainer.application?.languages);
+  const certifications = parseJsonField(trainer.application?.certifications);
 
   // Helper to check if section is enabled
   const isSectionEnabled = (type: string) => {
-    return enabledSections.some(s => s.type === type);
+    return enabledSections.some((s: { type: string; }) => s.type === type);
   };
 
   // Default sections if no site customization
@@ -277,7 +298,7 @@ function TrainerDetailPageContent() {
         <HeroSection trainer={trainer} onSubscribe={handleSubscribe} />
 
         {/* Dynamic Sections based on site configuration */}
-        {enabledSections.map((section) => {
+        {enabledSections.map((section: { type: Key | null | undefined; }) => {
           switch (section.type) {
             case 'philosophy':
               return <PhilosophySection key={section.type} trainer={trainer} />;
@@ -368,7 +389,7 @@ function TrainerDetailPageContent() {
                       </div>
 
                       {/* Specialties */}
-                      {trainer.trainer.specialties && trainer.trainer.specialties.length > 0 && (
+                      {Array.isArray(trainer.trainer.specialties) && trainer.trainer.specialties.length > 0 && (
                         <div className="mb-6">
                           <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3 flex items-center gap-2">
                             <Award className="w-4 h-4" />
@@ -388,15 +409,15 @@ function TrainerDetailPageContent() {
                       )}
 
                       {/* Social Links */}
-                      {(site?.socialLinks || trainer.application?.socialMedia) && (
+                      {(socialLinks || trainer.application?.socialMedia) && (
                         <div className="mt-6">
                           <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">
                             Connect
                           </h3>
                           <div className="flex flex-wrap gap-3">
-                            {site?.socialLinks?.instagram && (
+                            {socialLinks?.instagram && (
                               <a
-                                href={site.socialLinks.instagram}
+                                href={socialLinks.instagram}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-slate-600 dark:text-slate-400 hover:text-pink-500 transition-colors"
@@ -404,9 +425,9 @@ function TrainerDetailPageContent() {
                                 <Instagram className="w-5 h-5" />
                               </a>
                             )}
-                            {site?.socialLinks?.facebook && (
+                            {socialLinks?.facebook && (
                               <a
-                                href={site.socialLinks.facebook}
+                                href={socialLinks.facebook}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors"
@@ -414,9 +435,9 @@ function TrainerDetailPageContent() {
                                 <Facebook className="w-5 h-5" />
                               </a>
                             )}
-                            {site?.socialLinks?.twitter && (
+                            {socialLinks?.twitter && (
                               <a
-                                href={site.socialLinks.twitter}
+                                href={socialLinks.twitter}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-slate-600 dark:text-slate-400 hover:text-blue-400 transition-colors"
@@ -424,9 +445,9 @@ function TrainerDetailPageContent() {
                                 <Twitter className="w-5 h-5" />
                               </a>
                             )}
-                            {site?.socialLinks?.linkedin && (
+                            {socialLinks?.linkedin && (
                               <a
-                                href={site.socialLinks.linkedin}
+                                href={socialLinks.linkedin}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors"
@@ -434,9 +455,9 @@ function TrainerDetailPageContent() {
                                 <Linkedin className="w-5 h-5" />
                               </a>
                             )}
-                            {site?.socialLinks?.youtube && (
+                            {socialLinks?.youtube && (
                               <a
-                                href={site.socialLinks.youtube}
+                                href={socialLinks.youtube}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-slate-600 dark:text-slate-400 hover:text-red-500 transition-colors"
@@ -444,9 +465,9 @@ function TrainerDetailPageContent() {
                                 <Youtube className="w-5 h-5" />
                               </a>
                             )}
-                            {site?.socialLinks?.website && (
+                            {socialLinks?.website && (
                               <a
-                                href={site.socialLinks.website}
+                                href={socialLinks.website}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-slate-600 dark:text-slate-400 hover:text-blue-500 transition-colors"
@@ -473,14 +494,14 @@ function TrainerDetailPageContent() {
                 <CardContent className="p-8">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Languages */}
-                    {trainer.application.languages && trainer.application.languages.length > 0 && (
+                    {Array.isArray(languages) && languages.length > 0 && (
                       <div>
                         <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                           <Globe className="w-5 h-5" />
                           Languages
                         </h3>
                         <div className="flex flex-wrap gap-2">
-                          {trainer.application.languages.map((lang, index) => (
+                          {languages.map((lang: string, index: number) => (
                             <Badge key={index} className="bg-purple-500/20 text-purple-300 border-purple-500/30">
                               {lang}
                             </Badge>
@@ -503,14 +524,14 @@ function TrainerDetailPageContent() {
                     )}
 
                     {/* Certifications List */}
-                    {trainer.application.certifications && trainer.application.certifications.length > 0 && (
+                    {Array.isArray(certifications) && certifications.length > 0 && (
                       <div>
                         <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                           <Award className="w-5 h-5" />
                           Certifications
                         </h3>
                         <ul className="space-y-3">
-                          {trainer.application.certifications.map((cert, index) => {
+                          {certifications.map((cert: any, index: number) => {
                             if (typeof cert === 'string') {
                               return (
                                 <li key={index} className="text-slate-700 dark:text-slate-300 flex items-start gap-2">

@@ -11,7 +11,7 @@ const nextConfig = {
 
     // Enable image optimization for Node.js deployment
     images: {
-        domains: ['api.compound-360.com', '172.236.152.170','localhost'],
+        domains: ['compound-360.com', process.env.API_SERVER_IP,'localhost'],
         remotePatterns: [
             {
                 protocol: 'http',

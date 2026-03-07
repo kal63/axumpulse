@@ -76,7 +76,7 @@ export function HeroSection({ trainer, onSubscribe }: HeroSectionProps) {
             </p>
           )}
 
-          {trainer.trainer.specialties && trainer.trainer.specialties.length > 0 && (
+          {Array.isArray(trainer.trainer.specialties) && trainer.trainer.specialties.length > 0 && (
             <div className="flex flex-wrap justify-center gap-2 mb-8">
               {trainer.trainer.specialties.map((specialty, index) => (
                 <span

@@ -25,7 +25,17 @@ const contentTypeColors = {
 }
 
 export function TrainerContentSection({ trainer }: TrainerContentSectionProps) {
-  const trainerContent = trainer.site?.trainerContent || []
+  const trainerContent = (() => {
+    if (Array.isArray(trainer.site?.trainerContent)) return trainer.site.trainerContent;
+    if (typeof trainer.site?.trainerContent === 'string') {
+      try {
+        return JSON.parse(trainer.site.trainerContent);
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  })();
 
   if (trainerContent.length === 0) {
     return null
@@ -42,8 +52,8 @@ export function TrainerContentSection({ trainer }: TrainerContentSectionProps) {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedContent.map((content) => {
-            const Icon = contentTypeIcons[content.type] || FileText
-            const colorClass = contentTypeColors[content.type] || contentTypeColors.article
+            const Icon = contentTypeIcons[content.type as keyof typeof contentTypeIcons] || FileText
+            const colorClass = contentTypeColors[content.type as keyof typeof contentTypeColors] || contentTypeColors.article
 
             return (
               <Card

@@ -12,7 +12,17 @@ interface GallerySectionProps {
 }
 
 export function GallerySection({ trainer }: GallerySectionProps) {
-  const galleryImages = trainer.site?.galleryImages || []
+  const galleryImages = (() => {
+    if (Array.isArray(trainer.site?.galleryImages)) return trainer.site.galleryImages;
+    if (typeof trainer.site?.galleryImages === 'string') {
+      try {
+        return JSON.parse(trainer.site.galleryImages);
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  })();
   const [selectedImage, setSelectedImage] = useState<TrainerSiteGalleryImage | null>(null)
 
   if (galleryImages.length === 0) {
