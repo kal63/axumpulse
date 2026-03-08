@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiClient, type ContentItem, type Language as LanguageType } from '@/lib/api-client'
 import { uploadContentFile, uploadThumbnail, validateFileSize, validateContentFileType, FILE_SIZE_LIMITS, ALLOWED_FILE_TYPES, formatFileSize } from '@/lib/upload-utils'
+import { useToast } from '@/hooks/use-toast'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -32,12 +33,14 @@ export default function UploadContentPage() {
   const [generatedThumbUrl, setGeneratedThumbUrl] = useState<string | null>(null)
   const thumbInputRef = useRef<HTMLInputElement | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isDraggingMain, setIsDraggingMain] = useState(false)
   const [isDraggingThumb, setIsDraggingThumb] = useState(false)
   const [languages, setLanguages] = useState<LanguageType[] | null>(null)
   const [langError, setLangError] = useState<string | null>(null)
   const selectedType = form.type
+  const { toast } = useToast()
 
   function getAcceptForType(type: string | undefined) {
     if (type === 'video') return 'video/mp4'
@@ -133,7 +136,7 @@ export default function UploadContentPage() {
   useEffect(() => {
   }, [])
 
-  async function uploadFileToServer(selected: File, isThumbnail = false): Promise<string> {
+  async function uploadFileToServer(selected: File, isThumbnail = false, onProgress?: (percent: number) => void): Promise<string> {
     // Validate file size
     const maxSize = isThumbnail ? FILE_SIZE_LIMITS.THUMBNAIL : FILE_SIZE_LIMITS.CONTENT_FILE
     const sizeValidation = validateFileSize(selected, maxSize)
@@ -149,8 +152,10 @@ export default function UploadContentPage() {
       }
     }
 
-    // Use the appropriate upload function
-    const result = isThumbnail ? await uploadThumbnail(selected) : await uploadContentFile(selected)
+    // Use the appropriate upload function (with progress callback)
+    const result = isThumbnail
+      ? await uploadThumbnail(selected, onProgress)
+      : await uploadContentFile(selected, onProgress)
     
     if (!result.success) {
       throw new Error(result.error?.message || 'Upload failed')
@@ -206,17 +211,23 @@ export default function UploadContentPage() {
       
       // Step 2: Upload files and update the record
       try {
+        // reset progress and start
+        setUploadProgress(0)
+
         // Upload main file
         if (file) {
-          uploadedFileUrl = await uploadFileToServer(file)
+          uploadedFileUrl = await uploadFileToServer(file, false, (p) => setUploadProgress(p))
         }
         
         // Upload thumbnail
         if (thumbnail) {
-          uploadedThumbnailUrl = await uploadFileToServer(thumbnail, true)
+          // reuse same state or override; we reset to 0 for clarity
+          setUploadProgress(0)
+          uploadedThumbnailUrl = await uploadFileToServer(thumbnail, true, (p) => setUploadProgress(p))
         } else if (generatedThumbBlob) {
           const thumbnailFile = new File([generatedThumbBlob], 'thumbnail.jpg', { type: 'image/jpeg' })
-          uploadedThumbnailUrl = await uploadFileToServer(thumbnailFile, true)
+          setUploadProgress(0)
+          uploadedThumbnailUrl = await uploadFileToServer(thumbnailFile, true, (p) => setUploadProgress(p))
         }
         
         // Step 3: Update content record with file URLs
@@ -306,6 +317,15 @@ export default function UploadContentPage() {
           throw new Error(errorMsg)
         }
         
+        // show success toast and persist a flag for next page
+        toast({
+          title: 'Upload complete',
+          description: 'Your content has been added to the library.',
+        })
+        try {
+          localStorage.setItem('trainerContentUploadSuccess', 'Content uploaded successfully')
+        } catch {}
+
         router.push('/trainer/content')
         
       } catch (uploadError) {
@@ -327,6 +347,18 @@ export default function UploadContentPage() {
 
   return (
     <div className="space-y-6">
+      {/* progress indicator */}
+      {uploadProgress !== null && (
+        <>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div
+              className="bg-blue-600 h-2 rounded-full transition-all"
+              style={{ width: `${uploadProgress}%` }}
+            ></div>
+          </div>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{uploadProgress}% uploaded</p>
+        </>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Upload Content</h1>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { apiClient, type ContentItem } from '@/lib/api-client'
+import { useToast } from '@/hooks/use-toast'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -53,6 +54,7 @@ export default function TrainerContentListPage() {
   const [withdrawing, setWithdrawing] = useState(false)
   const [withdrawDialogOpen, setWithdrawDialogOpen] = useState(false)
   const [contentToWithdraw, setContentToWithdraw] = useState<ContentItem | null>(null)
+  const { toast } = useToast()
 
   // Stable fetch function with filters
   const fetchContent = useCallback(async (params: any) => {
@@ -98,6 +100,19 @@ export default function TrainerContentListPage() {
       }
     }
   }, [user, isLoading, router])
+
+  // show any success toast left from previous page
+  useEffect(() => {
+    try {
+      const msg = localStorage.getItem('trainerContentUploadSuccess')
+      if (msg) {
+        toast({ title: msg })
+        localStorage.removeItem('trainerContentUploadSuccess')
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, [toast])
 
   // No client-side filtering needed - server handles it
   const filteredContent = allContent

@@ -38,33 +38,56 @@ export function getImageUrl(imageUrl?: string): string | undefined {
  * @returns Promise with the upload response
  */
 export async function uploadFile(
-  file: File, 
-  endpoint: string, 
-  fieldName: string = 'file'
+  file: File,
+  endpoint: string,
+  fieldName: string = 'file',
+  onProgress?: (percent: number) => void
 ): Promise<{ success: boolean; data?: any; error?: any }> {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1'
-    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
-    
-    const formData = new FormData()
-    formData.append(fieldName, file)
-    
-    const response = await fetch(`${baseUrl}${endpoint}`, {
-      method: 'POST',
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-      body: formData,
-    })
-    
-    const result = await response.json()
-    
-    if (response.ok && result.success) {
-      return { success: true, data: result.data }
-    } else {
-      return { success: false, error: result.error }
+  // Use XMLHttpRequest to support progress events when a callback is provided.
+  return new Promise(resolve => {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1'
+      const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
+
+      const xhr = new XMLHttpRequest()
+      xhr.open('POST', `${baseUrl}${endpoint}`)
+      if (token) {
+        xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+      }
+
+      if (xhr.upload && onProgress) {
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100)
+            onProgress(percent)
+          }
+        }
+      }
+
+      xhr.onload = () => {
+        try {
+          const result = JSON.parse(xhr.responseText)
+          if (xhr.status >= 200 && xhr.status < 300 && result.success) {
+            resolve({ success: true, data: result.data })
+          } else {
+            resolve({ success: false, error: result.error })
+          }
+        } catch (e) {
+          resolve({ success: false, error: { message: 'Upload failed', details: e } })
+        }
+      }
+
+      xhr.onerror = () => {
+        resolve({ success: false, error: { message: 'Upload failed', details: 'network error' } })
+      }
+
+      const formData = new FormData()
+      formData.append(fieldName, file)
+      xhr.send(formData)
+    } catch (error) {
+      resolve({ success: false, error: { message: 'Upload failed', details: error } })
     }
-  } catch (error) {
-    return { success: false, error: { message: 'Upload failed', details: error } }
-  }
+  })
 }
 
 /**
@@ -90,17 +113,18 @@ export async function uploadUserProfileImage(file: File) {
  * @param file - The file to upload
  * @returns Promise with the upload response
  */
-export async function uploadContentFile(file: File) {
-  return uploadFile(file, '/trainer/upload/content', 'file')
+export async function uploadContentFile(file: File, onProgress?: (percent: number) => void) {
+  return uploadFile(file, '/trainer/upload/content', 'file', onProgress)
 }
 
 /**
  * Upload thumbnail image
  * @param file - The thumbnail image file to upload
+ * @param onProgress - optional progress callback (0–100)
  * @returns Promise with the upload response
  */
-export async function uploadThumbnail(file: File) {
-  return uploadFile(file, '/trainer/upload/thumbnail', 'file')
+export async function uploadThumbnail(file: File, onProgress?: (percent: number) => void) {
+  return uploadFile(file, '/trainer/upload/thumbnail', 'file', onProgress)
 }
 
 /**
