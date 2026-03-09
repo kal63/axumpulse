@@ -116,14 +116,3 @@ This project follows [Semantic Versioning](https://semver.org/):
 3. Create git tag: `git tag -a vX.Y.Z -m "Release version X.Y.Z"`
 4. Push tag: `git push origin vX.Y.Z`
 5. Create GitHub release with changelog content
-
-### Contributing
-
-When contributing, please:
-- Update the CHANGELOG.md for any user-facing changes
-- Follow conventional commit format for commit messages
-- Test changes thoroughly before release
-
----
-
-*This changelog was generated from git commit history and development notes.*
