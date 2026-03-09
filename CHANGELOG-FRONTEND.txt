@@ -96,6 +96,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Improved user state management
   - Real-time subscription status updates
 
+- **Real-time Communication**:
+  - WebRTC-based video calling for medical consultations
+  - VoIP audio communication
+  - Screen sharing capabilities
+  - Call recording and archiving
+  - Video quality optimization
+  - Connection stability improvements
+
+- **Gamification System**:
+  - Daily challenges and rewards
+  - Spin & Win game mechanics
+  - XP and level progression
+  - Achievement badges and unlocks
+  - Leaderboards and social competition
+  - Progress tracking and milestones
+  - Motivational notifications and streaks
+
 #### Fixed
 - **Build & Dependencies**:
   - Updated Next.js to version ^15.5.12
