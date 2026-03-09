@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from '@/components/shared/Logo';
 
@@ -15,9 +15,36 @@ interface HeaderProps {
   showMenuButton?: boolean;
 }
 
+const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'am', name: 'Amharic' },
+  { code: 'om', name: 'Oromifa' },
+  { code: 'ti', name: 'Tigrigna' }
+];
+
 export default function Header({ scrolled = false, showLogin = true, onMenuClick, showMenuButton = false }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const languageDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
+        setIsLanguageOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLanguageSelect = (code: string) => {
+    setSelectedLanguage(code);
+    setIsLanguageOpen(false);
+    // i18n logic will be added here later
+  };
 
   const scrollToSection = (sectionId: string) => {
     if (typeof window !== 'undefined') {
@@ -79,6 +106,54 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
                 {item.label}
               </motion.button>
             ))}
+
+            {/* Language Selector */}
+            <div className="relative ml-2" ref={languageDropdownRef}>
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: 0.7 }}
+                onClick={() => setIsLanguageOpen(!isLanguageOpen)}
+                className={`p-2 rounded-lg font-medium cursor-pointer transition-all duration-300 ${scrolled
+                  ? 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                  : 'text-white/90 hover:text-white hover:bg-white/10'
+                  }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Globe className="w-5 h-5" />
+              </motion.button>
+
+              <AnimatePresence>
+                {isLanguageOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className={`absolute right-0 mt-2 w-40 rounded-lg shadow-lg border z-50 overflow-hidden ${scrolled
+                      ? 'bg-slate-800 border-blue-500/20'
+                      : 'bg-slate-900/95 border-blue-500/20'
+                      }`}
+                  >
+                    {languages.map((lang) => (
+                      <motion.button
+                        key={lang.code}
+                        onClick={() => handleLanguageSelect(lang.code)}
+                        className={`w-full px-4 py-3 text-left transition-all duration-200 ${selectedLanguage === lang.code
+                          ? 'bg-blue-500/20 text-white'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
+                          }`}
+                        whileHover={{ x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        {lang.name}
+                      </motion.button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {showLogin && (
               <motion.div
@@ -190,6 +265,37 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-500/5 to-blue-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </motion.button>
                 ))}
+
+                {/* Mobile Language Selector */}
+                <motion.div
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.5 + 7 * 0.05 }}
+                  className="border-t border-slate-700 mt-2 pt-2"
+                >
+                  <div className="px-4 py-2">
+                    <p className="text-xs text-slate-400 mb-2 flex items-center gap-2">
+                      <Globe className="w-4 h-4" />
+                      Language
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {languages.map((lang) => (
+                        <motion.button
+                          key={lang.code}
+                          onClick={() => handleLanguageSelect(lang.code)}
+                          className={`px-3 py-2 rounded-lg text-sm transition-all duration-200 ${selectedLanguage === lang.code
+                            ? 'bg-blue-500/20 text-white'
+                            : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
+                            }`}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          {lang.name}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
 
                 {showLogin && (
                   <motion.div
