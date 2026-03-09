@@ -1,0 +1,129 @@
+# AxumPulse Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0] - 2026-03-10
+
+### Added
+- **Authentication System**: Secure dev quick-login endpoint and role-based login flow
+- **Internationalization (i18n)**: Full support for multiple locales, messages, and sidebar navigation
+- **Trainer Portfolio**: Complete trainer portfolio site customization UI
+- **Medical System**:
+  - Medical application status page
+  - Consult payment system for medical professionals
+  - Enhanced MedicalApplyPage with language fetching
+  - Improved MedicalHubPage error handling
+- **Subscription Management**: Subscription checks and indicators across user pages
+- **Gaming Features**: Spin availability display and validation for spin & win game
+- **UI Enhancements**:
+  - Hero-style headers for daily challenges, games & leaderboard pages
+  - Language selector dropdown in header
+  - Enhanced mobile BottomNavigation with i18n support
+- **Email Features**: Email subscription system (backend + frontend)
+- **Social Media Integration**: Social media links
+- **Package System**: Package-first subscription flow with discount display
+- **Admin Features**: SettingsPage component for admin users
+- **Upload System**: Upload progress tracking and success toast notifications
+- **User Experience**:
+  - User redirection based on role after login
+  - Preferences tab in TrainerSettingsPage with language and theme selection
+  - Payment success page with loading state and Suspense
+
+### Fixed
+- **Data Safety**: Fixed TypeError by ensuring specialties are checked as arrays before accessing properties (prevents crashes when API returns non-array data)
+- **Build & Dependencies**: Updated Next.js version to ^15.5.12
+- **Configuration**:
+  - Updated environment variables for API server configuration
+  - Changed server port to 3001
+  - Updated API URL and image domains for deployment
+- **Upload System**:
+  - Increased video/content upload limit from 100MB to 500MB
+  - Fixed upload endpoints and routing
+  - Fixed content upload endpoint routing and language loading
+- **Routing Issues**: Fixed trainer routing problems on page refresh
+- **UI/UX**:
+  - Fixed JSX structure in trainer detail page
+  - Fixed alignment issues in HeroSection languages dropdown
+  - Fixed build time error in checkout page
+- **API & Data**:
+  - Fixed module imports, type errors, and API endpoints
+  - Fixed API issues and type errors
+  - Changed error logging from error to log for non-404 API requests
+- **User Flow**: Fixed redirect for new users to trainers list after package-based registration
+
+### Changed
+- **Pricing Updates**:
+  - Updated subscription price from 9 ETB to 4 ETB
+  - Updated minimum daily subscription price in Hero section
+- **Social Media**: Replaced Twitter with TikTok in forms
+- **UI Components**:
+  - Temporarily removed 'view all packages' from herosection
+  - Removed language selector from HeroSection
+  - Simplified SettingsPage content and removed fitness tab
+
+### Refactored
+- **API Client**: Renamed getLanguages to getUserLanguages and removed unused public API methods
+- **Data Handling**: Enhanced data handling in Trainer components and RoleSelector
+- **Settings**: Simplified SettingsPage content structure
+
+### Technical Improvements
+- **Error Handling**: Improved error handling across components
+- **Performance**: Loading states with Suspense for payment status
+- **Code Quality**: Fixed type errors and improved code structure
+
+## [0.1.0] - 2026-02-08
+
+### Added
+- Initial release with basic fitness platform functionality
+- User authentication and registration
+- Basic trainer profiles
+- Content upload system
+- Subscription system foundation
+- Medical consultation features
+- Mobile-responsive UI components
+
+---
+
+## Versioning Guidelines
+
+This project follows [Semantic Versioning](https://semver.org/):
+
+- **MAJOR** version for incompatible API changes
+- **MINOR** version for backwards-compatible functionality additions
+- **PATCH** version for backwards-compatible bug fixes
+
+### Future Version Planning
+
+#### [1.1.0] - Planned Features
+- Advanced analytics dashboard
+- Push notifications
+- Offline content support
+- Enhanced medical consultation features
+- Multi-language content support
+
+#### [1.0.1] - Planned Patches
+- Performance optimizations
+- Minor UI improvements
+- Additional error handling
+
+### Release Process
+
+1. Update version in `package.json`
+2. Update this CHANGELOG.md file
+3. Create git tag: `git tag -a vX.Y.Z -m "Release version X.Y.Z"`
+4. Push tag: `git push origin vX.Y.Z`
+5. Create GitHub release with changelog content
+
+### Contributing
+
+When contributing, please:
+- Update the CHANGELOG.md for any user-facing changes
+- Follow conventional commit format for commit messages
+- Test changes thoroughly before release
+
+---
+
+*This changelog was generated from git commit history and development notes.*
