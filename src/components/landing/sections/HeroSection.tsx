@@ -194,7 +194,7 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                 </div>
                 
                 <div className="space-y-2">
-                  <div className="text-2xl font-bold text-purple-400">4 ETB</div>
+                  <div className="text-2xl font-bold text-purple-400"> ETB</div>
                   <div className="text-slate-400 text-sm">Daily Subscription</div>
                 </div>
                 <div className="space-y-2">
