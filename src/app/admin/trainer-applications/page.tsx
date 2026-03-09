@@ -137,12 +137,12 @@ export default function TrainerApplicationsPage() {
       header: 'Specialties',
       render: (app: TrainerApplication) => (
         <div className="flex flex-wrap gap-1">
-          {app.specialties && app.specialties.slice(0, 2).map((specialty, index) => (
+          {Array.isArray(app.specialties) && app.specialties.slice(0, 2).map((specialty, index) => (
             <Badge key={index} variant="outline" className="text-xs">
               {specialty}
             </Badge>
           ))}
-          {app.specialties && app.specialties.length > 2 && (
+          {Array.isArray(app.specialties) && app.specialties.length > 2 && (
             <Badge variant="outline" className="text-xs">
               +{app.specialties.length - 2}
             </Badge>

@@ -369,7 +369,7 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
                             </h3>
                             
                             {/* Specialties */}
-                            {trainer.specialties && trainer.specialties.length > 0 ? (
+                            {Array.isArray(trainer.specialties) && trainer.specialties.length > 0 ? (
                               <div className="flex flex-wrap gap-1.5">
                                 {trainer.specialties.slice(0, 2).map((specialty, idx) => (
                                   <span

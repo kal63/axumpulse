@@ -354,7 +354,7 @@ export default function MedicalHubPage() {
                         </div>
                       </div>
                       
-                      {doctor.medicalProfessional?.specialties && doctor.medicalProfessional.specialties.length > 0 && (
+                      {Array.isArray(doctor.medicalProfessional?.specialties) && doctor.medicalProfessional.specialties.length > 0 && (
                         <div className="flex flex-wrap gap-1">
                           {doctor.medicalProfessional.specialties.slice(0, 2).map((specialty: string, idx: number) => (
                             <Badge key={idx} variant="outline" className="text-xs">

@@ -232,7 +232,7 @@ function TrainersPageContent() {
                     </h3>
 
                     {/* Specialties */}
-                    {trainer.specialties && trainer.specialties.length > 0 && (
+                    {Array.isArray(trainer.specialties) && trainer.specialties.length > 0 && (
                       <div className="flex flex-wrap gap-2 justify-center mb-4">
                         {trainer.specialties.slice(0, 3).map((specialty) => (
                           <span

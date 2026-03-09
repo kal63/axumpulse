@@ -828,7 +828,7 @@ export default function VideoPlayerPage() {
                                     </p>
                                 )}
                                 
-                                {content.trainer.specialties && content.trainer.specialties.length > 0 && (
+                                {Array.isArray(content.trainer.specialties) && content.trainer.specialties.length > 0 && (
                                     <div className="flex flex-wrap gap-2">
                                         {content.trainer.specialties.slice(0, 3).map((specialty, index) => {
                                             const borderColors = [
