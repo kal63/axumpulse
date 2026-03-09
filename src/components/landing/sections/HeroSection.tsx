@@ -20,8 +20,6 @@ interface HeroSectionProps {
   onLoaded?: () => void;
 }
 
-const LANGUAGES = ['English', 'Amharic', 'Oromifa', 'Tigrigna'];
-
 export function HeroSection({ onLoaded }: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -32,8 +30,6 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
   const webglSupported = useWebGLSupport();
   const prefersReducedMotion = useReducedMotion();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('English');
-  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
 
   // Load subscription plans
   useEffect(() => {
@@ -198,66 +194,11 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                 </div>
                 
                 <div className="space-y-2">
-                  <div className="text-2xl font-bold text-purple-400">4 ETB</div>
+                  <div className="text-2xl font-bold text-purple-400">9 ETB</div>
                   <div className="text-slate-400 text-sm">Daily Subscription</div>
                 </div>
-
-                <div className="space-y-2 relative inline-block">
-                  <div className="flex items-center gap-3">
-                    <div>
-                      <div className="text-2xl font-bold text-green-400">4</div>
-                    </div>
-
-                    {/* Language Selector Dropdown */}
-                    <div className="relative">
-                      <motion.button
-                        onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
-                        className="px-3 py-1 rounded-md bg-slate-800/50 border border-slate-700 hover:border-green-500/50 text-green-400 text-sm font-medium transition-all duration-200 flex items-center gap-2 min-w-max h-fit"
-                        whileHover={{ borderColor: 'rgba(34, 197, 94, 0.5)' }}
-                      >
-                      <span>{selectedLanguage}</span>
-                      <motion.svg
-                        animate={{ rotate: isLanguageDropdownOpen ? 180 : 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                      </motion.svg>
-                    </motion.button>
-
-                    {/* Dropdown Menu */}
-                    {isLanguageDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute top-full mt-2 left-0 z-50 bg-slate-900 border border-slate-700 rounded-md shadow-lg overflow-hidden min-w-max"
-                      >
-                        {LANGUAGES.map((language) => (
-                          <motion.button
-                            key={language}
-                            onClick={() => {
-                              setSelectedLanguage(language);
-                              setIsLanguageDropdownOpen(false);
-                            }}
-                            className={`w-full px-4 py-2 text-sm text-left transition-all duration-150 ${
-                              selectedLanguage === language
-                                ? 'bg-green-500/20 text-green-400 border-l-2 border-green-400'
-                                : 'text-slate-300 hover:bg-slate-800 hover:text-green-400'
-                            }`}
-                            whileHover={{ x: 4 }}
-                          >
-                            {language}
-                          </motion.button>
-                        ))}
-                      </motion.div>
-                    )}
-                    </div>
-                  </div>
+                <div className="space-y-2">
+                  <div className="text-2xl font-bold text-green-400">4+</div>
                   <div className="text-slate-400 text-sm">Languages Supported</div>
                 </div>
               </motion.div>
@@ -310,6 +251,14 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                       )
                     })}
                   </div>
+                  {/* <Link href="/register">
+                    <motion.p
+                      whileHover={{ x: 5 }}
+                      className="text-xs text-blue-400 hover:text-blue-300 text-center lg:text-left mt-2 cursor-pointer inline-flex items-center gap-1"
+                    >
+                      View All Packages <ArrowRight className="w-3 h-3" />
+                    </motion.p>
+                  </Link> */}
                 </motion.div>
               )}
 
