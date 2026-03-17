@@ -164,8 +164,13 @@ export default function VideoPlayerPage() {
                 try {
                     const response = await apiClient.updateWatchProgress(contentId, watchTimeToSend, false, currentEffectiveTime)
                     if (response.success && response.data) {
-                        // Update watch percentages for display
-                        setWatchPercentage(response.data.watchPercentage || 0)
+                        // Prefer client-side calculation for display to avoid backend issues
+                        if (content?.duration) {
+                            const localWatchPct = (maxWatchedTime / content.duration) * 100
+                            setWatchPercentage(Math.min(100, Math.round(localWatchPct)))
+                        } else {
+                            setWatchPercentage(response.data.watchPercentage || 0)
+                        }
                         setEffectiveWatchPercentage(response.data.effectiveWatchPercentage || 0)
                         
                         // Handle auto-completion
@@ -209,7 +214,7 @@ export default function VideoPlayerPage() {
         }, 5000)
 
         return () => clearInterval(interval)
-    }, [contentId, effectiveWatchTime, playStartTime, completed, maxWatchedTime, lastSeekTime])
+    }, [contentId, effectiveWatchTime, playStartTime, completed, maxWatchedTime, lastSeekTime, content])
 
     const fetchContent = async () => {
         try {
@@ -303,7 +308,12 @@ export default function VideoPlayerPage() {
             
             if (response.success && response.data) {
                 setCompleted(true)
-                setWatchPercentage(response.data.watchPercentage || 0)
+                if (content?.duration) {
+                    const localWatchPct = (maxWatchedTime / content.duration) * 100
+                    setWatchPercentage(Math.min(100, Math.round(localWatchPct)))
+                } else {
+                    setWatchPercentage(response.data.watchPercentage || 0)
+                }
                 setEffectiveWatchPercentage(response.data.effectiveWatchPercentage || 0)
                 
                 // Refresh user profile to get updated XP/level
