@@ -30,9 +30,17 @@ export default function ChallengeDetailPage() {
   const [loading, setLoading] = useState(true)
   const [joining, setJoining] = useState(false)
   const [updating, setUpdating] = useState(false)
+  const [completing, setCompleting] = useState(false)
+  const [now, setNow] = useState(() => new Date())
 
   useEffect(() => {
     fetchChallengeDetails()
+  }, [challengeId])
+
+  // Keep "time-gated completion" UI up to date
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(interval)
   }, [challengeId])
 
   async function fetchChallengeDetails() {
@@ -153,15 +161,81 @@ export default function ChallengeDetailPage() {
   const hasJoined = !!userProgress
   const startTime = challenge.startTime ? new Date(challenge.startTime) : null
   const endTime = challenge.endTime ? new Date(challenge.endTime) : null
-  const now = new Date()
   const isActive = startTime && endTime ? startTime <= now && endTime >= now : false
   const isUpcoming = startTime ? startTime > now : false
   const isCompleted = userProgress?.status === 'completed'
   
-  // Extract goalValue and goalType from ruleJson or use defaults
   const ruleJson = challenge.ruleJson || {}
-  const goalValue = (challenge as any).goalValue || ruleJson.amount || ruleJson.targetValue || 100
-  const goalType = (challenge as any).goalType || ruleJson.unit || ruleJson.target || 'units'
+
+  // Derive goal from `requirements` when it looks like "180 seconds"/"3 minutes".
+  // Backend stores/uses time-based progress as seconds for those cases.
+  const requirementsText = (challenge.requirements || '').toString()
+  const requirementsMatch = requirementsText.match(/(\d+)\s*(seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h)\b/i)
+
+  let goalValue: number = 100
+  let goalType: string = 'units'
+  let timeGateSeconds: number | null = null
+
+  if (requirementsMatch) {
+    const n = parseInt(requirementsMatch[1], 10)
+    const unitRaw = (requirementsMatch[2] || '').toLowerCase()
+
+    if (unitRaw.startsWith('sec') || unitRaw === 's') {
+      goalValue = n
+      goalType = 'seconds'
+      timeGateSeconds = n
+    } else if (unitRaw.startsWith('min') || unitRaw === 'm') {
+      goalValue = n * 60
+      goalType = 'seconds'
+      timeGateSeconds = n * 60
+    } else if (unitRaw.startsWith('hour') || unitRaw.startsWith('hr') || unitRaw === 'h') {
+      goalValue = n * 3600
+      goalType = 'seconds'
+      timeGateSeconds = n * 3600
+    }
+  } else {
+    goalValue =
+      (challenge as any).goalValue ||
+      ruleJson.amount ||
+      ruleJson.targetValue ||
+      100
+    goalType = (challenge as any).goalType || ruleJson.unit || ruleJson.target || 'units'
+  }
+
+  const elapsedSeconds =
+    userProgress?.joinedAt ? Math.floor((now.getTime() - new Date(userProgress.joinedAt).getTime()) / 1000) : 0
+  const completionEligible = timeGateSeconds === null ? true : elapsedSeconds >= timeGateSeconds
+
+  async function handleCompleteChallenge() {
+    if (!userProgress || isCompleted || completing) return
+    try {
+      setCompleting(true)
+      const response = await apiClient.completeChallenge(challengeId)
+
+      if (response.success) {
+        toast({
+          title: 'Challenge completed!',
+          description: `You earned ${challenge.xpReward || 0} XP.`,
+        })
+        await fetchChallengeDetails()
+      } else {
+        toast({
+          title: 'Error',
+          description: response.error?.message || 'Failed to complete challenge',
+          variant: 'destructive',
+        })
+      }
+    } catch (err) {
+      console.error('Error completing challenge:', err)
+      toast({
+        title: 'Error',
+        description: 'Failed to complete challenge',
+        variant: 'destructive',
+      })
+    } finally {
+      setCompleting(false)
+    }
+  }
   const progressPercentage = userProgress && goalValue ? (userProgress.progress / goalValue) * 100 : 0
 
   const difficultyColors = {
@@ -334,6 +408,37 @@ export default function ChallengeDetailPage() {
                   This challenge has ended.
                 </p>
               </div>
+            </div>
+          )}
+
+          {/* Complete Button (time-gated when `requirements` includes seconds/minutes) */}
+          {hasJoined && userProgress && !isCompleted && isActive && (
+            <div className="space-y-3">
+              {timeGateSeconds !== null ? (
+                <p className="text-sm text-[var(--neumorphic-muted)]">
+                  Hold until you reach the required duration. {completionEligible ? 'Ready to complete.' : `Time left: ${Math.max(0, timeGateSeconds - elapsedSeconds)}s.`}
+                </p>
+              ) : (
+                <p className="text-sm text-[var(--neumorphic-muted)]">
+                  Mark this challenge complete to claim your XP reward.
+                </p>
+              )}
+
+              <button
+                onClick={handleCompleteChallenge}
+                disabled={completing || !completionEligible || !user}
+                className={`w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 px-6 py-3 shadow-lg ${
+                  completing || !completionEligible
+                    ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700'
+                }`}
+              >
+                {completing
+                  ? 'Completing...'
+                  : completionEligible
+                    ? 'Finish & Claim XP'
+                    : 'Complete when duration ends'}
+              </button>
             </div>
           )}
         </div>

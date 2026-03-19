@@ -2027,6 +2027,14 @@ class ApiClient {
     })
   }
 
+  // Complete a challenge (optionally time-gated by backend)
+  async completeChallenge(challengeId: number): Promise<ApiResponse<any>> {
+    return this.request<any>('/user/progress/challenge/complete', {
+      method: 'POST',
+      body: JSON.stringify({ challengeId })
+    })
+  }
+
   // Get user's active workout plans
   async getMyWorkoutPlans(): Promise<ApiResponse<{ items: any[] }>> {
     return this.request<{ items: any[] }>('/user/progress/my-workout-plans')
