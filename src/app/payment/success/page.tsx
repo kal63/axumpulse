@@ -25,6 +25,7 @@ function PaymentSuccessContent() {
   const [consultQuantity, setConsultQuantity] = useState<number>(0)
   const [availableConsults, setAvailableConsults] = useState<number>(0)
   const txRef = searchParams.get('tx_ref')
+  const appRedirect = searchParams.get('app_redirect') || searchParams.get('amp;app_redirect')
 
   useEffect(() => {
     if (!txRef) {
@@ -180,6 +181,23 @@ function PaymentSuccessContent() {
     checkSubscription()
   }, [txRef, isAuthenticated])
 
+  useEffect(() => {
+    // For mobile payment flow: after web verification succeeds on this page,
+    // bounce back into the app deep-link callback so app state can refresh.
+    if (status !== 'success' || !appRedirect || !txRef) return
+    const timer = setTimeout(() => {
+      try {
+        const target = appRedirect.includes('?')
+          ? `${appRedirect}&tx_ref=${encodeURIComponent(txRef)}`
+          : `${appRedirect}?tx_ref=${encodeURIComponent(txRef)}`
+        window.location.href = target
+      } catch (e) {
+        // Keep page usable even if redirect URL is malformed.
+      }
+    }, 1200)
+    return () => clearTimeout(timer)
+  }, [status, appRedirect, txRef])
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -325,6 +343,20 @@ function PaymentSuccessContent() {
                 )}
 
                 <div className="flex flex-col sm:flex-row gap-4">
+                  {appRedirect && status === 'success' && (
+                    <Button
+                      className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white"
+                      onClick={() => {
+                        if (!txRef) return
+                        const target = appRedirect.includes('?')
+                          ? `${appRedirect}&tx_ref=${encodeURIComponent(txRef)}`
+                          : `${appRedirect}?tx_ref=${encodeURIComponent(txRef)}`
+                        window.location.href = target
+                      }}
+                    >
+                      Open App
+                    </Button>
+                  )}
                   <Link href="/" className="flex-1">
                     <Button
                       variant="outline"
