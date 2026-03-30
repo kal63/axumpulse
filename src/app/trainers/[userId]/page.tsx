@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense, Key } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { apiClient, PublicTrainerDetail, CertificationFile } from '@/lib/api-client';
+import { useAuth } from '@/contexts/auth-context'
 import { getImageUrl } from '@/lib/upload-utils';
 import { createSlug } from '@/lib/slug-utils';
 import Header from '@/components/shared/header';
@@ -103,6 +104,7 @@ function TrainerDetailPageContent() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isAuthenticated } = useAuth()
   const userIdParam = params?.userId as string;
   
   const [trainer, setTrainer] = useState<PublicTrainerDetail | null>(null);
@@ -275,7 +277,24 @@ function TrainerDetailPageContent() {
     const trainerUserId = trainer.userId;
     const planId = searchParams.get('planId');
     const duration = searchParams.get('duration');
+    const mode = searchParams.get('mode')
     
+    if (mode === 'changeTrainer') {
+      if (!isAuthenticated) {
+        router.push(`/login?redirect=${encodeURIComponent(`/trainers/${userIdParam}?mode=changeTrainer`)}`)
+        return
+      }
+      void (async () => {
+        const res = await apiClient.changeTrainer({ new_trainer_id: trainerUserId })
+        if (res.success) {
+          router.push('/user/dashboard')
+        } else {
+          alert(res.error?.message || 'Failed to change trainer')
+        }
+      })()
+      return
+    }
+
     if (planId && duration) {
       const params = new URLSearchParams({
         planId: planId,

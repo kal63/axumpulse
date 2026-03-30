@@ -25,9 +25,12 @@ function CheckoutContent() {
   const [plan, setPlan] = useState<SubscriptionPlan | null>(null)
   const [trainerId, setTrainerId] = useState<number | null>(null)
   const [trainerName, setTrainerName] = useState<string>('')
+  const [mode, setMode] = useState<'new' | 'change'>('new')
   const [duration, setDuration] = useState<'daily' | 'monthly' | 'threeMonth' | 'sixMonth' | 'nineMonth' | 'yearly'>('monthly')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [email, setEmail] = useState('')
+  const [quote, setQuote] = useState<any>(null)
+  const appRedirect = searchParams.get('app_redirect') || searchParams.get('amp;app_redirect')
 
   useEffect(() => {
     // Get data from URL params first
@@ -35,15 +38,18 @@ function CheckoutContent() {
     const trainerIdParam = searchParams.get('trainerId')
     const durationParam = searchParams.get('duration')
     const trainerNameParam = searchParams.get('trainerName')
+    const modeParam = searchParams.get('mode')
+    const parsedMode = modeParam === 'change' ? 'change' : 'new'
+    setMode(parsedMode)
 
     // Set user email if available
     if (user?.email) {
       setEmail(user.email)
     }
 
-    // If we have all required params, proceed (user might have just registered)
-    if (planId && trainerIdParam) {
-      setTrainerId(parseInt(trainerIdParam))
+    // If we have params, proceed (change mode does not require trainerId)
+    if (planId && (parsedMode === 'change' || trainerIdParam)) {
+      if (trainerIdParam) setTrainerId(parseInt(trainerIdParam))
       setTrainerName(trainerNameParam || '')
       if (durationParam) {
         setDuration(durationParam as any)
@@ -61,7 +67,7 @@ function CheckoutContent() {
     }
 
     // If authenticated but no params, show error
-    if (!planId || !trainerIdParam) {
+    if (!planId || (parsedMode !== 'change' && !trainerIdParam)) {
       setError('Missing required information. Please start over.')
       return
     }
@@ -80,6 +86,38 @@ function CheckoutContent() {
       setError('Failed to load subscription plan')
     }
   }
+
+  // In change mode, load current subscription to display trainer info
+  useEffect(() => {
+    const run = async () => {
+      if (mode !== 'change') return
+      if (!isAuthenticated) return
+      try {
+        const res = await apiClient.getMySubscription()
+        const sub = res.success ? res.data?.subscription : null
+        if (sub) {
+          setTrainerId(sub.trainerId)
+          setTrainerName(sub.trainer?.name || '')
+        }
+      } catch {}
+    }
+    void run()
+  }, [mode, isAuthenticated])
+
+  // In change mode, refresh quote when duration/plan changes
+  useEffect(() => {
+    const run = async () => {
+      if (mode !== 'change' || !plan) return
+      try {
+        const res = await apiClient.quoteChangePackage({
+          new_subscription_plan_id: plan.id,
+          duration: duration,
+        })
+        if (res.success && res.data) setQuote(res.data.quote)
+      } catch {}
+    }
+    void run()
+  }, [mode, plan, duration])
 
   const getPriceForDuration = (plan: SubscriptionPlan, duration: string): number => {
     switch (duration) {
@@ -113,8 +151,10 @@ function CheckoutContent() {
 
   const handlePayment = async () => {
     if (!plan || !trainerId) {
-      setError('Missing required information')
-      return
+      if (mode !== 'change') {
+        setError('Missing required information')
+        return
+      }
     }
 
     if (!phoneNumber) {
@@ -141,17 +181,29 @@ function CheckoutContent() {
     setError('')
 
     try {
-      const response = await apiClient.initializePayment({
-        subscription_plan_id: plan.id,
-        trainer_id: trainerId,
-        duration: duration,
-        phone_number: phoneNumber,
-        email: email
-      })
+      const response = mode === 'change'
+        ? await apiClient.initializeChangePackagePayment({
+            new_subscription_plan_id: plan.id,
+            duration: duration,
+            phone_number: phoneNumber,
+            email: email,
+            ...(appRedirect ? { app_redirect: appRedirect } : {})
+          })
+        : await apiClient.initializePayment({
+            subscription_plan_id: plan.id,
+            trainer_id: trainerId!,
+            duration: duration,
+            phone_number: phoneNumber,
+            email: email
+          })
 
       if (response.success && response.data) {
+        if ((response.data as any).no_payment_required) {
+          router.push('/user/dashboard')
+          return
+        }
         // Redirect to Chapa checkout
-        window.location.href = response.data.checkout_url
+        window.location.href = (response.data as any).checkout_url
       } else {
         // Display the user-friendly error message from the API
         setError(response.error?.message || 'Failed to initialize payment. Please try again.')
@@ -167,7 +219,7 @@ function CheckoutContent() {
     }
   }
 
-  if (!plan || !trainerId) {
+  if (!plan || (mode !== 'change' && !trainerId)) {
     return (
       <div className="min-h-screen bg-slate-900 flex flex-col">
         <UnifiedBackground />
@@ -195,7 +247,9 @@ function CheckoutContent() {
     )
   }
 
-  const totalPrice = getPriceForDuration(plan, duration)
+  const totalPrice = mode === 'change'
+    ? Number(quote?.amountDue || 0)
+    : getPriceForDuration(plan, duration)
 
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col">
@@ -236,7 +290,9 @@ function CheckoutContent() {
                     <div className="text-slate-400">Package:</div>
                     <div className="text-white font-medium">{plan.name}</div>
                     <div className="text-slate-400">Trainer:</div>
-                    <div className="text-white font-medium">{trainerName || `Trainer #${trainerId}`}</div>
+                    <div className="text-white font-medium">
+                      {trainerName || (trainerId ? `Trainer #${trainerId}` : 'Current trainer')}
+                    </div>
                     <div className="text-slate-400">Duration:</div>
                     <div className="text-white font-medium capitalize">
                       {duration === 'daily' ? 'Daily' : 
@@ -248,6 +304,11 @@ function CheckoutContent() {
                     <div className="text-slate-400">Total:</div>
                     <div className="text-blue-400 font-bold text-lg">{formatPrice(totalPrice)}</div>
                   </div>
+                  {mode === 'change' && (
+                    <p className="text-xs text-slate-300 mt-2">
+                      This is a prorated amount based on your remaining subscription time.
+                    </p>
+                  )}
                 </div>
 
                 {/* Email Input */}

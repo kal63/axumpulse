@@ -83,11 +83,13 @@ function TrainersPageContent() {
     // Preserve planId and duration params if they exist
     const planId = searchParams.get('planId')
     const duration = searchParams.get('duration')
+    const mode = searchParams.get('mode')
     
     let url = `/trainers/${trainer.userId}`
     const params = new URLSearchParams()
     if (planId) params.set('planId', planId)
     if (duration) params.set('duration', duration)
+    if (mode) params.set('mode', mode)
     
     if (params.toString()) {
       url += `?${params.toString()}`

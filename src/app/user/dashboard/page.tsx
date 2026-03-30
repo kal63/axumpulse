@@ -35,7 +35,8 @@ import {
   Globe,
   AlertCircle,
   UserCheck,
-  Package
+  Package,
+  RefreshCw
 } from 'lucide-react'
 
 export default function UserDashboardPage() {
@@ -276,6 +277,24 @@ export default function UserDashboardPage() {
                 <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
                   Active
                 </Badge>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                <Button
+                  onClick={() => router.push('/user/subscription/change-package')}
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Change package
+                </Button>
+                <Button
+                  onClick={() => router.push('/user/subscription/change-trainer')}
+                  variant="outline"
+                  className="border-slate-600 text-slate-300"
+                >
+                  <UserCheck className="w-4 h-4 mr-2" />
+                  Change trainer
+                </Button>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">

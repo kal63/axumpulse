@@ -1219,6 +1219,14 @@ class ApiClient {
     return response
   }
 
+  // Exchange a one-time bridge code for a JWT (no auth required)
+  async exchangeWebBridge(code: string): Promise<ApiResponse<{ token: string }>> {
+    return this.request<{ token: string }>('/auth/exchange-bridge', {
+      method: 'POST',
+      body: JSON.stringify({ code })
+    })
+  }
+
   setToken(token: string) {
     this.token = token
     if (typeof window !== 'undefined') {
@@ -3858,6 +3866,60 @@ class ApiClient {
     return this.request<{
       subscription: UserSubscription | null
     }>('/subscription/my-subscription')
+  }
+
+  // Quote package change (upgrade proration)
+  async quoteChangePackage(data: {
+    new_subscription_plan_id: number
+    duration: string
+  }): Promise<ApiResponse<{
+    quote: {
+      duration: string
+      oldPrice: number
+      newPrice: number
+      rawDelta: number
+      baseDelta: number
+      remainingSeconds: number
+      totalSeconds: number
+      remainingRatio: number
+      amountDue: number
+      isUpgrade: boolean
+      isDowngrade: boolean
+    }
+  }>> {
+    return this.request('/subscription/change-package/quote', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Initialize payment for package change (upgrade proration)
+  async initializeChangePackagePayment(data: {
+    new_subscription_plan_id: number
+    duration: string
+    phone_number: string
+    email?: string
+    new_trainer_id?: number
+    app_redirect?: string
+  }): Promise<ApiResponse<{
+    checkout_url: string | null
+    tx_ref: string
+    no_payment_required?: boolean
+    quote?: any
+    subscription?: UserSubscription
+  }>> {
+    return this.request('/payments/subscription/change-package/initialize', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // Change trainer (keep same expiry)
+  async changeTrainer(data: { new_trainer_id: number }): Promise<ApiResponse<{ subscription: UserSubscription }>> {
+    return this.request('/subscription/change-trainer', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
   }
 
   // ==================== MEDICAL PROFESSIONAL METHODS ====================
