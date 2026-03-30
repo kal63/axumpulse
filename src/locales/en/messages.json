@@ -796,6 +796,9 @@
   "user.workouts.noFeatured": "No featured plans at the moment. Check back soon!",
   "user.workouts.notFound": "Workout plan not found",
   "user.workouts.searchPlaceholder": "Search workout plans, trainers, or categories...",
+  "user.workoutPlan.video.dialogTitle": "Exercise video",
+  "user.workoutPlan.video.introTitle": "Plan overview video",
+  "user.workoutPlan.video.watchDemo": "Watch demo",
   "videos": "Videos",
   "workouts": "Workouts"
 }

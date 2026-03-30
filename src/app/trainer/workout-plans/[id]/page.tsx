@@ -38,8 +38,10 @@ import {
   Pencil,
   Check,
   Send,
-  AlertCircle
+  AlertCircle,
+  Video
 } from 'lucide-react'
+import { ApprovedVideoSelect } from '@/components/trainer/ApprovedVideoSelect'
 
 export default function WorkoutPlanDetailPage() {
   const params = useParams()
@@ -229,19 +231,44 @@ export default function WorkoutPlanDetailPage() {
     setShowExerciseDialog(true)
   }
 
+  const buildExercisePayload = (f: Partial<WorkoutExercise>) => {
+    const payload: Record<string, unknown> = {
+      name: f.name,
+      description: f.description,
+      category: f.category,
+      muscleGroups: f.muscleGroups,
+      equipment: f.equipment,
+      sets: f.sets,
+      reps: f.reps,
+      weight: f.weight,
+      duration: f.duration,
+      restTime: f.restTime,
+      order: f.order,
+      notes: f.notes
+    }
+    if ('contentId' in f && f.contentId !== undefined) {
+      payload.contentId = f.contentId
+    }
+    return payload
+  }
+
   const handleSaveExercise = async () => {
     if (!workoutPlan) return
+
+    if (!editingExercise && !exerciseForm.name?.trim()) {
+      setError('Exercise name is required')
+      return
+    }
 
     try {
       setExerciseSaving(true)
       let res
-      
+      const payload = buildExercisePayload(exerciseForm)
+
       if (editingExercise) {
-        // Update existing exercise
-        res = await apiClient.updateWorkoutExercise(workoutPlan.id, editingExercise.id, exerciseForm)
+        res = await apiClient.updateWorkoutExercise(workoutPlan.id, editingExercise.id, payload)
       } else {
-        // Add new exercise
-        res = await apiClient.addWorkoutExercise(workoutPlan.id, exerciseForm)
+        res = await apiClient.addWorkoutExercise(workoutPlan.id, payload)
       }
 
       if (res.success) {
@@ -505,6 +532,13 @@ export default function WorkoutPlanDetailPage() {
                       </Select>
                     </div>
                   </div>
+
+                  <ApprovedVideoSelect
+                    label="Plan video (optional)"
+                    description="Only approved videos from your library."
+                    value={editForm.contentId ?? null}
+                    onChange={(contentId) => setEditForm((prev) => ({ ...prev, contentId }))}
+                  />
                 </div>
               ) : (
                 <>
@@ -513,6 +547,12 @@ export default function WorkoutPlanDetailPage() {
                       <h3 className="font-bold text-xl mb-3 text-gray-900 dark:text-white">{workoutPlan.title}</h3>
                       {workoutPlan.description && (
                         <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">{workoutPlan.description}</p>
+                      )}
+                      {workoutPlan.introContent?.title && (
+                        <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                          <Video className="h-4 w-4 shrink-0" />
+                          <span>Linked video: {workoutPlan.introContent.title}</span>
+                        </p>
                       )}
                     </div>
                     
@@ -607,6 +647,12 @@ export default function WorkoutPlanDetailPage() {
                       
                       {exercise.description && (
                         <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">{exercise.description}</p>
+                      )}
+                      {exercise.exerciseContent?.title && (
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 flex items-center gap-2">
+                          <Video className="h-4 w-4 shrink-0" />
+                          Video: {exercise.exerciseContent.title}
+                        </p>
                       )}
                       
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -841,6 +887,13 @@ export default function WorkoutPlanDetailPage() {
                 rows={3}
               />
             </div>
+
+            <ApprovedVideoSelect
+              label="Exercise video (optional)"
+              description="Trainees can open this video from the workout plan."
+              value={exerciseForm.contentId ?? null}
+              onChange={(contentId) => setExerciseForm((prev) => ({ ...prev, contentId }))}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>

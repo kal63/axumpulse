@@ -33,6 +33,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { ApprovedVideoSelect } from '@/components/trainer/ApprovedVideoSelect'
 
 interface ExerciseFormData {
   name: string
@@ -46,6 +47,7 @@ interface ExerciseFormData {
   duration: number
   restTime: number
   notes: string
+  contentId: number | null
 }
 
 const MUSCLE_GROUPS = [
@@ -83,7 +85,8 @@ export default function NewWorkoutPlanPage() {
     weight: '',
     duration: 0,
     restTime: 60,
-    notes: ''
+    notes: '',
+    contentId: null
   })
 
   const [workoutPlan, setWorkoutPlan] = useState<Partial<WorkoutPlan>>({
@@ -162,10 +165,24 @@ export default function NewWorkoutPlanPage() {
       // Add exercises
       for (let i = 0; i < exercises.length; i++) {
         const exercise = exercises[i]
-        const exerciseRes = await apiClient.addWorkoutExercise(createdWorkoutPlan.id, {
-          ...exercise,
+        const exercisePayload: Record<string, unknown> = {
+          name: exercise.name,
+          description: exercise.description,
+          category: exercise.category,
+          muscleGroups: exercise.muscleGroups,
+          equipment: exercise.equipment,
+          sets: exercise.sets,
+          reps: exercise.reps,
+          weight: exercise.weight,
+          duration: exercise.duration,
+          restTime: exercise.restTime,
+          notes: exercise.notes,
           order: i + 1
-        })
+        }
+        if (exercise.contentId != null) {
+          exercisePayload.contentId = exercise.contentId
+        }
+        const exerciseRes = await apiClient.addWorkoutExercise(createdWorkoutPlan.id, exercisePayload)
         if (!exerciseRes.success) {
           throw new Error(`Failed to add exercise: ${exercise.name}`)
         }
@@ -205,6 +222,7 @@ export default function NewWorkoutPlanPage() {
       restTime: exerciseForm.restTime,
       order: exercises.length + 1,
       notes: exerciseForm.notes,
+      contentId: exerciseForm.contentId ?? undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -227,7 +245,8 @@ export default function NewWorkoutPlanPage() {
       weight: exercise.weight || '',
       duration: exercise.duration || 0,
       restTime: exercise.restTime || 60,
-      notes: exercise.notes || ''
+      notes: exercise.notes || '',
+      contentId: exercise.contentId ?? null
     })
     setShowExerciseDialog(true)
   }
@@ -250,7 +269,8 @@ export default function NewWorkoutPlanPage() {
       weight: exerciseForm.weight,
       duration: exerciseForm.duration,
       restTime: exerciseForm.restTime,
-      notes: exerciseForm.notes
+      notes: exerciseForm.notes,
+      contentId: exerciseForm.contentId ?? undefined
     }
 
     setExercises(exercises.map(ex => ex.id === editingExercise.id ? updatedExercise : ex))
@@ -275,7 +295,8 @@ export default function NewWorkoutPlanPage() {
       weight: '',
       duration: 0,
       restTime: 60,
-      notes: ''
+      notes: '',
+      contentId: null
     })
   }
 
@@ -393,6 +414,13 @@ export default function NewWorkoutPlanPage() {
                 </SelectContent>
               </Select>
             </div>
+
+            <ApprovedVideoSelect
+              label="Plan video (optional)"
+              description="Only approved videos from your library can be linked."
+              value={workoutPlan.contentId ?? null}
+              onChange={(contentId) => setWorkoutPlan((prev) => ({ ...prev, contentId }))}
+            />
 
             <div>
               <Label>Estimated Duration</Label>
@@ -573,6 +601,13 @@ export default function NewWorkoutPlanPage() {
                 rows={2}
               />
             </div>
+
+            <ApprovedVideoSelect
+              label="Exercise video (optional)"
+              description="Trainees can open this video while doing the exercise."
+              value={exerciseForm.contentId}
+              onChange={(contentId) => setExerciseForm((prev) => ({ ...prev, contentId }))}
+            />
 
             <div>
               <Label>Muscle Groups</Label>

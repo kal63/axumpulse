@@ -11,5 +11,8 @@
   "medical": "Fayyaa",
   "profile": "Profaayilii",
   "trainerView": "Mul'ata Leenjisaa",
-  "becomeTrainer": "Leenjisaa ta'i"
+  "becomeTrainer": "Leenjisaa ta'i",
+  "user.workoutPlan.video.dialogTitle": "Exercise video",
+  "user.workoutPlan.video.introTitle": "Plan overview video",
+  "user.workoutPlan.video.watchDemo": "Watch demo"
 }

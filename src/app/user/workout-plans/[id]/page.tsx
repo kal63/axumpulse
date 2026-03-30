@@ -27,7 +27,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import type { WorkoutPlan, WorkoutPlanInsight } from '@/lib/api-client'
+import type { WorkoutPlan, WorkoutPlanInsight, WorkoutPlanPlaybackVideo } from '@/lib/api-client'
+import enMessages from '@/locales/en/messages.json'
 import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/contexts/auth-context'
 
@@ -55,6 +56,7 @@ export default function WorkoutPlanDetailPage() {
     const [insight, setInsight] = useState<WorkoutPlanInsight | null>(null)
     const [loadingInsight, setLoadingInsight] = useState(false)
     const [insightDialogOpen, setInsightDialogOpen] = useState(false)
+    const [exerciseVideoModal, setExerciseVideoModal] = useState<WorkoutPlanPlaybackVideo | null>(null)
     const [aiGenerationLoading, setAiGenerationLoading] = useState(false)
     const [availableUsers, setAvailableUsers] = useState<Array<{
         id: number
@@ -74,6 +76,14 @@ export default function WorkoutPlanDetailPage() {
 
     const planId = Number(params.id)
     const isMedicalPro = user?.isMedical || false
+
+    const wm = enMessages as Record<string, string>
+    const planVideoTitle = wm['user.workoutPlan.video.introTitle'] ?? 'Plan overview video'
+    const watchDemoLabel = wm['user.workoutPlan.video.watchDemo'] ?? 'Watch demo'
+    const exerciseVideoDialogTitle = wm['user.workoutPlan.video.dialogTitle'] ?? 'Exercise video'
+
+    const videoSrc = (fileUrl: string) =>
+        `${process.env.NEXT_PUBLIC_API_URL || ''}${fileUrl}`
 
     useEffect(() => {
         if (planId) {
@@ -726,6 +736,33 @@ export default function WorkoutPlanDetailPage() {
                             </div>
                         </div>
 
+                        {workoutPlan.introVideo?.fileUrl && (
+                            <NeumorphicCard variant="raised" className="overflow-hidden p-0 border border-[var(--neumorphic-border)] shadow-lg">
+                                <div className="px-6 pt-5 pb-2">
+                                    <h2 className="text-lg font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+                                        <PlayCircle className="h-5 w-5 text-cyan-500" />
+                                        {planVideoTitle}
+                                    </h2>
+                                    {workoutPlan.introVideo.title && (
+                                        <p className="text-sm text-[var(--neumorphic-muted)] mt-1">{workoutPlan.introVideo.title}</p>
+                                    )}
+                                </div>
+                                <div className="aspect-video bg-black">
+                                    <video
+                                        className="w-full h-full object-contain"
+                                        controls
+                                        playsInline
+                                        src={videoSrc(workoutPlan.introVideo.fileUrl)}
+                                        poster={
+                                            workoutPlan.introVideo.thumbnailUrl
+                                                ? videoSrc(workoutPlan.introVideo.thumbnailUrl)
+                                                : undefined
+                                        }
+                                    />
+                                </div>
+                            </NeumorphicCard>
+                        )}
+
                         {/* Description */}
                         {workoutPlan.description && (
                             <NeumorphicCard variant="recessed" className="p-6">
@@ -929,7 +966,7 @@ export default function WorkoutPlanDetailPage() {
                                                         {/* Exercise Details */}
                                                         <div className="flex-1 space-y-4 w-full">
                                                             <div>
-                                                                <div className="flex items-center gap-2 mb-2">
+                                                                <div className="flex flex-wrap items-center gap-2 mb-2">
                                                                     <h3 className="text-xl font-bold text-[var(--neumorphic-text)]">
                                                                         {exercise.name}
                                                                     </h3>
@@ -937,6 +974,18 @@ export default function WorkoutPlanDetailPage() {
                                                                         <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs">
                                                                             Next Up
                                                                         </Badge>
+                                                                    )}
+                                                                    {exercise.video?.fileUrl && (
+                                                                        <Button
+                                                                            type="button"
+                                                                            variant="outline"
+                                                                            size="sm"
+                                                                            className="border-cyan-500/50 text-cyan-600 hover:bg-cyan-500/10"
+                                                                            onClick={() => setExerciseVideoModal(exercise.video!)}
+                                                                        >
+                                                                            <PlayCircle className="h-4 w-4 mr-1" />
+                                                                            {watchDemoLabel}
+                                                                        </Button>
                                                                     )}
                                                                 </div>
                                                                 
@@ -1314,6 +1363,33 @@ export default function WorkoutPlanDetailPage() {
                             {insight ? 'Update Insight' : 'Save Insight'}
                         </Button>
                     </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={!!exerciseVideoModal} onOpenChange={(open) => !open && setExerciseVideoModal(null)}>
+                <DialogContent className="max-w-3xl bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)]">
+                    <DialogHeader>
+                        <DialogTitle className="text-[var(--neumorphic-text)]">
+                            {exerciseVideoModal?.title || exerciseVideoDialogTitle}
+                        </DialogTitle>
+                    </DialogHeader>
+                    {exerciseVideoModal?.fileUrl && (
+                        <div className="aspect-video bg-black rounded-xl overflow-hidden">
+                            <video
+                                key={exerciseVideoModal.id}
+                                className="w-full h-full object-contain"
+                                controls
+                                playsInline
+                                autoPlay
+                                src={videoSrc(exerciseVideoModal.fileUrl)}
+                                poster={
+                                    exerciseVideoModal.thumbnailUrl
+                                        ? videoSrc(exerciseVideoModal.thumbnailUrl)
+                                        : undefined
+                                }
+                            />
+                        </div>
+                    )}
                 </DialogContent>
             </Dialog>
         </div>

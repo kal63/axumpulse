@@ -757,6 +757,15 @@ export interface TrainerStats {
   activeChallenges: number
 }
 
+/** Approved video playback payload on user workout plan API */
+export interface WorkoutPlanPlaybackVideo {
+  id: number
+  title: string
+  fileUrl: string
+  thumbnailUrl?: string
+  duration?: number
+}
+
 export interface WorkoutExercise {
   id: number
   workoutPlanId: number
@@ -772,6 +781,11 @@ export interface WorkoutExercise {
   restTime?: number
   order: number
   notes?: string
+  contentId?: number | null
+  /** User-facing sanitized video (GET /user/workout-plans/:id) */
+  video?: WorkoutPlanPlaybackVideo | null
+  /** Trainer API nested content */
+  exerciseContent?: ContentItem | null
   createdAt: string
   updatedAt: string
 }
@@ -790,6 +804,11 @@ export interface WorkoutPlan {
   estimatedDuration?: number
   totalExercises: number
   exercises?: WorkoutExercise[]
+  contentId?: number | null
+  /** User-facing sanitized intro video */
+  introVideo?: WorkoutPlanPlaybackVideo | null
+  /** Trainer API nested content */
+  introContent?: ContentItem | null
   rejectionReason?: string
   approvedBy?: number
   approvedAt?: string
@@ -1252,7 +1271,14 @@ class ApiClient {
   }
 
 
-  async getTrainerContent(params?: { page?: number; pageSize?: number }): Promise<ApiResponse<PaginatedResponse<ContentItem>>> {
+  async getTrainerContent(params?: {
+    page?: number
+    pageSize?: number
+    type?: string
+    status?: string
+    search?: string
+    isPublic?: string
+  }): Promise<ApiResponse<PaginatedResponse<ContentItem>>> {
     const query = createPaginationQuery(params)
     return this.request<PaginatedResponse<ContentItem>>(`/trainer/content${query}`)
   }
