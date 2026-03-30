@@ -1,6 +1,13 @@
 
 // API Client for Compound 360 Backend
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'
+const DEFAULT_API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'
+const API_BASE_URL_STORAGE_KEY = 'apiBaseUrl'
+
+function getInitialApiBaseUrl(): string {
+  if (typeof window === 'undefined') return DEFAULT_API_BASE_URL
+  const override = localStorage.getItem(API_BASE_URL_STORAGE_KEY)
+  return override || DEFAULT_API_BASE_URL
+}
 
 // Helper function to create pagination query string
 function createPaginationQuery(params?: { page?: number; pageSize?: number; [key: string]: any }): string {
@@ -889,11 +896,18 @@ class ApiClient {
   private baseURL: string
   private token: string | null = null
 
-  constructor(baseURL: string = API_BASE_URL) {
+  constructor(baseURL: string = getInitialApiBaseUrl()) {
     this.baseURL = baseURL
     // Get token from localStorage if available
     if (typeof window !== 'undefined') {
       this.token = localStorage.getItem('authToken')
+    }
+  }
+
+  setBaseUrl(baseURL: string) {
+    this.baseURL = String(baseURL || '').replace(/\/$/, '')
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(API_BASE_URL_STORAGE_KEY, this.baseURL)
     }
   }
 
