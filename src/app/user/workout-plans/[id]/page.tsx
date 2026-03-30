@@ -1058,9 +1058,29 @@ export default function WorkoutPlanDetailPage() {
                                                             </div>
                                                             
                                                             {/* Muscle Groups */}
-                                                            {exercise.muscleGroups && exercise.muscleGroups.length > 0 && (
+                                                            {(() => {
+                                                                const mgRaw: unknown = (exercise as any).muscleGroups
+                                                                let muscleGroups: string[] = []
+
+                                                                if (Array.isArray(mgRaw)) {
+                                                                    muscleGroups = mgRaw.filter((x): x is string => typeof x === 'string')
+                                                                } else if (typeof mgRaw === 'string') {
+                                                                    // Backend may return JSON fields as strings in some environments.
+                                                                    try {
+                                                                        const parsed = JSON.parse(mgRaw)
+                                                                        if (Array.isArray(parsed)) {
+                                                                            muscleGroups = parsed.filter((x): x is string => typeof x === 'string')
+                                                                        }
+                                                                    } catch {
+                                                                        muscleGroups = []
+                                                                    }
+                                                                }
+
+                                                                if (muscleGroups.length === 0) return null
+
+                                                                return (
                                                                 <div className="flex flex-wrap gap-2">
-                                                                    {exercise.muscleGroups.map((muscle, muscleIndex) => (
+                                                                    {muscleGroups.map((muscle, muscleIndex) => (
                                                                         <Badge 
                                                                             key={muscleIndex} 
                                                                             variant="outline" 
@@ -1070,7 +1090,8 @@ export default function WorkoutPlanDetailPage() {
                                                                         </Badge>
                                                                     ))}
                                                                 </div>
-                                                            )}
+                                                                )
+                                                            })()}
                                                             
                                                             {/* Equipment */}
                                                             {exercise.equipment && exercise.equipment !== 'none' && (
