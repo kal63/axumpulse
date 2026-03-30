@@ -740,7 +740,12 @@ export default function WorkoutPlanDetailPage() {
                   <Dumbbell className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No exercises yet</h3>
                   <p className="text-gray-500 dark:text-gray-400 mb-4">This workout plan doesn't have any exercises added yet.</p>
-                  <Button onClick={() => router.push(`/trainer/workout-plans/${workoutPlan.id}/edit`)}>
+                  <Button onClick={() => {
+                    if (!isEditing) {
+                      setIsEditing(true)
+                    }
+                    handleAddExercise()
+                  }}>
                     <Plus className="h-4 w-4 mr-2" />
                     Add Exercises
                   </Button>
