@@ -11,15 +11,17 @@ import { motion } from 'framer-motion'
 interface HeroSectionProps {
   trainer: PublicTrainerDetail
   onSubscribe?: () => void
+  /** When set, overrides site `ctaText` for the main button label */
+  ctaLabel?: string
 }
 
-export function HeroSection({ trainer, onSubscribe }: HeroSectionProps) {
+export function HeroSection({ trainer, onSubscribe, ctaLabel }: HeroSectionProps) {
   const site = trainer.site
   const heroBg = site?.heroBackgroundImage
   const headline = site?.headline || trainer.user.name
   const subheadline = site?.subheadline
   const bio = site?.bio || trainer.trainer.bio
-  const ctaText = site?.ctaText || 'Subscribe to This Trainer'
+  const ctaText = ctaLabel || site?.ctaText || 'Subscribe to This Trainer'
   const theme = site?.theme || {}
 
   const primaryColor = theme.primaryColor || '#3b82f6'

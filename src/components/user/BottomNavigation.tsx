@@ -13,7 +13,8 @@ import {
   Heart,
   Flame,
   Gamepad2,
-  Users
+  Users,
+  MessageCircle
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api-client';
@@ -84,6 +85,7 @@ export function BottomNavigation() {
     { id: 'games', label: t('games'), icon: Gamepad2, href: '/user/games' },
     { id: 'leaderboard', label: t('leaderboard'), icon: Users, href: '/user/leaderboard' },
     { id: 'progress', label: t('progress'), icon: BarChart3, href: '/user/progress' },
+    { id: 'coach', label: t('aiCoach'), icon: MessageCircle, href: '/user/coach' },
     { id: 'medical', label: t('medical'), icon: Heart, href: '/user/medical' },
     { id: 'profile', label: t('profile') , icon: User, href: '/user/profile' },
   ];

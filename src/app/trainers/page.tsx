@@ -3,6 +3,8 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { apiClient } from '@/lib/api-client'
+import { useAuth } from '@/contexts/auth-context'
+import { canSubscribeToTrainerPlan } from '@/lib/trainee-guards'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { SearchBar } from '@/components/user/SearchBar'
 import { LoadingGrid } from '@/components/user/LoadingGrid'
@@ -27,25 +29,42 @@ import { PublicTrainer } from '@/lib/api-client'
 function TrainersPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { user, isAuthenticated } = useAuth()
   const [trainers, setTrainers] = useState<PublicTrainer[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('')
+  const [matchedForGoal, setMatchedForGoal] = useState<string | null>(null)
 
   useEffect(() => {
     fetchTrainers()
-  }, [])
+  }, [isAuthenticated, user?.profile?.traineeOnboardingCompletedAt])
 
   const fetchTrainers = async () => {
     try {
       setLoading(true)
+      setMatchedForGoal(null)
+      const useMatches =
+        isAuthenticated && user && canSubscribeToTrainerPlan(user)
+      if (useMatches) {
+        const m = await apiClient.getTrainerMatches()
+        if (m.success && m.data?.items?.length) {
+          setMatchedForGoal(m.data.primaryGoal || null)
+          setTrainers(
+            m.data.items.map((trainer) => ({
+              ...trainer,
+              profilePicture: trainer.profilePicture ?? null
+            }))
+          )
+          return
+        }
+      }
       const response = await apiClient.getPublicTrainers()
       if (response.success && response.data) {
-        const trainersList = Array.isArray(response.data) 
-          ? response.data 
+        const trainersList = Array.isArray(response.data)
+          ? response.data
           : (response.data.items || [])
-        // Ensure profilePicture is properly typed
-        const typedTrainers = trainersList.map(trainer => ({
+        const typedTrainers = trainersList.map((trainer) => ({
           ...trainer,
           profilePicture: trainer.profilePicture ?? null
         }))
@@ -116,6 +135,20 @@ function TrainersPageContent() {
               <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
                 Connect with certified trainers and start your personalized fitness journey
               </p>
+              {matchedForGoal && (
+                <p className="text-sm text-cyan-600 dark:text-cyan-400 max-w-2xl mx-auto mt-3">
+                  Showing trainers ranked for your goal:{' '}
+                  <span className="font-medium">{matchedForGoal.replace(/_/g, ' ')}</span>
+                </p>
+              )}
+              {isAuthenticated && user && !canSubscribeToTrainerPlan(user) && (
+                <p className="text-sm text-amber-700 dark:text-amber-400 max-w-2xl mx-auto mt-3">
+                  <Link href="/register?traineeOnboarding=1" className="underline font-medium">
+                    Complete your fitness profile
+                  </Link>{' '}
+                  for personalized trainer matching and subscriptions.
+                </p>
+              )}
             </div>
 
             {/* Search and Filter */}

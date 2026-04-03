@@ -10,13 +10,26 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Eye, EyeOff, Phone, Lock, Mail, User, Calendar, ChevronRight, Check, Sparkles } from 'lucide-react'
-import { apiClient, SubscriptionPlan } from '@/lib/api-client'
+import { apiClient, SubscriptionPlan, type PublicTrainer } from '@/lib/api-client'
 import { useAuth } from '@/contexts/auth-context'
+import { canSubscribeToTrainerPlan } from '@/lib/trainee-guards'
 import Header from '@/components/shared/header'
 import { motion } from 'framer-motion'
 import { UnifiedBackground } from '@/components/landing/ui/UnifiedBackground'
+import Image from 'next/image'
+import { getImageUrl } from '@/lib/upload-utils'
 
-type Step = 'user-info' | 'package' | 'trainer'
+type Step = 'user-info' | 'trainee-profile' | 'package' | 'trainer'
+
+const PRIMARY_GOAL_OPTIONS: { value: string; label: string }[] = [
+  { value: 'lose_weight', label: 'Lose weight' },
+  { value: 'gain_muscle', label: 'Gain muscle' },
+  { value: 'general_fitness', label: 'General fitness' },
+  { value: 'build_endurance', label: 'Build endurance' },
+  { value: 'flexibility_mobility', label: 'Flexibility & mobility' },
+  { value: 'rehabilitation', label: 'Rehabilitation' },
+  { value: 'sports_performance', label: 'Sports performance' }
+]
 
 function RegisterPageContent() {
   const router = useRouter()
@@ -42,6 +55,15 @@ function RegisterPageContent() {
     gender: '' as 'male' | 'female' | ''
   })
   const [showPassword, setShowPassword] = useState(false)
+  const [traineeForm, setTraineeForm] = useState({
+    height: '',
+    weight: '',
+    primaryGoal: 'general_fitness',
+    activityLevel: 'moderate',
+    fitnessLevel: 'beginner' as 'beginner' | 'intermediate' | 'advanced'
+  })
+  const [matchTrainers, setMatchTrainers] = useState<PublicTrainer[]>([])
+  const [trainersLoading, setTrainersLoading] = useState(false)
 
   // Get trainer and package from URL params
   useEffect(() => {
@@ -49,24 +71,27 @@ function RegisterPageContent() {
     const trainerName = searchParams.get('trainerName')
     const planIdParam = searchParams.get('planId')
     const durationParam = searchParams.get('duration')
-    
+    const onboardingOnly = searchParams.get('traineeOnboarding') === '1'
+
     if (trainerId) {
       setSelectedTrainerId(parseInt(trainerId))
       setSelectedTrainerName(trainerName || '')
     }
 
-    // Load subscription plans first
     loadPlans().then((plans) => {
-      // If planId is provided, auto-select that package
+      if (onboardingOnly && isAuthenticated && user) {
+        setCurrentStep('trainee-profile')
+        return
+      }
+
       if (planIdParam) {
         const planId = parseInt(planIdParam)
         const foundPlan = plans.find((p: SubscriptionPlan) => p.id === planId)
         if (foundPlan) {
           setSelectedPlan(foundPlan)
           if (durationParam) {
-            setSelectedDuration(durationParam as any)
+            setSelectedDuration(durationParam as 'daily' | 'monthly' | 'threeMonth' | 'sixMonth' | 'nineMonth' | 'yearly')
           } else {
-            // Set default duration based on minDuration
             if (foundPlan.minDuration === 'daily') {
               setSelectedDuration('daily')
             } else if (foundPlan.minDuration === 'monthly') {
@@ -75,22 +100,55 @@ function RegisterPageContent() {
               setSelectedDuration('threeMonth')
             }
           }
-          // If planId is provided, skip package selection step
           if (isAuthenticated && user) {
-            setCurrentStep('trainer')
+            if (canSubscribeToTrainerPlan(user)) {
+              setCurrentStep('trainer')
+            } else {
+              setCurrentStep('trainee-profile')
+            }
           } else {
-            // If not authenticated, stay on user-info step
             setCurrentStep('user-info')
           }
         }
-      } else {
-        // If user is already authenticated and no planId, skip to package selection
-        if (isAuthenticated && user) {
+      } else if (isAuthenticated && user) {
+        if (canSubscribeToTrainerPlan(user)) {
           setCurrentStep('package')
+        } else {
+          setCurrentStep('trainee-profile')
         }
       }
     })
   }, [searchParams, isAuthenticated, user])
+
+  useEffect(() => {
+    if (currentStep !== 'trainer' || !isAuthenticated) return
+    let cancelled = false
+    const load = async () => {
+      setTrainersLoading(true)
+      try {
+        const res = await apiClient.getTrainerMatches()
+        if (cancelled) return
+        if (res.success && res.data?.items?.length) {
+          setMatchTrainers(res.data.items)
+        } else {
+          const pub = await apiClient.getPublicTrainers()
+          if (cancelled) return
+          if (pub.success && pub.data) {
+            const list = Array.isArray(pub.data) ? pub.data : (pub.data as { items?: PublicTrainer[] }).items || []
+            setMatchTrainers(list)
+          }
+        }
+      } catch {
+        if (!cancelled) setMatchTrainers([])
+      } finally {
+        if (!cancelled) setTrainersLoading(false)
+      }
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [currentStep, isAuthenticated])
 
   const loadPlans = async () => {
     try {
@@ -172,38 +230,13 @@ function RegisterPageContent() {
         })
 
         if (response.success) {
-          // Registration successful - refresh auth context to update user state
-          // The token is already set by registerUser, just need to refresh user data
           try {
             await refreshUser()
           } catch (error) {
             console.error('Failed to refresh auth context:', error)
           }
 
-          // If user came from a package detail page with a pre-selected plan & duration
-          // but without a trainer, redirect them to the trainers listing so they can
-          // complete the normal subscription flow (select trainer -> checkout).
-          const planIdFromUrl = searchParams.get('planId')
-          const durationFromUrl = searchParams.get('duration')
-          const trainerIdFromUrl = searchParams.get('trainerId')
-
-          if (planIdFromUrl && durationFromUrl && !trainerIdFromUrl) {
-            const params = new URLSearchParams({
-              planId: planIdFromUrl,
-              duration: durationFromUrl
-            })
-            router.push(`/trainers?${params.toString()}`)
-            return
-          }
-
-          // Fallback: continue with the internal multi-step flow
-          // If planId is already selected (from URL params), go to trainer selection
-          // Otherwise, go to package selection
-          if (selectedPlan) {
-            setCurrentStep('trainer')
-          } else {
-            setCurrentStep('package')
-          }
+          setCurrentStep('trainee-profile')
         } else {
           setError(response.error?.message || 'Registration failed')
         }
@@ -213,8 +246,50 @@ function RegisterPageContent() {
         setLoading(false)
       }
     } else {
-      // User is already authenticated, just proceed
-      setCurrentStep('package')
+      setCurrentStep(canSubscribeToTrainerPlan(user) ? 'package' : 'trainee-profile')
+    }
+  }
+
+  const handleTraineeProfileSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    const h = parseFloat(traineeForm.height)
+    const w = parseFloat(traineeForm.weight)
+    if (Number.isNaN(h) || h <= 0 || h > 300) {
+      setError('Please enter a valid height in cm')
+      return
+    }
+    if (Number.isNaN(w) || w <= 0 || w > 500) {
+      setError('Please enter a valid weight in kg')
+      return
+    }
+    setLoading(true)
+    try {
+      const res = await apiClient.completeTraineeOnboarding({
+        height: h,
+        weight: w,
+        primaryGoal: traineeForm.primaryGoal,
+        activityLevel: traineeForm.activityLevel,
+        fitnessLevel: traineeForm.fitnessLevel
+      })
+      if (!res.success) {
+        setError(res.error?.message || 'Failed to save profile')
+        return
+      }
+      await refreshUser()
+      if (searchParams.get('traineeOnboarding') === '1') {
+        router.push('/user/dashboard')
+        return
+      }
+      if (selectedPlan) {
+        setCurrentStep('trainer')
+      } else {
+        setCurrentStep('package')
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to save profile')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -236,6 +311,14 @@ function RegisterPageContent() {
       return
     }
     setCurrentStep('trainer')
+  }
+
+  const handlePackageBack = () => {
+    if (isAuthenticated && user && canSubscribeToTrainerPlan(user)) {
+      router.push('/user/dashboard')
+    } else {
+      setCurrentStep('trainee-profile')
+    }
   }
 
   const handleTrainerNext = () => {
@@ -318,39 +401,44 @@ function RegisterPageContent() {
                 </CardTitle>
                 <CardDescription className="text-slate-300">
                   {currentStep === 'user-info' && 'Create your account to get started'}
+                  {currentStep === 'trainee-profile' && 'Tell us about your goals so we can match you with the right trainer'}
                   {currentStep === 'package' && 'Choose your subscription package'}
-                  {currentStep === 'trainer' && 'Select your trainer'}
+                  {currentStep === 'trainer' && 'Select your trainer (ranked for your goals)'}
                 </CardDescription>
               </CardHeader>
 
               <CardContent>
                 {/* Progress Steps */}
-                <div className="flex items-center justify-between mb-8">
-                  {['user-info', 'package', 'trainer'].map((step, index) => (
-                    <div key={step} className="flex items-center flex-1">
+                <div className="flex items-center justify-between mb-8 gap-1 overflow-x-auto">
+                  {(['user-info', 'trainee-profile', 'package', 'trainer'] as Step[]).map((step, index, arr) => {
+                    const order = arr.indexOf(currentStep)
+                    return (
+                    <div key={step} className="flex items-center flex-1 min-w-[4rem]">
                       <div className="flex flex-col items-center flex-1">
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                          className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center font-semibold text-sm ${
                             currentStep === step
                               ? 'bg-blue-600 text-white'
-                              : ['user-info', 'package', 'trainer'].indexOf(currentStep) > index
+                              : order > index
                               ? 'bg-green-600 text-white'
                               : 'bg-slate-700 text-slate-400'
                           }`}
                         >
-                          {['user-info', 'package', 'trainer'].indexOf(currentStep) > index ? (
-                            <Check className="w-5 h-5" />
+                          {order > index ? (
+                            <Check className="w-4 h-4 md:w-5 md:h-5" />
                           ) : (
                             index + 1
                           )}
                         </div>
-                        <span className="text-xs mt-2 text-slate-400 capitalize">{step.replace('-', ' ')}</span>
+                        <span className="text-[10px] md:text-xs mt-2 text-slate-400 text-center leading-tight capitalize">
+                          {step === 'trainee-profile' ? 'Goals' : step.replace('-', ' ')}
+                        </span>
                       </div>
-                      {index < 2 && (
-                        <ChevronRight className="w-5 h-5 text-slate-600 mx-2" />
+                      {index < arr.length - 1 && (
+                        <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-slate-600 mx-1 shrink-0" />
                       )}
                     </div>
-                  ))}
+                  )})}
                 </div>
 
                 {error && (
@@ -474,12 +562,120 @@ function RegisterPageContent() {
                       disabled={loading}
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                     >
-                      {loading ? 'Creating Account...' : 'Continue to Package Selection'}
+                      {loading ? 'Creating Account...' : 'Continue'}
                     </Button>
                   </form>
                 )}
 
-                {/* Step 2: Package Selection */}
+                {currentStep === 'trainee-profile' && (
+                  <form onSubmit={handleTraineeProfileSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-slate-300">Height (cm) *</Label>
+                        <Input
+                          type="number"
+                          min={50}
+                          max={300}
+                          step={0.1}
+                          value={traineeForm.height}
+                          onChange={(e) => setTraineeForm((p) => ({ ...p, height: e.target.value }))}
+                          className="bg-slate-700 border-slate-600 text-white"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-slate-300">Weight (kg) *</Label>
+                        <Input
+                          type="number"
+                          min={20}
+                          max={500}
+                          step={0.1}
+                          value={traineeForm.weight}
+                          onChange={(e) => setTraineeForm((p) => ({ ...p, weight: e.target.value }))}
+                          className="bg-slate-700 border-slate-600 text-white"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-slate-300">Primary goal *</Label>
+                      <select
+                        value={traineeForm.primaryGoal}
+                        onChange={(e) => setTraineeForm((p) => ({ ...p, primaryGoal: e.target.value }))}
+                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white"
+                      >
+                        {PRIMARY_GOAL_OPTIONS.map((o) => (
+                          <option key={o.value} value={o.value}>{o.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-slate-300">Activity level</Label>
+                        <select
+                          value={traineeForm.activityLevel}
+                          onChange={(e) => setTraineeForm((p) => ({ ...p, activityLevel: e.target.value }))}
+                          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white"
+                        >
+                          <option value="sedentary">Sedentary</option>
+                          <option value="light">Light</option>
+                          <option value="moderate">Moderate</option>
+                          <option value="active">Active</option>
+                          <option value="very_active">Very active</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-slate-300">Fitness level</Label>
+                        <select
+                          value={traineeForm.fitnessLevel}
+                          onChange={(e) =>
+                            setTraineeForm((p) => ({
+                              ...p,
+                              fitnessLevel: e.target.value as 'beginner' | 'intermediate' | 'advanced'
+                            }))
+                          }
+                          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white"
+                        >
+                          <option value="beginner">Beginner</option>
+                          <option value="intermediate">Intermediate</option>
+                          <option value="advanced">Advanced</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="flex gap-4">
+                      {searchParams.get('traineeOnboarding') === '1' ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => router.push('/user/profile')}
+                          className="flex-1 border-slate-600 text-slate-300"
+                        >
+                          Cancel
+                        </Button>
+                      ) : (
+                        !isAuthenticated && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setCurrentStep('user-info')}
+                            className="flex-1 border-slate-600 text-slate-300"
+                          >
+                            Back
+                          </Button>
+                        )
+                      )}
+                      <Button
+                        type="submit"
+                        disabled={loading}
+                        className={`${searchParams.get('traineeOnboarding') === '1' || !isAuthenticated ? 'flex-1' : 'w-full'} bg-blue-600 hover:bg-blue-700 text-white`}
+                      >
+                        {loading ? 'Saving...' : 'Continue'}
+                      </Button>
+                    </div>
+                  </form>
+                )}
+
+                {/* Package Selection */}
                 {currentStep === 'package' && (
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -567,7 +763,7 @@ function RegisterPageContent() {
                     <div className="flex gap-4">
                       <Button
                         variant="outline"
-                        onClick={() => setCurrentStep('user-info')}
+                        onClick={handlePackageBack}
                         className="flex-1 border-slate-600 text-slate-300"
                       >
                         Back
@@ -583,9 +779,66 @@ function RegisterPageContent() {
                   </div>
                 )}
 
-                {/* Step 3: Trainer Selection */}
                 {currentStep === 'trainer' && (
                   <div className="space-y-6">
+                    {trainersLoading ? (
+                      <p className="text-slate-400 text-center py-8">Loading trainers…</p>
+                    ) : matchTrainers.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[360px] overflow-y-auto pr-1">
+                        {matchTrainers.map((t) => (
+                          <button
+                            key={t.userId}
+                            type="button"
+                            onClick={() => {
+                              setSelectedTrainerId(t.userId)
+                              setSelectedTrainerName(t.name)
+                            }}
+                            className={`text-left rounded-lg border p-3 transition-colors ${
+                              selectedTrainerId === t.userId
+                                ? 'border-blue-500 bg-blue-500/20'
+                                : 'border-slate-600 bg-slate-800/50 hover:border-slate-500'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-slate-700 shrink-0">
+                                {t.profilePicture ? (
+                                  <Image
+                                    src={getImageUrl(t.profilePicture) || ''}
+                                    alt={t.name}
+                                    fill
+                                    className="object-cover"
+                                    unoptimized
+                                  />
+                                ) : (
+                                  <span className="flex items-center justify-center w-full h-full text-white font-bold">
+                                    {t.name.charAt(0).toUpperCase()}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="font-medium text-white truncate">{t.name}</p>
+                                {typeof t.matchScore === 'number' && t.matchScore > 0 && (
+                                  <Badge variant="outline" className="text-xs mt-1 border-cyan-500/50 text-cyan-300">
+                                    Match score {t.matchScore}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <Alert className="bg-yellow-500/10 border-yellow-500/50">
+                        <AlertDescription className="text-yellow-400">
+                          No trainers loaded. Try{' '}
+                          <Link href="/trainers" className="underline text-cyan-400">
+                            browsing trainers
+                          </Link>
+                          .
+                        </AlertDescription>
+                      </Alert>
+                    )}
+
                     {selectedTrainerId ? (
                       <Card className="border-blue-500 bg-blue-500/10">
                         <CardContent className="pt-6">
@@ -598,13 +851,7 @@ function RegisterPageContent() {
                           </div>
                         </CardContent>
                       </Card>
-                    ) : (
-                      <Alert className="bg-yellow-500/10 border-yellow-500/50">
-                        <AlertDescription className="text-yellow-400">
-                          Please select a trainer. You can browse trainers from the home page.
-                        </AlertDescription>
-                      </Alert>
-                    )}
+                    ) : null}
 
                     <div className="flex gap-4">
                       <Button

@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Phone, CreditCard, ArrowLeft, Loader2, Check } from 'lucide-react'
 import { apiClient, SubscriptionPlan } from '@/lib/api-client'
 import { useAuth } from '@/contexts/auth-context'
+import { canSubscribeToTrainerPlan } from '@/lib/trainee-guards'
 import Header from '@/components/shared/header'
 import { motion } from 'framer-motion'
 import { UnifiedBackground } from '@/components/landing/ui/UnifiedBackground'
@@ -31,6 +32,13 @@ function CheckoutContent() {
   const [email, setEmail] = useState('')
   const [quote, setQuote] = useState<any>(null)
   const appRedirect = searchParams.get('app_redirect') || searchParams.get('amp;app_redirect')
+
+  useEffect(() => {
+    if (!isAuthenticated || !user) return
+    if (searchParams.get('mode') === 'change') return
+    if (canSubscribeToTrainerPlan(user)) return
+    router.replace('/register?traineeOnboarding=1')
+  }, [isAuthenticated, user, searchParams, router])
 
   useEffect(() => {
     // Get data from URL params first
@@ -150,11 +158,13 @@ function CheckoutContent() {
   }
 
   const handlePayment = async () => {
-    if (!plan || !trainerId) {
-      if (mode !== 'change') {
-        setError('Missing required information')
-        return
-      }
+    if (!plan) {
+      setError('Missing required information')
+      return
+    }
+    if (!trainerId && mode !== 'change') {
+      setError('Missing required information')
+      return
     }
 
     if (!phoneNumber) {

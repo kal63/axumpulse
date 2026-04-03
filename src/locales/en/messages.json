@@ -485,6 +485,7 @@
   "medical": "Medical",
   "profile": "Profile",
   "progress": "Progress",
+  "aiCoach": "AI Coach",
   "toast.apply.failedLoadLanguages": "Failed to load languages",
   "toast.challenge.completed": "You earned {xp} XP.",
   "toast.challenge.completedTitle": "Challenge completed!",

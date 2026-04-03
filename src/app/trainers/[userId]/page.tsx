@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense, Key } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { apiClient, PublicTrainerDetail, CertificationFile } from '@/lib/api-client';
 import { useAuth } from '@/contexts/auth-context'
+import { canSubscribeToTrainerPlan } from '@/lib/trainee-guards'
 import { getImageUrl } from '@/lib/upload-utils';
 import { createSlug } from '@/lib/slug-utils';
 import Header from '@/components/shared/header';
@@ -104,7 +105,7 @@ function TrainerDetailPageContent() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
   const userIdParam = params?.userId as string;
   
   const [trainer, setTrainer] = useState<PublicTrainerDetail | null>(null);
@@ -295,6 +296,15 @@ function TrainerDetailPageContent() {
       return
     }
 
+    if (!canSubscribeToTrainerPlan(user)) {
+      if (!isAuthenticated) {
+        router.push('/register')
+        return
+      }
+      router.push('/register?traineeOnboarding=1')
+      return
+    }
+
     if (planId && duration) {
       const params = new URLSearchParams({
         planId: planId,
@@ -314,7 +324,19 @@ function TrainerDetailPageContent() {
       <Header scrolled={false} showLogin={true} />
       
         {/* Hero Section */}
-        <HeroSection trainer={trainer} onSubscribe={handleSubscribe} />
+        <HeroSection
+          trainer={trainer}
+          onSubscribe={handleSubscribe}
+          ctaLabel={
+            searchParams.get('mode') === 'changeTrainer'
+              ? undefined
+              : !isAuthenticated
+                ? 'Sign up to subscribe'
+                : !canSubscribeToTrainerPlan(user)
+                  ? 'Complete your fitness profile'
+                  : undefined
+          }
+        />
 
         {/* Dynamic Sections based on site configuration */}
         {enabledSections.map((section: { type: Key | null | undefined; }) => {

@@ -32,10 +32,35 @@ import {
   Ruler,
   Activity,
   Heart,
-  Dumbbell
+  Dumbbell,
+  Bot
 } from 'lucide-react'
 import { uploadUserProfileImage, removeUserProfileImage, validateFileSize, validateImageType, FILE_SIZE_LIMITS, ALLOWED_FILE_TYPES, getImageUrl } from '@/lib/upload-utils'
 import { useToast } from '@/hooks/use-toast'
+
+const DEFAULT_AI_CONTEXT_SHARING = {
+  goalsAndMetrics: true,
+  workoutProgress: true,
+  challengesProgress: true,
+  xpAndStreaks: true,
+  medicalProfile: false,
+  intakeResponses: false,
+  triageRuns: false,
+  consultNotes: false,
+  healthDataPoints: false
+}
+
+const AI_SHARING_ROWS: { key: keyof typeof DEFAULT_AI_CONTEXT_SHARING; label: string; desc: string }[] = [
+  { key: 'goalsAndMetrics', label: 'Goals & body metrics', desc: 'Primary goal, height, weight, activity level' },
+  { key: 'workoutProgress', label: 'Workout progress', desc: 'Plans started and completed' },
+  { key: 'challengesProgress', label: 'Challenges', desc: 'Challenge participation and completions' },
+  { key: 'xpAndStreaks', label: 'XP & streaks', desc: 'Points, streaks, and aggregate activity' },
+  { key: 'medicalProfile', label: 'Medical profile', desc: 'Conditions, medications, allergies (sensitive)' },
+  { key: 'intakeResponses', label: 'Intake forms', desc: 'Answers from medical intake questionnaires' },
+  { key: 'triageRuns', label: 'Triage results', desc: 'Recent triage risk and disposition summaries' },
+  { key: 'consultNotes', label: 'Consultation notes', desc: 'Recommendations from past consults (sensitive)' },
+  { key: 'healthDataPoints', label: 'Health measurements', desc: 'Recent vitals and tracked metrics' }
+]
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -98,8 +123,16 @@ export default function SettingsPage() {
       const response = await apiClient.getUserSettings()
 
       if (response.success && response.data) {
-        setSettings(response.data)
-        setFormData(response.data)
+        const d = { ...response.data }
+        d.preferences = {
+          ...d.preferences,
+          aiContextSharing: {
+            ...DEFAULT_AI_CONTEXT_SHARING,
+            ...(d.preferences?.aiContextSharing || {})
+          }
+        }
+        setSettings(d)
+        setFormData(d)
       } else {
         setError('Failed to load settings')
       }
@@ -622,6 +655,45 @@ export default function SettingsPage() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+            </NeumorphicCard>
+
+            <NeumorphicCard variant="raised" className="p-6">
+              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-2 flex items-center gap-2">
+                <Bot className="h-6 w-6 text-cyan-500" />
+                AI coach data sharing
+              </h2>
+              <p className="text-sm text-[var(--neumorphic-muted)] mb-6">
+                The in-app AI coach only receives categories you enable below. Medical options stay off by default.
+              </p>
+              <div className="space-y-4">
+                {AI_SHARING_ROWS.map(({ key, label, desc }) => (
+                  <div
+                    key={key}
+                    className="flex items-center justify-between gap-4 py-2 border-b border-[var(--neumorphic-border)] last:border-0"
+                  >
+                    <div>
+                      <p className="font-medium text-[var(--neumorphic-text)]">{label}</p>
+                      <p className="text-sm text-[var(--neumorphic-muted)]">{desc}</p>
+                    </div>
+                    <Switch
+                      checked={Boolean(formData.preferences?.aiContextSharing?.[key])}
+                      onCheckedChange={(v) =>
+                        setFormData((prev: any) => ({
+                          ...prev,
+                          preferences: {
+                            ...prev.preferences,
+                            aiContextSharing: {
+                              ...DEFAULT_AI_CONTEXT_SHARING,
+                              ...prev.preferences?.aiContextSharing,
+                              [key]: v
+                            }
+                          }
+                        }))
+                      }
+                    />
+                  </div>
+                ))}
               </div>
             </NeumorphicCard>
             </div>

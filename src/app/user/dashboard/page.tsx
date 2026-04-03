@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
 import { apiClient } from '@/lib/api-client'
+import { useTraineeMotivationToasts } from '@/hooks/useTraineeMotivationToasts'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { XPRing } from '@/components/user/XPRing'
 import { Button } from '@/components/ui/button'
@@ -42,6 +43,7 @@ import {
 export default function UserDashboardPage() {
   const router = useRouter()
   const { user, isLoading: authLoading } = useAuth()
+  useTraineeMotivationToasts(user)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [greeting, setGreeting] = useState({ text: 'Good morning', emoji: '☀️' })

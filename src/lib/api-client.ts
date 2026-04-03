@@ -90,6 +90,37 @@ export interface UserProfile {
   fitnessGoals: Record<string, unknown>
   healthMetrics: Record<string, unknown>
   preferences: Record<string, unknown>
+  traineeOnboardingCompletedAt?: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AiContextSharing {
+  goalsAndMetrics: boolean
+  workoutProgress: boolean
+  challengesProgress: boolean
+  xpAndStreaks: boolean
+  medicalProfile: boolean
+  intakeResponses: boolean
+  triageRuns: boolean
+  consultNotes: boolean
+  healthDataPoints: boolean
+}
+
+export interface TraineeAiThread {
+  id: number
+  userId: number
+  trainerUserId: number | null
+  title: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface TraineeAiMessage {
+  id: number
+  threadId: number
+  role: 'user' | 'assistant' | 'system'
+  content: string
   createdAt: string
   updatedAt: string
 }
@@ -314,6 +345,7 @@ export interface PublicTrainer {
   slug: string
   profilePicture?: string | null
   specialties: string[]
+  matchScore?: number
 }
 
 export interface CertificationFile {
@@ -685,6 +717,7 @@ export interface PublicTrainer {
   slug: string
   profilePicture?: string | null
   specialties: string[]
+  matchScore?: number
 }
 
 export interface PublicTrainerDetail {
@@ -2342,6 +2375,7 @@ class ApiClient {
         intensity: string
         equipment: string[]
       }
+      aiContextSharing: AiContextSharing
     }
     notifications: {
       email: {
@@ -2398,6 +2432,7 @@ class ApiClient {
         intensity?: string
         equipment?: string[]
       }
+      aiContextSharing?: Partial<AiContextSharing>
     }
     notifications?: {
       email?: {
@@ -2435,6 +2470,74 @@ class ApiClient {
     return this.request('/user/settings', {
       method: 'PUT',
       body: JSON.stringify(settings)
+    })
+  }
+
+  async getTraineeOnboardingStatus(): Promise<
+    ApiResponse<{
+      completed: boolean
+      skipped: boolean
+      traineeOnboardingCompletedAt: string | null
+    }>
+  > {
+    return this.request('/user/trainee/onboarding-status')
+  }
+
+  async completeTraineeOnboarding(body: {
+    height: number
+    weight: number
+    primaryGoal: string
+    secondaryGoals?: string[]
+    activityLevel?: string
+    fitnessLevel?: string
+    targetWeight?: number | null
+  }): Promise<
+    ApiResponse<{
+      message: string
+      traineeOnboardingCompletedAt: string
+      fitnessGoals: Record<string, unknown>
+      healthMetrics: Record<string, unknown>
+    }>
+  > {
+    return this.request('/user/trainee/onboarding', {
+      method: 'POST',
+      body: JSON.stringify(body)
+    })
+  }
+
+  async getTrainerMatches(): Promise<
+    ApiResponse<{ items: PublicTrainer[]; primaryGoal: string }>
+  > {
+    return this.request('/user/trainee/trainer-matches')
+  }
+
+  async getTraineeAiThreads(): Promise<ApiResponse<{ items: TraineeAiThread[] }>> {
+    return this.request('/user/ai-chat/threads')
+  }
+
+  async createTraineeAiThread(body: {
+    trainerUserId?: number | null
+    title?: string | null
+  }): Promise<ApiResponse<{ thread: TraineeAiThread }>> {
+    return this.request('/user/ai-chat/threads', {
+      method: 'POST',
+      body: JSON.stringify(body)
+    })
+  }
+
+  async getTraineeAiMessages(threadId: number): Promise<
+    ApiResponse<{ thread: TraineeAiThread; messages: TraineeAiMessage[] }>
+  > {
+    return this.request(`/user/ai-chat/threads/${threadId}/messages`)
+  }
+
+  async sendTraineeAiMessage(
+    threadId: number,
+    message: string
+  ): Promise<ApiResponse<{ message: TraineeAiMessage }>> {
+    return this.request(`/user/ai-chat/threads/${threadId}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ message })
     })
   }
 
