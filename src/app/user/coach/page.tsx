@@ -83,14 +83,14 @@ export default function TraineeCoachPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center pt-16">
         <Loader2 className="w-10 h-10 animate-spin text-cyan-500" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)] px-4 py-8">
+    <div className="min-h-screen bg-[var(--neumorphic-bg)] px-4 md:px-6 pt-14 pb-8 md:pt-20 md:pb-10">
       <div className="max-w-3xl mx-auto space-y-4">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
