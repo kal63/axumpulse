@@ -241,19 +241,16 @@ export default function WorkoutPlansPage() {
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
               </DropdownMenuItem>
-              {/* Only show delete for draft and rejected */}
-              {(item.status === 'draft' || item.status === 'rejected') && (
-                <DropdownMenuItem 
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDeleteClick(item)
-                  }}
-                  className="text-red-600 focus:text-red-600"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </DropdownMenuItem>
-              )}
+              <DropdownMenuItem 
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleDeleteClick(item)
+                }}
+                className="text-red-600 focus:text-red-600"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -273,15 +270,15 @@ export default function WorkoutPlansPage() {
     try {
       const res = await apiClient.deleteTrainerWorkoutPlan(workoutPlanToDelete.id)
       if (res.success) {
-        // Refresh the workout plans list
         refetch()
         setDeleteDialogOpen(false)
         setWorkoutPlanToDelete(null)
       } else {
-        console.error('Failed to delete workout plan:', res.error?.message)
+        alert(res.error?.message || 'Failed to delete workout plan')
       }
     } catch (err) {
       console.error('Failed to delete workout plan:', err)
+      alert('Failed to delete workout plan. Please try again.')
     } finally {
       setDeleting(false)
     }
@@ -474,8 +471,19 @@ export default function WorkoutPlansPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Workout Plan</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete "{workoutPlanToDelete?.title}"? This action cannot be undone and will permanently remove the workout plan and all associated exercises.
+            <DialogDescription asChild>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>
+                  Are you sure you want to delete &quot;{workoutPlanToDelete?.title}&quot;? This cannot be undone and removes the plan and all its exercises.
+                </p>
+                {workoutPlanToDelete && (workoutPlanToDelete.status === 'approved' || workoutPlanToDelete.status === 'pending') && (
+                  <p className="font-medium text-amber-700 dark:text-amber-500">
+                    {workoutPlanToDelete.status === 'pending'
+                      ? 'This plan is awaiting approval. Deleting removes it from the review queue.'
+                      : 'This plan is live. Deleting removes it for subscribers and deletes all user progress tied to this plan.'}
+                  </p>
+                )}
+              </div>
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

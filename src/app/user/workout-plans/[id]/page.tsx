@@ -483,6 +483,25 @@ export default function WorkoutPlanDetailPage() {
         ? Math.round((userProgress.completedExercises / userProgress.totalExercises) * 100)
         : 0
 
+    const planTags = (() => {
+        const raw: unknown = workoutPlan.tags
+        if (Array.isArray(raw)) {
+            return raw.filter((x): x is string => typeof x === 'string')
+        }
+        if (typeof raw === 'string') {
+            try {
+                const parsed = JSON.parse(raw)
+                if (Array.isArray(parsed)) {
+                    return parsed.filter((x): x is string => typeof x === 'string')
+                }
+            } catch {
+                return raw.split(',').map((s) => s.trim()).filter(Boolean)
+            }
+            return raw.split(',').map((s) => s.trim()).filter(Boolean)
+        }
+        return []
+    })()
+
     // Calculate estimated XP: base (totalExercises * 25 + 100) + 50 bonus if from game
     const baseXP = (workoutPlan.totalExercises || 0) * 25 + 100
     const gameBonus = fromGame ? 50 : 0
@@ -606,7 +625,7 @@ export default function WorkoutPlanDetailPage() {
                                             {workoutPlan.category}
                                         </Badge>
                                     )}
-                                    {workoutPlan.tags?.slice(0, 3).map((tag, index) => (
+                                    {planTags.slice(0, 3).map((tag, index) => (
                                         <Badge key={index} variant="outline" className="border-[var(--neumorphic-border)] text-[var(--neumorphic-muted)]">
                                             {tag}
                                         </Badge>
