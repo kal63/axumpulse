@@ -104,6 +104,12 @@
   --ethio-lemon: #8EC63F;
   --ethio-lemon-dark: #5B8C2E;
   --ethio-deep-blue: #0082C6;
+  /* Large areas (e.g. desktop sidebar): same hue as --ethio-lemon, clearly green — not flat grey/white */
+  --ethio-rail: color-mix(in srgb, var(--ethio-lemon) 48%, #dde0d6);
+  --ethio-rail-border: color-mix(in srgb, var(--ethio-lemon) 36%, #9daa8c);
+  /* Small pill chips: same family as --ethio-lemon, “light lime” (dashboard Welcome Back, etc.) */
+  --ethio-pill: color-mix(in srgb, var(--ethio-lemon) 88%, #f2faeb);
+  --ethio-pill-shadow: 0 4px 14px hsl(80 50% 35% / 0.2);
 
   /* Neumorphic Light Mode */
   --neumorphic-bg: #F3F4F6;
@@ -226,7 +232,20 @@
   .user-app-btn-primary {
     @apply bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] font-semibold text-white shadow-sm hover:opacity-95;
   }
+  .user-app-pill-ink {
+    @apply rounded-full font-bold text-[hsl(222,47%,8%)] dark:text-slate-900;
+    background-color: var(--ethio-pill);
+    box-shadow: var(--ethio-pill-shadow);
+  }
   .user-app-gradient {
     @apply bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)];
+  }
+  /* Desktop trainee sidebar: matches Ethio pill / --ethio-lemon family */
+  .user-app-sidebar-rail {
+    border-right: 1px solid var(--ethio-rail-border);
+    background-color: var(--ethio-rail);
+  }
+  .dark .user-app-sidebar-rail {
+    @apply border-slate-700/55 bg-card;
   }
 }

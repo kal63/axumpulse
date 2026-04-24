@@ -263,7 +263,7 @@ export default function UserDashboardPage() {
           />
           <div className="relative flex flex-wrap items-start justify-between gap-8">
             <div className="min-w-0 max-w-2xl">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--ethio-lemon)] px-3 py-1.5 text-xs font-bold text-[hsl(222,47%,8%)] shadow-[0_4px_14px_hsl(78,55%,40%,0.25)]">
+              <div className="user-app-pill-ink mb-4 inline-flex items-center gap-2 px-3.5 py-2 text-xs">
                 <Sparkles className="size-3.5 shrink-0" />
                 Welcome Back
               </div>
@@ -304,7 +304,7 @@ export default function UserDashboardPage() {
                       <p className="text-sm text-muted-foreground">Your current plan</p>
                     </div>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--ethio-lemon)] px-3 py-1 text-xs font-bold text-[hsl(222,47%,8%)] shadow-sm dark:text-slate-900">
+                  <span className="user-app-pill-ink inline-flex items-center gap-1.5 px-3 py-1 text-xs">
                     <span className="size-1.5 animate-pulse rounded-full bg-[hsl(222,47%,8%)]/35 dark:bg-slate-900/40" />
                     Active
                   </span>

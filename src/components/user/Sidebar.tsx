@@ -102,7 +102,7 @@ export function Sidebar({ className }: SidebarProps) {
   ];
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-sm user-app-muted">Loading...</div>;
   }
 
   return (
@@ -115,35 +115,32 @@ export function Sidebar({ className }: SidebarProps) {
             key={item.id}
             onClick={() => router.push(item.href)}
             className={cn(
-              'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left',
-              // Light mode: sidebar is green, so use white text + subtle white hover
-              'text-white hover:bg-white/10',
-              // Dark mode: elevated sidebar surface
-              'dark:text-gray-300 dark:hover:bg-gray-800/50',
-              isActive &&
-                'bg-[var(--ethio-deep-blue)] text-white shadow-sm dark:bg-gradient-to-r dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)] dark:text-white dark:shadow-lg'
+              'w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-left transition-all duration-200',
+              isActive
+                ? 'bg-white font-semibold text-[var(--ethio-deep-blue)] shadow-sm ring-1 ring-slate-200/80 dark:ring-0 dark:bg-gradient-to-r dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)] dark:text-white dark:shadow-lg'
+                : 'text-slate-900 hover:bg-white/70 dark:text-gray-300 dark:hover:bg-gray-800/50',
             )}
           >
-            <Icon 
+            <Icon
               className={cn(
-                'w-5 h-5 transition-colors duration-200',
-                isActive 
-                  ? 'text-white' 
-                  : 'text-white/85 dark:text-gray-400'
-              )} 
+                'h-5 w-5 flex-shrink-0 transition-colors duration-200',
+                isActive
+                  ? 'text-[var(--ethio-deep-blue)] dark:text-white'
+                  : 'text-slate-600 dark:text-gray-400',
+              )}
             />
-            <span 
+            <span
               className={cn(
                 'font-medium transition-colors duration-200',
-                isActive 
-                  ? 'text-white' 
-                  : 'text-white dark:text-gray-300'
+                isActive
+                  ? 'text-[var(--ethio-deep-blue)] dark:text-white'
+                  : 'text-slate-900 dark:text-gray-300',
               )}
             >
               {item.label}
             </span>
             {isActive && (
-              <div className="ml-auto w-2 h-2 bg-white rounded-full opacity-80" />
+              <div className="ml-auto h-1.5 w-1.5 rounded-full bg-[var(--ethio-deep-blue)] opacity-90 dark:bg-white" />
             )}
           </button>
         );
