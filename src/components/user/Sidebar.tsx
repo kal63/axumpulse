@@ -116,8 +116,11 @@ export function Sidebar({ className }: SidebarProps) {
             onClick={() => router.push(item.href)}
             className={cn(
               'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left',
-              'hover:bg-gray-50 dark:hover:bg-gray-800/50',
-              isActive && 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg'
+              // Light mode: sidebar is green, so use white text + subtle white hover
+              'text-white hover:bg-white/10',
+              // Dark mode: keep existing neumorphic behavior
+              'dark:text-gray-300 dark:hover:bg-gray-800/50',
+              isActive && 'bg-[var(--ethio-deep-blue)] text-white shadow-sm dark:bg-gradient-to-r dark:from-cyan-500 dark:to-purple-600 dark:text-white dark:shadow-lg'
             )}
           >
             <Icon 
@@ -125,7 +128,7 @@ export function Sidebar({ className }: SidebarProps) {
                 'w-5 h-5 transition-colors duration-200',
                 isActive 
                   ? 'text-white' 
-                  : 'text-gray-600 dark:text-gray-400'
+                  : 'text-white/85 dark:text-gray-400'
               )} 
             />
             <span 
@@ -133,7 +136,7 @@ export function Sidebar({ className }: SidebarProps) {
                 'font-medium transition-colors duration-200',
                 isActive 
                   ? 'text-white' 
-                  : 'text-gray-700 dark:text-gray-300'
+                  : 'text-white dark:text-gray-300'
               )}
             >
               {item.label}

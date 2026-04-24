@@ -192,12 +192,12 @@ export default function UserLayout({ children }: UserLayoutProps) {
         /* Desktop Layout */
         <div className="flex h-screen">
           {/* Desktop Sidebar */}
-          <div className="w-64 h-full bg-[var(--neumorphic-surface)] border-r border-gray-200/50 dark:border-gray-700/50">
+          <div className="w-64 h-full bg-[var(--ethio-lemon)] dark:bg-[var(--neumorphic-surface)] border-r border-white/10 dark:border-gray-700/50">
             <div className="p-6 h-full flex flex-col">
               {/* Logo/Brand */}
               <div className="mb-8">
                 <Logo size="sm" />
-                <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
+                <p className="text-sm text-white/85 dark:text-[var(--neumorphic-muted)] mt-1">
                   Gamified Fitness Platform
                 </p>
               </div>
@@ -265,16 +265,16 @@ export default function UserLayout({ children }: UserLayoutProps) {
               <div className="space-y-2">
                 <button
                   onClick={() => window.location.href = '/user/settings'}
-                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left text-white hover:bg-white/10 dark:text-gray-300 dark:hover:bg-gray-800/50"
                 >
-                  <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                  <Settings className="w-5 h-5 text-white/85 dark:text-gray-400" />
+                  <span className="font-medium text-white dark:text-gray-300">
                     Settings
                   </span>
                 </button>
                 <button
                   onClick={logout}
-                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400"
+                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left text-white hover:bg-white/10 dark:hover:bg-red-900/20 dark:text-red-400"
                 >
                   <LogOut className="w-5 h-5" />
                   <span className="font-medium">
