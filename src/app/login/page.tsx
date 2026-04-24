@@ -8,11 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { Eye, EyeOff, Phone, Lock, LogIn, Shield, UserCheck, Users, Sparkles, Zap, Heart, Star, Brain, Globe, Activity } from 'lucide-react'
+import { Eye, EyeOff, Phone, Lock, LogIn, Shield, UserCheck, Users, Star, Globe, Activity } from 'lucide-react'
 import { useAuth } from '@/contexts/auth-context'
-import { useRole } from '@/contexts/role-context'
 import Header from '@/components/shared/header'
+import { Logo } from '@/components/shared/Logo'
 import { motion } from 'framer-motion'
 import { UnifiedBackground } from '@/components/landing/ui/UnifiedBackground'
 
@@ -25,7 +24,6 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [scrolled, setScrolled] = useState(false)
   const { login, dev_login, isLoading } = useAuth()
-  const { availableRoles } = useRole()
   const router = useRouter()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,135 +146,90 @@ const handleQuickSubmit = async (
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Unified Background */}
-      <UnifiedBackground />
+    <div className="landing-ethio min-h-screen relative overflow-hidden">
+      <UnifiedBackground variant="ethio" />
 
-      {/* Header */}
-      <Header scrolled={scrolled} showLogin={false} />
+      <Header scrolled={scrolled} showLogin={false} variant="ethio" />
 
-      {/* Main Content */}
-      <div className="relative z-20 flex items-center justify-center min-h-screen p-4 pt-20">
+      <div className="relative z-20 flex min-h-screen items-center justify-center p-4 pt-24 pb-16">
         <div className="w-full max-w-md">
-          {/* Animated Logo and Header */}
           <motion.div
-            initial={{ opacity: 0, y: -50 }}
+            initial={{ opacity: 0, y: -24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center mb-8"
+            transition={{ duration: 0.55, ease: 'easeOut' }}
+            className="mb-8 text-center"
           >
-            <div className="relative mx-auto w-24 h-24 mb-6">
-              {/* Glowing background */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-400 rounded-3xl blur-xl opacity-60 animate-pulse"></div>
-
-              {/* Main logo */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="relative w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl flex items-center justify-center shadow-2xl border border-white/10"
-              >
-                <Brain className="w-12 h-12 text-cyan-400" />
-              </motion.div>
-
-              {/* Floating sparkles */}
-              <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.5, 1, 0.5]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center"
-              >
-                <Sparkles className="w-3 h-3 text-yellow-800" />
-              </motion.div>
+            <div className="mb-6 flex justify-center">
+              <Logo size="md" withText={false} href="/" />
             </div>
 
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-              className="text-5xl font-bold bg-gradient-to-r from-white via-cyan-100 to-white bg-clip-text text-transparent mb-4"
+              transition={{ delay: 0.08, duration: 0.55 }}
+              className="font-landing-display text-[clamp(2rem,5vw,2.75rem)] uppercase tracking-tight text-[hsl(222,47%,8%)] mb-3"
             >
-              Welcome Back
+              Welcome back
             </motion.h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-slate-300 text-lg mb-4"
+              transition={{ delay: 0.16, duration: 0.55 }}
+              className="text-lg text-[hsl(222,20%,38%)] mb-5"
             >
-              Sign in to your <span className="font-semibold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Compound 360</span> account
+              Sign in to your{' '}
+              <span className="font-semibold text-[hsl(210,95%,28%)]">Compound 360</span> account
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="flex items-center justify-center space-x-3"
+              transition={{ delay: 0.22, duration: 0.5 }}
+              className="flex flex-wrap items-center justify-center gap-2"
             >
-              <Badge variant="secondary" className="bg-cyan-500/20 text-cyan-200 border-cyan-400/30 px-4 py-2">
-                <Activity className="w-4 h-4 mr-2" />
-                AI-Powered Fitness
-              </Badge>
-              <Badge variant="secondary" className="bg-purple-500/20 text-purple-200 border-purple-400/30 px-4 py-2">
-                <Globe className="w-4 h-4 mr-2" />
-                4 Languages
-              </Badge>
+              <span className="inline-flex items-center gap-2 rounded-full border border-[hsl(222,47%,8%)]/10 bg-white/80 px-3 py-1.5 text-xs font-semibold text-[hsl(222,47%,8%)] shadow-sm backdrop-blur-sm">
+                <Activity className="h-3.5 w-3.5 text-[hsl(210,95%,32%)]" />
+                AI-powered fitness
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-[hsl(222,47%,8%)]/10 bg-white/80 px-3 py-1.5 text-xs font-semibold text-[hsl(222,47%,8%)] shadow-sm backdrop-blur-sm">
+                <Globe className="h-3.5 w-3.5 text-[hsl(78,80%,38%)]" />
+                4 languages
+              </span>
             </motion.div>
           </motion.div>
 
-          {/* Login Form Card */}
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
+            transition={{ delay: 0.2, duration: 0.55 }}
             className="relative"
           >
-            <Card className="relative shadow-2xl border-0 bg-slate-900/80 backdrop-blur-xl overflow-hidden">
-              {/* Animated border gradient */}
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-blue-500/20 rounded-lg"></div>
-              <div className="absolute inset-[1px] bg-slate-900/90 rounded-lg"></div>
-
-              <CardHeader className="relative space-y-1 pb-6 pt-8">
+            <Card className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl backdrop-blur-sm">
+              <CardHeader className="space-y-1 pb-4 pt-8">
                 <div className="text-center">
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.05, 1],
-                      boxShadow: [
-                        '0 0 20px rgba(6, 182, 212, 0.3)',
-                        '0 0 40px rgba(6, 182, 212, 0.6)',
-                        '0 0 20px rgba(6, 182, 212, 0.3)'
-                      ]
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl mb-4 shadow-lg"
-                  >
-                    <LogIn className="w-8 h-8 text-white" />
-                  </motion.div>
-                  <CardTitle className="text-3xl font-bold bg-gradient-to-r from-white to-cyan-200 bg-clip-text text-transparent mb-2">
-                    Sign In
+                  <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[hsl(78,88%,55%)] text-[hsl(222,47%,8%)] shadow-md ring-1 ring-[hsl(222,47%,8%)]/8">
+                    <LogIn className="h-7 w-7" />
+                  </div>
+                  <CardTitle className="font-landing-display text-2xl uppercase tracking-tight text-[hsl(222,47%,8%)] mb-2">
+                    Sign in
                   </CardTitle>
-                  <CardDescription className="text-slate-400 text-lg">
+                  <CardDescription className="text-base text-[hsl(222,20%,40%)]">
                     Enter your credentials to access your account
                   </CardDescription>
                 </div>
               </CardHeader>
 
-              <CardContent className="relative px-8 pb-8">
+              <CardContent className="px-6 pb-8 sm:px-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {error && (
                     <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
+                      initial={{ opacity: 0, scale: 0.98 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.25 }}
                     >
-                      <Alert variant="destructive" className="border-red-500/50 bg-red-900/20 backdrop-blur-sm">
-                        <AlertDescription className="text-red-200">{error}</AlertDescription>
+                      <Alert variant="destructive" className="border-red-200 bg-red-50 text-red-900">
+                        <AlertDescription className="text-red-900">{error}</AlertDescription>
                       </Alert>
                     </motion.div>
                   )}
@@ -285,15 +238,14 @@ const handleQuickSubmit = async (
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1, duration: 0.6 }}
+                    transition={{ delay: 0.08, duration: 0.45 }}
                     className="space-y-3"
                   >
-                    <Label htmlFor="phone" className="text-sm font-semibold text-slate-300 flex items-center">
-                      <Phone className="w-4 h-4 mr-2 text-cyan-400" />
-                      Phone Number
+                    <Label htmlFor="phone" className="flex items-center text-sm font-semibold text-[hsl(222,28%,12%)]">
+                      <Phone className="mr-2 h-4 w-4 text-[var(--ethio-deep-blue)]" />
+                      Phone number
                     </Label>
-                    <div className="relative group">
-                      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-lg blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
                       <Input
                         id="phone"
                         name="phone"
@@ -301,10 +253,10 @@ const handleQuickSubmit = async (
                         placeholder="+251 9XX XXX XXX"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="relative pl-12 h-14 bg-slate-800/50 text-white placeholder:text-slate-400 border-2 border-slate-600 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 rounded-lg transition-all duration-300 shadow-lg backdrop-blur-sm"
+                        className="relative h-12 rounded-xl border border-slate-200 bg-white pl-12 text-[hsl(222,47%,8%)] shadow-sm placeholder:text-[hsl(222,12%,50%)] focus-visible:border-[var(--ethio-deep-blue)] focus-visible:ring-[var(--ethio-deep-blue)]/20"
                         required
                       />
-                      <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-cyan-400" />
+                      <Phone className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--ethio-deep-blue)]" />
                     </div>
                   </motion.div>
 
@@ -312,15 +264,14 @@ const handleQuickSubmit = async (
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1.2, duration: 0.6 }}
+                    transition={{ delay: 0.12, duration: 0.45 }}
                     className="space-y-3"
                   >
-                    <Label htmlFor="password" className="text-sm font-semibold text-slate-300 flex items-center">
-                      <Lock className="w-4 h-4 mr-2 text-cyan-400" />
+                    <Label htmlFor="password" className="flex items-center text-sm font-semibold text-[hsl(222,28%,12%)]">
+                      <Lock className="mr-2 h-4 w-4 text-[var(--ethio-deep-blue)]" />
                       Password
                     </Label>
-                    <div className="relative group">
-                      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-lg blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative">
                       <Input
                         id="password"
                         name="password"
@@ -328,14 +279,14 @@ const handleQuickSubmit = async (
                         placeholder="Enter your password"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className="relative pl-12 pr-12 h-14 bg-slate-800/50 text-white placeholder:text-slate-400 border-2 border-slate-600 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 rounded-lg transition-all duration-300 shadow-lg backdrop-blur-sm"
+                        className="relative h-12 rounded-xl border border-slate-200 bg-white pl-12 pr-12 text-[hsl(222,47%,8%)] shadow-sm placeholder:text-[hsl(222,12%,50%)] focus-visible:border-[var(--ethio-deep-blue)] focus-visible:ring-[var(--ethio-deep-blue)]/20"
                         required
                       />
-                      <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-cyan-400" />
+                      <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--ethio-deep-blue)]" />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400 hover:text-cyan-400 cursor-pointer transition-colors duration-200"
+                        className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[hsl(222,20%,45%)] transition-colors hover:text-[var(--ethio-deep-blue)]"
                       >
                         {showPassword ? <EyeOff /> : <Eye />}
                       </button>
@@ -346,24 +297,24 @@ const handleQuickSubmit = async (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.4, duration: 0.6 }}
+                    transition={{ delay: 0.16, duration: 0.45 }}
                     className="flex items-center justify-between text-sm pt-2"
                   >
-                    <label className="flex items-center space-x-3 cursor-pointer group">
-                      <div className="relative">
-                        <input
-                          type="checkbox"
-                          className="sr-only"
-                        />
-                        <div className="w-5 h-5 border-2 border-slate-400 rounded-md group-hover:border-cyan-400 transition-colors duration-200 flex items-center justify-center">
-                          <div className="w-2 h-2 bg-cyan-400 rounded-sm opacity-0 group-has-[:checked]:opacity-100 transition-opacity duration-200"></div>
-                        </div>
-                      </div>
-                      <span className="text-slate-400 group-hover:text-cyan-400 transition-colors duration-200">Remember me</span>
+                    <label className="group flex cursor-pointer items-center space-x-3">
+                      <input type="checkbox" className="sr-only" />
+                      <span
+                        aria-hidden
+                        className="flex h-5 w-5 items-center justify-center rounded-md border-2 border-slate-300 transition-colors group-hover:border-[var(--ethio-deep-blue)] group-has-[:checked]:border-[var(--ethio-deep-blue)] group-has-[:checked]:bg-[hsl(78,88%,55%)]/35"
+                      >
+                        <span className="h-2 w-2 rounded-sm bg-[var(--ethio-deep-blue)] opacity-0 transition-opacity group-has-[:checked]:opacity-100" />
+                      </span>
+                      <span className="text-[hsl(222,20%,40%)] transition-colors group-hover:text-[hsl(222,47%,8%)]">
+                        Remember me
+                      </span>
                     </label>
                     <Link
                       href="/forgot-password"
-                      className="text-cyan-400 hover:text-cyan-300 cursor-pointer font-medium transition-colors duration-200 hover:underline"
+                      className="font-medium text-[var(--ethio-deep-blue)] transition-colors hover:underline"
                     >
                       Forgot password?
                     </Link>
@@ -373,11 +324,11 @@ const handleQuickSubmit = async (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.6, duration: 0.6 }}
+                    transition={{ delay: 0.2, duration: 0.45 }}
                   >
                     <Button
                       type="submit"
-                      className="w-full h-14 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 hover:from-cyan-700 hover:via-blue-700 hover:to-purple-700 text-white cursor-pointer rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none font-semibold text-lg"
+                      className="user-app-btn-primary h-12 w-full cursor-pointer rounded-xl text-base font-semibold shadow-md transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={isLoading}
                     >
                       {isLoading ? (
@@ -399,124 +350,109 @@ const handleQuickSubmit = async (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 1.8, duration: 0.6 }}
+                  transition={{ delay: 0.35, duration: 0.45 }}
                   className="mt-8 text-center"
                 >
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-slate-600"></div>
+                      <div className="w-full border-t border-slate-200" />
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="px-4 bg-slate-900 text-slate-400">New to AxumPulse?</span>
+                      <span className="rounded-full bg-white/95 px-4 py-0.5 text-[hsl(222,20%,40%)]">
+                        New to Compound 360?
+                      </span>
                     </div>
                   </div>
-                  <p className="mt-4 text-sm text-slate-400">
-                    Don't have an account?{' '}
+                  <p className="mt-4 text-sm text-[hsl(222,20%,38%)]">
+                    <Link href="/register" className="font-semibold text-[var(--ethio-deep-blue)] hover:underline">
+                      Create an account
+                    </Link>
+                    <span className="mx-2 text-[hsl(222,12%,70%)]">·</span>
                     <a
                       href="sms:1234?body=OK"
-                      className="text-cyan-400 hover:text-cyan-300 font-semibold cursor-pointer transition-colors duration-200 hover:underline"
+                      className="font-semibold text-[hsl(210,95%,28%)] hover:underline"
                     >
-                      Send SMS to 1234
+                      SMS 1234
                     </a>
                   </p>
-                  <p className="mt-2 text-xs text-slate-500">
-                    Send "OK" to get started
-                  </p>
+                  <p className="mt-1 text-xs text-[hsl(222,20%,45%)]">Send &quot;OK&quot; to get started via SMS</p>
                 </motion.div>
               </CardContent>
             </Card>
 
-            {/* Demo Credentials */}
+            {/* Demo / quick login (dev-style roles) */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2, duration: 0.8 }}
+              transition={{ delay: 0.28, duration: 0.55 }}
               className="mt-8"
             >
-              <Card className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border-slate-600/50 backdrop-blur-sm shadow-xl">
-                <CardContent className="pt-6 pb-6">
-                  <div className="text-center mb-6">
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                      className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl mb-4 shadow-lg"
-                    >
-                      <Star className="w-6 h-6 text-white" />
-                    </motion.div>
-                    <h3 className="text-lg font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent mb-2">
-                      Quick Login
+              <Card className="rounded-2xl border border-slate-200/90 bg-white/90 shadow-lg backdrop-blur-sm">
+                <CardContent className="pb-6 pt-6">
+                  <div className="mb-6 text-center">
+                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[hsl(78,88%,55%)] text-[hsl(222,47%,8%)] shadow-md ring-1 ring-[hsl(222,47%,8%)]/8">
+                      <Star className="h-6 w-6" />
+                    </div>
+                    <h3 className="font-landing-display mb-2 text-lg uppercase tracking-tight text-[hsl(222,47%,8%)]">
+                      Quick login
                     </h3>
-                    <p className="text-sm text-slate-400">
-                      Try our demo accounts
-                    </p>
+                    <p className="text-sm text-[hsl(222,20%,40%)]">Try demo accounts when your API exposes them</p>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4">
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
+                  <div className="grid grid-cols-1 gap-3">
+                    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                       <Button
                         type="button"
                         variant="outline"
                         size="lg"
-                        className="w-full h-12 text-sm bg-gradient-to-r from-emerald-900/50 to-emerald-800/50 hover:from-emerald-800/70 hover:to-emerald-700/70 border-emerald-500/50 text-emerald-200 shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-slate-50 hover:text-[hsl(210,95%,28%)]"
                         onClick={() => handleQuickLogin('admin')}
                         disabled={isLoading}
                       >
-                        <Shield className="w-5 h-5 mr-3" />
-                        Admin Login
+                        <Shield className="mr-3 h-5 w-5 text-[hsl(210,95%,32%)]" />
+                        Admin
                       </Button>
                     </motion.div>
 
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
+                    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                       <Button
                         type="button"
                         variant="outline"
                         size="lg"
-                        className="w-full h-12 text-sm bg-gradient-to-r from-blue-900/50 to-blue-800/50 hover:from-blue-800/70 hover:to-blue-700/70 border-blue-500/50 text-blue-200 shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-slate-50 hover:text-[hsl(210,95%,28%)]"
                         onClick={() => handleQuickLogin('trainer')}
                         disabled={isLoading}
                       >
-                        <UserCheck className="w-5 h-5 mr-3" />
-                        Trainer Login
+                        <UserCheck className="mr-3 h-5 w-5 text-[hsl(210,95%,32%)]" />
+                        Trainer
                       </Button>
                     </motion.div>
 
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
+                    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                       <Button
                         type="button"
                         variant="outline"
                         size="lg"
-                        className="w-full h-12 text-sm bg-gradient-to-r from-purple-900/50 to-purple-800/50 hover:from-purple-800/70 hover:to-purple-700/70 border-purple-500/50 text-purple-200 shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-[hsl(78,88%,96%)] hover:text-[hsl(210,95%,28%)]"
                         onClick={() => handleQuickLogin('user')}
                         disabled={isLoading}
                       >
-                        <Users className="w-5 h-5 mr-3" />
-                        User Login
+                        <Users className="mr-3 h-5 w-5 text-[hsl(78,80%,38%)]" />
+                        User
                       </Button>
                     </motion.div>
 
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
+                    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
                       <Button
                         type="button"
                         variant="outline"
                         size="lg"
-                        className="w-full h-12 text-sm bg-gradient-to-r from-purple-900/50 to-purple-800/50 hover:from-purple-800/70 hover:to-purple-700/70 border-purple-500/50 text-purple-200 shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-slate-50 hover:text-[hsl(210,95%,28%)]"
                         onClick={() => handleQuickLogin('medical')}
                         disabled={isLoading}
                       >
-                        <Users className="w-5 h-5 mr-3" />
-                        Medical-Professional Login
+                        <Users className="mr-3 h-5 w-5 text-[hsl(210,95%,32%)]" />
+                        Medical professional
                       </Button>
                     </motion.div>
                   </div>
@@ -524,11 +460,12 @@ const handleQuickSubmit = async (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 2.5, duration: 0.6 }}
-                    className="mt-6 p-4 bg-slate-800/50 rounded-lg border border-slate-600/50"
+                    transition={{ delay: 0.4, duration: 0.45 }}
+                    className="mt-5 rounded-xl border border-slate-200/90 bg-[hsl(80,30%,98%)] p-3"
                   >
-                    <p className="text-xs text-slate-400 text-center">
-                      <span className="font-medium text-cyan-400">Note:</span> Make sure the backend API is running on port 4000
+                    <p className="text-center text-xs text-[hsl(222,20%,42%)]">
+                      <span className="font-semibold text-[hsl(210,95%,28%)]">Note:</span> quick login needs a reachable API
+                      (same host as in <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_API_URL</code>).
                     </p>
                   </motion.div>
                 </CardContent>
