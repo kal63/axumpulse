@@ -131,8 +131,8 @@ export default function UserLayout({ children }: UserLayoutProps) {
           <header className="sticky top-0 z-40 border-b border-slate-200/90 bg-white/90 backdrop-blur-md dark:border-gray-700/50 dark:bg-slate-900/90">
             <div className="px-4 py-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Logo size="sm" />
+                <div className="flex min-w-0 items-center">
+                  <Logo size="sm" withText={false} href="/user/dashboard" />
                 </div>
                 <div className="flex items-center space-x-2">
                   <XPRing 
@@ -196,21 +196,8 @@ export default function UserLayout({ children }: UserLayoutProps) {
           <div className="user-app-sidebar-rail h-full w-[300px] min-w-[300px] shrink-0">
             <div className="flex h-full flex-col p-5">
               {/* Logo/Brand */}
-              <div className="mb-8">
-                {/* Keep sidebar branding simple; co-brand header lives on Dashboard only */}
-                <div className="dark:hidden">
-                  <Image
-                    src="/logo.png"
-                    alt="Compound 360 logo"
-                    width={120}
-                    height={32}
-                    className="h-7 w-auto bg-white rounded-[7px]"
-                    priority
-                  />
-                </div>
-                <div className="hidden dark:block">
-                  <Logo size="sm" />
-                </div>
+              <div className="mb-8 w-full min-w-0">
+                <Logo size="md" withText={false} withLink={false} />
                 <p className="mt-1 text-sm text-[hsl(222,22%,20%)] dark:text-slate-400">
                   Gamified Fitness Platform
                 </p>

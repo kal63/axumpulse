@@ -9,15 +9,17 @@ export default function DashboardPage() {
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading && user) {
-      // Redirect based on user permissions
-      if (user.isAdmin) {
-        router.push('/admin/dashboard')
-      } else if (user.isTrainer) {
-        router.push('/trainer/dashboard')
-      } else {
-        router.push('/user/dashboard')
-      }
+    if (isLoading) return
+    if (!user) {
+      router.push('/login')
+      return
+    }
+    if (user.isAdmin) {
+      router.push('/admin/dashboard')
+    } else if (user.isTrainer) {
+      router.push('/trainer/dashboard')
+    } else {
+      router.push('/user/dashboard')
     }
   }, [user, isLoading, router])
 

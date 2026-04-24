@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/auth-context'
 import { apiClient } from '@/lib/api-client'
 import { useTraineeMotivationToasts } from '@/hooks/useTraineeMotivationToasts'
 import { DashboardWelcomeRing } from '@/components/user/DashboardWelcomeRing'
+import { EthioTellsMark } from '@/components/user/EthioTellsMark'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
@@ -146,7 +147,8 @@ export default function UserDashboardPage() {
     }
   }
 
-  if (authLoading || loading) {
+  // `loading` is only for dashboard data; without `user` it never runs `fetchDashboardData` and would stay `true` forever.
+  if (authLoading || (user && loading)) {
     return (
       <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
@@ -225,31 +227,25 @@ export default function UserDashboardPage() {
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-8">
         {/* Co-brand — demo: clean white/ink on soft grey page */}
         <header className="mb-6 md:mb-8 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm dark:border-slate-600 sm:h-14 sm:w-14">
-              <Image
-                src="/ethiotell.png"
-                alt="Ethio telecom"
-                width={56}
-                height={56}
-                className="h-full w-full object-contain p-1"
-                priority
-              />
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="shrink-0">
+              <EthioTellsMark />
             </div>
             <div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Powered by Ethio telecom</p>
               <div className="font-landing-display text-sm text-[hsl(222,47%,8%)] sm:text-base dark:text-slate-100">
                 Ethio telecom
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Powered by Compound 360</p>
+              
             </div>
           </div>
           <div className="shrink-0">
             <Image
               src="/logo.png"
               alt="Compound 360"
-              width={130}
-              height={32}
-              className="h-8 w-auto rounded-lg border border-slate-200/80 bg-white p-1 shadow-sm sm:h-9 dark:border-slate-600 dark:bg-slate-800"
+              width={200}
+              height={48}
+              className="h-9 w-auto max-w-[9.5rem] object-contain object-left sm:h-10 sm:max-w-[11rem] md:h-11 md:max-w-[12rem]"
               priority
             />
           </div>
