@@ -211,7 +211,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
                 <div className="hidden dark:block">
                   <Logo size="sm" />
                 </div>
-                <p className="user-app-ink/90 mt-1 text-sm">
+                <p className="mt-1 text-sm text-[hsl(222,22%,20%)] dark:text-slate-400">
                   Gamified Fitness Platform
                 </p>
               </div>
@@ -265,19 +265,19 @@ export default function UserLayout({ children }: UserLayoutProps) {
                 <div className="px-2">
                   <button
                     onClick={() => (window.location.href = '/user/settings')}
-                    className="flex w-full items-center gap-3 rounded-full py-2.5 pl-3 pr-3 text-left text-[hsl(222,47%,8%)] transition-all hover:bg-white/20 dark:text-slate-300 dark:hover:bg-white/10"
+                    className="user-app-ink flex w-full items-center gap-3 rounded-full py-2.5 pl-3 pr-3 text-left text-sm font-medium leading-snug transition-all hover:bg-white/20 dark:text-slate-300 dark:hover:bg-white/10"
                     type="button"
                   >
                     <Settings className="h-5 w-5 shrink-0" strokeWidth={1.5} />
-                    <span className="font-medium">Settings</span>
+                    <span>Settings</span>
                   </button>
                   <button
                     onClick={logout}
-                    className="mt-1 flex w-full items-center gap-3 rounded-full py-2.5 pl-3 pr-3 text-left text-[hsl(222,47%,8%)] transition-all hover:bg-white/20 dark:text-red-400 dark:hover:bg-red-950/30"
+                    className="user-app-ink mt-1 flex w-full items-center gap-3 rounded-full py-2.5 pl-3 pr-3 text-left text-sm font-medium leading-snug transition-all hover:bg-white/20 dark:text-red-400 dark:hover:bg-red-950/30"
                     type="button"
                   >
                     <LogOut className="h-5 w-5 shrink-0" strokeWidth={1.5} />
-                    <span className="font-medium">Logout</span>
+                    <span>Logout</span>
                   </button>
                 </div>
               </div>

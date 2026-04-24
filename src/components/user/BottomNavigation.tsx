@@ -107,7 +107,7 @@ export function BottomNavigation() {
                 key={item.id}
                 onClick={() => router.push(item.href)}
                 className={cn(
-                  'flex flex-col items-center space-y-1 px-3 py-2 rounded-xl transition-all duration-200',
+                  'flex flex-col items-center space-y-1 rounded-xl px-3 py-2 text-[13px] transition-all duration-200',
                   'user-app-hover',
                   isActive &&
                     'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-md dark:from-[var(--ethio-lemon-dark)] dark:to-[#0069a3]'
@@ -116,10 +116,10 @@ export function BottomNavigation() {
                 <div className="relative">
                   <Icon
                     className={cn(
-                      'w-5 h-5 transition-colors duration-200',
+                      'h-5 w-5 transition-colors duration-200',
                       isActive
                         ? 'text-white'
-                        : 'text-gray-500 dark:text-gray-400'
+                        : 'text-[hsl(222,12%,38%)] dark:text-slate-400',
                     )}
                   />
                   {isActive && (
@@ -128,10 +128,10 @@ export function BottomNavigation() {
                 </div>
                 <span
                   className={cn(
-                    'text-xs font-medium transition-colors duration-200',
+                    'max-w-[4.5rem] truncate text-center font-medium leading-tight transition-colors duration-200',
                     isActive
                       ? 'text-white'
-                      : 'text-gray-600 dark:text-gray-400'
+                      : 'text-[hsl(222,20%,18%)] dark:text-slate-300',
                   )}
                 >
                   {item.label}

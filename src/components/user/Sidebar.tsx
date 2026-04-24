@@ -102,13 +102,11 @@ export function Sidebar({ className }: SidebarProps) {
   ];
 
   if (loading) {
-    return <div className="text-sm user-app-muted">Loading...</div>;
+    return <div className="user-app-ink text-sm opacity-80">Loading...</div>;
   }
 
-  const ink = 'text-[hsl(222,47%,8%)]';
-
   return (
-    <nav className={cn('space-y-1.5 px-2', className)}>
+    <nav className={cn('space-y-1.5 px-2 text-sm leading-snug', className)}>
       {navItems.map((item) => {
         const isActive = pathname.startsWith(item.href);
         const Icon = item.icon;
@@ -120,23 +118,22 @@ export function Sidebar({ className }: SidebarProps) {
             className={cn(
               'flex w-full items-center gap-3 rounded-full py-2.5 pl-3 pr-3 text-left transition-all duration-200',
               isActive
-                ? 'bg-[var(--ethio-nav-active)] font-bold text-white shadow-md dark:bg-gradient-to-r dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)] dark:shadow-lg'
-                : cn(
-                    ink,
-                    'font-normal hover:bg-white/20 dark:font-normal dark:text-slate-300 dark:hover:bg-white/10',
-                  ),
+                ? 'bg-[var(--ethio-nav-active)] font-semibold text-white shadow-md dark:bg-gradient-to-r dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)] dark:shadow-lg'
+                : 'user-app-ink font-medium hover:bg-white/20 dark:font-medium dark:text-slate-300 dark:hover:bg-white/10',
             )}
           >
             <Icon
               className={cn(
                 'h-5 w-5 shrink-0',
-                isActive ? 'stroke-[2.25] text-white' : cn(ink, 'stroke-[1.5] dark:text-slate-300'),
+                isActive
+                  ? 'stroke-[2.25] text-white'
+                  : 'stroke-[1.5] user-app-ink dark:text-slate-300',
               )}
             />
             <span
               className={cn(
                 'min-w-0 flex-1 truncate',
-                isActive ? 'text-white' : '',
+                isActive ? 'text-white' : 'user-app-ink dark:text-slate-300',
               )}
             >
               {item.label}

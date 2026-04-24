@@ -199,16 +199,27 @@
   line-height: 0.92;
 }
 
-/* Trainee /user/* — Ethio light: grey page, white surfaces, ink type (dark: neumorphic fallback) */
+/* Trainee /user/* — Archivo + balanced default color on grey + brand lime */
+.user-app-ethio {
+  font-family: var(--font-landing), var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: hsl(222, 28%, 13%);
+}
+.dark .user-app-ethio {
+  color: rgb(241, 245, 249);
+}
+
 @layer utilities {
   .user-app-page {
     @apply bg-[#F3F4F6] dark:bg-[var(--neumorphic-bg)];
   }
+  /* UI ink: one step above pure black, less fatiguing than 47% saturation @ 8% */
   .user-app-ink {
-    @apply text-[hsl(222,47%,8%)] dark:text-slate-100;
+    @apply text-[hsl(222,28%,12%)] dark:text-slate-100;
   }
   .user-app-muted {
-    @apply text-slate-500 dark:text-slate-400;
+    @apply text-[hsl(222,12%,40%)] dark:text-slate-400;
   }
   .user-app-paper {
     @apply bg-white dark:bg-card;
@@ -236,7 +247,7 @@
     @apply bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] font-semibold text-white shadow-sm hover:opacity-95;
   }
   .user-app-pill-ink {
-    @apply rounded-full font-bold text-[hsl(222,47%,8%)] dark:text-slate-900;
+    @apply rounded-full font-semibold text-[hsl(222,28%,12%)] dark:text-slate-900;
     background-color: var(--ethio-pill);
     box-shadow: var(--ethio-pill-shadow);
   }
