@@ -120,7 +120,8 @@ export function Sidebar({ className }: SidebarProps) {
               'text-white hover:bg-white/10',
               // Dark mode: elevated sidebar surface
               'dark:text-gray-300 dark:hover:bg-gray-800/50',
-              isActive && 'bg-[var(--ethio-deep-blue)] text-white shadow-sm dark:bg-gradient-to-r dark:from-cyan-500 dark:to-purple-600 dark:text-white dark:shadow-lg'
+              isActive &&
+                'bg-[var(--ethio-deep-blue)] text-white shadow-sm dark:bg-gradient-to-r dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)] dark:text-white dark:shadow-lg'
             )}
           >
             <Icon 

@@ -43,7 +43,7 @@ export default function QuestionDetailPage() {
     return (
       <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>

@@ -188,7 +188,7 @@ export default function VideoPlayerPage() {
                                     </div>
                                 ),
                                 duration: 6000,
-                                className: "bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 shadow-2xl",
+                                className: "bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white border-0 shadow-2xl",
                             })
                         }
                         // Handle milestone notifications
@@ -328,7 +328,7 @@ export default function VideoPlayerPage() {
                         </div>
                     ),
                     duration: 6000,
-                    className: "bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0 shadow-2xl",
+                    className: "bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white border-0 shadow-2xl",
                 })
             } else if (!response.success && response.error) {
                 // Handle API errors
@@ -504,7 +504,7 @@ export default function VideoPlayerPage() {
                             </div>
                             <button
                                 onClick={() => router.push('/user/videos')}
-                                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-medium hover:from-cyan-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
+                                className="px-6 py-3 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-xl font-medium hover:opacity-95 transition-all duration-200 transform hover:scale-105"
                             >
                                 <ArrowLeft className="w-5 h-5 mr-2 inline" />
                                 Back to Videos
@@ -600,7 +600,7 @@ export default function VideoPlayerPage() {
                                             onClick={handleSeek}
                                         >
                                             <div 
-                                                className="h-full bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full transition-all duration-100"
+                                                className="h-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full transition-all duration-100"
                                                 style={{ width: `${progress}%` }}
                                             />
                                         </div>
@@ -610,7 +610,7 @@ export default function VideoPlayerPage() {
                                             <div className="flex items-center space-x-4">
                                                 <button
                                                     onClick={handlePlayPause}
-                                                    className="text-white hover:text-cyan-400 transition-colors"
+                                                    className="text-white hover:text-[var(--ethio-lemon)] transition-colors"
                                                 >
                                                     {isPlaying ? (
                                                         <div className="w-6 h-6 flex items-center justify-center">
@@ -624,7 +624,7 @@ export default function VideoPlayerPage() {
 
                                                 <button
                                                     onClick={handleMute}
-                                                    className="text-white hover:text-cyan-400 transition-colors"
+                                                    className="text-white hover:text-[var(--ethio-lemon)] transition-colors"
                                                 >
                                                     {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
                                                 </button>
@@ -635,7 +635,7 @@ export default function VideoPlayerPage() {
                                             </div>
 
                                             <div className="flex items-center space-x-2">
-                                                <button className="text-white hover:text-cyan-400 transition-colors">
+                                                <button className="text-white hover:text-[var(--ethio-lemon)] transition-colors">
                                                     <Maximize className="w-6 h-6" />
                                                 </button>
                                             </div>
@@ -665,8 +665,8 @@ export default function VideoPlayerPage() {
                 {/* Video Info - Flowing Layout */}
                 <div className="space-y-8">
                     {/* Hero Section */}
-                    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-500/10 via-purple-600/10 to-pink-500/10 p-8 md:p-12">
-                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-600/5"></div>
+                    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--ethio-lemon)]/10 via-[var(--ethio-deep-blue)]/8 to-transparent p-8 md:p-12">
+                        <div className="absolute inset-0 bg-gradient-to-r from-[var(--ethio-lemon)]/8 to-[var(--ethio-deep-blue)]/8"></div>
                         <div className="relative z-10">
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                                 <div className="flex-1">
@@ -723,7 +723,7 @@ export default function VideoPlayerPage() {
                                         onClick={handleSave}
                                         className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all duration-200 transform hover:scale-105 ${
                                             saved 
-                                                ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg' 
+                                                ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg' 
                                                 : 'bg-white/20 backdrop-blur-sm user-app-ink hover:bg-white/30'
                                         }`}
                                     >
@@ -842,8 +842,8 @@ export default function VideoPlayerPage() {
                                     <div className="flex flex-wrap gap-2">
                                         {content.trainer.specialties.slice(0, 3).map((specialty, index) => {
                                             const borderColors = [
-                                                'border-cyan-500/50',
-                                                'border-purple-500/50', 
+                                                'border-[var(--ethio-deep-blue)]/40',
+                                                'border-[var(--ethio-lemon)]/40', 
                                                 'border-green-500/50'
                                             ];
                                             return (
@@ -897,7 +897,7 @@ export default function VideoPlayerPage() {
                                 </div>
                                 <div className="h-3 w-full rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                                     <div 
-                                        className="bg-gradient-to-r from-cyan-500 to-purple-600 h-3 rounded-full transition-all duration-500"
+                                        className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] h-3 rounded-full transition-all duration-500"
                                         style={{ width: `${Math.min(watchPercentage, 100)}%` }}
                                     />
                                 </div>
@@ -931,8 +931,8 @@ export default function VideoPlayerPage() {
                                         watchPercentage < 80
                                             ? 'bg-gray-400 text-gray-200 cursor-not-allowed opacity-60'
                                             : completing
-                                            ? 'bg-gradient-to-r from-cyan-400 to-purple-500 text-white cursor-wait'
-                                            : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700 transform hover:scale-105'
+                                            ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white cursor-wait'
+                                            : 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white hover:opacity-95 transform hover:scale-105'
                                     }`}
                                     title={watchPercentage < 80 ? `Watch at least 80% to complete. Currently at ${Math.round(watchPercentage)}%.` : undefined}
                                 >
@@ -999,8 +999,8 @@ export default function VideoPlayerPage() {
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center">
                                                     <div className="relative">
-                                                        <Play className="h-12 w-12 text-gray-400 group-hover:text-cyan-500 transition-colors duration-300" />
-                                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-600/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                                        <Play className="h-12 w-12 text-gray-400 user-app-group-hover-text transition-colors duration-300" />
+                                                        <div className="absolute inset-0 bg-gradient-to-r from-[var(--ethio-lemon)]/15 to-[var(--ethio-deep-blue)]/12 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                                     </div>
                                                 </div>
                                             )}

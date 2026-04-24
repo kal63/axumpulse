@@ -34,7 +34,7 @@ export default function ChangeTrainerPage() {
           </div>
 
           <Button
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+            className="w-full user-app-btn-primary"
             onClick={() => router.push('/trainers?mode=changeTrainer')}
           >
             <Users className="w-4 h-4 mr-2" />

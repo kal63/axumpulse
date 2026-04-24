@@ -101,9 +101,9 @@ export default function GamesHubPage() {
   const getGameColor = (gameType: string) => {
     switch (gameType) {
       case 'spin_win':
-        return 'from-purple-500 to-pink-500';
+        return 'from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)]';
       case 'quiz_battle':
-        return 'from-blue-500 to-cyan-500';
+        return 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]';
       case 'memory_game':
         return 'from-green-500 to-emerald-500';
       default:
@@ -131,7 +131,7 @@ export default function GamesHubPage() {
     return (
       <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading games...</p>
         </div>
       </div>
@@ -152,7 +152,7 @@ export default function GamesHubPage() {
   return (
     <>
       <div className="text-center mt-8 mb-8">
-        {/* <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+        {/* <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
                                     <Dumbbell className="w-4 h-4" />
                                     <span>Structured Fitness Programs</span>
                                 </div> */}
@@ -202,7 +202,7 @@ export default function GamesHubPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => router.push('/trainers')}
-                  className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                  className="px-8 py-4 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                 >
                   <Users className="w-5 h-5" />
                   Browse Trainers
@@ -276,7 +276,7 @@ export default function GamesHubPage() {
                     </div>
 
                     <Button
-                      className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+                      className="w-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white"
                       onClick={(e) => {
                         e.stopPropagation();
                         if (game.gameType === 'spin_win') {

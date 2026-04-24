@@ -115,7 +115,7 @@ export default function GameHistoryPage() {
     return (
       <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading game history...</p>
         </div>
       </div>
@@ -219,7 +219,7 @@ export default function GameHistoryPage() {
                 <NeumorphicCard key={entry.id} variant="raised" className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4 flex-1">
-                      <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-xl flex items-center justify-center">
                         <Icon className="h-6 w-6 text-white" />
                       </div>
                       <div className="flex-1">

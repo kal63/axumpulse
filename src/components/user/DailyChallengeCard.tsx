@@ -85,7 +85,7 @@ export function DailyChallengeCard({ challenge, onComplete, completing = false }
           <Button
             onClick={handleComplete}
             disabled={isCompleting || completing}
-            className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+            className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white"
           >
             {isCompleting ? (
               <>

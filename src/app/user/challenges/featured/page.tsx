@@ -172,7 +172,7 @@ export default function FeaturedChallengesPage() {
                       {/* Header */}
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3 flex-1">
-                          <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-xl flex items-center justify-center">
+                          <div className="w-12 h-12 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-xl flex items-center justify-center">
                             <Trophy className="h-6 w-6 text-white" />
                           </div>
                           <div className="flex-1">
@@ -218,7 +218,7 @@ export default function FeaturedChallengesPage() {
 
                       {/* Footer */}
                       <div className="flex items-center justify-between pt-4">
-                        <div className="flex items-center gap-1 text-cyan-500">
+                        <div className="flex items-center gap-1 text-[var(--ethio-lemon-dark)]">
                           <Zap className="h-4 w-4" />
                           <span className="font-semibold">+{challenge.xpReward || 0} XP</span>
                         </div>
@@ -264,7 +264,7 @@ export default function FeaturedChallengesPage() {
                                   handleJoinChallenge(challenge.id, e)
                                 }}
                                 disabled={joiningChallengeId === challenge.id}
-                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-full text-sm font-medium hover:from-cyan-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed z-10 relative"
+                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-full text-sm font-medium hover:opacity-95 transition-all duration-200 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed z-10 relative"
                               >
                                 <span>{joiningChallengeId === challenge.id ? 'Joining...' : 'Join Challenge'}</span>
                                 <ChevronRight className="h-4 w-4" />

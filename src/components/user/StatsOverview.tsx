@@ -33,8 +33,8 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       icon: Play,
       label: 'Content Watched',
       value: stats.contentWatched,
-      color: 'from-[var(--color-cyber-blue)] to-blue-600',
-      gradient: 'bg-gradient-to-br from-cyan-500 to-blue-600'
+      color: 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]',
+      gradient: 'bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
     },
     {
       icon: Clock,
@@ -47,15 +47,15 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       icon: Dumbbell,
       label: 'Workouts Started',
       value: stats.workoutPlansStarted,
-      color: 'from-[var(--color-neon-magenta)] to-pink-600',
-      gradient: 'bg-gradient-to-br from-pink-500 to-purple-600'
+      color: 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]',
+      gradient: 'bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
     },
     {
       icon: Target,
       label: 'Workouts Completed',
       value: stats.workoutPlansCompleted,
-      color: 'from-purple-500 to-indigo-600',
-      gradient: 'bg-gradient-to-br from-purple-500 to-indigo-600'
+      color: 'from-[var(--ethio-lemon-dark)] to-[var(--ethio-deep-blue)]',
+      gradient: 'bg-gradient-to-br from-[var(--ethio-lemon-dark)] to-[var(--ethio-deep-blue)]'
     },
     {
       icon: Trophy,
@@ -118,10 +118,10 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
         <NeumorphicCard className="p-5">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold user-app-ink flex items-center gap-2">
-              <Dumbbell className="h-5 w-5 text-[var(--color-neon-magenta)]" />
+              <Dumbbell className="h-5 w-5 text-[var(--ethio-lemon-dark)]" />
               Workout Completion
             </h3>
-            <span className="text-2xl font-bold text-[var(--color-neon-magenta)]">
+            <span className="text-2xl font-bold text-[var(--ethio-lemon-dark)]">
               {workoutCompletionRate}%
             </span>
           </div>
@@ -129,7 +129,7 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
           {/* Progress Bar */}
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[var(--color-neon-magenta)] to-purple-600 transition-all duration-500 rounded-full"
+              className="h-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] transition-all duration-500 rounded-full"
               style={{ width: `${workoutCompletionRate}%` }}
             />
           </div>

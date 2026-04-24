@@ -127,7 +127,7 @@ export function XPRing({
         </svg>
 
         {/* Glow Effect (Dark Mode Only) */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/20 to-pink-500/20 blur-sm dark:block hidden pointer-events-none" />
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[var(--ethio-lemon)]/20 to-[var(--ethio-deep-blue)]/20 blur-sm dark:block hidden pointer-events-none" />
 
         {/* Center Content */}
         <div className="relative z-10 text-center">

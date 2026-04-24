@@ -150,7 +150,7 @@ export default function UserDashboardPage() {
     return (
       <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] dark:border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] dark:border-[var(--ethio-lemon)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
@@ -331,7 +331,7 @@ export default function UserDashboardPage() {
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
                   <div className="rounded-2xl border border-border bg-muted/50 p-4 sm:p-5">
                     <div className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      <Crown className="size-3.5 text-[hsl(210,95%,32%)] dark:text-cyan-400" />
+                      <Crown className="size-3.5 text-[hsl(210,95%,32%)] dark:text-[var(--ethio-lemon)]" />
                       Package
                     </div>
                     <div className="font-landing-display text-2xl">{subscription.subscriptionPlan?.name || '—'}</div>
@@ -410,7 +410,7 @@ export default function UserDashboardPage() {
                   label: 'XP points',
                   value: userStats.xp.toLocaleString(),
                   icon: Zap,
-                  tone: 'from-fuchsia-500 to-purple-600',
+                  tone: 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]',
                   extra:
                     xpSummary && xpSummary.avgDailyXP > 0 ? (
                       <span className="mt-1 inline-flex items-center text-[10px] text-emerald-600 dark:text-emerald-400 sm:text-xs">
@@ -423,7 +423,7 @@ export default function UserDashboardPage() {
                   label: 'Workouts',
                   value: userStats.workoutsCompleted,
                   icon: Dumbbell,
-                  tone: 'from-sky-500 to-cyan-500',
+                  tone: 'from-emerald-500 to-[var(--ethio-deep-blue)]',
                   extra:
                     userInfo?.workoutStreak > 0 ? (
                       <span className="mt-1 inline-flex items-center text-[10px] text-orange-500 sm:text-xs">
@@ -469,7 +469,7 @@ export default function UserDashboardPage() {
             <div className="rounded-3xl border border-slate-200/90 bg-white p-5 shadow-sm dark:border-border dark:bg-card sm:p-6">
               <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="size-5 text-[var(--ethio-deep-blue)] dark:text-cyan-400" />
+                  <BarChart3 className="size-5 text-[var(--ethio-deep-blue)] dark:text-[var(--ethio-lemon)]" />
                   <h3 className="font-landing-display text-lg text-[hsl(222,47%,8%)] sm:text-xl dark:text-slate-100">
                     XP progress
                   </h3>
@@ -497,12 +497,12 @@ export default function UserDashboardPage() {
                   {xpChartDisplay.map((entry, index) => {
                     const value = Math.round(((entry.xp || 0) / chartMaxXP) * 100)
                     const colors = [
-                      'from-cyan-500 to-blue-500',
-                      'from-blue-500 to-purple-500',
-                      'from-purple-500 to-fuchsia-500',
-                      'from-fuchsia-500 to-rose-500',
-                      'from-rose-500 to-orange-500',
-                      'from-orange-500 to-amber-500',
+                      'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]',
+                      'from-[var(--ethio-lemon-dark)] to-teal-600',
+                      'from-teal-500 to-[var(--ethio-deep-blue)]',
+                      'from-lime-500 to-[var(--ethio-lemon)]',
+                      'from-amber-500 to-orange-500',
+                      'from-orange-500 to-rose-500',
                     ]
                     const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
                     const date = new Date(entry.date)

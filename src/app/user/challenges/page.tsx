@@ -271,13 +271,13 @@ export default function ChallengesPage() {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-pink-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/10 via-[var(--ethio-deep-blue)]/6 to-transparent" />
         
         {/* Content */}
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
                 <Sparkles className="w-4 h-4" />
                 <span>Join Amazing Challenges</span>
               </div>
@@ -332,7 +332,7 @@ export default function ChallengesPage() {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                       <button
                         onClick={() => router.push('/trainers')}
-                        className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                        className="px-8 py-4 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                       >
                         <Users className="w-5 h-5" />
                         Browse Trainers
@@ -359,7 +359,7 @@ export default function ChallengesPage() {
                       onClick={() => setShowFilters(!showFilters)}
                       className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
                         showFilters 
-                          ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg' 
+                          ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg' 
                           : 'user-app-paper user-app-hover'
                       }`}
                     >
@@ -403,7 +403,7 @@ export default function ChallengesPage() {
                               onClick={() => setSelectedCategory('')}
                               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                 selectedCategory === '' 
-                                  ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white' 
+                                  ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white' 
                                   : 'user-app-paper user-app-hover user-app-ink'
                               }`}
                             >
@@ -415,7 +415,7 @@ export default function ChallengesPage() {
                                 onClick={() => setSelectedCategory(category)}
                                 className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                   selectedCategory === category 
-                                    ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white' 
+                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white' 
                                     : 'user-app-paper user-app-hover user-app-ink'
                                 }`}
                               >
@@ -440,7 +440,7 @@ export default function ChallengesPage() {
                               onClick={() => setSelectedDifficulty(selectedDifficulty === option.value ? '' : option.value)}
                               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                 selectedDifficulty === option.value 
-                                  ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white' 
+                                  ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white' 
                                   : 'user-app-paper user-app-hover user-app-ink'
                               }`}
                             >
@@ -525,7 +525,7 @@ export default function ChallengesPage() {
                         </div>
                       </div>
                       
-                      <div className="flex items-center space-x-1 text-cyan-600">
+                      <div className="flex items-center space-x-1 text-[var(--ethio-lemon-dark)]">
                         <Zap className="w-4 h-4" />
                         <span className="text-sm font-semibold">+{challenge.xpReward || 0} XP</span>
                       </div>
@@ -568,7 +568,7 @@ export default function ChallengesPage() {
               <div className="relative user-app-paper p-2 rounded-2xl shadow-lg dark:shadow-xl">
                 {/* Sliding Background */}
                 <div 
-                  className="absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 transition-all duration-500 ease-out"
+                  className="absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] transition-all duration-500 ease-out"
                   style={backgroundStyle}
                 />
                 
@@ -661,7 +661,7 @@ export default function ChallengesPage() {
                       {/* Header */}
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3 flex-1">
-                          <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-xl flex items-center justify-center">
+                          <div className="w-12 h-12 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-xl flex items-center justify-center">
                             <Trophy className="h-6 w-6 text-white" />
                           </div>
                           <div className="flex-1">
@@ -707,7 +707,7 @@ export default function ChallengesPage() {
 
                       {/* Footer */}
                       <div className="flex items-center justify-between pt-4">
-                        <div className="flex items-center gap-1 text-cyan-500">
+                        <div className="flex items-center gap-1 text-[var(--ethio-lemon-dark)]">
                           <Zap className="h-4 w-4" />
                           <span className="font-semibold">+{challenge.xpReward || 0} XP</span>
                         </div>
@@ -753,7 +753,7 @@ export default function ChallengesPage() {
                                   handleJoinChallenge(challenge.id, e)
                                 }}
                                 disabled={joiningChallengeId === challenge.id}
-                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-full text-sm font-medium hover:from-cyan-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed z-10 relative"
+                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-full text-sm font-medium hover:opacity-95 transition-all duration-200 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed z-10 relative"
                               >
                                 <span>{joiningChallengeId === challenge.id ? 'Joining...' : 'Join Challenge'}</span>
                                 <ChevronRight className="h-4 w-4" />
@@ -841,7 +841,7 @@ export default function ChallengesPage() {
                           {/* Header */}
                           <div className="flex items-start justify-between">
                             <div className="flex items-start gap-3 flex-1">
-                              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-xl flex items-center justify-center">
+                              <div className="w-12 h-12 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-xl flex items-center justify-center">
                                 <Trophy className="h-6 w-6 text-white" />
                               </div>
                               <div className="flex-1">
@@ -858,7 +858,7 @@ export default function ChallengesPage() {
                             <div className={`px-2 py-1 rounded-full text-xs font-medium ${
                               status === 'completed' 
                                 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                                : 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
+                                : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-[var(--ethio-lemon)]'
                             }`}>
                               {status === 'completed' ? 'Completed' : 'Active'}
                             </div>
@@ -910,7 +910,7 @@ export default function ChallengesPage() {
                           <div className="space-y-2">
                             <div className="flex items-center justify-between text-xs">
                               <span className="user-app-muted">Your Progress</span>
-                              <span className="font-semibold text-[var(--color-cyber-blue)]">
+                              <span className="font-semibold text-[var(--ethio-deep-blue)]">
                                 {progress}/{goalValue} {goalType}
                               </span>
                             </div>
@@ -919,7 +919,7 @@ export default function ChallengesPage() {
                                 className={`h-2 rounded-full transition-all ${
                                   status === 'completed'
                                     ? 'bg-gradient-to-r from-green-500 to-emerald-600'
-                                    : 'bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)]'
+                                    : 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
                                 }`}
                                 style={{ 
                                   width: `${progressPercentage}%` 
@@ -935,7 +935,7 @@ export default function ChallengesPage() {
 
                           {/* Footer */}
                           <div className="flex items-center justify-between pt-4">
-                            <div className="flex items-center gap-1 text-cyan-500">
+                            <div className="flex items-center gap-1 text-[var(--ethio-lemon-dark)]">
                               <Zap className="h-4 w-4" />
                               <span className="font-semibold">+{challenge?.xpReward || 0} XP</span>
                             </div>

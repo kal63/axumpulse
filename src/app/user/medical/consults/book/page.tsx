@@ -222,7 +222,7 @@ export default function BookConsultPage() {
     return (
       <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
@@ -265,16 +265,16 @@ export default function BookConsultPage() {
             {!loadingBalance && (
               <div className={`mt-4 p-4 rounded-lg border ${
                 availableConsults > 0 
-                  ? 'bg-cyan-500/10 border-cyan-500/20' 
+                  ? 'bg-[var(--ethio-deep-blue)]/8 border-[var(--ethio-lemon)]/25' 
                   : 'bg-orange-500/10 border-orange-500/20'
               }`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Calendar className={`w-5 h-5 ${
-                      availableConsults > 0 ? 'text-cyan-500' : 'text-orange-500'
+                      availableConsults > 0 ? 'text-[var(--ethio-lemon-dark)]' : 'text-orange-500'
                     }`} />
                     <span className={`font-semibold ${
-                      availableConsults > 0 ? 'text-cyan-500' : 'text-orange-500'
+                      availableConsults > 0 ? 'text-[var(--ethio-lemon-dark)]' : 'text-orange-500'
                     }`}>
                       Available Consults: {availableConsults}
                     </span>

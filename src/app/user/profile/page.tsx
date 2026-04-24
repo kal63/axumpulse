@@ -82,7 +82,7 @@ export default function ProfilePage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-cyber-blue)] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto mb-4"></div>
           <p className="user-app-ink">Loading profile...</p>
         </div>
       </div>
@@ -100,7 +100,7 @@ export default function ProfilePage() {
           <p className="user-app-muted mb-4">{error}</p>
           <Button
             onClick={fetchProfile}
-            className="bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white"
+            className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white"
           >
             Try Again
           </Button>
@@ -114,13 +114,13 @@ export default function ProfilePage() {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-pink-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/10 via-[var(--ethio-deep-blue)]/6 to-transparent" />
         
         {/* Content */}
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
                 <Sparkles className="w-4 h-4" />
                 <span>Your Personal Profile</span>
               </div>
@@ -143,10 +143,10 @@ export default function ProfilePage() {
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
               {/* Profile Picture */}
               <div className="relative">
-                <div className="w-32 h-32 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center text-white text-4xl font-bold">
+                <div className="w-32 h-32 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full flex items-center justify-center text-white text-4xl font-bold">
                   {profileData?.name?.charAt(0) || 'U'}
                 </div>
-                <button className="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform">
+                <button className="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform">
                   <Camera className="w-5 h-5" />
                 </button>
               </div>
@@ -157,7 +157,7 @@ export default function ProfilePage() {
                   <h2 className="text-3xl font-bold user-app-ink">
                     {profileData?.name || 'User'}
                   </h2>
-                  <Badge variant="secondary" className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">
+                  <Badge variant="secondary" className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white">
                     Level {profileData?.level || 1}
                   </Badge>
                 </div>
@@ -200,7 +200,7 @@ export default function ProfilePage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <NeumorphicCard variant="raised" className="p-6 text-center">
-              <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl">
+              <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-xl">
                 <Trophy className="h-6 w-6 text-white" />
               </div>
               <div className="text-3xl font-bold user-app-ink mb-1">
@@ -210,7 +210,7 @@ export default function ProfilePage() {
             </NeumorphicCard>
 
             <NeumorphicCard variant="raised" className="p-6 text-center">
-              <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
+              <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)] rounded-xl">
                 <Dumbbell className="h-6 w-6 text-white" />
               </div>
               <div className="text-3xl font-bold user-app-ink mb-1">
@@ -255,8 +255,8 @@ export default function ProfilePage() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {[
-                { title: "First Workout", description: "Completed your first workout", icon: Dumbbell, color: "from-cyan-500 to-blue-500", date: "2 days ago" },
-                { title: "Week Warrior", description: "Completed 7 workouts in a week", icon: Calendar, color: "from-purple-500 to-pink-500", date: "1 week ago" },
+                { title: "First Workout", description: "Completed your first workout", icon: Dumbbell, color: "from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]", date: "2 days ago" },
+                { title: "Week Warrior", description: "Completed 7 workouts in a week", icon: Calendar, color: "from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)]", date: "1 week ago" },
                 { title: "Challenge Master", description: "Completed your first challenge", icon: Target, color: "from-orange-500 to-red-500", date: "3 days ago" }
               ].map((achievement, index) => (
                 <div key={index} className="p-4 user-app-paper rounded-xl">
@@ -320,7 +320,7 @@ export default function ProfilePage() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Button 
               onClick={handleEdit}
-              className="flex-1 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+              className="flex-1 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white"
             >
               <Edit3 className="w-4 h-4 mr-2" />
               Edit Profile

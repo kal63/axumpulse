@@ -403,7 +403,7 @@ export default function UserApplyPage() {
   const renderStep1 = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Briefcase className="h-8 w-8 text-white" />
         </div>
         <h2 className="text-2xl font-bold user-app-ink">Professional Information</h2>
@@ -436,7 +436,7 @@ export default function UserApplyPage() {
             id="yearsOfExperience"
             value={formData.yearsOfExperience}
             onChange={(e) => handleInputChange('yearsOfExperience', e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border user-app-border user-app-paper user-app-ink focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full px-3 py-2 rounded-xl border user-app-border user-app-paper user-app-ink focus:outline-none focus:ring-2 focus:ring-[var(--ethio-deep-blue)]/50"
           >
             <option value="">Select experience level</option>
             <option value="0-1">0-1 years</option>
@@ -491,7 +491,7 @@ export default function UserApplyPage() {
   const renderStep2 = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)] rounded-2xl flex items-center justify-center mx-auto mb-4">
           <FileText className="h-8 w-8 text-white" />
         </div>
         <h2 className="text-2xl font-bold user-app-ink">Certifications & Portfolio</h2>
@@ -666,7 +666,7 @@ export default function UserApplyPage() {
   const renderStep3 = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Globe className="h-8 w-8 text-white" />
         </div>
         <h2 className="text-2xl font-bold user-app-ink">Social Media & Online Presence</h2>
@@ -803,7 +803,7 @@ export default function UserApplyPage() {
             id="experienceLevel"
             value={formData.preferences.experienceLevel}
             onChange={(e) => handleNestedInputChange('preferences', 'experienceLevel', e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border user-app-border user-app-paper user-app-ink focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full px-3 py-2 rounded-xl border user-app-border user-app-paper user-app-ink focus:outline-none focus:ring-2 focus:ring-[var(--ethio-deep-blue)]/50"
           >
             <option value="">Select your experience level</option>
             {EXPERIENCE_LEVEL_OPTIONS.map((level) => (
@@ -830,7 +830,7 @@ export default function UserApplyPage() {
     return (
       <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
@@ -840,12 +840,12 @@ export default function UserApplyPage() {
   return (
     <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/10 via-[var(--ethio-deep-blue)]/8 to-transparent" />
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
             <div className="text-center mb-8">
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
                 <Award className="w-4 h-4" />
                 <span>Become a Trainer</span>
               </div>
@@ -873,13 +873,13 @@ export default function UserApplyPage() {
                     <h3 className="text-xl font-bold user-app-ink mb-1">Application Progress</h3>
                     <p className="user-app-muted">Step {currentStep} of {totalSteps}</p>
                   </div>
-                  <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">
+                  <Badge className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white">
                     {Math.round(progress)}% Complete
                   </Badge>
                 </div>
                 <div className="w-full user-app-paper rounded-full h-3 overflow-hidden">
                   <div 
-                    className="bg-gradient-to-r from-cyan-500 to-purple-600 h-3 rounded-full transition-all duration-500"
+                    className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] h-3 rounded-full transition-all duration-500"
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
@@ -906,7 +906,7 @@ export default function UserApplyPage() {
               {currentStep < totalSteps ? (
                 <Button 
                   onClick={nextStep}
-                  className="flex items-center h-12 px-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+                  className="flex items-center h-12 px-6 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white"
                 >
                   Next
                   <ArrowRight className="h-4 w-4 ml-2" />

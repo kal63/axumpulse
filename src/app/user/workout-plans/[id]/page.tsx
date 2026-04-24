@@ -512,7 +512,7 @@ export default function WorkoutPlanDetailPage() {
             {/* Hero Section */}
             <div className="relative overflow-hidden">
                 {/* Background Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-blue-500/10" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/10 via-[var(--ethio-deep-blue)]/6 to-sky-500/5" />
                 
                 {/* Content */}
                 <div className="relative max-w-7xl mx-auto px-4 py-8 md:py-12">
@@ -528,14 +528,14 @@ export default function WorkoutPlanDetailPage() {
 
                     {/* Game Banner - Show if coming from spin & win */}
                     {fromGame && (
-                        <NeumorphicCard variant="raised" className="p-4 mb-6 border-l-4 border-l-cyan-500 bg-gradient-to-r from-cyan-500/10 to-purple-500/10">
+                        <NeumorphicCard variant="raised" className="p-4 mb-6 border-l-4 border-l-[var(--ethio-deep-blue)] bg-gradient-to-r from-[var(--ethio-lemon)]/10 to-[var(--ethio-deep-blue)]/10">
                             <div className="flex items-start gap-3">
-                                <div className="p-2 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-lg">
+                                <div className="p-2 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-lg">
                                     <Trophy className="h-5 w-5 text-white" />
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="font-bold user-app-ink mb-1 flex items-center gap-2">
-                                        <Sparkles className="h-4 w-4 text-cyan-500" />
+                                        <Sparkles className="h-4 w-4 text-[var(--ethio-lemon-dark)]" />
                                         Won from Spin & Win Game!
                                     </h3>
                                     <p className="text-sm user-app-muted mb-2">
@@ -558,7 +558,7 @@ export default function WorkoutPlanDetailPage() {
                                 {/* Title and Trainer */}
                                 <div className="space-y-4">
                                     <div className="flex items-start gap-4">
-                                        <div className="p-4 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-2xl shadow-lg">
+                                        <div className="p-4 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-2xl shadow-lg">
                                             <Dumbbell className="h-8 w-8 text-white" />
                                         </div>
                                         <div className="flex-1">
@@ -578,7 +578,7 @@ export default function WorkoutPlanDetailPage() {
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     <NeumorphicCard variant="recessed" className="p-4 text-center">
-                                        <div className="flex items-center justify-center w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl">
+                                        <div className="flex items-center justify-center w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-xl">
                                             <Target className="h-6 w-6 text-white" />
                                         </div>
                                         <div className="text-2xl font-bold user-app-ink">
@@ -588,7 +588,7 @@ export default function WorkoutPlanDetailPage() {
                                     </NeumorphicCard>
 
                                     <NeumorphicCard variant="recessed" className="p-4 text-center">
-                                        <div className="flex items-center justify-center w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
+                                        <div className="flex items-center justify-center w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)] rounded-xl">
                                             <Clock className="h-6 w-6 text-white" />
                                         </div>
                                         <div className="text-2xl font-bold user-app-ink">
@@ -621,7 +621,7 @@ export default function WorkoutPlanDetailPage() {
                                 {/* Tags */}
                                 <div className="flex flex-wrap gap-2">
                                     {workoutPlan.category && (
-                                        <Badge className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-1">
+                                        <Badge className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-3 py-1">
                                             {workoutPlan.category}
                                         </Badge>
                                     )}
@@ -638,7 +638,7 @@ export default function WorkoutPlanDetailPage() {
                                 {!userProgress ? (
                                     <NeumorphicCard variant="raised" className="p-6 text-center">
                                         <div className="space-y-4">
-                                            <div className="w-16 h-16 mx-auto bg-gradient-to-br from-cyan-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                                            <div className="w-16 h-16 mx-auto bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-2xl flex items-center justify-center">
                                                 <PlayCircle className="h-8 w-8 text-white" />
                                             </div>
                                             <div>
@@ -648,7 +648,7 @@ export default function WorkoutPlanDetailPage() {
                                                 <p className="text-sm user-app-muted mb-4">
                                                     Begin your fitness journey and earn {estimatedXP} XP
                                                     {fromGame && (
-                                                        <span className="block mt-1 text-cyan-500 font-semibold">
+                                                        <span className="block mt-1 text-[var(--ethio-lemon-dark)] font-semibold">
                                                             +50 XP bonus from game!
                                                         </span>
                                                     )}
@@ -657,7 +657,7 @@ export default function WorkoutPlanDetailPage() {
                                             <Button
                                                 onClick={handleStartPlan}
                                                 disabled={starting}
-                                                className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700 shadow-lg"
+                                                className="w-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white hover:opacity-95 shadow-lg"
                                                 size="lg"
                                             >
                                                 <PlayCircle className="h-5 w-5 mr-2" />
@@ -742,7 +742,7 @@ export default function WorkoutPlanDetailPage() {
 
                                             {/* XP Earned */}
                                             <div className="text-center">
-                                                <div className="flex items-center justify-center gap-2 text-cyan-500">
+                                                <div className="flex items-center justify-center gap-2 text-[var(--ethio-lemon-dark)]">
                                                     <Zap className="h-4 w-4" />
                                                     <span className="font-semibold">
                                                         +{Math.round((userProgress.completedExercises * 25))} XP Earned
@@ -759,7 +759,7 @@ export default function WorkoutPlanDetailPage() {
                             <NeumorphicCard variant="raised" className="overflow-hidden p-0 border user-app-border shadow-lg">
                                 <div className="px-6 pt-5 pb-2">
                                     <h2 className="text-lg font-bold user-app-ink flex items-center gap-2">
-                                        <PlayCircle className="h-5 w-5 text-cyan-500" />
+                                        <PlayCircle className="h-5 w-5 text-[var(--ethio-lemon-dark)]" />
                                         {planVideoTitle}
                                     </h2>
                                     {workoutPlan.introVideo.title && (
@@ -786,7 +786,7 @@ export default function WorkoutPlanDetailPage() {
                         {workoutPlan.description && (
                             <NeumorphicCard variant="recessed" className="p-6">
                                 <h3 className="text-xl font-bold user-app-ink mb-3 flex items-center gap-2">
-                                    <Sparkles className="h-5 w-5 text-cyan-500" />
+                                    <Sparkles className="h-5 w-5 text-[var(--ethio-lemon-dark)]" />
                                     About This Program
                                 </h3>
                                 <p className="user-app-muted leading-relaxed whitespace-pre-wrap">
@@ -800,7 +800,7 @@ export default function WorkoutPlanDetailPage() {
                             <div className="flex gap-3">
                                 <Button
                                     onClick={handleOpenInsightDialog}
-                                    className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white"
+                                    className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white"
                                 >
                                     <Edit2 className="h-4 w-4 mr-2" />
                                     {insight ? 'Update Insight' : 'Add Insight'}
@@ -830,7 +830,7 @@ export default function WorkoutPlanDetailPage() {
                                         }
                                     }}
                                     variant="outline"
-                                    className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
+                                    className="border-[var(--ethio-deep-blue)]/45 text-[var(--ethio-lemon-dark)] hover:bg-[var(--ethio-lemon)]/10"
                                     disabled={aiGenerationLoading}
                                 >
                                     <SparklesIcon className="h-4 w-4 mr-2" />
@@ -841,10 +841,10 @@ export default function WorkoutPlanDetailPage() {
 
                         {/* Insight Display Section */}
                         {insight && (
-                            <NeumorphicCard variant="recessed" className="p-6 border-l-4 border-l-cyan-500">
+                            <NeumorphicCard variant="recessed" className="p-6 border-l-4 border-l-[var(--ethio-deep-blue)]">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex items-center gap-2">
-                                        <Stethoscope className="h-5 w-5 text-cyan-500" />
+                                        <Stethoscope className="h-5 w-5 text-[var(--ethio-lemon-dark)]" />
                                         <h3 className="text-xl font-bold user-app-ink">
                                             Medical Insight
                                         </h3>
@@ -907,7 +907,7 @@ export default function WorkoutPlanDetailPage() {
                     {/* Section Header */}
                     <div className="text-center space-y-2">
                         <h2 className="text-3xl font-bold user-app-ink flex items-center justify-center gap-3">
-                            <Target className="h-8 w-8 text-cyan-500" />
+                            <Target className="h-8 w-8 text-[var(--ethio-lemon-dark)]" />
                             Exercise Schedule
                         </h2>
                         <p className="user-app-muted">
@@ -918,7 +918,7 @@ export default function WorkoutPlanDetailPage() {
                     {/* Workout Flow */}
                     <div className="relative">
                         {/* Progress Flow Line */}
-                        <div className="absolute left-7 top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-500 via-purple-500 to-green-500 opacity-30" />
+                        <div className="absolute left-7 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--ethio-lemon)] via-[var(--ethio-deep-blue)] to-[var(--ethio-lemon-dark)] opacity-30" />
                         
                         {/* Exercises Flow */}
                         <div className="space-y-6">
@@ -935,9 +935,9 @@ export default function WorkoutPlanDetailPage() {
                                         {index < (workoutPlan.exercises?.length || 0) - 1 && (
                                             <div className={`absolute left-7 top-16 w-0.5 h-6 transition-all duration-500 ${
                                                 isCompleted 
-                                                    ? 'bg-gradient-to-b from-green-500 to-cyan-500' 
+                                                    ? 'bg-gradient-to-b from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]' 
                                                     : isNext
-                                                    ? 'bg-gradient-to-b from-cyan-500 to-purple-500'
+                                                    ? 'bg-gradient-to-b from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
                                                     : 'bg-slate-200 opacity-30 dark:bg-slate-600'
                                             }`} />
                                         )}
@@ -948,7 +948,7 @@ export default function WorkoutPlanDetailPage() {
                                                 isCompleted 
                                                     ? 'border-green-500/30 bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-900/10 dark:to-emerald-900/10' 
                                                     : isNext
-                                                    ? 'border-cyan-500/30 bg-gradient-to-r from-cyan-50/30 to-purple-50/30 dark:from-cyan-900/10 dark:to-purple-900/10 shadow-lg'
+                                                    ? 'border-[var(--ethio-deep-blue)]/30 bg-gradient-to-r from-[var(--ethio-lemon)]/8 to-[var(--ethio-deep-blue)]/8 dark:from-[var(--ethio-lemon)]/8 dark:to-[var(--ethio-deep-blue)]/8 shadow-lg'
                                                     : isUpcoming
                                                     ? 'opacity-60'
                                                     : 'hover:shadow-lg hover:scale-[1.02]'
@@ -964,7 +964,7 @@ export default function WorkoutPlanDetailPage() {
                                                                 isCompleted 
                                                                     ? 'bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg' 
                                                                     : isNext
-                                                                    ? 'bg-gradient-to-br from-cyan-500 to-purple-600 text-white shadow-lg animate-pulse'
+                                                                    ? 'bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg animate-pulse'
                                                                     : isUpcoming
                                                                     ? 'user-app-paper user-app-muted shadow-sm opacity-60'
                                                                     : 'user-app-paper user-app-muted shadow-sm'
@@ -978,7 +978,7 @@ export default function WorkoutPlanDetailPage() {
                                                             
                                                             {/* Flow Status Indicator */}
                                                             {isNext && (
-                                                                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full animate-ping" />
+                                                                <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full animate-ping" />
                                                             )}
                                                         </div>
                                                         
@@ -990,7 +990,7 @@ export default function WorkoutPlanDetailPage() {
                                                                         {exercise.name}
                                                                     </h3>
                                                                     {isNext && (
-                                                                        <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs">
+                                                                        <Badge className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white text-xs">
                                                                             Next Up
                                                                         </Badge>
                                                                     )}
@@ -999,7 +999,7 @@ export default function WorkoutPlanDetailPage() {
                                                                             type="button"
                                                                             variant="outline"
                                                                             size="sm"
-                                                                            className="border-cyan-500/50 text-cyan-600 hover:bg-cyan-500/10"
+                                                                            className="border-[var(--ethio-deep-blue)]/40 text-[var(--ethio-lemon-dark)] hover:bg-[var(--ethio-lemon)]/10"
                                                                             onClick={() => setExerciseVideoModal(exercise.video!)}
                                                                         >
                                                                             <PlayCircle className="h-4 w-4 mr-1" />
@@ -1028,7 +1028,7 @@ export default function WorkoutPlanDetailPage() {
                                                             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 w-full">
                                                                 {exercise.sets && (
                                                                     <div className="flex items-center gap-2 text-sm">
-                                                                        <div className="w-6 h-6 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
+                                                                        <div className="w-6 h-6 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-lg flex items-center justify-center">
                                                                             <Target className="h-3 w-3 text-white" />
                                                                         </div>
                                                                         <div>
@@ -1040,7 +1040,7 @@ export default function WorkoutPlanDetailPage() {
                                                                 )}
                                                                 {exercise.reps && (
                                                                     <div className="flex items-center gap-2 text-sm">
-                                                                        <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                                                                        <div className="w-6 h-6 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)] rounded-lg flex items-center justify-center">
                                                                             <Dumbbell className="h-3 w-3 text-white" />
                                                                         </div>
                                                                         <div>
@@ -1137,9 +1137,9 @@ export default function WorkoutPlanDetailPage() {
                                                                         className="mb-2"
                                                                     />
                                                                 ) : (
-                                                                    <div className="flex items-center gap-3 mb-2 p-3 user-app-paper rounded-xl border border-cyan-500/20 w-full md:w-auto">
+                                                                    <div className="flex items-center gap-3 mb-2 p-3 user-app-paper rounded-xl border border-[var(--ethio-lemon)]/25 w-full md:w-auto">
                                                                         <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
-                                                                            <Timer className="w-6 h-6 text-cyan-500 animate-pulse" />
+                                                                            <Timer className="w-6 h-6 text-[var(--ethio-lemon-dark)] animate-pulse" />
                                                                         </div>
                                                                         <div className="flex flex-col">
                                                                             <div className="text-base font-bold user-app-ink">
@@ -1163,8 +1163,8 @@ export default function WorkoutPlanDetailPage() {
                                                                     isNext 
                                                                         ? exerciseCanComplete.get(exercise.id)
                                                                             ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 shadow-lg'
-                                                                            : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700 shadow-lg animate-pulse'
-                                                                        : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700 shadow-lg'
+                                                                            : 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white hover:opacity-95 shadow-lg animate-pulse'
+                                                                        : 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white hover:opacity-95 shadow-lg'
                                                                 }`}
                                                                 size="lg"
                                                                 disabled={isUpcoming || (isNext && (exercise.duration ?? 0) > 0 && !exerciseCanComplete.get(exercise.id))}
@@ -1236,7 +1236,7 @@ export default function WorkoutPlanDetailPage() {
                                     <div className="p-6 space-y-4">
                                         {/* Plan Header */}
                                         <div className="space-y-2">
-                                            <h3 className="text-lg font-bold user-app-ink group-hover:text-cyan-500 transition-colors line-clamp-2">
+                                            <h3 className="text-lg font-bold user-app-ink user-app-group-hover-text transition-colors line-clamp-2">
                                                 {plan.title}
                                             </h3>
                                             {plan.description && (
@@ -1262,7 +1262,7 @@ export default function WorkoutPlanDetailPage() {
                                                 )}
                                             </div>
                                             
-                                            <div className="flex items-center gap-1 text-cyan-500">
+                                            <div className="flex items-center gap-1 text-[var(--ethio-lemon-dark)]">
                                                 <ChevronRight className="h-4 w-4" />
                                             </div>
                                         </div>
@@ -1317,7 +1317,7 @@ export default function WorkoutPlanDetailPage() {
                                     onClick={handleGenerateWithAI}
                                     variant="outline"
                                     disabled={!selectedUserId || aiGenerationLoading}
-                                    className="border-purple-500 text-purple-500 hover:bg-purple-500/10"
+                                    className="border-[var(--ethio-deep-blue)]/45 text-[var(--ethio-lemon-dark)] hover:bg-[var(--ethio-lemon)]/10"
                                 >
                                     <SparklesIcon className="h-4 w-4 mr-2" />
                                     {aiGenerationLoading ? 'Generating...' : 'Generate with AI'}

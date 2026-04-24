@@ -82,7 +82,7 @@ export function PaginationControls({
                             className={cn(
                                 'flex items-center justify-center w-10 h-10 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95',
                                 currentPage === pageNumber
-                                    ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/25'
+                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg shadow-[0_0_20px_rgba(142,198,63,0.25)]'
                                     : 'user-app-ink user-app-hover hover:shadow-md'
                             )}
                         >

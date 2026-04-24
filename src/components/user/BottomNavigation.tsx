@@ -108,8 +108,9 @@ export function BottomNavigation() {
                 onClick={() => router.push(item.href)}
                 className={cn(
                   'flex flex-col items-center space-y-1 px-3 py-2 rounded-xl transition-all duration-200',
-                  'hover:bg-gray-50 dark:hover:bg-gray-800/50',
-                  isActive && 'bg-gradient-to-r from-purple-500 to-blue-600 text-white shadow-lg'
+                  'user-app-hover',
+                  isActive &&
+                    'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-md dark:from-[var(--ethio-lemon-dark)] dark:to-[#0069a3]'
                 )}
               >
                 <div className="relative">

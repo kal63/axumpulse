@@ -150,7 +150,7 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
-          <Settings className="h-6 w-6 text-[var(--color-cyber-blue)]" />
+          <Settings className="h-6 w-6 text-[var(--ethio-deep-blue)]" />
           <h2 className="text-2xl font-bold user-app-ink">
             Profile Settings
           </h2>
@@ -306,7 +306,7 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
           <Button
             type="submit"
             disabled={saving || !hasChanges}
-            className="flex-1 bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white"
+            className="flex-1 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white"
           >
             <Save className="h-4 w-4 mr-2" />
             {saving ? 'Saving...' : 'Save Changes'}

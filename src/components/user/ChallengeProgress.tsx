@@ -47,11 +47,11 @@ export function ChallengeProgress({
         {/* Header */}
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold user-app-ink flex items-center gap-2">
-            <Target className="h-5 w-5 text-[var(--color-cyber-blue)]" />
+            <Target className="h-5 w-5 text-[var(--ethio-deep-blue)]" />
             Track Your Progress
           </h3>
           <div className="text-right">
-            <p className="text-2xl font-bold text-[var(--color-cyber-blue)]">
+            <p className="text-2xl font-bold text-[var(--ethio-deep-blue)]">
               {currentProgress}
               <span className="text-sm user-app-muted">/{goalValue}</span>
             </p>
@@ -116,14 +116,14 @@ export function ChallengeProgress({
                 border-none
                 shadow-[inset_4px_4px_8px_rgba(15,23,42,0.12),inset_-4px_-4px_8px_rgba(255,255,255,0.9)]
                 dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.65),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]
-                focus:outline-none focus:ring-2 focus:ring-[var(--color-cyber-blue)]/50
+                focus:outline-none focus:ring-2 focus:ring-[var(--ethio-deep-blue)]/50
                 disabled:opacity-50
               "
             />
             <button
               onClick={handleCustomUpdate}
               disabled={isUpdating || !customValue}
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 px-6 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg hover:from-cyan-600 hover:to-purple-700 disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 px-6 py-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg hover:opacity-95 disabled:pointer-events-none disabled:opacity-50"
             >
               {isUpdating ? 'Updating...' : 'Update'}
             </button>
@@ -133,7 +133,7 @@ export function ChallengeProgress({
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] flex items-center justify-center">
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <div>

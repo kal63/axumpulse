@@ -84,7 +84,7 @@ export default function TraineeCoachPage() {
   if (authLoading || loading) {
     return (
       <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center pt-16">
-        <Loader2 className="w-10 h-10 animate-spin text-cyan-500" />
+        <Loader2 className="w-10 h-10 animate-spin text-[var(--ethio-lemon-dark)]" />
       </div>
     )
   }
@@ -100,12 +100,12 @@ export default function TraineeCoachPage() {
           </Button>
           <div>
             <h1 className="text-2xl font-bold user-app-ink flex items-center gap-2">
-              <MessageCircle className="w-7 h-7 text-cyan-500" />
+              <MessageCircle className="w-7 h-7 text-[var(--ethio-lemon-dark)]" />
               AI coach
             </h1>
             <p className="text-sm user-app-muted">
               Fitness and habit support — not medical advice. Adjust data sharing in{' '}
-              <Link href="/user/settings" className="text-cyan-500 underline">
+              <Link href="/user/settings" className="text-[var(--ethio-lemon-dark)] underline">
                 Settings
               </Link>
               .
@@ -128,7 +128,7 @@ export default function TraineeCoachPage() {
                 <div
                   className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm ${
                     msg.role === 'user'
-                      ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'
+                      ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white'
                       : 'user-app-paper user-app-ink border user-app-border'
                   }`}
                 >

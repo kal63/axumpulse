@@ -116,7 +116,7 @@ export default function MemoryPage() {
     return (
       <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading game...</p>
         </div>
       </div>
@@ -151,7 +151,7 @@ export default function MemoryPage() {
         {/* Game */}
         {loadingPairs ? (
           <NeumorphicCard variant="raised" className="p-12 text-center">
-            <Loader2 className="h-12 w-12 animate-spin text-cyan-500 mx-auto mb-4" />
+            <Loader2 className="h-12 w-12 animate-spin text-[var(--ethio-lemon-dark)] mx-auto mb-4" />
             <p className="user-app-muted">
               Generating exercise pairs...
             </p>

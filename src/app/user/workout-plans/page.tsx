@@ -209,11 +209,11 @@ export default function WorkoutPlansPage() {
         <div className="min-h-dvh min-h-full user-app-page">
             {/* Hero Section */}
             <div className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/18 via-[var(--ethio-deep-blue)]/10 to-transparent dark:from-cyan-500/10 dark:via-purple-500/10 dark:to-pink-500/10" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/18 via-[var(--ethio-deep-blue)]/10 to-transparent dark:from-[var(--ethio-lemon)]/12 dark:via-[var(--ethio-deep-blue)]/8 dark:to-transparent" />
                 <div className="relative px-4 md:px-8 py-12">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-8">
-                            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4 dark:from-cyan-500 dark:to-purple-600">
+                            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4 dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)]">
                                 <Dumbbell className="w-4 h-4" />
                                 <span>Structured Fitness Programs</span>
                             </div>
@@ -266,7 +266,7 @@ export default function WorkoutPlansPage() {
                                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                             <button
                                                 onClick={() => router.push('/trainers')}
-                                                className="px-8 py-4 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 dark:from-cyan-500 dark:to-purple-600"
+                                                className="px-8 py-4 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)]"
                                             >
                                                 <Users className="w-5 h-5" />
                                                 Browse Trainers
@@ -301,7 +301,7 @@ export default function WorkoutPlansPage() {
                                         onClick={() => setShowFilters(!showFilters)}
                                         className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
                                             showFilters 
-                                                ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg dark:from-cyan-500 dark:to-purple-600' 
+                                                ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)]' 
                                                 : 'user-app-paper user-app-hover'
                                         }`}
                                     >
@@ -345,7 +345,7 @@ export default function WorkoutPlansPage() {
                                                             onClick={() => setSelectedCategory('')}
                                                             className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                                                 selectedCategory === '' 
-                                                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-cyan-500 dark:to-purple-600' 
+                                                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)]' 
                                                                     : 'user-app-paper user-app-hover user-app-ink'
                                                             }`}
                                                         >
@@ -357,7 +357,7 @@ export default function WorkoutPlansPage() {
                                                                 onClick={() => setSelectedCategory(category)}
                                                                 className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                                                     selectedCategory === category 
-                                                                        ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-cyan-500 dark:to-purple-600' 
+                                                                        ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)]' 
                                                                         : 'user-app-paper user-app-hover user-app-ink'
                                                                 }`}
                                                             >
@@ -378,7 +378,7 @@ export default function WorkoutPlansPage() {
                                                             onClick={() => setSelectedDifficulty(selectedDifficulty === option.value ? '' : option.value)}
                                                             className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                                                 selectedDifficulty === option.value 
-                                                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-cyan-500 dark:to-purple-600' 
+                                                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)]' 
                                                                     : 'user-app-paper user-app-hover user-app-ink'
                                                             }`}
                                                         >
@@ -398,7 +398,7 @@ export default function WorkoutPlansPage() {
                                                             onClick={() => setSelectedDuration(selectedDuration === option.value ? '' : option.value)}
                                                             className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                                                 selectedDuration === option.value 
-                                                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-cyan-500 dark:to-purple-600' 
+                                                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)]' 
                                                                     : 'user-app-paper user-app-hover user-app-ink'
                                                             }`}
                                                         >
@@ -502,7 +502,7 @@ export default function WorkoutPlansPage() {
                             <div className="relative user-app-paper p-2 rounded-2xl shadow-lg dark:shadow-xl">
                                 {/* Sliding Background */}
                                 <div 
-                                    className={`absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] dark:from-cyan-500 dark:to-purple-600 transition-all duration-500 ease-out ${
+                                    className={`absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)] transition-all duration-500 ease-out ${
                                         activeTab === 'all' 
                                             ? 'left-2 right-1/2 mr-1' 
                                             : 'left-1/2 right-2 ml-1'

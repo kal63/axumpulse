@@ -61,9 +61,9 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
   }
 
   const statusColors = {
-    active: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400',
+    active: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-[var(--ethio-lemon)]',
     upcoming: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-    completed: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+    completed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-[var(--ethio-lemon)]',
   }
 
   const status = isCompleted ? 'completed' : isActive ? 'active' : isUpcoming ? 'upcoming' : 'ended'
@@ -77,7 +77,7 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
           {/* Header */}
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex-1">
-              <h3 className="font-bold text-lg user-app-ink group-hover:text-[var(--color-cyber-blue)] transition-colors line-clamp-2">
+              <h3 className="font-bold text-lg user-app-ink group-hover:text-[var(--ethio-deep-blue)] transition-colors line-clamp-2">
                 {challenge.title}
               </h3>
               {challenge.trainer && (
@@ -104,12 +104,12 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
           {/* Details Grid */}
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="flex items-center gap-2 text-xs user-app-muted">
-              <Target className="h-4 w-4 text-[var(--color-cyber-blue)]" />
+              <Target className="h-4 w-4 text-[var(--ethio-deep-blue)]" />
               <span>{challenge.goalValue} {challenge.goalType}</span>
             </div>
             
             <div className="flex items-center gap-2 text-xs user-app-muted">
-              <Trophy className="h-4 w-4 text-[var(--color-neon-magenta)]" />
+              <Trophy className="h-4 w-4 text-[var(--ethio-lemon-dark)]" />
               <span>{challenge.xpReward} XP</span>
             </div>
 
@@ -138,7 +138,7 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
                 <span className="text-xs font-medium user-app-ink">
                   Your Progress
                 </span>
-                <span className="text-xs font-bold text-[var(--color-cyber-blue)]">
+                <span className="text-xs font-bold text-[var(--ethio-deep-blue)]">
                   {userProgress.progress}/{challenge.goalValue}
                 </span>
               </div>
@@ -155,7 +155,7 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
           {/* Join Badge */}
           {!hasJoined && isActive && (
             <div className="mt-auto pt-4">
-              <div className="bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white text-center py-2 rounded-lg text-sm font-medium">
+              <div className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white text-center py-2 rounded-lg text-sm font-medium">
                 Join Challenge
               </div>
             </div>

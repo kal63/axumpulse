@@ -34,7 +34,7 @@ export function LevelProgress({
         <div className="relative">
           <div className="w-full h-6 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-purple-500 to-blue-600 rounded-full transition-all duration-1000 ease-out relative"
+              className="h-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full transition-all duration-1000 ease-out relative"
               style={{ width: `${progress * 100}%` }}
             >
               {/* Shine effect */}
@@ -43,7 +43,7 @@ export function LevelProgress({
           </div>
           
           {/* Level indicator at the end */}
-          <div className="absolute -top-1 -right-2 w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+          <div className="absolute -top-1 -right-2 w-8 h-8 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full flex items-center justify-center shadow-lg">
             <span className="text-white text-sm font-bold">{nextLevel}</span>
           </div>
         </div>

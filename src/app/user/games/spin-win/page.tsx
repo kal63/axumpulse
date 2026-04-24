@@ -203,7 +203,7 @@ export default function SpinWinPage() {
     return (
       <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading game...</p>
         </div>
       </div>
@@ -240,10 +240,10 @@ export default function SpinWinPage() {
             <NeumorphicCard variant="raised" className="p-4 min-w-[140px]">
               <div className="flex flex-col items-center gap-2">
                 <div className="flex items-center gap-2">
-                  <Gift className="h-5 w-5 text-cyan-500" />
+                  <Gift className="h-5 w-5 text-[var(--ethio-lemon-dark)]" />
                   <span className="text-sm font-semibold user-app-muted">Spins</span>
                 </div>
-                <div className="text-3xl font-bold text-cyan-500">
+                <div className="text-3xl font-bold text-[var(--ethio-lemon-dark)]">
                   {availableSpins}
                 </div>
                 {availableSpins === 0 && (

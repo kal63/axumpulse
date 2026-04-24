@@ -57,8 +57,8 @@ export function ContentCard({ content, onClick, showXP = true, xpAmount = 50 }: 
                 ) : (
                     <div className="w-full h-full flex items-center justify-center">
                         <div className="relative">
-                            <Play className="h-16 w-16 text-gray-400 group-hover:text-cyan-500 transition-colors duration-300" />
-                            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-600/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <Play className="h-16 w-16 text-gray-400 user-app-group-hover-text transition-colors duration-300" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-[var(--ethio-lemon)]/15 to-[var(--ethio-deep-blue)]/12 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
                     </div>
                 )}
@@ -89,14 +89,14 @@ export function ContentCard({ content, onClick, showXP = true, xpAmount = 50 }: 
             {/* Content */}
             <div className="space-y-3">
                 {/* Title */}
-                <h3 className="font-bold text-lg user-app-ink line-clamp-2 group-hover:text-cyan-600 transition-colors duration-300">
+                <h3 className="font-bold text-lg user-app-ink line-clamp-2 user-app-group-hover-text transition-colors duration-300">
                     {content.title}
                 </h3>
                 
                 {/* Trainer Name */}
                 {content.trainer && (
                     <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <div className="w-6 h-6 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full flex items-center justify-center">
                             <span className="text-white text-xs font-bold">
                                 {content.trainer.User?.name?.charAt(0) || 'T'}
                             </span>
@@ -154,7 +154,7 @@ export function ContentCard({ content, onClick, showXP = true, xpAmount = 50 }: 
                     <div className="pt-3 border-t border-gray-200/50 dark:border-gray-700/50">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-1 text-sm user-app-muted">
-                                <Zap className="w-4 h-4 text-cyan-500" />
+                                <Zap className="w-4 h-4 text-[var(--ethio-lemon-dark)]" />
                                 <span>Earn {xpAmount} XP</span>
                             </div>
                             <div className="text-xs user-app-muted">

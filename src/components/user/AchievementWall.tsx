@@ -24,14 +24,14 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
   const rarityColors = {
     common: 'from-gray-400 to-gray-600',
     rare: 'from-blue-400 to-blue-600',
-    epic: 'from-purple-400 to-purple-600',
+    epic: 'from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)]',
     legendary: 'from-yellow-400 to-orange-600',
   }
 
   const rarityGlow = {
     common: 'shadow-gray-500/30',
     rare: 'shadow-blue-500/50',
-    epic: 'shadow-purple-500/50',
+    epic: 'shadow-[var(--ethio-lemon)]/45',
     legendary: 'shadow-yellow-500/70',
   }
 
@@ -44,7 +44,7 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold user-app-ink flex items-center gap-2">
-              <Trophy className="h-6 w-6 text-[var(--color-neon-magenta)]" />
+              <Trophy className="h-6 w-6 text-[var(--ethio-lemon-dark)]" />
               Achievements
             </h2>
             <p className="text-sm user-app-muted mt-1">
@@ -78,8 +78,8 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
               />
               <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="var(--color-cyber-blue)" />
-                  <stop offset="100%" stopColor="var(--color-neon-magenta)" />
+                  <stop offset="0%" stopColor="var(--ethio-deep-blue)" />
+                  <stop offset="100%" stopColor="var(--ethio-lemon)" />
                 </linearGradient>
               </defs>
             </svg>
@@ -148,7 +148,7 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
 
               {/* XP Reward */}
               {achievement.unlocked && (
-                <p className="text-center text-xs text-[var(--color-cyber-blue)] font-medium">
+                <p className="text-center text-xs text-[var(--ethio-deep-blue)] font-medium">
                   +{achievement.xpReward} XP
                 </p>
               )}

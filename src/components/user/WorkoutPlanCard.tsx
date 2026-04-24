@@ -59,14 +59,14 @@ export function WorkoutPlanCard({
             case 'strength': return 'from-orange-500 to-red-600'
             case 'cardio': return 'from-red-500 to-pink-600'
             case 'yoga': return 'from-green-500 to-emerald-600'
-            case 'cycling': return 'from-blue-500 to-cyan-600'
-            case 'martial_arts': return 'from-purple-500 to-indigo-600'
+            case 'cycling': return 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
+            case 'martial_arts': return 'from-[var(--ethio-lemon-dark)] to-indigo-800'
             case 'hiit': return 'from-orange-500 to-yellow-600'
-            case 'pilates': return 'from-teal-500 to-cyan-600'
+            case 'pilates': return 'from-teal-500 to-[var(--ethio-deep-blue)]'
             case 'flexibility': return 'from-green-500 to-teal-600'
             case 'endurance': return 'from-red-500 to-orange-600'
-            case 'rehabilitation': return 'from-blue-500 to-purple-600'
-            default: return 'from-cyan-500 to-purple-600'
+            case 'rehabilitation': return 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
+            default: return 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
         }
     }
 
@@ -107,7 +107,7 @@ export function WorkoutPlanCard({
                         </div>
                         <div className="flex-1">
                             <div className="flex items-center gap-2">
-                                <h3 className="font-bold text-xl user-app-ink group-hover:text-[var(--ethio-deep-blue)] dark:group-hover:opacity-90 dark:hover:text-cyan-300 transition-colors line-clamp-2">
+                                <h3 className="font-bold text-xl user-app-ink group-hover:text-[var(--ethio-lemon-dark)] dark:group-hover:opacity-90 dark:group-hover:text-[var(--ethio-lemon)] transition-colors line-clamp-2">
                                     {workoutPlan.title}
                                 </h3>
                                 {/* Joined indicator */}
@@ -178,7 +178,7 @@ export function WorkoutPlanCard({
                         {/* Custom Progress Bar */}
                         <div className="w-full bg-slate-100 dark:bg-slate-800/70 rounded-full h-2">
                             <div 
-                                className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] dark:from-cyan-500 dark:to-purple-600 h-2 rounded-full transition-all duration-300"
+                                className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)] h-2 rounded-full transition-all duration-300"
                                 style={{ width: `${progressPercentage}%` }}
                             />
                         </div>
@@ -206,7 +206,7 @@ export function WorkoutPlanCard({
                             className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg ${
                                 userProgress.status === 'completed'
                                     ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700'
-                                    : 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white hover:opacity-95 dark:from-cyan-500 dark:to-purple-600 dark:hover:from-cyan-600 dark:hover:to-purple-700'
+                                    : 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white hover:opacity-95 dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)] dark:hover:opacity-95'
                             }`}
                             onClick={(e) => {
                                 e.stopPropagation()

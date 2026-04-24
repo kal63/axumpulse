@@ -45,8 +45,8 @@ export function DesktopLayout({ children, className }: DesktopLayoutProps) {
               
               <div className="bg-white dark:user-app-paper rounded-xl p-4 shadow-[8px_8px_16px_rgba(15,23,42,0.15),-8px_-8px_16px_rgba(255,255,255,0.85)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.6),-8px_-8px_16px_rgba(255,255,255,0.06)]">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
-                    <span className="text-purple-600 dark:text-purple-400 text-lg">⭐</span>
+                  <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/25 rounded-full flex items-center justify-center">
+                    <span className="text-[var(--ethio-lemon-dark)] dark:text-[var(--ethio-lemon)] text-lg">⭐</span>
                   </div>
                   <div>
                     <div className="text-lg font-bold user-app-ink">2,450</div>

@@ -102,7 +102,7 @@ export function ExerciseTimer({
                 ? 'text-green-500' 
                 : progress >= 50 
                 ? 'text-yellow-500' 
-                : 'text-cyan-500'
+                : 'text-[var(--ethio-lemon-dark)]'
             }`}
           />
           <defs>
@@ -119,7 +119,7 @@ export function ExerciseTimer({
               ? 'text-green-500' 
               : progress >= 50 
               ? 'text-yellow-500' 
-              : 'text-cyan-500'
+              : 'text-[var(--ethio-lemon-dark)]'
           }`} />
         </div>
       </div>

@@ -69,9 +69,9 @@ export function GoalTracker({ goals = [], user }: GoalTrackerProps) {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'daily':
-        return 'bg-gradient-to-r from-[var(--color-cyber-blue)] to-blue-600'
+        return 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
       case 'weekly':
-        return 'bg-gradient-to-r from-[var(--color-neon-magenta)] to-purple-600'
+        return 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
       case 'monthly':
         return 'bg-gradient-to-r from-[var(--color-amber-warning)] to-orange-600'
       default:
@@ -198,7 +198,7 @@ export function GoalTracker({ goals = [], user }: GoalTrackerProps) {
             <span className="text-sm font-medium user-app-ink">
               Overall Progress
             </span>
-            <span className="text-sm font-bold text-[var(--color-cyber-blue)]">
+            <span className="text-sm font-bold text-[var(--ethio-deep-blue)]">
               {Math.round((displayGoals.filter(g => g.current >= g.target).length / displayGoals.length) * 100)}%
             </span>
           </div>
@@ -209,8 +209,8 @@ export function GoalTracker({ goals = [], user }: GoalTrackerProps) {
         </div>
 
         {/* Motivational Message */}
-        <div className="text-center p-4 rounded-lg bg-gradient-to-r from-[var(--color-cyber-blue)]/10 to-[var(--color-neon-magenta)]/10">
-          <TrendingUp className="h-6 w-6 mx-auto mb-2 text-[var(--color-cyber-blue)]" />
+        <div className="text-center p-4 rounded-lg bg-gradient-to-r from-[var(--ethio-lemon)]/10 to-[var(--ethio-deep-blue)]/10">
+          <TrendingUp className="h-6 w-6 mx-auto mb-2 text-[var(--ethio-deep-blue)]" />
           <p className="text-sm font-medium user-app-ink">
             {displayGoals.filter(g => g.current >= g.target).length === displayGoals.length
               ? '🎉 All goals completed! Keep up the amazing work!'

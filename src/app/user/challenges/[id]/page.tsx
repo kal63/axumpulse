@@ -139,7 +139,7 @@ export default function ChallengeDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-cyber-blue)]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)]"></div>
       </div>
     )
   }
@@ -279,7 +279,7 @@ export default function ChallengeDetailPage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] flex items-center justify-center">
                 <Target className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -303,7 +303,7 @@ export default function ChallengeDetailPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)] flex items-center justify-center">
                 <Calendar className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -364,7 +364,7 @@ export default function ChallengeDetailPage() {
             <button
               onClick={handleJoinChallenge}
               disabled={joining || !user}
-              className="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg hover:from-cyan-600 hover:to-purple-700 disabled:pointer-events-none disabled:opacity-50"
+              className="w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 px-6 py-3 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg hover:opacity-95 disabled:pointer-events-none disabled:opacity-50"
             >
               {joining ? 'Joining...' : user ? 'Join Challenge' : 'Login to Join'}
             </button>
@@ -430,7 +430,7 @@ export default function ChallengeDetailPage() {
                 className={`w-full inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium transition-all duration-200 px-6 py-3 shadow-lg ${
                   completing || !completionEligible
                     ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700'
+                    : 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white hover:opacity-95'
                 }`}
               >
                 {completing

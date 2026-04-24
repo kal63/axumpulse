@@ -58,14 +58,14 @@ export function ProfileHeader({ user, stats, onEdit, isOwnProfile = true }: Prof
                 className="w-24 h-24 md:w-32 md:h-32 rounded-2xl object-cover"
               />
             ) : (
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] flex items-center justify-center">
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] flex items-center justify-center">
                 <span className="text-4xl font-bold text-white">{initials}</span>
               </div>
             )}
             
             {/* Level Badge */}
             <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
-              <div className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white font-bold text-sm shadow-lg">
+              <div className="px-4 py-1.5 rounded-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white font-bold text-sm shadow-lg">
                 Level {user.level}
               </div>
             </div>
@@ -119,16 +119,16 @@ export function ProfileHeader({ user, stats, onEdit, isOwnProfile = true }: Prof
         </div>
 
         {/* XP Progress */}
-        <div className="space-y-3 p-4 rounded-xl bg-gradient-to-r from-[var(--color-cyber-blue)]/10 to-[var(--color-neon-magenta)]/10">
+        <div className="space-y-3 p-4 rounded-xl bg-gradient-to-r from-[var(--ethio-lemon)]/10 to-[var(--ethio-deep-blue)]/10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-[var(--color-cyber-blue)]" />
+              <TrendingUp className="h-5 w-5 text-[var(--ethio-deep-blue)]" />
               <span className="font-semibold user-app-ink">
                 Level Progress
               </span>
             </div>
             <div className="text-right">
-              <span className="text-2xl font-bold bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-transparent bg-clip-text">
+              <span className="text-2xl font-bold bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-transparent bg-clip-text">
                 {user.levelProgress}%
               </span>
             </div>

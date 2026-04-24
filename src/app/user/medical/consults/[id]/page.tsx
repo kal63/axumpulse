@@ -100,7 +100,7 @@ export default function ConsultDetailPage() {
     return (
       <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
@@ -209,10 +209,10 @@ export default function ConsultDetailPage() {
         
         {/* Call In Progress Banner - When call is in progress but user hasn't joined yet */}
         {booking.status === 'booked' && callRoomId && booking.callStatus === 'in_progress' && !isCallActive && (
-          <NeumorphicCard variant="raised" className="p-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-2 border-blue-500/30">
+          <NeumorphicCard variant="raised" className="p-6 bg-gradient-to-r from-[var(--ethio-lemon)]/10 to-[var(--ethio-deep-blue)]/10 border-2 border-[var(--ethio-deep-blue)]/30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] flex items-center justify-center">
                   <Video className="w-8 h-8 text-white" />
                 </div>
                 <div>
@@ -240,7 +240,7 @@ export default function ConsultDetailPage() {
                       toast.error(error.message || 'Failed to join call')
                     }
                   }}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white"
+                  className="user-app-btn-primary"
                 >
                   <Video className="w-4 h-4 mr-2" />
                   Join Video Call
@@ -261,7 +261,7 @@ export default function ConsultDetailPage() {
                     }
                   }}
                   variant="outline"
-                  className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                  className="border-[var(--ethio-deep-blue)]/50 text-[var(--ethio-lemon-dark)] hover:bg-emerald-50/90"
                 >
                   <Phone className="w-4 h-4 mr-2" />
                   Join Audio Call
@@ -274,7 +274,7 @@ export default function ConsultDetailPage() {
         <NeumorphicCard variant="raised" className="p-6">
           <div className="space-y-4">
             <div className="flex items-center gap-3 flex-wrap">
-              <Badge className="bg-blue-500 text-white">
+              <Badge className="bg-[var(--ethio-deep-blue)] text-white">
                 {booking.slot?.type?.replace('_', ' ') || 'Consultation'}
               </Badge>
               <Badge className={

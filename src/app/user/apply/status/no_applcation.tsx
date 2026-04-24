@@ -89,7 +89,7 @@ export default function ApplicationStatusPage() {
     return (
       <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading application status...</p>
         </div>
       </div>
@@ -108,7 +108,7 @@ export default function ApplicationStatusPage() {
             <p className="user-app-muted">
               You must be logged in to view your application status.
             </p>
-            <Button onClick={() => router.push('/login')} className="w-full bg-gradient-to-r from-cyan-500 to-purple-600">
+            <Button onClick={() => router.push('/login')} className="w-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]">
               Go to Login
             </Button>
           </div>
@@ -129,7 +129,7 @@ export default function ApplicationStatusPage() {
             <p className="user-app-muted">
               You haven't submitted a trainer application yet.
             </p>
-            <Button onClick={() => router.push('/user/apply')} className="w-full bg-gradient-to-r from-cyan-500 to-purple-600">
+            <Button onClick={() => router.push('/user/apply')} className="w-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]">
               Apply Now
             </Button>
           </div>
@@ -154,12 +154,12 @@ export default function ApplicationStatusPage() {
   return (
     <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/10 via-[var(--ethio-deep-blue)]/8 to-transparent" />
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
             <div className="text-center mb-8">
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
                 <Award className="w-4 h-4" />
                 <span>Application Status</span>
               </div>
@@ -357,7 +357,7 @@ export default function ApplicationStatusPage() {
                           <NeumorphicCard key={index} variant="raised" className="p-4">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <FileText className="w-6 h-6 text-cyan-600" />
+                                <FileText className="w-6 h-6 text-[var(--ethio-lemon-dark)]" />
                                 <div>
                                   <p className="font-medium user-app-ink">{file.fileName}</p>
                                   <p className="text-sm user-app-muted">
@@ -428,7 +428,7 @@ export default function ApplicationStatusPage() {
                                   href={item.url} 
                                   target="_blank" 
                                   rel="noopener noreferrer"
-                                  className="text-sm text-cyan-600 hover:underline block mt-1"
+                                  className="text-sm text-[var(--ethio-lemon-dark)] hover:underline block mt-1"
                                 >
                                   {item.url}
                                 </a>
@@ -482,7 +482,7 @@ export default function ApplicationStatusPage() {
                               href={application.socialMedia.website} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-sm text-cyan-600 hover:underline block mt-1"
+                              className="text-sm text-[var(--ethio-lemon-dark)] hover:underline block mt-1"
                             >
                               {application.socialMedia.website}
                             </a>

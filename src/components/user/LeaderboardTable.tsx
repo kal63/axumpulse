@@ -65,7 +65,7 @@ export function LeaderboardTable({
     <NeumorphicCard>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold user-app-ink flex items-center gap-2">
-          <Trophy className="h-6 w-6 text-[var(--color-neon-magenta)]" />
+          <Trophy className="h-6 w-6 text-[var(--ethio-lemon-dark)]" />
           Leaderboard
         </h2>
         {totalParticipants && (
@@ -77,12 +77,12 @@ export function LeaderboardTable({
 
       {/* User's Rank (if not in top list) */}
       {currentUserId && userRank && userRank > 10 && (
-        <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-[var(--color-cyber-blue)]/10 to-[var(--color-neon-magenta)]/10 border-2 border-[var(--color-cyber-blue)]">
+        <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-[var(--ethio-lemon)]/10 to-[var(--ethio-deep-blue)]/10 border-2 border-[var(--ethio-deep-blue)]">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium user-app-ink">
               Your Rank
             </span>
-            <span className="text-lg font-bold text-[var(--color-cyber-blue)]">
+            <span className="text-lg font-bold text-[var(--ethio-deep-blue)]">
               #{userRank}
             </span>
           </div>
@@ -107,7 +107,7 @@ export function LeaderboardTable({
                 className={`
                   flex items-center gap-4 p-3 rounded-lg transition-all
                   ${isCurrentUser
-                    ? 'bg-gradient-to-r from-[var(--color-cyber-blue)]/20 to-[var(--color-neon-magenta)]/20 border-2 border-[var(--color-cyber-blue)] shadow-[0_0_15px_rgba(0,230,255,0.2)]'
+                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)]/20 to-[var(--ethio-deep-blue)]/20 border-2 border-[var(--ethio-deep-blue)] shadow-[0_0_12px_rgba(142,198,63,0.2)]'
                     : 'bg-slate-100 dark:bg-slate-800/70 hover:user-app-paper'
                   }
                 `}
@@ -130,7 +130,7 @@ export function LeaderboardTable({
                       className="w-10 h-10 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] flex items-center justify-center text-white font-bold">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] flex items-center justify-center text-white font-bold">
                       <UserIcon className="h-5 w-5" />
                     </div>
                   )}
@@ -143,7 +143,7 @@ export function LeaderboardTable({
                     <div className="flex items-center gap-2 mt-1">
                       <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 max-w-[120px]">
                         <div
-                          className="bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] h-1.5 rounded-full transition-all"
+                          className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] h-1.5 rounded-full transition-all"
                           style={{ width: `${Math.min(progressPercentage, 100)}%` }}
                         />
                       </div>

@@ -150,7 +150,7 @@ export default function ChangePackageDetailPage() {
                 <Button
                   key={d}
                   variant={duration === d ? 'default' : 'outline'}
-                  className={duration === d ? 'bg-cyan-600 hover:bg-cyan-700 text-white' : 'border-slate-600 text-slate-300'}
+                  className={duration === d ? 'user-app-btn-primary' : 'border-slate-600 text-slate-300'}
                   onClick={() => setDuration(d)}
                 >
                   {durationLabel(d)}
@@ -164,7 +164,7 @@ export default function ChangePackageDetailPage() {
 
           <div className="rounded-xl user-app-paper p-4 border user-app-border">
             <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-cyan-400 mt-0.5" />
+              <Info className="w-5 h-5 text-[var(--ethio-lemon)] mt-0.5" />
               <div className="space-y-1">
                 <div className="text-sm font-semibold user-app-ink">Estimated amount due</div>
                 <div className="text-sm user-app-muted">
@@ -180,7 +180,7 @@ export default function ChangePackageDetailPage() {
           </div>
 
           <Button
-            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
+            className="w-full user-app-btn-primary"
             onClick={() =>
               router.push(
                 `/checkout?planId=${plan.id}&duration=${duration}&mode=change${

@@ -263,7 +263,7 @@ export default function SettingsPage() {
     return (
       <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto mb-4"></div>
           <p className="user-app-ink">Loading settings...</p>
         </div>
       </div>
@@ -281,7 +281,7 @@ export default function SettingsPage() {
           <p className="user-app-muted mb-4">{error}</p>
           <Button
             onClick={fetchSettings}
-            className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white"
+            className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white"
           >
             Try Again
           </Button>
@@ -294,13 +294,13 @@ export default function SettingsPage() {
     <div className="min-h-dvh min-h-full user-app-page">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-pink-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/10 via-[var(--ethio-deep-blue)]/6 to-transparent" />
         
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
                   <SettingsIcon className="w-4 h-4" />
                   <span>Account Management</span>
                 </div>
@@ -333,7 +333,7 @@ export default function SettingsPage() {
             <div className="relative user-app-paper p-2 rounded-2xl shadow-lg dark:shadow-xl">
               {/* Sliding Background */}
               <div 
-                className={`absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 transition-all duration-500 ease-out ${
+                className={`absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] transition-all duration-500 ease-out ${
                   activeTab === 'account' 
                     ? 'left-2 right-3/4 mr-1' 
                     : activeTab === 'preferences'
@@ -421,7 +421,7 @@ export default function SettingsPage() {
             <div className="space-y-6">
             <NeumorphicCard variant="raised" className="p-6">
               <h2 className="text-2xl font-bold user-app-ink mb-6 flex items-center gap-2">
-                <User className="h-6 w-6 text-cyan-500" />
+                <User className="h-6 w-6 text-[var(--ethio-lemon-dark)]" />
                 Account Information
               </h2>
               
@@ -558,7 +558,7 @@ export default function SettingsPage() {
             <div className="space-y-6">
             <NeumorphicCard variant="raised" className="p-6">
               <h2 className="text-2xl font-bold user-app-ink mb-6 flex items-center gap-2">
-                <Palette className="h-6 w-6 text-purple-500" />
+                <Palette className="h-6 w-6 text-[var(--ethio-lemon-dark)]" />
                 App Preferences
               </h2>
               
@@ -650,7 +650,7 @@ export default function SettingsPage() {
 
             <NeumorphicCard variant="raised" className="p-6">
               <h2 className="text-2xl font-bold user-app-ink mb-2 flex items-center gap-2">
-                <Bot className="h-6 w-6 text-cyan-500" />
+                <Bot className="h-6 w-6 text-[var(--ethio-lemon-dark)]" />
                 AI coach data sharing
               </h2>
               <p className="text-sm user-app-muted mb-6">
@@ -918,7 +918,7 @@ export default function SettingsPage() {
             <Button
               onClick={handleSave}
               disabled={saving || uploading}
-              className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+              className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white"
             >
               {saving ? (
                 <>

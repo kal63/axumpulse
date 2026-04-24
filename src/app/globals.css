@@ -210,13 +210,23 @@
   .user-app-border {
     @apply border-slate-200/80 dark:border-slate-700;
   }
+  /* Links & accents: EthioTells = green (lemon) first, blue second */
   .user-app-link {
-    @apply text-[var(--ethio-deep-blue)] dark:text-cyan-400;
+    @apply text-[var(--ethio-lemon-dark)] hover:text-[var(--ethio-deep-blue)] dark:text-[var(--ethio-lemon)] dark:hover:text-white;
+  }
+  .user-app-text-accent {
+    @apply text-[var(--ethio-lemon-dark)] dark:text-[var(--ethio-lemon)];
+  }
+  .user-app-group-hover-text {
+    @apply group-hover:text-[var(--ethio-lemon-dark)] dark:group-hover:text-[var(--ethio-lemon)];
   }
   .user-app-hover {
-    @apply hover:bg-slate-100/90 dark:hover:bg-slate-800/70;
+    @apply hover:bg-emerald-50/90 dark:hover:bg-slate-800/70;
   }
   .user-app-btn-primary {
     @apply bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] font-semibold text-white shadow-sm hover:opacity-95;
+  }
+  .user-app-gradient {
+    @apply bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)];
   }
 }

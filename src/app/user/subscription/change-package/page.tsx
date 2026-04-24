@@ -67,7 +67,7 @@ export default function ChangePackagePage() {
                 <NeumorphicCard key={plan.id} variant="raised" size="lg" className="p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] flex items-center justify-center">
                         <Package className="w-5 h-5 text-white" />
                       </div>
                       <div>
@@ -85,7 +85,7 @@ export default function ChangePackagePage() {
 
                   <div className="mt-6">
                     <Button
-                      className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
+                      className="w-full user-app-btn-primary"
                       onClick={() =>
                         router.push(
                           appRedirect

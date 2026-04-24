@@ -61,7 +61,7 @@ export function XPChart({ data, summary, onPeriodChange }: XPChartProps) {
           </p>
           {chartType === 'daily' ? (
             <>
-              <p className="text-lg font-bold text-[var(--color-cyber-blue)]">
+              <p className="text-lg font-bold text-[var(--ethio-deep-blue)]">
                 +{data.xp} XP
               </p>
               {data.breakdown && (
@@ -73,7 +73,7 @@ export function XPChart({ data, summary, onPeriodChange }: XPChartProps) {
               )}
             </>
           ) : (
-            <p className="text-lg font-bold text-[var(--color-neon-magenta)]">
+            <p className="text-lg font-bold text-[var(--ethio-lemon-dark)]">
               {data.cumulativeXP.toLocaleString()} XP Total
             </p>
           )}
@@ -90,7 +90,7 @@ export function XPChart({ data, summary, onPeriodChange }: XPChartProps) {
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-2xl font-bold user-app-ink flex items-center gap-2">
-              <TrendingUp className="h-6 w-6 text-[var(--color-cyber-blue)]" />
+              <TrendingUp className="h-6 w-6 text-[var(--ethio-deep-blue)]" />
               XP Progress
             </h2>
             {summary && (
@@ -114,7 +114,7 @@ export function XPChart({ data, summary, onPeriodChange }: XPChartProps) {
                 className={`
                   px-3 py-1.5 rounded-lg text-sm font-medium transition-all
                   ${selectedPeriod === period.value
-                    ? 'bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white'
+                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white'
                     : 'user-app-paper user-app-ink shadow-[2px_2px_4px_rgba(15,23,42,0.15),-2px_-2px_4px_rgba(255,255,255,0.85)] dark:shadow-[2px_2px_4px_rgba(0,0,0,0.6),-2px_-2px_4px_rgba(255,255,255,0.06)]'
                   }
                 `}
@@ -132,7 +132,7 @@ export function XPChart({ data, summary, onPeriodChange }: XPChartProps) {
             className={`
               flex-1 py-2 rounded-lg text-sm font-medium transition-all
               ${chartType === 'cumulative'
-                ? 'bg-gradient-to-r from-[var(--color-neon-magenta)] to-[var(--color-cyber-blue)] text-white'
+                ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white'
                 : 'user-app-paper user-app-muted shadow-[2px_2px_4px_rgba(15,23,42,0.15),-2px_-2px_4px_rgba(255,255,255,0.85)] dark:shadow-[2px_2px_4px_rgba(0,0,0,0.6),-2px_-2px_4px_rgba(255,255,255,0.06)]'
               }
             `}
@@ -144,7 +144,7 @@ export function XPChart({ data, summary, onPeriodChange }: XPChartProps) {
             className={`
               flex-1 py-2 rounded-lg text-sm font-medium transition-all
               ${chartType === 'daily'
-                ? 'bg-gradient-to-r from-[var(--color-neon-magenta)] to-[var(--color-cyber-blue)] text-white'
+                ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white'
                 : 'user-app-paper user-app-muted shadow-[2px_2px_4px_rgba(15,23,42,0.15),-2px_-2px_4px_rgba(255,255,255,0.85)] dark:shadow-[2px_2px_4px_rgba(0,0,0,0.6),-2px_-2px_4px_rgba(255,255,255,0.06)]'
               }
             `}
@@ -169,8 +169,8 @@ export function XPChart({ data, summary, onPeriodChange }: XPChartProps) {
                 <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
                   <defs>
                     <linearGradient id="colorCumulative" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--color-neon-magenta)" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="var(--color-cyber-blue)" stopOpacity={0.1}/>
+                      <stop offset="5%" stopColor="var(--ethio-lemon)" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="var(--ethio-deep-blue)" stopOpacity={0.1}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(156, 163, 175, 0.2)" />
@@ -187,7 +187,7 @@ export function XPChart({ data, summary, onPeriodChange }: XPChartProps) {
                   <Area 
                     type="monotone" 
                     dataKey="cumulativeXP" 
-                    stroke="var(--color-neon-magenta)" 
+                    stroke="var(--ethio-lemon)" 
                     strokeWidth={3}
                     fill="url(#colorCumulative)" 
                   />
@@ -208,9 +208,9 @@ export function XPChart({ data, summary, onPeriodChange }: XPChartProps) {
                   <Line 
                     type="monotone" 
                     dataKey="xp" 
-                    stroke="var(--color-cyber-blue)" 
+                    stroke="var(--ethio-deep-blue)" 
                     strokeWidth={3}
-                    dot={{ fill: 'var(--color-cyber-blue)', r: 4 }}
+                    dot={{ fill: 'var(--ethio-deep-blue)', r: 4 }}
                     activeDot={{ r: 6 }}
                   />
                 </LineChart>
@@ -230,13 +230,13 @@ export function XPChart({ data, summary, onPeriodChange }: XPChartProps) {
             </div>
             <div className="text-center">
               <p className="text-sm user-app-muted">Daily Avg</p>
-              <p className="text-2xl font-bold text-[var(--color-cyber-blue)] mt-1">
+              <p className="text-2xl font-bold text-[var(--ethio-deep-blue)] mt-1">
                 {summary.avgDailyXP}
               </p>
             </div>
             <div className="text-center">
               <p className="text-sm user-app-muted">Active Days</p>
-              <p className="text-2xl font-bold text-[var(--color-neon-magenta)] mt-1">
+              <p className="text-2xl font-bold text-[var(--ethio-lemon-dark)] mt-1">
                 {chartData.filter(d => d.xp > 0).length}
               </p>
             </div>

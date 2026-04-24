@@ -25,7 +25,7 @@ function ActivityItem({ activity }: { activity: ActivityItem }) {
   
   const typeColors = {
     workout: 'text-blue-600 dark:text-blue-400',
-    challenge: 'text-purple-600 dark:text-purple-400',
+    challenge: 'text-[var(--ethio-lemon-dark)] dark:text-[var(--ethio-lemon)]',
     achievement: 'text-yellow-600 dark:text-yellow-400',
     streak: 'text-orange-600 dark:text-orange-400'
   };

@@ -76,9 +76,9 @@ export function TrainerApplicationBanner({
           title: 'Become a Trainer',
           description: 'Share your expertise and help others achieve their fitness goals',
           icon: Briefcase,
-          color: 'text-cyan-600 dark:text-cyan-400',
-          bgColor: 'bg-cyan-50 dark:bg-cyan-900/20',
-          borderColor: 'border-cyan-200 dark:border-cyan-800',
+          color: 'text-[var(--ethio-lemon-dark)] dark:text-[var(--ethio-lemon)]',
+          bgColor: 'bg-emerald-50/90 dark:bg-emerald-950/30',
+          borderColor: 'border-emerald-200/90 dark:border-emerald-800/80',
           buttonText: 'Apply Now',
           buttonVariant: 'default' as const
         };
@@ -122,7 +122,7 @@ export function TrainerApplicationBanner({
           {status === 'none' ? (
             <Button 
               onClick={onApplyClick}
-              className="bg-cyan-600 hover:bg-cyan-700 text-white border-0 shadow-lg"
+              className="user-app-btn-primary border-0 shadow-lg"
             >
               {config.buttonText}
               <ArrowRight className="w-4 h-4 ml-2" />

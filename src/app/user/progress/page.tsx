@@ -149,7 +149,7 @@ export default function ProgressPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-cyber-blue)] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto mb-4"></div>
           <p className="user-app-ink">Loading your progress...</p>
         </div>
       </div>
@@ -167,7 +167,7 @@ export default function ProgressPage() {
           <p className="user-app-muted mb-4">{error}</p>
           <button
             onClick={fetchAllData}
-            className="px-6 py-2 bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white rounded-lg font-medium"
+            className="px-6 py-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-lg font-medium"
           >
             Try Again
           </button>
@@ -181,13 +181,13 @@ export default function ProgressPage() {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-pink-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/10 via-[var(--ethio-deep-blue)]/6 to-transparent" />
         
         {/* Content */}
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
                 <Sparkles className="w-4 h-4" />
                 <span>Track Your Journey</span>
               </div>
@@ -225,11 +225,11 @@ export default function ProgressPage() {
                 </p>
                 <div className="mb-2 h-3 w-full rounded-full bg-slate-200 dark:bg-slate-700">
                   <div 
-                    className="bg-gradient-to-r from-cyan-500 to-purple-600 h-3 rounded-full transition-all duration-1000"
+                    className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] h-3 rounded-full transition-all duration-1000"
                     style={{ width: `${Math.round((userInfo.xpProgress / userInfo.xpNeeded) * 100)}%` }}
                   />
                 </div>
-                <div className="text-2xl font-bold bg-gradient-to-r from-cyan-500 to-purple-600 text-transparent bg-clip-text">
+                <div className="text-2xl font-bold bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-transparent bg-clip-text">
                   {Math.round((userInfo.xpProgress / userInfo.xpNeeded) * 100)}% Complete
                 </div>
               </NeumorphicCard>
@@ -239,7 +239,7 @@ export default function ProgressPage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <NeumorphicCard variant="raised" className="p-6 text-center">
-              <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl">
+              <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-xl">
                 <Trophy className="h-6 w-6 text-white" />
               </div>
               <div className="text-3xl font-bold user-app-ink mb-1">
@@ -252,7 +252,7 @@ export default function ProgressPage() {
             </NeumorphicCard>
 
             <NeumorphicCard variant="raised" className="p-6 text-center">
-              <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
+              <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)] rounded-xl">
                 <Dumbbell className="h-6 w-6 text-white" />
               </div>
               <div className="text-3xl font-bold user-app-ink mb-1">
@@ -298,7 +298,7 @@ export default function ProgressPage() {
           <NeumorphicCard variant="raised" className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold user-app-ink flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-cyan-500" />
+                <BarChart3 className="h-5 w-5 text-[var(--ethio-lemon-dark)]" />
                 XP Progress
               </h3>
               <div className="flex items-center gap-2">
@@ -315,7 +315,7 @@ export default function ProgressPage() {
                     }}
                     className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                       xpPeriod === period 
-                        ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg' 
+                        ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg' 
                         : 'user-app-paper hover:user-app-paper user-app-ink'
                     }`}
                   >
@@ -329,7 +329,7 @@ export default function ProgressPage() {
             {chartLoading ? (
               <div className="h-64 user-app-paper rounded-xl p-4 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500 mx-auto mb-2"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--ethio-deep-blue)] mx-auto mb-2"></div>
                   <p className="text-sm user-app-muted">Loading chart data...</p>
                 </div>
               </div>
@@ -347,7 +347,7 @@ export default function ProgressPage() {
                         style={{ height: '100%' }}
                       >
                         <div 
-                          className="w-full bg-gradient-to-t from-cyan-500 via-purple-500 to-pink-500 rounded-t transition-all duration-500 hover:from-cyan-400 hover:via-purple-400 hover:to-pink-400 cursor-pointer shadow-lg hover:shadow-xl"
+                          className="w-full bg-gradient-to-t from-[var(--ethio-lemon)] via-[var(--ethio-deep-blue)] to-[var(--ethio-lemon-dark)] rounded-t transition-all duration-500 hover:brightness-110 cursor-pointer shadow-lg hover:shadow-xl"
                           style={{ 
                             height: `${Math.max(heightPercent, minHeight)}%`,
                             minHeight: `${minHeight}%`
@@ -431,8 +431,8 @@ export default function ProgressPage() {
                     const getRarityColor = (rarity: string) => {
                       switch (rarity) {
                         case 'legendary': return 'from-yellow-500 to-orange-500'
-                        case 'epic': return 'from-purple-500 to-pink-500'
-                        case 'rare': return 'from-blue-500 to-cyan-500'
+                        case 'epic': return 'from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)]'
+                        case 'rare': return 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
                         default: return 'from-gray-400 to-gray-600'
                       }
                     }
@@ -468,7 +468,7 @@ export default function ProgressPage() {
                               {achievement.description}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="text-xs text-cyan-500 font-semibold">+{achievement.xpReward} XP</span>
+                              <span className="text-xs text-[var(--ethio-lemon-dark)] font-semibold">+{achievement.xpReward} XP</span>
                               <span className="text-xs user-app-muted">•</span>
                               <span className="text-xs user-app-muted capitalize">{achievement.rarity}</span>
                             </div>
@@ -531,7 +531,7 @@ export default function ProgressPage() {
                   
                   return (
                     <div key={activity.id} className="flex items-center gap-4 p-3 user-app-paper rounded-xl">
-                      <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full flex items-center justify-center">
                         <IconComponent className="h-4 w-4 text-white" />
                       </div>
                       <div className="flex-1">
@@ -543,7 +543,7 @@ export default function ProgressPage() {
                         </p>
                       </div>
                       {activity.xpEarned > 0 && (
-                        <div className="flex items-center gap-1 text-cyan-500">
+                        <div className="flex items-center gap-1 text-[var(--ethio-lemon-dark)]">
                           <Zap className="h-4 w-4" />
                           <span className="font-semibold">+{activity.xpEarned} XP</span>
                         </div>

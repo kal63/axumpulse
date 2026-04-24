@@ -114,7 +114,7 @@ export default function MedicalHubPage() {
     return (
       <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] mx-auto"></div>
           <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
@@ -195,7 +195,7 @@ export default function MedicalHubPage() {
             {/* Recent Triage */}
             <NeumorphicCard variant="raised" className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full flex items-center justify-center">
                   <Stethoscope className="w-6 h-6 text-white" />
                 </div>
                 {recentTriage && (
@@ -225,11 +225,11 @@ export default function MedicalHubPage() {
             {/* Upcoming Consults */}
             <NeumorphicCard variant="raised" className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-lemon-dark)] rounded-full flex items-center justify-center">
                   <Calendar className="w-6 h-6 text-white" />
                 </div>
                 {upcomingConsults.length > 0 && (
-                  <Badge className="bg-purple-500 text-white">
+                  <Badge className="bg-[var(--ethio-lemon-dark)] text-white">
                     {upcomingConsults.length}
                   </Badge>
                 )}
@@ -285,11 +285,11 @@ export default function MedicalHubPage() {
             {/* Available Consults Counter */}
             <NeumorphicCard variant="raised" className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full flex items-center justify-center">
                   <Calendar className="w-6 h-6 text-white" />
                 </div>
                 {availableConsults > 0 && (
-                  <Badge className="bg-cyan-500 text-white">
+                  <Badge className="bg-[var(--ethio-deep-blue)] text-white">
                     {availableConsults}
                   </Badge>
                 )}
@@ -417,7 +417,7 @@ export default function MedicalHubPage() {
               
               <Button
                 onClick={() => router.push('/user/medical/consults/book')}
-                className="h-20 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white text-lg font-semibold"
+                className="h-20 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white text-lg font-semibold"
               >
                 <Calendar className="w-6 h-6 mr-3" />
                 Book Consult
@@ -425,7 +425,7 @@ export default function MedicalHubPage() {
               
               <Button
                 onClick={() => router.push('/user/medical/health-data')}
-                className="h-20 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg font-semibold"
+                className="h-20 user-app-btn-primary text-lg font-semibold"
               >
                 <Activity className="w-6 h-6 mr-3" />
                 Log Health Data
@@ -452,7 +452,7 @@ export default function MedicalHubPage() {
               {!user?.isMedical && (
                 <Button
                   onClick={() => router.push('/user/medical/apply')}
-                  className="h-20 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-lg font-semibold"
+                  className="h-20 bg-gradient-to-r from-[var(--ethio-lemon-dark)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white text-lg font-semibold"
                 >
                   <Award className="w-6 h-6 mr-3" />
                   Become Medical Pro
