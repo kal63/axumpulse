@@ -232,7 +232,7 @@ export default function UserDashboardPage() {
               <EthioTellsMark />
             </div>
             <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Powered by Ethio telecom</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Powered by</p>
               <div className="font-landing-display text-sm text-[hsl(222,47%,8%)] sm:text-base dark:text-slate-100">
                 Ethio telecom
               </div>

@@ -1,12 +1,46 @@
 
 // API Client for Compound 360 Backend
-const DEFAULT_API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'
+const DEFAULT_API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1').replace(
+  /\/$/,
+  '',
+)
 const API_BASE_URL_STORAGE_KEY = 'apiBaseUrl'
 
+function isLocalDevHostname(hostname: string): boolean {
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]'
+}
+
+function isLocalDevApiUrl(url: string): boolean {
+  try {
+    const u = new URL(url)
+    return isLocalDevHostname(u.hostname)
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Prefer localStorage override only when it still makes sense for this origin.
+ * A common prod bug: dev left `apiBaseUrl` → http://localhost:... in storage; `/auth/me` then
+ * fails from the real site, auth clears, and /user/* redirects to login.
+ */
 function getInitialApiBaseUrl(): string {
   if (typeof window === 'undefined') return DEFAULT_API_BASE_URL
+
   const override = localStorage.getItem(API_BASE_URL_STORAGE_KEY)
-  return override || DEFAULT_API_BASE_URL
+  if (!override) return DEFAULT_API_BASE_URL
+
+  const onLocalhostPage = isLocalDevHostname(window.location.hostname)
+  if (isLocalDevApiUrl(override) && !onLocalhostPage) {
+    try {
+      localStorage.removeItem(API_BASE_URL_STORAGE_KEY)
+    } catch {
+      /* ignore quota / private mode */
+    }
+    return DEFAULT_API_BASE_URL
+  }
+
+  return override.replace(/\/$/, '')
 }
 
 // Helper function to create pagination query string
@@ -938,10 +972,25 @@ class ApiClient {
   }
 
   setBaseUrl(baseURL: string) {
-    this.baseURL = String(baseURL || '').replace(/\/$/, '')
+    let normalized = String(baseURL || '').replace(/\/$/, '')
     if (typeof window !== 'undefined') {
-      localStorage.setItem(API_BASE_URL_STORAGE_KEY, this.baseURL)
+      const onLocalhostPage = isLocalDevHostname(window.location.hostname)
+      if (isLocalDevApiUrl(normalized) && !onLocalhostPage) {
+        try {
+          localStorage.removeItem(API_BASE_URL_STORAGE_KEY)
+        } catch {
+          /* ignore */
+        }
+        normalized = DEFAULT_API_BASE_URL
+      } else {
+        try {
+          localStorage.setItem(API_BASE_URL_STORAGE_KEY, normalized)
+        } catch {
+          /* ignore */
+        }
+      }
     }
+    this.baseURL = normalized
   }
 
   private async request<T>(
