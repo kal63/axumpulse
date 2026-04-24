@@ -101,3 +101,18 @@
   will-change: transform, opacity;
 }
 
+/* Radiant Stride–style welcome headline emoji */
+@keyframes welcome-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-welcome-float {
+  animation: welcome-float 3s ease-in-out infinite;
+}
+
