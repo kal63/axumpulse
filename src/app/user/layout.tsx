@@ -219,8 +219,8 @@ export default function UserLayout({ children }: UserLayoutProps) {
         /* Desktop Layout */
         <div className="flex h-screen">
           {/* Desktop Sidebar */}
-          <div className="user-app-sidebar-rail h-full w-[300px] min-w-[300px] shrink-0">
-            <div className="flex h-full flex-col p-5">
+          <div className="user-app-sidebar-rail flex h-full min-h-0 w-[300px] min-w-[300px] shrink-0 flex-col">
+            <div className="flex min-h-0 flex-1 flex-col px-5 pt-5 pb-6">
               {/* Logo/Brand */}
               <div className="mb-8 w-full min-w-0">
                 <Logo size="md" withText={false} withLink={false} />
@@ -267,29 +267,28 @@ export default function UserLayout({ children }: UserLayoutProps) {
                 </div>
               </NeumorphicCard>
 
-              {/* Navigation Items flex-1 space-y-2 */}
-
-              <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-0 no-scrollbar">
+              {/* Scrollable main nav (div avoids nested <nav> inside Sidebar’s <nav>) */}
+              <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-0 no-scrollbar">
                 <Sidebar />
-              </nav>
+              </div>
 
-              {/* Settings & Logout — EthioTells: ink on brand lime, same pill rhythm as nav */}
-              <div className="mt-3 space-y-1.5 border-t border-[hsl(222,47%,8%)]/10 pt-4 dark:border-slate-600/50">
-                <div className="px-2">
+              {/* Settings & Logout — pinned above bottom padding; matched size/rhythm */}
+              <div className="shrink-0 border-t border-[hsl(222,47%,8%)]/18 pt-4 dark:border-slate-600/50">
+                <div className="space-y-2 px-2 pb-0.5">
                   <button
                     onClick={() => (window.location.href = '/user/settings')}
-                    className="user-app-ink flex w-full items-center gap-3 rounded-full py-2.5 pl-3 pr-3 text-left text-sm font-medium leading-snug transition-all hover:bg-white/20 dark:text-slate-300 dark:hover:bg-white/10"
+                    className="flex w-full items-center gap-3 rounded-full px-3 py-3 text-left text-sm font-semibold leading-snug text-[hsl(222,47%,10%)] transition-colors hover:bg-black/10 dark:text-slate-200 dark:hover:bg-white/10"
                     type="button"
                   >
-                    <Settings className="h-5 w-5 shrink-0" strokeWidth={1.5} />
+                    <Settings className="h-5 w-5 shrink-0" strokeWidth={2} />
                     <span>Settings</span>
                   </button>
                   <button
                     onClick={logout}
-                    className="user-app-ink mt-1 flex w-full items-center gap-3 rounded-full py-2.5 pl-3 pr-3 text-left text-sm font-medium leading-snug transition-all hover:bg-white/20 dark:text-red-400 dark:hover:bg-red-950/30"
+                    className="flex w-full items-center gap-3 rounded-full px-3 py-3 text-left text-sm font-semibold leading-snug text-[hsl(222,47%,10%)] transition-colors hover:bg-black/10 hover:text-[hsl(0,72%,30%)] dark:text-slate-200 dark:hover:bg-red-950/35 dark:hover:text-red-300"
                     type="button"
                   >
-                    <LogOut className="h-5 w-5 shrink-0" strokeWidth={1.5} />
+                    <LogOut className="h-5 w-5 shrink-0" strokeWidth={2} />
                     <span>Logout</span>
                   </button>
                 </div>
