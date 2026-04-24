@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 import { apiClient } from '@/lib/api-client'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
+import { SubscriptionContextBanner } from '@/components/user/SubscriptionContextBanner'
 import { SearchBar } from '@/components/user/SearchBar'
 import { FilterBar } from '@/components/user/FilterBar'
 import { PaginationControls } from '@/components/user/PaginationControls'
@@ -277,7 +278,7 @@ export default function ChallengesPage() {
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <div className="user-app-lemon-gradient-active inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium mb-4">
                 <Sparkles className="w-4 h-4" />
                 <span>Join Amazing Challenges</span>
               </div>
@@ -291,24 +292,7 @@ export default function ChallengesPage() {
 
 
             
-            {/* Subscription Status Indicator */}
-            {subscription && (
-              <div className="max-w-4xl mx-auto mb-4">
-                {/* <NeumorphicCard variant="raised" size="sm" className="p-4 bg-blue-500/10 border-blue-500/30">
-                  <div className="flex items-center gap-3">
-                    <UserCheck className="w-5 h-5 text-blue-400" />
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold user-app-ink">
-                        Showing content from {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        Your active subscription expires on {new Date(subscription.expiresAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                </NeumorphicCard> */}
-              </div>
-            )}
+            {subscription && <SubscriptionContextBanner subscription={subscription} />}
 
             {/* No Subscription Message - Only show for non-medical professionals and non-trainers */}
             {!subscriptionLoading && !subscription && !isMedicalPro && !isTrainer && (
@@ -332,7 +316,7 @@ export default function ChallengesPage() {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                       <button
                         onClick={() => router.push('/trainers')}
-                        className="px-8 py-4 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                        className="user-app-lemon-gradient-active px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                       >
                         <Users className="w-5 h-5" />
                         Browse Trainers
@@ -359,7 +343,7 @@ export default function ChallengesPage() {
                       onClick={() => setShowFilters(!showFilters)}
                       className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
                         showFilters 
-                          ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg' 
+                          ? 'user-app-lemon-gradient-active' 
                           : 'user-app-paper user-app-hover'
                       }`}
                     >
@@ -403,7 +387,7 @@ export default function ChallengesPage() {
                               onClick={() => setSelectedCategory('')}
                               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                 selectedCategory === '' 
-                                  ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white' 
+                                  ? 'user-app-lemon-gradient-active' 
                                   : 'user-app-paper user-app-hover user-app-ink'
                               }`}
                             >
@@ -415,7 +399,7 @@ export default function ChallengesPage() {
                                 onClick={() => setSelectedCategory(category)}
                                 className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                   selectedCategory === category 
-                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white' 
+                                    ? 'user-app-lemon-gradient-active' 
                                     : 'user-app-paper user-app-hover user-app-ink'
                                 }`}
                               >
@@ -440,7 +424,7 @@ export default function ChallengesPage() {
                               onClick={() => setSelectedDifficulty(selectedDifficulty === option.value ? '' : option.value)}
                               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                 selectedDifficulty === option.value 
-                                  ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white' 
+                                  ? 'user-app-lemon-gradient-active' 
                                   : 'user-app-paper user-app-hover user-app-ink'
                               }`}
                             >
@@ -568,7 +552,7 @@ export default function ChallengesPage() {
               <div className="relative user-app-paper p-2 rounded-2xl shadow-lg dark:shadow-xl">
                 {/* Sliding Background */}
                 <div 
-                  className="absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] transition-all duration-500 ease-out"
+                  className="absolute top-2 bottom-2 rounded-xl user-app-segment-active-bg transition-all duration-500 ease-out"
                   style={backgroundStyle}
                 />
                 
@@ -661,7 +645,7 @@ export default function ChallengesPage() {
                       {/* Header */}
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3 flex-1">
-                          <div className="w-12 h-12 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-xl flex items-center justify-center">
+                          <div className="user-app-lemon-gradient-icon h-12 w-12">
                             <Trophy className="h-6 w-6 text-white" />
                           </div>
                           <div className="flex-1">
@@ -753,7 +737,7 @@ export default function ChallengesPage() {
                                   handleJoinChallenge(challenge.id, e)
                                 }}
                                 disabled={joiningChallengeId === challenge.id}
-                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-full text-sm font-medium hover:opacity-95 transition-all duration-200 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed z-10 relative"
+                                className="user-app-lemon-gradient-active flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed z-10 relative"
                               >
                                 <span>{joiningChallengeId === challenge.id ? 'Joining...' : 'Join Challenge'}</span>
                                 <ChevronRight className="h-4 w-4" />
@@ -841,7 +825,7 @@ export default function ChallengesPage() {
                           {/* Header */}
                           <div className="flex items-start justify-between">
                             <div className="flex items-start gap-3 flex-1">
-                              <div className="w-12 h-12 bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-xl flex items-center justify-center">
+                              <div className="user-app-lemon-gradient-icon h-12 w-12">
                                 <Trophy className="h-6 w-6 text-white" />
                               </div>
                               <div className="flex-1">
@@ -919,7 +903,7 @@ export default function ChallengesPage() {
                                 className={`h-2 rounded-full transition-all ${
                                   status === 'completed'
                                     ? 'bg-gradient-to-r from-green-500 to-emerald-600'
-                                    : 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
+                                    : 'user-app-segment-active-bg'
                                 }`}
                                 style={{ 
                                   width: `${progressPercentage}%` 

@@ -281,7 +281,7 @@ export default function SettingsPage() {
           <p className="user-app-muted mb-4">{error}</p>
           <Button
             onClick={fetchSettings}
-            className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white"
+            className="user-app-lemon-gradient-active"
           >
             Try Again
           </Button>
@@ -300,7 +300,7 @@ export default function SettingsPage() {
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <div className="user-app-lemon-gradient-active inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium mb-4">
                   <SettingsIcon className="w-4 h-4" />
                   <span>Account Management</span>
                 </div>
@@ -333,7 +333,7 @@ export default function SettingsPage() {
             <div className="relative user-app-paper p-2 rounded-2xl shadow-lg dark:shadow-xl">
               {/* Sliding Background */}
               <div 
-                className={`absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] transition-all duration-500 ease-out ${
+                className={`absolute top-2 bottom-2 rounded-xl user-app-segment-active-bg transition-all duration-500 ease-out ${
                   activeTab === 'account' 
                     ? 'left-2 right-3/4 mr-1' 
                     : activeTab === 'preferences'
@@ -918,7 +918,7 @@ export default function SettingsPage() {
             <Button
               onClick={handleSave}
               disabled={saving || uploading}
-              className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white"
+              className="user-app-lemon-gradient-active"
             >
               {saving ? (
                 <>

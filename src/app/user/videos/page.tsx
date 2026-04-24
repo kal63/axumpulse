@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { apiClient, UserSubscription } from '@/lib/api-client'
 import { useAuth } from '@/contexts/auth-context'
 import { NeumorphicCard } from '@/components/user/NeumorphicCard'
+import { SubscriptionContextBanner } from '@/components/user/SubscriptionContextBanner'
 import { ContentCard } from '@/components/user/ContentCard'
 import { SearchBar } from '@/components/user/SearchBar'
 import { FilterBar } from '@/components/user/FilterBar'
@@ -202,7 +203,7 @@ export default function VideosPage() {
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <div className="user-app-lemon-gradient-active inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium mb-4">
                 <Sparkles className="w-4 h-4" />
                 <span>Discover Amazing Content</span>
               </div>
@@ -215,23 +216,7 @@ export default function VideosPage() {
             </div>
 
             {/* Subscription Status Indicator */}
-            {subscription && (
-              <div className="max-w-4xl mx-auto mb-4">
-                <NeumorphicCard variant="raised" size="sm" className="p-4 bg-blue-500/10 border-blue-500/30">
-                  <div className="flex items-center gap-3">
-                    <UserCheck className="w-5 h-5 text-blue-400" />
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold user-app-ink">
-                        Showing content from {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        Your active subscription expires on {new Date(subscription.expiresAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                </NeumorphicCard>
-              </div>
-            )}
+            {subscription && <SubscriptionContextBanner subscription={subscription} />}
 
             {/* No Subscription Message - Only show for non-medical professionals and non-trainers */}
             {!subscriptionLoading && !subscription && !isMedicalPro && !isTrainer && (
@@ -255,7 +240,7 @@ export default function VideosPage() {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                       <button
                         onClick={() => router.push('/trainers')}
-                        className="px-8 py-4 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                        className="user-app-lemon-gradient-active px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                       >
                         <Users className="w-5 h-5" />
                         Browse Trainers
@@ -290,7 +275,7 @@ export default function VideosPage() {
                     onClick={() => setShowFilters(!showFilters)}
                     className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
                       showFilters 
-                        ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg' 
+                        ? 'user-app-lemon-gradient-active' 
                         : 'user-app-paper user-app-hover'
                     }`}
                   >
@@ -334,7 +319,7 @@ export default function VideosPage() {
                               onClick={() => handleFilterChange(setSelectedCategory)('')}
                               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                 selectedCategory === ''
-                                  ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg'
+                                  ? 'user-app-lemon-gradient-active'
                                   : 'user-app-paper user-app-hover user-app-ink'
                               }`}
                             >
@@ -346,7 +331,7 @@ export default function VideosPage() {
                                 onClick={() => handleFilterChange(setSelectedCategory)(cat)}
                                 className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                   selectedCategory === cat
-                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg'
+                                    ? 'user-app-lemon-gradient-active'
                                     : 'user-app-paper user-app-hover user-app-ink'
                                 }`}
                               >
@@ -365,7 +350,7 @@ export default function VideosPage() {
                             onClick={() => handleFilterChange(setSelectedDifficulty)('')}
                             className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                               selectedDifficulty === ''
-                                ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg'
+                                ? 'user-app-lemon-gradient-active'
                                 : 'user-app-paper user-app-hover user-app-ink'
                             }`}
                           >
@@ -377,7 +362,7 @@ export default function VideosPage() {
                               onClick={() => handleFilterChange(setSelectedDifficulty)(option.value)}
                               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                 selectedDifficulty === option.value
-                                  ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg'
+                                  ? 'user-app-lemon-gradient-active'
                                   : 'user-app-paper user-app-hover user-app-ink'
                               }`}
                             >
@@ -395,7 +380,7 @@ export default function VideosPage() {
                             onClick={() => handleFilterChange(setSelectedDuration)('')}
                             className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                               selectedDuration === ''
-                                ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg'
+                                ? 'user-app-lemon-gradient-active'
                                 : 'user-app-paper user-app-hover user-app-ink'
                             }`}
                           >
@@ -407,7 +392,7 @@ export default function VideosPage() {
                               onClick={() => handleFilterChange(setSelectedDuration)(option.value)}
                               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                 selectedDuration === option.value
-                                  ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg'
+                                  ? 'user-app-lemon-gradient-active'
                                   : 'user-app-paper user-app-hover user-app-ink'
                               }`}
                             >

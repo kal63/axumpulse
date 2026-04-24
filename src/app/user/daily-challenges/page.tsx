@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import { apiClient, type DailyChallenge } from '@/lib/api-client';
 import { NeumorphicCard } from '@/components/user/NeumorphicCard';
+import { SubscriptionContextBanner } from '@/components/user/SubscriptionContextBanner';
 import { DailyChallengeCard } from '@/components/user/DailyChallengeCard';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -155,7 +156,7 @@ export default function DailyChallengesPage() {
     <>
 
       <div className="text-center mt-8 mb-8 max-w-7xl mx-auto">
-        <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+        <div className="user-app-lemon-gradient-active inline-flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium mb-4">
           <Dumbbell className="w-4 h-4" />
           <span>Structured Fitness Programs</span>
         </div>
@@ -167,24 +168,7 @@ export default function DailyChallengesPage() {
         </p>
       </div>
 
-      {/* Subscription indicator */}
-      {subscription && (
-        <div className="max-w-4xl mx-auto mb-4">
-          {/* <NeumorphicCard variant="raised" size="sm" className="p-4 bg-blue-500/10 border-blue-500/30">
-            <div className="flex items-center gap-3">
-              <UserCheck className="w-5 h-5 text-blue-400" />
-              <div className="flex-1">
-                <p className="text-sm font-semibold user-app-ink">
-                  Showing content from {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
-                </p>
-                <p className="text-xs text-slate-400">
-                  Your active subscription expires on {new Date(subscription.expiresAt).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-          </NeumorphicCard> */}
-        </div>
-      )}
+      {subscription && <SubscriptionContextBanner subscription={subscription} />}
 
       {/* Subscription required message */}
       {!subscriptionLoading && !hasAccess && (
@@ -208,7 +192,7 @@ export default function DailyChallengesPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => router.push('/trainers')}
-                  className="px-8 py-4 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                  className="user-app-lemon-gradient-active px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                 >
                   <Users className="w-5 h-5" />
                   Browse Trainers

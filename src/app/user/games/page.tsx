@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import { apiClient, type Game } from '@/lib/api-client';
 import { NeumorphicCard } from '@/components/user/NeumorphicCard';
+import { SubscriptionContextBanner } from '@/components/user/SubscriptionContextBanner';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -163,23 +164,7 @@ export default function GamesHubPage() {
           Play fun games to earn XP and learn about fitness!
         </p>
       </div>
-      {subscription && (
-        <div className="max-w-4xl mx-auto mb-4">
-          {/* <NeumorphicCard variant="raised" size="sm" className="p-4 bg-blue-500/10 border-blue-500/30">
-            <div className="flex items-center gap-3">
-              <UserCheck className="w-5 h-5 text-blue-400" />
-              <div className="flex-1">
-                <p className="text-sm font-semibold user-app-ink">
-                  Showing content from {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
-                </p>
-                <p className="text-xs text-slate-400">
-                  Your active subscription expires on {new Date(subscription.expiresAt).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-          </NeumorphicCard> */}
-        </div>
-      )}
+      {subscription && <SubscriptionContextBanner subscription={subscription} />}
 
       {!subscriptionLoading && !hasAccess && (
         <div className="max-w-2xl mx-auto">
@@ -202,7 +187,7 @@ export default function GamesHubPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => router.push('/trainers')}
-                  className="px-8 py-4 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                  className="user-app-lemon-gradient-active px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                 >
                   <Users className="w-5 h-5" />
                   Browse Trainers
@@ -276,7 +261,7 @@ export default function GamesHubPage() {
                     </div>
 
                     <Button
-                      className="w-full bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white"
+                      className="user-app-lemon-gradient-active w-full"
                       onClick={(e) => {
                         e.stopPropagation();
                         if (game.gameType === 'spin_win') {

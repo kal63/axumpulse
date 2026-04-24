@@ -288,7 +288,7 @@ export default function UserDashboardPage() {
 
         <div className="space-y-6 sm:space-y-8">
           {subscription && (
-            <section className="mb-2 overflow-hidden rounded-3xl border border-slate-200/90 bg-white text-card-foreground shadow-sm dark:border-border dark:bg-card">
+            <section className="user-app-subscription-panel mb-2 text-card-foreground">
               <div className="p-5 sm:p-6">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="flex min-w-0 items-center gap-3">
@@ -325,7 +325,7 @@ export default function UserDashboardPage() {
                   </Button>
                 </div>
                 <div className="mt-6 grid gap-4 md:grid-cols-2">
-                  <div className="rounded-2xl border border-border bg-muted/50 p-4 sm:p-5">
+                  <div className="user-app-subscription-panel-tile">
                     <div className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       <Crown className="size-3.5 text-[hsl(210,95%,32%)] dark:text-[var(--ethio-lemon)]" />
                       Package
@@ -346,7 +346,7 @@ export default function UserDashboardPage() {
                       plan
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-border bg-muted/50 p-4 sm:p-5">
+                  <div className="user-app-subscription-panel-tile">
                     <div className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       <BadgeCheck className="size-3.5 text-secondary" />
                       Trainer
@@ -370,7 +370,7 @@ export default function UserDashboardPage() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center justify-between border-t border-border bg-muted/30 px-5 py-3 text-sm sm:px-6">
+              <div className="flex items-center justify-between border-t border-[hsl(210,38%,88%)] bg-[hsl(210,75%,94%)] px-5 py-3 text-sm dark:border-slate-700 dark:bg-slate-800/60 sm:px-6">
                 <span className="flex items-center gap-2 text-muted-foreground">
                   <Clock className="size-4" />
                   Expires on
@@ -624,7 +624,7 @@ export default function UserDashboardPage() {
             <Button
               type="button"
               onClick={() => router.push('/user/videos')}
-              className="h-auto min-h-[4.5rem] flex-col gap-1 rounded-2xl bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] py-4 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex-row sm:gap-2 sm:py-5 sm:text-base"
+              className="user-app-lemon-gradient-active h-auto min-h-[4.5rem] flex-col gap-1 rounded-2xl py-4 text-sm font-bold transition hover:-translate-y-0.5 hover:shadow-md sm:flex-row sm:gap-2 sm:py-5 sm:text-base"
             >
               <Play className="size-5 shrink-0 sm:mr-1" />
               <span>Start workout</span>
