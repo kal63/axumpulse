@@ -221,7 +221,7 @@ export default function VideosPage() {
                   <div className="flex items-center gap-3">
                     <UserCheck className="w-5 h-5 text-blue-400" />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-white">
+                      <p className="text-sm font-semibold user-app-ink">
                         Showing content from {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
                       </p>
                       <p className="text-xs text-slate-400">
