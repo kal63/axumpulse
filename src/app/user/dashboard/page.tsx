@@ -157,7 +157,7 @@ export default function UserDashboardPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] dark:border-cyan-500 mx-auto"></div>
           <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
         </div>
       </div>
@@ -210,13 +210,13 @@ export default function UserDashboardPage() {
     <div className="min-h-screen bg-[var(--neumorphic-bg)]">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-pink-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/18 via-[var(--ethio-deep-blue)]/10 to-transparent dark:from-cyan-500/10 dark:via-purple-500/5 dark:to-pink-500/10" />
         
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4 dark:from-cyan-500 dark:to-purple-600">
                   <Sparkles className="w-4 h-4" />
                   <span>Welcome Back</span>
                 </div>
@@ -250,7 +250,7 @@ export default function UserDashboardPage() {
             <NeumorphicCard variant="raised" className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-[var(--neumorphic-text)]">Your Progress</h2>
-                <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">
+                <Badge className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-cyan-500 dark:to-purple-600">
                   Level {userStats.level}
                 </Badge>
               </div>
@@ -265,10 +265,10 @@ export default function UserDashboardPage() {
 
           {/* Subscription Info Card */}
           {subscription && (
-            <NeumorphicCard variant="raised" className="p-6 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-pink-500/10 border-2 border-cyan-500/20">
+            <NeumorphicCard variant="raised" className="p-6 bg-gradient-to-br from-[var(--ethio-lemon)]/16 via-[var(--ethio-deep-blue)]/8 to-transparent border-2 border-[var(--ethio-deep-blue)]/15 dark:from-cyan-500/10 dark:via-purple-500/5 dark:to-pink-500/10 dark:border-cyan-500/20">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] rounded-full flex items-center justify-center dark:from-cyan-500 dark:to-purple-600">
                     <Package className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -284,7 +284,7 @@ export default function UserDashboardPage() {
               <div className="flex flex-col sm:flex-row gap-3 mt-4">
                 <Button
                   onClick={() => router.push('/user/subscription/change-package')}
-                  className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                  className="bg-[var(--ethio-deep-blue)] hover:bg-[color:var(--ethio-deep-blue)]/90 text-white dark:bg-cyan-600 dark:hover:bg-cyan-700"
                 >
                   <RefreshCw className="w-4 h-4 mr-2" />
                   Change package
@@ -292,7 +292,7 @@ export default function UserDashboardPage() {
                 <Button
                   onClick={() => router.push('/user/subscription/change-trainer')}
                   variant="outline"
-                  className="border-slate-600 text-slate-300"
+                  className="border-[var(--ethio-deep-blue)]/35 text-[var(--ethio-deep-blue)] dark:border-slate-600 dark:text-slate-300"
                 >
                   <UserCheck className="w-4 h-4 mr-2" />
                   Change trainer
@@ -303,7 +303,7 @@ export default function UserDashboardPage() {
                 {/* Subscription Plan */}
                 <div className="p-4 rounded-xl bg-[var(--neumorphic-surface)]">
                   <div className="flex items-center gap-2 mb-2">
-                    <Package className="w-4 h-4 text-cyan-500" />
+                    <Package className="w-4 h-4 text-[var(--ethio-deep-blue)] dark:text-cyan-500" />
                     <span className="text-xs text-[var(--neumorphic-muted)] uppercase tracking-wide">Package</span>
                   </div>
                   <p className="text-lg font-bold text-[var(--neumorphic-text)]">
@@ -424,12 +424,12 @@ export default function UserDashboardPage() {
             <NeumorphicCard variant="raised" className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-cyan-500" />
+                  <BarChart3 className="w-5 h-5 text-[var(--ethio-deep-blue)] dark:text-cyan-500" />
                   XP Progress
                 </h3>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm">7d</Button>
-                  <Button variant="outline" size="sm" className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">30d</Button>
+                  <Button variant="outline" size="sm" className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-cyan-500 dark:to-purple-600">30d</Button>
                   <Button variant="outline" size="sm">90d</Button>
                 </div>
               </div>
@@ -551,7 +551,7 @@ export default function UserDashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button 
               onClick={() => router.push('/user/videos')}
-              className="h-20 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white text-lg font-semibold"
+              className="h-20 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] hover:opacity-95 text-white text-lg font-semibold dark:from-cyan-500 dark:to-purple-600 dark:hover:from-cyan-600 dark:hover:to-purple-700"
             >
               <Play className="w-6 h-6 mr-3" />
               Start Workout
@@ -559,7 +559,7 @@ export default function UserDashboardPage() {
             
             <Button 
               onClick={() => router.push('/user/workout-plans')}
-              className="h-20 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white text-lg font-semibold"
+              className="h-20 bg-[var(--ethio-deep-blue)] hover:bg-[color:var(--ethio-deep-blue)]/90 text-white text-lg font-semibold dark:bg-gradient-to-r dark:from-blue-500 dark:to-indigo-600 dark:hover:from-blue-600 dark:hover:to-indigo-700"
             >
               <Target className="w-6 h-6 mr-3" />
               Workout Plans

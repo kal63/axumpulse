@@ -46,13 +46,13 @@ export function FilterBar({
                                 'relative flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105',
                                 'border border-gray-200/50 dark:border-gray-700/50',
                                 isSelected
-                                    ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/25 border-transparent'
+                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg border-transparent dark:from-cyan-500 dark:to-purple-600 dark:shadow-cyan-500/25'
                                     : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)] hover:shadow-md'
                             )}
                         >
                             {isSelected && (
                                 <div className="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-lg">
-                                    <Check className="w-3 h-3 text-cyan-600" />
+                                    <Check className="w-3 h-3 text-[var(--ethio-deep-blue)] dark:text-cyan-600" />
                                 </div>
                             )}
                             <span>{option.label}</span>
@@ -87,12 +87,12 @@ export function FilterBar({
                                     }}
                                     className={cn(
                                         'w-full flex items-center justify-between px-4 py-3 text-left text-[var(--neumorphic-text)] font-medium hover:bg-[var(--neumorphic-hover)] transition-all duration-200',
-                                        isSelected && 'bg-gradient-to-r from-cyan-500/10 to-purple-600/10'
+                                        isSelected && 'bg-gradient-to-r from-[var(--ethio-lemon)]/12 to-[var(--ethio-deep-blue)]/10 dark:from-cyan-500/10 dark:to-purple-600/10'
                                     )}
                                 >
                                     <span>{option.label}</span>
                                     {isSelected && (
-                                        <Check className="w-5 h-5 text-cyan-600" />
+                                        <Check className="w-5 h-5 text-[var(--ethio-deep-blue)] dark:text-cyan-600" />
                                     )}
                                 </button>
                             )

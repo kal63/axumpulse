@@ -100,6 +100,11 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
+  /* Ethio telecom / mobile-aligned light mode tokens */
+  --ethio-lemon: #8EC63F;
+  --ethio-lemon-dark: #5B8C2E;
+  --ethio-deep-blue: #0082C6;
+
   /* Neumorphic Light Mode */
   --neumorphic-bg: #F3F4F6;
   --neumorphic-surface: #FFFFFF;

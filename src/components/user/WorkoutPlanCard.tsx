@@ -107,7 +107,7 @@ export function WorkoutPlanCard({
                         </div>
                         <div className="flex-1">
                             <div className="flex items-center gap-2">
-                                <h3 className="font-bold text-xl text-[var(--neumorphic-text)] group-hover:text-[var(--neumorphic-accent)] transition-colors line-clamp-2">
+                                <h3 className="font-bold text-xl text-[var(--neumorphic-text)] group-hover:text-[var(--ethio-deep-blue)] dark:group-hover:text-[var(--neumorphic-accent)] transition-colors line-clamp-2">
                                     {workoutPlan.title}
                                 </h3>
                                 {/* Joined indicator */}
@@ -178,7 +178,7 @@ export function WorkoutPlanCard({
                         {/* Custom Progress Bar */}
                         <div className="w-full bg-[var(--neumorphic-bg)] rounded-full h-2">
                             <div 
-                                className="bg-gradient-to-r from-cyan-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+                                className="bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] dark:from-cyan-500 dark:to-purple-600 h-2 rounded-full transition-all duration-300"
                                 style={{ width: `${progressPercentage}%` }}
                             />
                         </div>
@@ -187,7 +187,7 @@ export function WorkoutPlanCard({
                             <span className={`px-3 py-1 rounded-full ${getStatusColor(userProgress.status)} bg-[var(--neumorphic-bg)] text-sm font-medium`}>
                                 {userProgress.status}
                             </span>
-                            <span className="text-sm font-semibold text-[var(--neumorphic-accent)]">
+                            <span className="text-sm font-semibold text-[var(--ethio-deep-blue)] dark:text-[var(--neumorphic-accent)]">
                                 {progressPercentage}%
                             </span>
                         </div>
@@ -196,7 +196,7 @@ export function WorkoutPlanCard({
 
                 {/* Footer: XP and Action */}
                 <div className="flex items-center justify-between pt-4">
-                    <div className="flex items-center space-x-1 text-[var(--neumorphic-accent)]">
+                    <div className="flex items-center space-x-1 text-[var(--ethio-deep-blue)] dark:text-[var(--neumorphic-accent)]">
                         <Zap className="h-4 w-4" />
                         <span className="text-sm font-semibold">+{estimatedXP} XP</span>
                     </div>
@@ -206,7 +206,7 @@ export function WorkoutPlanCard({
                             className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg ${
                                 userProgress.status === 'completed'
                                     ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700'
-                                    : 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:from-cyan-600 hover:to-purple-700'
+                                    : 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white hover:opacity-95 dark:from-cyan-500 dark:to-purple-600 dark:hover:from-cyan-600 dark:hover:to-purple-700'
                             }`}
                             onClick={(e) => {
                                 e.stopPropagation()
