@@ -195,7 +195,7 @@ export default function VideosPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10" />
@@ -206,10 +206,10 @@ export default function VideosPage() {
                 <Sparkles className="w-4 h-4" />
                 <span>Discover Amazing Content</span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+              <h1 className="text-4xl md:text-6xl font-bold user-app-ink mb-4">
                 🎬 Video Library
               </h1>
-              <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+              <p className="text-xl user-app-muted max-w-2xl mx-auto">
                 Explore our wide range of training videos, earn XP, and level up your fitness journey
               </p>
             </div>
@@ -241,14 +241,14 @@ export default function VideosPage() {
                     <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                       <UserCheck className="w-10 h-10 text-white" />
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-[var(--neumorphic-text)] mb-4">
+                    <h2 className="text-3xl md:text-4xl font-bold user-app-ink mb-4">
                       Subscription Required
                     </h2>
                     <div className="space-y-4 mb-8">
-                      <p className="text-lg text-[var(--neumorphic-muted)]">
+                      <p className="text-lg user-app-muted">
                         You need an active subscription to access video content.
                       </p>
-                      <p className="text-base text-[var(--neumorphic-muted)]">
+                      <p className="text-base user-app-muted">
                         Subscribe to a trainer to unlock training videos, earn XP, and level up your fitness journey.
                       </p>
                     </div>
@@ -263,7 +263,7 @@ export default function VideosPage() {
                       {/*}
                       <button
                         onClick={() => router.push('/user/subscriptions')}
-                        className="px-8 py-4 bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] rounded-xl font-semibold hover:bg-[var(--neumorphic-hover)] transition-all duration-200 flex items-center justify-center gap-2"
+                        className="px-8 py-4 user-app-paper user-app-ink rounded-xl font-semibold user-app-hover transition-all duration-200 flex items-center justify-center gap-2"
                       >
                         <CheckCircle className="w-5 h-5" />
                         My Subscriptions
@@ -291,7 +291,7 @@ export default function VideosPage() {
                     className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
                       showFilters 
                         ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg' 
-                        : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)]'
+                        : 'user-app-paper user-app-hover'
                     }`}
                   >
                     <Filter className="w-4 h-4" />
@@ -315,10 +315,10 @@ export default function VideosPage() {
                 <NeumorphicCard variant="recessed" size="lg" className="p-6">
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-[var(--neumorphic-text)]">Filter Content</h3>
+                      <h3 className="text-lg font-semibold user-app-ink">Filter Content</h3>
                       <button
                         onClick={() => setShowFilters(false)}
-                        className="text-[var(--neumorphic-muted)] hover:text-[var(--neumorphic-text)] transition-colors"
+                        className="user-app-muted hover:user-app-ink transition-colors"
                       >
                         ✕
                       </button>
@@ -328,14 +328,14 @@ export default function VideosPage() {
                       {/* Category Filter */}
                       {categories.length > 0 && (
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-[var(--neumorphic-text)]">Category</label>
+                          <label className="text-sm font-medium user-app-ink">Category</label>
                           <div className="flex flex-wrap gap-2">
                             <button
                               onClick={() => handleFilterChange(setSelectedCategory)('')}
                               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                 selectedCategory === ''
                                   ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg'
-                                  : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                                  : 'user-app-paper user-app-hover user-app-ink'
                               }`}
                             >
                               All Categories
@@ -347,7 +347,7 @@ export default function VideosPage() {
                                 className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                   selectedCategory === cat
                                     ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg'
-                                    : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                                    : 'user-app-paper user-app-hover user-app-ink'
                                 }`}
                               >
                                 {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -359,14 +359,14 @@ export default function VideosPage() {
 
                       {/* Difficulty Filter */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-[var(--neumorphic-text)]">Difficulty</label>
+                        <label className="text-sm font-medium user-app-ink">Difficulty</label>
                         <div className="flex flex-wrap gap-2">
                           <button
                             onClick={() => handleFilterChange(setSelectedDifficulty)('')}
                             className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                               selectedDifficulty === ''
                                 ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg'
-                                : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                                : 'user-app-paper user-app-hover user-app-ink'
                             }`}
                           >
                             All Levels
@@ -378,7 +378,7 @@ export default function VideosPage() {
                               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                 selectedDifficulty === option.value
                                   ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg'
-                                  : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                                  : 'user-app-paper user-app-hover user-app-ink'
                               }`}
                             >
                               {option.label}
@@ -389,14 +389,14 @@ export default function VideosPage() {
 
                       {/* Duration Filter */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-[var(--neumorphic-text)]">Duration</label>
+                        <label className="text-sm font-medium user-app-ink">Duration</label>
                         <div className="flex flex-wrap gap-2">
                           <button
                             onClick={() => handleFilterChange(setSelectedDuration)('')}
                             className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                               selectedDuration === ''
                                 ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg'
-                                : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                                : 'user-app-paper user-app-hover user-app-ink'
                             }`}
                           >
                             Any Duration
@@ -408,7 +408,7 @@ export default function VideosPage() {
                               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                 selectedDuration === option.value
                                   ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg'
-                                  : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                                  : 'user-app-paper user-app-hover user-app-ink'
                               }`}
                             >
                               {option.label}
@@ -427,7 +427,7 @@ export default function VideosPage() {
                           setSelectedDuration('')
                           setSearchQuery('')
                         }}
-                        className="px-4 py-2 text-sm text-[var(--neumorphic-muted)] hover:text-[var(--neumorphic-text)] transition-colors"
+                        className="px-4 py-2 text-sm user-app-muted hover:user-app-ink transition-colors"
                       >
                         Clear All Filters
                       </button>
@@ -454,14 +454,14 @@ export default function VideosPage() {
                 <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center">
                   <Star className="w-4 h-4 text-white fill-current" />
                 </div>
-                <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                <h2 className="text-2xl font-bold user-app-ink">
                   Featured Content
                 </h2>
               </div>
               {featuredContent.length > 3 && (
                 <button 
                   onClick={() => router.push('/user/videos/featured')}
-                  className="flex items-center space-x-2 text-[var(--neumorphic-accent)] hover:text-[var(--neumorphic-accent-hover)] transition-colors"
+                  className="flex items-center space-x-2 user-app-link hover:opacity-90 transition-colors"
                 >
                   <span>View All</span>
                   <ChevronRight className="w-4 h-4" />
@@ -483,7 +483,7 @@ export default function VideosPage() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-[var(--neumorphic-muted)]">No featured content at the moment. Check back soon!</p>
+                <p className="user-app-muted">No featured content at the moment. Check back soon!</p>
               </div>
             )}
           </div>
@@ -497,10 +497,10 @@ export default function VideosPage() {
           <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">
+              <h2 className="text-2xl font-bold user-app-ink">
                 All Content
               </h2>
-              <div className="bg-[var(--neumorphic-surface)] px-3 py-1 rounded-full text-sm text-[var(--neumorphic-muted)]">
+              <div className="user-app-paper px-3 py-1 rounded-full text-sm user-app-muted">
                 {totalItems.toLocaleString()} items
               </div>
             </div>

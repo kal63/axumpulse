@@ -406,14 +406,14 @@ export default function UserApplyPage() {
         <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Briefcase className="h-8 w-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Professional Information</h2>
-        <p className="text-[var(--neumorphic-muted)]">Your fitness expertise and experience</p>
+        <h2 className="text-2xl font-bold user-app-ink">Professional Information</h2>
+        <p className="user-app-muted">Your fitness expertise and experience</p>
       </div>
 
       <div className="space-y-4">
         <div className="space-y-3">
-          <Label className="text-[var(--neumorphic-text)]">Specialties *</Label>
-          <p className="text-sm text-[var(--neumorphic-muted)]">Select all that apply</p>
+          <Label className="user-app-ink">Specialties *</Label>
+          <p className="text-sm user-app-muted">Select all that apply</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {SPECIALTY_OPTIONS.map((specialty) => (
               <div key={specialty} className="flex items-center space-x-2">
@@ -424,19 +424,19 @@ export default function UserApplyPage() {
                   onChange={() => handleArrayToggle('specialties', specialty)}
                   className="rounded border-gray-300"
                 />
-                <Label htmlFor={specialty} className="text-sm cursor-pointer text-[var(--neumorphic-text)]">{specialty}</Label>
+                <Label htmlFor={specialty} className="text-sm cursor-pointer user-app-ink">{specialty}</Label>
               </div>
             ))}
           </div>
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="yearsOfExperience" className="text-[var(--neumorphic-text)]">Years of Experience</Label>
+          <Label htmlFor="yearsOfExperience" className="user-app-ink">Years of Experience</Label>
           <select
             id="yearsOfExperience"
             value={formData.yearsOfExperience}
             onChange={(e) => handleInputChange('yearsOfExperience', e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-[var(--neumorphic-border)] bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full px-3 py-2 rounded-xl border user-app-border user-app-paper user-app-ink focus:outline-none focus:ring-2 focus:ring-cyan-500"
           >
             <option value="">Select experience level</option>
             <option value="0-1">0-1 years</option>
@@ -448,10 +448,10 @@ export default function UserApplyPage() {
         </div>
 
         <div className="space-y-3">
-          <Label className="text-[var(--neumorphic-text)]">Languages</Label>
-          <p className="text-sm text-[var(--neumorphic-muted)]">Select all languages you can communicate in</p>
+          <Label className="user-app-ink">Languages</Label>
+          <p className="text-sm user-app-muted">Select all languages you can communicate in</p>
           {loadingLanguages ? (
-            <div className="text-sm text-[var(--neumorphic-muted)]">Loading languages...</div>
+            <div className="text-sm user-app-muted">Loading languages...</div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {languages.map((language) => (
@@ -463,7 +463,7 @@ export default function UserApplyPage() {
                     onChange={() => handleArrayToggle('languages', language.name)}
                     className="rounded border-gray-300"
                   />
-                  <Label htmlFor={language.name} className="text-sm cursor-pointer text-[var(--neumorphic-text)]">
+                  <Label htmlFor={language.name} className="text-sm cursor-pointer user-app-ink">
                     {language.nativeName || language.name}
                   </Label>
                 </div>
@@ -473,14 +473,14 @@ export default function UserApplyPage() {
         </div>
 
         <div className="space-y-3">
-          <Label htmlFor="bio" className="text-[var(--neumorphic-text)]">Bio</Label>
+          <Label htmlFor="bio" className="user-app-ink">Bio</Label>
           <Textarea
             id="bio"
             placeholder="Tell us about your fitness journey and philosophy..."
             value={formData.bio}
             onChange={(e) => handleInputChange('bio', e.target.value)}
             rows={4}
-            className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+            className="user-app-paper user-app-border user-app-ink"
           />
         </div>
       </div>
@@ -494,15 +494,15 @@ export default function UserApplyPage() {
         <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <FileText className="h-8 w-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Certifications & Portfolio</h2>
-        <p className="text-[var(--neumorphic-muted)]">Showcase your credentials and work</p>
+        <h2 className="text-2xl font-bold user-app-ink">Certifications & Portfolio</h2>
+        <p className="user-app-muted">Showcase your credentials and work</p>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label className="text-[var(--neumorphic-text)]">Certifications</Label>
-            <Button type="button" variant="outline" size="sm" onClick={addCertification} className="border-[var(--neumorphic-border)]">
+            <Label className="user-app-ink">Certifications</Label>
+            <Button type="button" variant="outline" size="sm" onClick={addCertification} className="user-app-border">
               Add Certification
             </Button>
           </div>
@@ -511,39 +511,39 @@ export default function UserApplyPage() {
             <NeumorphicCard key={index} variant="raised" className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-3">
-                  <Label className="text-[var(--neumorphic-text)]">Certification Name</Label>
+                  <Label className="user-app-ink">Certification Name</Label>
                   <Input
                     value={cert.name}
                     onChange={(e) => updateCertification(index, 'name', e.target.value)}
                     placeholder="e.g., NASM-CPT"
-                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+                    className="user-app-paper user-app-border user-app-ink"
                   />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-[var(--neumorphic-text)]">Issuing Organization</Label>
+                  <Label className="user-app-ink">Issuing Organization</Label>
                   <Input
                     value={cert.issuer}
                     onChange={(e) => updateCertification(index, 'issuer', e.target.value)}
                     placeholder="e.g., NASM"
-                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+                    className="user-app-paper user-app-border user-app-ink"
                   />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-[var(--neumorphic-text)]">Issue Date</Label>
+                  <Label className="user-app-ink">Issue Date</Label>
                   <Input
                     type="date"
                     value={cert.date}
                     onChange={(e) => updateCertification(index, 'date', e.target.value)}
-                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+                    className="user-app-paper user-app-border user-app-ink"
                   />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-[var(--neumorphic-text)]">Expiry Date (if applicable)</Label>
+                  <Label className="user-app-ink">Expiry Date (if applicable)</Label>
                   <Input
                     type="date"
                     value={cert.expiry || ''}
                     onChange={(e) => updateCertification(index, 'expiry', e.target.value)}
-                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+                    className="user-app-paper user-app-border user-app-ink"
                   />
                 </div>
               </div>
@@ -563,8 +563,8 @@ export default function UserApplyPage() {
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label className="text-[var(--neumorphic-text)]">Portfolio Items</Label>
-            <Button type="button" variant="outline" size="sm" onClick={addPortfolioItem} className="border-[var(--neumorphic-border)]">
+            <Label className="user-app-ink">Portfolio Items</Label>
+            <Button type="button" variant="outline" size="sm" onClick={addPortfolioItem} className="user-app-border">
               Add Portfolio Item
             </Button>
           </div>
@@ -573,31 +573,31 @@ export default function UserApplyPage() {
             <NeumorphicCard key={index} variant="raised" className="p-4">
               <div className="space-y-4">
                 <div className="space-y-3">
-                  <Label className="text-[var(--neumorphic-text)]">Title</Label>
+                  <Label className="user-app-ink">Title</Label>
                   <Input
                     value={item.title}
                     onChange={(e) => updatePortfolioItem(index, 'title', e.target.value)}
                     placeholder="e.g., 30-Day Transformation Program"
-                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+                    className="user-app-paper user-app-border user-app-ink"
                   />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-[var(--neumorphic-text)]">Description</Label>
+                  <Label className="user-app-ink">Description</Label>
                   <Textarea
                     value={item.description}
                     onChange={(e) => updatePortfolioItem(index, 'description', e.target.value)}
                     placeholder="Describe your work..."
                     rows={3}
-                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+                    className="user-app-paper user-app-border user-app-ink"
                   />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-[var(--neumorphic-text)]">URL (optional)</Label>
+                  <Label className="user-app-ink">URL (optional)</Label>
                   <Input
                     value={item.url || ''}
                     onChange={(e) => updatePortfolioItem(index, 'url', e.target.value)}
                     placeholder="https://example.com"
-                    className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+                    className="user-app-paper user-app-border user-app-ink"
                   />
                 </div>
               </div>
@@ -616,16 +616,16 @@ export default function UserApplyPage() {
         </div>
 
         <div className="space-y-4">
-          <Label className="text-[var(--neumorphic-text)]">Certification Files</Label>
-          <p className="text-sm text-[var(--neumorphic-muted)]">Upload copies of your certifications (PDF, JPG, PNG - max 10MB each)</p>
+          <Label className="user-app-ink">Certification Files</Label>
+          <p className="text-sm user-app-muted">Upload copies of your certifications (PDF, JPG, PNG - max 10MB each)</p>
           
-          <NeumorphicCard variant="recessed" className="p-6 text-center border-2 border-dashed border-[var(--neumorphic-border)]">
-            <Upload className="h-8 w-8 mx-auto text-[var(--neumorphic-muted)] mb-2" />
+          <NeumorphicCard variant="recessed" className="p-6 text-center border-2 border-dashed user-app-border">
+            <Upload className="h-8 w-8 mx-auto user-app-muted mb-2" />
             <Button
               type="button"
               variant="outline"
               onClick={() => fileInputRef.current?.click()}
-              className="border-[var(--neumorphic-border)]"
+              className="user-app-border"
             >
               Choose Files
             </Button>
@@ -641,10 +641,10 @@ export default function UserApplyPage() {
 
           {uploadedFiles.length > 0 && (
             <div className="space-y-2">
-              <Label className="text-[var(--neumorphic-text)]">Uploaded Files</Label>
+              <Label className="user-app-ink">Uploaded Files</Label>
               {uploadedFiles.map((file, index) => (
                 <NeumorphicCard key={index} variant="raised" className="p-3 flex items-center justify-between">
-                  <span className="text-sm text-[var(--neumorphic-text)]">{file.name}</span>
+                  <span className="text-sm user-app-ink">{file.name}</span>
                   <Button
                     type="button"
                     variant="ghost"
@@ -669,63 +669,63 @@ export default function UserApplyPage() {
         <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Globe className="h-8 w-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Social Media & Online Presence</h2>
-        <p className="text-[var(--neumorphic-muted)]">Connect with members on social platforms</p>
+        <h2 className="text-2xl font-bold user-app-ink">Social Media & Online Presence</h2>
+        <p className="user-app-muted">Connect with members on social platforms</p>
       </div>
 
       <div className="space-y-4">
-        <p className="text-sm text-[var(--neumorphic-muted)] text-center">
+        <p className="text-sm user-app-muted text-center">
           All fields are optional. Add your social media profiles so members can follow and connect with you.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
-            <Label htmlFor="instagram" className="text-[var(--neumorphic-text)]">Instagram</Label>
+            <Label htmlFor="instagram" className="user-app-ink">Instagram</Label>
             <Input
               id="instagram"
               placeholder="@username"
               value={formData.socialMedia.instagram || ''}
               onChange={(e) => handleNestedInputChange('socialMedia', 'instagram', e.target.value)}
-              className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+              className="user-app-paper user-app-border user-app-ink"
             />
           </div>
           <div className="space-y-3">
-            <Label htmlFor="facebook" className="text-[var(--neumorphic-text)]">Facebook</Label>
+            <Label htmlFor="facebook" className="user-app-ink">Facebook</Label>
             <Input
               id="facebook"
               placeholder="@username"
               value={formData.socialMedia.facebook || ''}
               onChange={(e) => handleNestedInputChange('socialMedia', 'facebook', e.target.value)}
-              className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+              className="user-app-paper user-app-border user-app-ink"
             />
           </div>
           <div className="space-y-3">
-            <Label htmlFor="twitter" className="text-[var(--neumorphic-text)]">TikTok</Label>
+            <Label htmlFor="twitter" className="user-app-ink">TikTok</Label>
             <Input
               id="twitter"
               placeholder="@username"
               value={formData.socialMedia.twitter || ''}
               onChange={(e) => handleNestedInputChange('socialMedia', 'twitter', e.target.value)}
-              className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+              className="user-app-paper user-app-border user-app-ink"
             />
           </div>
           <div className="space-y-3">
-            <Label htmlFor="linkedin" className="text-[var(--neumorphic-text)]">LinkedIn</Label>
+            <Label htmlFor="linkedin" className="user-app-ink">LinkedIn</Label>
             <Input
               id="linkedin"
               placeholder="linkedin.com/in/username"
               value={formData.socialMedia.linkedin || ''}
               onChange={(e) => handleNestedInputChange('socialMedia', 'linkedin', e.target.value)}
-              className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+              className="user-app-paper user-app-border user-app-ink"
             />
           </div>
           <div className="space-y-3 md:col-span-2">
-            <Label htmlFor="website" className="text-[var(--neumorphic-text)]">Website</Label>
+            <Label htmlFor="website" className="user-app-ink">Website</Label>
             <Input
               id="website"
               placeholder="https://yourwebsite.com"
               value={formData.socialMedia.website || ''}
               onChange={(e) => handleNestedInputChange('socialMedia', 'website', e.target.value)}
-              className="bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]"
+              className="user-app-paper user-app-border user-app-ink"
             />
           </div>
         </div>
@@ -740,14 +740,14 @@ export default function UserApplyPage() {
         <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Target className="h-8 w-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Content Preferences</h2>
-        <p className="text-[var(--neumorphic-muted)]">What type of content will you create?</p>
+        <h2 className="text-2xl font-bold user-app-ink">Content Preferences</h2>
+        <p className="user-app-muted">What type of content will you create?</p>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label className="text-[var(--neumorphic-text)]">Content Types *</Label>
-          <p className="text-sm text-[var(--neumorphic-muted)]">Select all types of content you plan to create</p>
+          <Label className="user-app-ink">Content Types *</Label>
+          <p className="text-sm user-app-muted">Select all types of content you plan to create</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {CONTENT_TYPE_OPTIONS.map((type) => (
               <div key={type} className="flex items-center space-x-2">
@@ -765,15 +765,15 @@ export default function UserApplyPage() {
                   }}
                   className="rounded border-gray-300"
                 />
-                <Label htmlFor={type} className="text-sm cursor-pointer text-[var(--neumorphic-text)]">{type}</Label>
+                <Label htmlFor={type} className="text-sm cursor-pointer user-app-ink">{type}</Label>
               </div>
             ))}
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label className="text-[var(--neumorphic-text)]">Target Audience</Label>
-          <p className="text-sm text-[var(--neumorphic-muted)]">Who will you be training?</p>
+          <Label className="user-app-ink">Target Audience</Label>
+          <p className="text-sm user-app-muted">Who will you be training?</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {TARGET_AUDIENCE_OPTIONS.map((audience) => (
               <div key={audience} className="flex items-center space-x-2">
@@ -791,19 +791,19 @@ export default function UserApplyPage() {
                   }}
                   className="rounded border-gray-300"
                 />
-                <Label htmlFor={audience} className="text-sm cursor-pointer text-[var(--neumorphic-text)]">{audience}</Label>
+                <Label htmlFor={audience} className="text-sm cursor-pointer user-app-ink">{audience}</Label>
               </div>
             ))}
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="experienceLevel" className="text-[var(--neumorphic-text)]">Your Experience Level</Label>
+          <Label htmlFor="experienceLevel" className="user-app-ink">Your Experience Level</Label>
           <select
             id="experienceLevel"
             value={formData.preferences.experienceLevel}
             onChange={(e) => handleNestedInputChange('preferences', 'experienceLevel', e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-[var(--neumorphic-border)] bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full px-3 py-2 rounded-xl border user-app-border user-app-paper user-app-ink focus:outline-none focus:ring-2 focus:ring-cyan-500"
           >
             <option value="">Select your experience level</option>
             {EXPERIENCE_LEVEL_OPTIONS.map((level) => (
@@ -828,17 +828,17 @@ export default function UserApplyPage() {
   // Loading states
   if (authLoading || checkingStatus) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center">
+      <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10" />
         <div className="relative px-4 md:px-8 py-12">
@@ -849,16 +849,16 @@ export default function UserApplyPage() {
                 <Award className="w-4 h-4" />
                 <span>Become a Trainer</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)] mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold user-app-ink mb-4">
                 Join Our Trainer Community
               </h1>
-              <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+              <p className="text-xl user-app-muted max-w-2xl mx-auto">
                 Share your expertise and help others achieve their fitness goals
               </p>
               
               {/* User Info Badge */}
               <div className="mt-4 inline-block">
-                <Badge variant="outline" className="bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border-[var(--neumorphic-border)] px-4 py-2">
+                <Badge variant="outline" className="user-app-paper user-app-ink user-app-border px-4 py-2">
                   <User className="w-4 h-4 mr-2" />
                   Applying as: <strong className="ml-1">{user?.name || 'User'}</strong> ({user?.phone || 'N/A'})
                 </Badge>
@@ -870,14 +870,14 @@ export default function UserApplyPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-1">Application Progress</h3>
-                    <p className="text-[var(--neumorphic-muted)]">Step {currentStep} of {totalSteps}</p>
+                    <h3 className="text-xl font-bold user-app-ink mb-1">Application Progress</h3>
+                    <p className="user-app-muted">Step {currentStep} of {totalSteps}</p>
                   </div>
                   <Badge className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">
                     {Math.round(progress)}% Complete
                   </Badge>
                 </div>
-                <div className="w-full bg-[var(--neumorphic-surface)] rounded-full h-3 overflow-hidden">
+                <div className="w-full user-app-paper rounded-full h-3 overflow-hidden">
                   <div 
                     className="bg-gradient-to-r from-cyan-500 to-purple-600 h-3 rounded-full transition-all duration-500"
                     style={{ width: `${progress}%` }}
@@ -897,7 +897,7 @@ export default function UserApplyPage() {
                 variant="outline"
                 onClick={prevStep}
                 disabled={currentStep === 1}
-                className="flex items-center h-12 px-6 border-[var(--neumorphic-border)] bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] hover:bg-[var(--neumorphic-surface)]"
+                className="flex items-center h-12 px-6 user-app-border user-app-paper user-app-ink hover:user-app-paper"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Previous

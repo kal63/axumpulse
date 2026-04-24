@@ -508,7 +508,7 @@ export default function WorkoutPlanDetailPage() {
     const estimatedXP = baseXP + gameBonus
 
     return (
-        <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+        <div className="min-h-dvh min-h-full user-app-page">
             {/* Hero Section */}
             <div className="relative overflow-hidden">
                 {/* Background Gradient */}
@@ -520,7 +520,7 @@ export default function WorkoutPlanDetailPage() {
                     <Button
                         variant="ghost"
                         onClick={() => router.push('/user/workout-plans')}
-                        className="mb-6 text-[var(--neumorphic-muted)] hover:text-[var(--neumorphic-text)]"
+                        className="mb-6 user-app-muted hover:user-app-ink"
                     >
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Back to Workout Plans
@@ -534,14 +534,14 @@ export default function WorkoutPlanDetailPage() {
                                     <Trophy className="h-5 w-5 text-white" />
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="font-bold text-[var(--neumorphic-text)] mb-1 flex items-center gap-2">
+                                    <h3 className="font-bold user-app-ink mb-1 flex items-center gap-2">
                                         <Sparkles className="h-4 w-4 text-cyan-500" />
                                         Won from Spin & Win Game!
                                     </h3>
-                                    <p className="text-sm text-[var(--neumorphic-muted)] mb-2">
+                                    <p className="text-sm user-app-muted mb-2">
                                         You won this workout plan from the Spin & Win game. Start and complete this workout plan to earn bonus XP!
                                     </p>
-                                    <div className="flex items-center gap-2 text-xs text-[var(--neumorphic-muted)]">
+                                    <div className="flex items-center gap-2 text-xs user-app-muted">
                                         <Zap className="h-3 w-3 text-yellow-500" />
                                         <span>Complete the workout plan to earn: Base XP + 50 XP bonus</span>
                                     </div>
@@ -562,11 +562,11 @@ export default function WorkoutPlanDetailPage() {
                                             <Dumbbell className="h-8 w-8 text-white" />
                                         </div>
                                         <div className="flex-1">
-                                            <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)] mb-3">
+                                            <h1 className="text-4xl md:text-5xl font-bold user-app-ink mb-3">
                                                 {workoutPlan.title}
                                             </h1>
                                             {workoutPlan.trainer && (
-                                                <div className="flex items-center gap-2 text-[var(--neumorphic-muted)]">
+                                                <div className="flex items-center gap-2 user-app-muted">
                                                     <User className="h-4 w-4" />
                                                     <span>by {(workoutPlan.trainer as any).User?.name || 'Unknown Trainer'}</span>
                                                 </div>
@@ -581,40 +581,40 @@ export default function WorkoutPlanDetailPage() {
                                         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl">
                                             <Target className="h-6 w-6 text-white" />
                                         </div>
-                                        <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                                        <div className="text-2xl font-bold user-app-ink">
                                             {workoutPlan.totalExercises || 0}
                                         </div>
-                                        <div className="text-sm text-[var(--neumorphic-muted)]">Exercises</div>
+                                        <div className="text-sm user-app-muted">Exercises</div>
                                     </NeumorphicCard>
 
                                     <NeumorphicCard variant="recessed" className="p-4 text-center">
                                         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
                                             <Clock className="h-6 w-6 text-white" />
                                         </div>
-                                        <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                                        <div className="text-2xl font-bold user-app-ink">
                                             {workoutPlan.estimatedDuration || 0}
                                         </div>
-                                        <div className="text-sm text-[var(--neumorphic-muted)]">Minutes</div>
+                                        <div className="text-sm user-app-muted">Minutes</div>
                                     </NeumorphicCard>
 
                                     <NeumorphicCard variant="recessed" className="p-4 text-center">
                                         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl">
                                             <Zap className="h-6 w-6 text-white" />
                                         </div>
-                                        <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                                        <div className="text-2xl font-bold user-app-ink">
                                             +{estimatedXP}
                                         </div>
-                                        <div className="text-sm text-[var(--neumorphic-muted)]">XP Reward</div>
+                                        <div className="text-sm user-app-muted">XP Reward</div>
                                     </NeumorphicCard>
 
                                     <NeumorphicCard variant="recessed" className="p-4 text-center">
                                         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl">
                                             <Trophy className="h-6 w-6 text-white" />
                                         </div>
-                                        <div className="text-2xl font-bold text-[var(--neumorphic-text)] capitalize">
+                                        <div className="text-2xl font-bold user-app-ink capitalize">
                                             {workoutPlan.difficulty}
                                         </div>
-                                        <div className="text-sm text-[var(--neumorphic-muted)]">Level</div>
+                                        <div className="text-sm user-app-muted">Level</div>
                                     </NeumorphicCard>
                                 </div>
 
@@ -626,7 +626,7 @@ export default function WorkoutPlanDetailPage() {
                                         </Badge>
                                     )}
                                     {planTags.slice(0, 3).map((tag, index) => (
-                                        <Badge key={index} variant="outline" className="border-[var(--neumorphic-border)] text-[var(--neumorphic-muted)]">
+                                        <Badge key={index} variant="outline" className="user-app-border user-app-muted">
                                             {tag}
                                         </Badge>
                                     ))}
@@ -642,10 +642,10 @@ export default function WorkoutPlanDetailPage() {
                                                 <PlayCircle className="h-8 w-8 text-white" />
                                             </div>
                                             <div>
-                                                <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-2">
+                                                <h3 className="text-xl font-bold user-app-ink mb-2">
                                                     Ready to Start?
                                                 </h3>
-                                                <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+                                                <p className="text-sm user-app-muted mb-4">
                                                     Begin your fitness journey and earn {estimatedXP} XP
                                                     {fromGame && (
                                                         <span className="block mt-1 text-cyan-500 font-semibold">
@@ -675,7 +675,7 @@ export default function WorkoutPlanDetailPage() {
                                                 <h3 className="text-xl font-bold text-green-600 mb-2">
                                                     🎉 Completed!
                                                 </h3>
-                                                <p className="text-sm text-[var(--neumorphic-muted)]">
+                                                <p className="text-sm user-app-muted">
                                                     Congratulations on finishing this program!
                                                 </p>
                                             </div>
@@ -685,10 +685,10 @@ export default function WorkoutPlanDetailPage() {
                                     <NeumorphicCard variant="raised" className="p-6">
                                         <div className="space-y-4">
                                             <div className="text-center">
-                                                <h3 className="text-lg font-bold text-[var(--neumorphic-text)] mb-2">
+                                                <h3 className="text-lg font-bold user-app-ink mb-2">
                                                     Your Progress
                                                 </h3>
-                                                <div className="text-sm text-[var(--neumorphic-muted)]">
+                                                <div className="text-sm user-app-muted">
                                                     {userProgress.completedExercises} of {userProgress.totalExercises} exercises
                                                 </div>
                                             </div>
@@ -701,7 +701,7 @@ export default function WorkoutPlanDetailPage() {
                                                         cx="60"
                                                         cy="60"
                                                         r="50"
-                                                        stroke="var(--neumorphic-border)"
+                                                        stroke="#e2e8f0"
                                                         strokeWidth="8"
                                                         fill="none"
                                                         className="opacity-30"
@@ -730,10 +730,10 @@ export default function WorkoutPlanDetailPage() {
                                                 {/* Center Content */}
                                                 <div className="absolute inset-0 flex items-center justify-center">
                                                     <div className="text-center">
-                                                        <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                                                        <div className="text-2xl font-bold user-app-ink">
                                                             {progressPercentage}%
                                                         </div>
-                                                        <div className="text-xs text-[var(--neumorphic-muted)]">
+                                                        <div className="text-xs user-app-muted">
                                                             Complete
                                                         </div>
                                                     </div>
@@ -756,14 +756,14 @@ export default function WorkoutPlanDetailPage() {
                         </div>
 
                         {workoutPlan.introVideo?.fileUrl && (
-                            <NeumorphicCard variant="raised" className="overflow-hidden p-0 border border-[var(--neumorphic-border)] shadow-lg">
+                            <NeumorphicCard variant="raised" className="overflow-hidden p-0 border user-app-border shadow-lg">
                                 <div className="px-6 pt-5 pb-2">
-                                    <h2 className="text-lg font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+                                    <h2 className="text-lg font-bold user-app-ink flex items-center gap-2">
                                         <PlayCircle className="h-5 w-5 text-cyan-500" />
                                         {planVideoTitle}
                                     </h2>
                                     {workoutPlan.introVideo.title && (
-                                        <p className="text-sm text-[var(--neumorphic-muted)] mt-1">{workoutPlan.introVideo.title}</p>
+                                        <p className="text-sm user-app-muted mt-1">{workoutPlan.introVideo.title}</p>
                                     )}
                                 </div>
                                 <div className="aspect-video bg-black">
@@ -785,11 +785,11 @@ export default function WorkoutPlanDetailPage() {
                         {/* Description */}
                         {workoutPlan.description && (
                             <NeumorphicCard variant="recessed" className="p-6">
-                                <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-3 flex items-center gap-2">
+                                <h3 className="text-xl font-bold user-app-ink mb-3 flex items-center gap-2">
                                     <Sparkles className="h-5 w-5 text-cyan-500" />
                                     About This Program
                                 </h3>
-                                <p className="text-[var(--neumorphic-muted)] leading-relaxed whitespace-pre-wrap">
+                                <p className="user-app-muted leading-relaxed whitespace-pre-wrap">
                                     {workoutPlan.description}
                                 </p>
                             </NeumorphicCard>
@@ -845,7 +845,7 @@ export default function WorkoutPlanDetailPage() {
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex items-center gap-2">
                                         <Stethoscope className="h-5 w-5 text-cyan-500" />
-                                        <h3 className="text-xl font-bold text-[var(--neumorphic-text)]">
+                                        <h3 className="text-xl font-bold user-app-ink">
                                             Medical Insight
                                         </h3>
                                     </div>
@@ -854,7 +854,7 @@ export default function WorkoutPlanDetailPage() {
                                     </Badge>
                                 </div>
                                 
-                                <p className="text-[var(--neumorphic-muted)] leading-relaxed mb-4">
+                                <p className="user-app-muted leading-relaxed mb-4">
                                     {insight.insightText}
                                 </p>
 
@@ -868,7 +868,7 @@ export default function WorkoutPlanDetailPage() {
                                     </div>
                                 )}
 
-                                <div className="flex items-center justify-between text-sm text-[var(--neumorphic-muted)] pt-4 border-t border-[var(--neumorphic-border)]">
+                                <div className="flex items-center justify-between text-sm user-app-muted pt-4 border-t user-app-border">
                                     <div className="flex items-center gap-2">
                                         {insight.sourceType === 'ai' && (
                                             <Badge variant="outline" className="text-xs">
@@ -906,11 +906,11 @@ export default function WorkoutPlanDetailPage() {
                 <div className="space-y-6">
                     {/* Section Header */}
                     <div className="text-center space-y-2">
-                        <h2 className="text-3xl font-bold text-[var(--neumorphic-text)] flex items-center justify-center gap-3">
+                        <h2 className="text-3xl font-bold user-app-ink flex items-center justify-center gap-3">
                             <Target className="h-8 w-8 text-cyan-500" />
                             Exercise Schedule
                         </h2>
-                        <p className="text-[var(--neumorphic-muted)]">
+                        <p className="user-app-muted">
                             Complete each exercise to progress through your program
                         </p>
                     </div>
@@ -938,7 +938,7 @@ export default function WorkoutPlanDetailPage() {
                                                     ? 'bg-gradient-to-b from-green-500 to-cyan-500' 
                                                     : isNext
                                                     ? 'bg-gradient-to-b from-cyan-500 to-purple-500'
-                                                    : 'bg-[var(--neumorphic-border)] opacity-30'
+                                                    : 'bg-slate-200 opacity-30 dark:bg-slate-600'
                                             }`} />
                                         )}
                                         
@@ -966,8 +966,8 @@ export default function WorkoutPlanDetailPage() {
                                                                     : isNext
                                                                     ? 'bg-gradient-to-br from-cyan-500 to-purple-600 text-white shadow-lg animate-pulse'
                                                                     : isUpcoming
-                                                                    ? 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-muted)] shadow-[var(--neumorphic-shadow)] opacity-60'
-                                                                    : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-muted)] shadow-[var(--neumorphic-shadow)]'
+                                                                    ? 'user-app-paper user-app-muted shadow-sm opacity-60'
+                                                                    : 'user-app-paper user-app-muted shadow-sm'
                                                             }`}>
                                                                 {isCompleted ? (
                                                                     <CheckCircle className="h-7 w-7" />
@@ -986,7 +986,7 @@ export default function WorkoutPlanDetailPage() {
                                                         <div className="flex-1 space-y-4 w-full">
                                                             <div>
                                                                 <div className="flex flex-wrap items-center gap-2 mb-2">
-                                                                    <h3 className="text-xl font-bold text-[var(--neumorphic-text)]">
+                                                                    <h3 className="text-xl font-bold user-app-ink">
                                                                         {exercise.name}
                                                                     </h3>
                                                                     {isNext && (
@@ -1009,15 +1009,15 @@ export default function WorkoutPlanDetailPage() {
                                                                 </div>
                                                                 
                                                                 {exercise.description && (
-                                                                    <p className="text-[var(--neumorphic-muted)] leading-relaxed mb-3">
+                                                                    <p className="user-app-muted leading-relaxed mb-3">
                                                                         {exercise.description}
                                                                     </p>
                                                                 )}
                                                                 
                                                                 {/* Exercise Notes */}
                                                                 {exercise.notes && (
-                                                                    <div className="bg-[var(--neumorphic-surface)] p-3 rounded-xl">
-                                                                        <p className="text-sm text-[var(--neumorphic-muted)] italic">
+                                                                    <div className="user-app-paper p-3 rounded-xl">
+                                                                        <p className="text-sm user-app-muted italic">
                                                                             💡 {exercise.notes}
                                                                         </p>
                                                                     </div>
@@ -1032,7 +1032,7 @@ export default function WorkoutPlanDetailPage() {
                                                                             <Target className="h-3 w-3 text-white" />
                                                                         </div>
                                                                         <div>
-                                                                            <div className="font-semibold text-[var(--neumorphic-text)]">
+                                                                            <div className="font-semibold user-app-ink">
                                                                                 {exercise.sets} sets
                                                                             </div>
                                                                         </div>
@@ -1044,7 +1044,7 @@ export default function WorkoutPlanDetailPage() {
                                                                             <Dumbbell className="h-3 w-3 text-white" />
                                                                         </div>
                                                                         <div>
-                                                                            <div className="font-semibold text-[var(--neumorphic-text)]">
+                                                                            <div className="font-semibold user-app-ink">
                                                                                 {exercise.reps} reps
                                                                             </div>
                                                                         </div>
@@ -1056,7 +1056,7 @@ export default function WorkoutPlanDetailPage() {
                                                                             <Award className="h-3 w-3 text-white" />
                                                                         </div>
                                                                         <div>
-                                                                            <div className="font-semibold text-[var(--neumorphic-text)]">
+                                                                            <div className="font-semibold user-app-ink">
                                                                                 {exercise.weight}
                                                                             </div>
                                                                         </div>
@@ -1068,7 +1068,7 @@ export default function WorkoutPlanDetailPage() {
                                                                             <Clock className="h-3 w-3 text-white" />
                                                                         </div>
                                                                         <div>
-                                                                            <div className="font-semibold text-[var(--neumorphic-text)]">
+                                                                            <div className="font-semibold user-app-ink">
                                                                                 {exercise.restTime}s rest
                                                                             </div>
                                                                         </div>
@@ -1103,7 +1103,7 @@ export default function WorkoutPlanDetailPage() {
                                                                         <Badge 
                                                                             key={muscleIndex} 
                                                                             variant="outline" 
-                                                                            className="text-xs border-[var(--neumorphic-border)] text-[var(--neumorphic-muted)]"
+                                                                            className="text-xs user-app-border user-app-muted"
                                                                         >
                                                                             🎯 {muscle}
                                                                         </Badge>
@@ -1114,7 +1114,7 @@ export default function WorkoutPlanDetailPage() {
                                                             
                                                             {/* Equipment */}
                                                             {exercise.equipment && exercise.equipment !== 'none' && (
-                                                                <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
+                                                                <div className="flex items-center gap-2 text-sm user-app-muted">
                                                                     <span className="font-medium">Equipment:</span>
                                                                     <Badge variant="outline" className="text-xs">
                                                                         {exercise.equipment}
@@ -1137,20 +1137,20 @@ export default function WorkoutPlanDetailPage() {
                                                                         className="mb-2"
                                                                     />
                                                                 ) : (
-                                                                    <div className="flex items-center gap-3 mb-2 p-3 bg-[var(--neumorphic-surface)] rounded-xl border border-cyan-500/20 w-full md:w-auto">
+                                                                    <div className="flex items-center gap-3 mb-2 p-3 user-app-paper rounded-xl border border-cyan-500/20 w-full md:w-auto">
                                                                         <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
                                                                             <Timer className="w-6 h-6 text-cyan-500 animate-pulse" />
                                                                         </div>
                                                                         <div className="flex flex-col">
-                                                                            <div className="text-base font-bold text-[var(--neumorphic-text)]">
+                                                                            <div className="text-base font-bold user-app-ink">
                                                                                 {Math.floor(exercise.duration / 60)}:{String(exercise.duration % 60).padStart(2, '0')}
                                                                             </div>
-                                                                            <div className="text-xs text-[var(--neumorphic-muted)]">Starting timer...</div>
+                                                                            <div className="text-xs user-app-muted">Starting timer...</div>
                                                                         </div>
                                                                     </div>
                                                                 )
                                                             ) : (
-                                                                <div className="mb-2 p-2 text-xs text-[var(--neumorphic-muted)]">
+                                                                <div className="mb-2 p-2 text-xs user-app-muted">
                                                                     No duration set
                                                                 </div>
                                                             )
@@ -1189,10 +1189,10 @@ export default function WorkoutPlanDetailPage() {
                                                             </div>
                                                         ) : (
                                                             <div className="text-center space-y-2">
-                                                                <div className="w-12 h-12 bg-[var(--neumorphic-surface)] rounded-2xl flex items-center justify-center mx-auto shadow-[var(--neumorphic-shadow)]">
-                                                                    <Clock className="h-6 w-6 text-[var(--neumorphic-muted)]" />
+                                                                <div className="w-12 h-12 user-app-paper rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+                                                                    <Clock className="h-6 w-6 user-app-muted" />
                                                                 </div>
-                                                                <div className="text-sm text-[var(--neumorphic-muted)]">
+                                                                <div className="text-sm user-app-muted">
                                                                     Coming Up
                                                                 </div>
                                                             </div>
@@ -1215,11 +1215,11 @@ export default function WorkoutPlanDetailPage() {
                     <div className="space-y-6">
                         {/* Section Header */}
                         <div className="text-center space-y-2">
-                            <h2 className="text-3xl font-bold text-[var(--neumorphic-text)] flex items-center justify-center gap-3">
+                            <h2 className="text-3xl font-bold user-app-ink flex items-center justify-center gap-3">
                                 <Flame className="h-8 w-8 text-orange-500" />
                                 Similar Programs
                             </h2>
-                            <p className="text-[var(--neumorphic-muted)]">
+                            <p className="user-app-muted">
                                 Discover more workout plans that match your interests
                             </p>
                         </div>
@@ -1236,11 +1236,11 @@ export default function WorkoutPlanDetailPage() {
                                     <div className="p-6 space-y-4">
                                         {/* Plan Header */}
                                         <div className="space-y-2">
-                                            <h3 className="text-lg font-bold text-[var(--neumorphic-text)] group-hover:text-cyan-500 transition-colors line-clamp-2">
+                                            <h3 className="text-lg font-bold user-app-ink group-hover:text-cyan-500 transition-colors line-clamp-2">
                                                 {plan.title}
                                             </h3>
                                             {plan.description && (
-                                                <p className="text-sm text-[var(--neumorphic-muted)] line-clamp-2">
+                                                <p className="text-sm user-app-muted line-clamp-2">
                                                     {plan.description}
                                                 </p>
                                             )}
@@ -1255,7 +1255,7 @@ export default function WorkoutPlanDetailPage() {
                                                     </Badge>
                                                 )}
                                                 {plan.totalExercises && (
-                                                    <div className="flex items-center gap-1 text-sm text-[var(--neumorphic-muted)]">
+                                                    <div className="flex items-center gap-1 text-sm user-app-muted">
                                                         <Dumbbell className="h-4 w-4" />
                                                         <span>{plan.totalExercises}</span>
                                                     </div>
@@ -1407,9 +1407,9 @@ export default function WorkoutPlanDetailPage() {
             </Dialog>
 
             <Dialog open={!!exerciseVideoModal} onOpenChange={(open) => !open && setExerciseVideoModal(null)}>
-                <DialogContent className="max-w-3xl bg-[var(--neumorphic-surface)] border-[var(--neumorphic-border)]">
+                <DialogContent className="max-w-3xl user-app-paper user-app-border">
                     <DialogHeader>
-                        <DialogTitle className="text-[var(--neumorphic-text)]">
+                        <DialogTitle className="user-app-ink">
                             {exerciseVideoModal?.title || exerciseVideoDialogTitle}
                         </DialogTitle>
                     </DialogHeader>

@@ -151,14 +151,14 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
         {/* Header */}
         <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
           <Settings className="h-6 w-6 text-[var(--color-cyber-blue)]" />
-          <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">
+          <h2 className="text-2xl font-bold user-app-ink">
             Profile Settings
           </h2>
         </div>
 
         {/* Name */}
         <div className="space-y-3">
-          <Label htmlFor="name" className="flex items-center gap-2 text-[var(--neumorphic-text)]">
+          <Label htmlFor="name" className="flex items-center gap-2 user-app-ink">
             <User className="h-4 w-4" />
             Display Name
           </Label>
@@ -169,8 +169,8 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
             onChange={(e) => handleChange('name', e.target.value)}
             placeholder="Enter your name"
             className="
-              bg-[var(--neumorphic-surface)] 
-              text-[var(--neumorphic-text)]
+              user-app-paper 
+              user-app-ink
               border-none
               shadow-[inset_4px_4px_8px_rgba(15,23,42,0.12),inset_-4px_-4px_8px_rgba(255,255,255,0.9)]
               dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.65),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]
@@ -180,7 +180,7 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
 
         {/* Email (Read Only) */}
         <div className="space-y-3">
-          <Label htmlFor="email" className="text-[var(--neumorphic-text)]">
+          <Label htmlFor="email" className="user-app-ink">
             Email Address
           </Label>
           <Input
@@ -189,21 +189,21 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
             value={user.email}
             disabled
             className="
-              bg-[var(--neumorphic-bg)] 
-              text-[var(--neumorphic-muted)]
+              bg-slate-100 dark:bg-slate-800/70 
+              user-app-muted
               border-none
               opacity-60
               cursor-not-allowed
             "
           />
-          <p className="text-xs text-[var(--neumorphic-muted)]">
+          <p className="text-xs user-app-muted">
             Email cannot be changed
           </p>
         </div>
 
         {/* Bio */}
         <div className="space-y-3">
-          <Label htmlFor="bio" className="flex items-center gap-2 text-[var(--neumorphic-text)]">
+          <Label htmlFor="bio" className="flex items-center gap-2 user-app-ink">
             <FileText className="h-4 w-4" />
             Bio
           </Label>
@@ -215,15 +215,15 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
             rows={4}
             maxLength={500}
             className="
-              bg-[var(--neumorphic-surface)] 
-              text-[var(--neumorphic-text)]
+              user-app-paper 
+              user-app-ink
               border-none
               shadow-[inset_4px_4px_8px_rgba(15,23,42,0.12),inset_-4px_-4px_8px_rgba(255,255,255,0.9)]
               dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.65),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]
               resize-none
             "
           />
-          <div className="flex justify-between text-xs text-[var(--neumorphic-muted)]">
+          <div className="flex justify-between text-xs user-app-muted">
             <span>Share a bit about your fitness journey</span>
             <span>{formData.bio.length}/500</span>
           </div>
@@ -231,7 +231,7 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
 
         {/* Location */}
         <div className="space-y-3">
-          <Label htmlFor="location" className="flex items-center gap-2 text-[var(--neumorphic-text)]">
+          <Label htmlFor="location" className="flex items-center gap-2 user-app-ink">
             <MapPin className="h-4 w-4" />
             Location
           </Label>
@@ -242,8 +242,8 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
             onChange={(e) => handleChange('location', e.target.value)}
             placeholder="City, Country"
             className="
-              bg-[var(--neumorphic-surface)] 
-              text-[var(--neumorphic-text)]
+              user-app-paper 
+              user-app-ink
               border-none
               shadow-[inset_4px_4px_8px_rgba(15,23,42,0.12),inset_-4px_-4px_8px_rgba(255,255,255,0.9)]
               dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.65),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]
@@ -253,7 +253,7 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
 
         {/* Profile Picture Upload */}
         <div className="space-y-4">
-          <Label className="text-[var(--neumorphic-text)]">Profile Picture</Label>
+          <Label className="user-app-ink">Profile Picture</Label>
           <div className="flex items-center gap-6">
             <Avatar className="h-20 w-20">
               <AvatarImage 
@@ -287,7 +287,7 @@ export function SettingsForm({ user, onUpdate }: SettingsFormProps) {
                   </Button>
                 )}
               </div>
-              <p className="text-sm text-[var(--neumorphic-muted)]">
+              <p className="text-sm user-app-muted">
                 JPG, PNG, GIF or WebP. Max size 10MB.
               </p>
             </div>

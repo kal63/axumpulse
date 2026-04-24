@@ -18,7 +18,7 @@ export default function ChangeTrainerPage() {
   }, [isAuthenticated, isLoading, router])
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="max-w-3xl mx-auto px-4 py-8">
         <Button variant="outline" className="border-slate-600 text-slate-300" onClick={() => router.push('/user/dashboard')}>
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -27,8 +27,8 @@ export default function ChangeTrainerPage() {
 
         <NeumorphicCard variant="raised" className="p-6 mt-6 space-y-4">
           <div>
-            <h1 className="text-2xl font-bold text-[var(--neumorphic-text)]">Change trainer</h1>
-            <p className="text-sm text-[var(--neumorphic-muted)]">
+            <h1 className="text-2xl font-bold user-app-ink">Change trainer</h1>
+            <p className="text-sm user-app-muted">
               Select a new trainer. Your package and expiry date will stay the same.
             </p>
           </div>

@@ -31,7 +31,7 @@ export function ProfileHeaderSkeleton() {
         </div>
 
         {/* XP Progress */}
-        <div className="space-y-3 p-4 rounded-xl bg-[var(--neumorphic-bg)]">
+        <div className="space-y-3 p-4 rounded-xl bg-slate-100 dark:bg-slate-800/70">
           <div className="flex justify-between">
             <Skeleton className="h-5 w-32" />
             <Skeleton className="h-6 w-16" />
@@ -46,7 +46,7 @@ export function ProfileHeaderSkeleton() {
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="text-center p-3 rounded-lg bg-[var(--neumorphic-bg)]">
+            <div key={i} className="text-center p-3 rounded-lg bg-slate-100 dark:bg-slate-800/70">
               <Skeleton className="h-8 w-16 mx-auto mb-2" />
               <Skeleton className="h-3 w-20 mx-auto" />
             </div>

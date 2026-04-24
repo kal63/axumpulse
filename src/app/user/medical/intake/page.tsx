@@ -58,10 +58,10 @@ export default function IntakeFormsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -72,7 +72,7 @@ export default function IntakeFormsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
@@ -94,10 +94,10 @@ export default function IntakeFormsPage() {
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                   Intake Forms
                 </h1>
-                <p className="text-lg text-[var(--neumorphic-muted)]">
+                <p className="text-lg user-app-muted">
                   Complete intake forms to receive medical triage assessments
                 </p>
               </div>
@@ -118,15 +118,15 @@ export default function IntakeFormsPage() {
                   </div>
                   <Badge className="bg-green-500 text-white">Published</Badge>
                 </div>
-                <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-2">
+                <h3 className="text-xl font-bold user-app-ink mb-2">
                   {form.title || `Form v${form.version || 'N/A'}`}
                 </h3>
                 {form.description && (
-                  <p className="text-sm text-[var(--neumorphic-muted)] mb-4 line-clamp-2">
+                  <p className="text-sm user-app-muted mb-4 line-clamp-2">
                     {form.description}
                   </p>
                 )}
-                <div className="flex items-center gap-2 text-xs text-[var(--neumorphic-muted)] mb-4">
+                <div className="flex items-center gap-2 text-xs user-app-muted mb-4">
                   <Calendar className="w-4 h-4" />
                   <span>Version {form.version}</span>
                 </div>
@@ -143,10 +143,10 @@ export default function IntakeFormsPage() {
         ) : (
           <NeumorphicCard variant="raised" className="p-12 text-center">
             <FileText className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-semibold text-[var(--neumorphic-text)] mb-2">
+            <h3 className="text-xl font-semibold user-app-ink mb-2">
               No Intake Forms Available
             </h3>
-            <p className="text-[var(--neumorphic-muted)]">
+            <p className="user-app-muted">
               Check back later for available intake forms.
             </p>
           </NeumorphicCard>

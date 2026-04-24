@@ -334,10 +334,10 @@ export default function MedicalApplyPage() {
 
   if (authLoading || checkingStatus) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -345,14 +345,14 @@ export default function MedicalApplyPage() {
 
   if (existingApplication && existingApplication.status !== 'rejected') {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+      <div className="min-h-dvh min-h-full user-app-page">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <NeumorphicCard variant="raised" className="p-8 text-center">
             <Stethoscope className="w-16 h-16 mx-auto mb-4 text-teal-500" />
-            <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-4">
+            <h2 className="text-2xl font-bold user-app-ink mb-4">
               Application Already Submitted
             </h2>
-            <p className="text-[var(--neumorphic-muted)] mb-6">
+            <p className="user-app-muted mb-6">
               Your application status: <strong>{existingApplication.status}</strong>
             </p>
             <Button
@@ -368,7 +368,7 @@ export default function MedicalApplyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
         
@@ -389,10 +389,10 @@ export default function MedicalApplyPage() {
                 <Stethoscope className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                   Become a Medical Professional
                 </h1>
-                <p className="text-lg text-[var(--neumorphic-muted)]">
+                <p className="text-lg user-app-muted">
                   Apply to provide medical consultations and health guidance
                 </p>
               </div>
@@ -401,14 +401,14 @@ export default function MedicalApplyPage() {
             {/* Progress Bar */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-[var(--neumorphic-text)]">
+                <span className="text-sm font-medium user-app-ink">
                   Step {currentStep} of {totalSteps}
                 </span>
-                <span className="text-sm text-[var(--neumorphic-muted)]">
+                <span className="text-sm user-app-muted">
                   {Math.round(progress)}%
                 </span>
               </div>
-              <div className="w-full bg-[var(--neumorphic-surface)] rounded-full h-2">
+              <div className="w-full user-app-paper rounded-full h-2">
                 <div
                   className="bg-gradient-to-r from-teal-500 to-emerald-600 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
@@ -424,17 +424,17 @@ export default function MedicalApplyPage() {
         {currentStep === 1 && (
           <NeumorphicCard variant="raised" className="p-6 space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-2 flex items-center gap-2">
+              <h2 className="text-2xl font-bold user-app-ink mb-2 flex items-center gap-2">
                 <Award className="w-6 h-6 text-teal-500" />
                 Professional Information
               </h2>
-              <p className="text-[var(--neumorphic-muted)]">
+              <p className="user-app-muted">
                 Tell us about your medical background and qualifications
               </p>
             </div>
 
             <div className='space-y-2'>
-              <Label className="text-[var(--neumorphic-text)]">Professional Type *</Label>
+              <Label className="user-app-ink">Professional Type *</Label>
               <Select value={formData.professionalType} onValueChange={(v) => setFormData({ ...formData, professionalType: v })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your professional type" />
@@ -450,8 +450,8 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label className="text-[var(--neumorphic-text)]">Specialties *</Label>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
+              <Label className="user-app-ink">Specialties *</Label>
+              <p className="text-sm user-app-muted mb-3">
                 Select all that apply
               </p>
               <div className="flex flex-wrap gap-2">
@@ -462,7 +462,7 @@ export default function MedicalApplyPage() {
                     className={`cursor-pointer ${
                       formData.specialties.includes(specialty)
                         ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
-                        : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border border-[var(--neumorphic-muted)]/20'
+                        : 'user-app-paper user-app-ink border border-slate-200/50 dark:border-slate-600/40'
                     }`}
                   >
                     {specialty}
@@ -475,7 +475,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div className='space-y-2'>
-              <Label className="text-[var(--neumorphic-text)]">Years of Experience</Label>
+              <Label className="user-app-ink">Years of Experience</Label>
               <Input
                 type="number"
                 value={formData.yearsOfExperience}
@@ -485,7 +485,7 @@ export default function MedicalApplyPage() {
             </div>
 
             <div className='space-y-2'>
-              <Label className="text-[var(--neumorphic-text)]">Bio *</Label>
+              <Label className="user-app-ink">Bio *</Label>
               <Textarea
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -495,12 +495,12 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label className="text-[var(--neumorphic-text)]">Languages Spoken</Label>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
+              <Label className="user-app-ink">Languages Spoken</Label>
+              <p className="text-sm user-app-muted mb-3">
                 Select languages you can communicate in
               </p>
               {loadingLanguages ? (
-                <p className="text-sm text-[var(--neumorphic-muted)]">Loading languages...</p>
+                <p className="text-sm user-app-muted">Loading languages...</p>
               ) : languages.length === 0 ? (
                 <p className="text-sm text-yellow-500">No languages available. Please contact support.</p>
               ) : (
@@ -512,7 +512,7 @@ export default function MedicalApplyPage() {
                       className={`cursor-pointer ${
                         formData.languages.includes(lang.code)
                           ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
-                          : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border border-[var(--neumorphic-muted)]/20'
+                          : 'user-app-paper user-app-ink border border-slate-200/50 dark:border-slate-600/40'
                       }`}
                     >
                       {lang.name}
@@ -531,18 +531,18 @@ export default function MedicalApplyPage() {
         {currentStep === 2 && (
           <NeumorphicCard variant="raised" className="p-6 space-y-6">
             <div className='space-y-2'>
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-2 flex items-center gap-2">
+              <h2 className="text-2xl font-bold user-app-ink mb-2 flex items-center gap-2">
                 <FileText className="w-6 h-6 text-teal-500" />
                 License & Credentials
               </h2>
-              <p className="text-[var(--neumorphic-muted)]">
+              <p className="user-app-muted">
                 Provide your license information and upload credential files
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">License Number</Label>
+                <Label className="user-app-ink">License Number</Label>
                 <Input
                   value={formData.licenseInfo.licenseNumber || ''}
                   onChange={(e) => setFormData({
@@ -553,7 +553,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">Issuing Authority</Label>
+                <Label className="user-app-ink">Issuing Authority</Label>
                 <Input
                   value={formData.licenseInfo.issuingAuthority || ''}
                   onChange={(e) => setFormData({
@@ -564,7 +564,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">State/Province</Label>
+                <Label className="user-app-ink">State/Province</Label>
                 <Input
                   value={formData.licenseInfo.state || ''}
                   onChange={(e) => setFormData({
@@ -575,7 +575,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">Country</Label>
+                <Label className="user-app-ink">Country</Label>
                 <Input
                   value={formData.licenseInfo.country || ''}
                   onChange={(e) => setFormData({
@@ -586,7 +586,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">Expiry Date</Label>
+                <Label className="user-app-ink">Expiry Date</Label>
                 <Input
                   type="date"
                   value={formData.licenseInfo.expiryDate || ''}
@@ -599,8 +599,8 @@ export default function MedicalApplyPage() {
             </div>
 
             <div>
-              <Label className="text-[var(--neumorphic-text)]">Upload Credential Files</Label>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
+              <Label className="user-app-ink">Upload Credential Files</Label>
+              <p className="text-sm user-app-muted mb-3">
                 Upload copies of your licenses, certifications, or credentials (PDF, JPG, PNG - Max 10MB each)
               </p>
               <input
@@ -622,8 +622,8 @@ export default function MedicalApplyPage() {
               {uploadedFiles.length > 0 && (
                 <div className="mt-4 space-y-2">
                   {uploadedFiles.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-[var(--neumorphic-surface)]">
-                      <span className="text-sm text-[var(--neumorphic-text)]">{file.name}</span>
+                    <div key={index} className="flex items-center justify-between p-3 rounded-lg user-app-paper">
+                      <span className="text-sm user-app-ink">{file.name}</span>
                       <Button
                         onClick={() => removeFile(index)}
                         variant="ghost"
@@ -643,27 +643,27 @@ export default function MedicalApplyPage() {
         {currentStep === 3 && (
           <NeumorphicCard variant="raised" className="p-6 space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-2 flex items-center gap-2">
+              <h2 className="text-2xl font-bold user-app-ink mb-2 flex items-center gap-2">
                 <Heart className="w-6 h-6 text-teal-500" />
                 Portfolio & Social Media
               </h2>
-              <p className="text-[var(--neumorphic-muted)]">
+              <p className="user-app-muted">
                 Share your professional portfolio and social media (optional)
               </p>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-4">
-                <Label className="text-[var(--neumorphic-text)]">Portfolio Items</Label>
+                <Label className="user-app-ink">Portfolio Items</Label>
                 <Button onClick={addPortfolioItem} variant="outline" size="sm">
                   <Check className="w-4 h-4 mr-2" />
                   Add Item
                 </Button>
               </div>
               {formData.portfolio.map((item, index) => (
-                <div key={index} className="mb-4 p-4 rounded-lg bg-[var(--neumorphic-surface)] space-y-3">
+                <div key={index} className="mb-4 p-4 rounded-lg user-app-paper space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                    <span className="text-sm font-semibold user-app-ink">
                       Portfolio Item {index + 1}
                     </span>
                     <Button
@@ -696,7 +696,7 @@ export default function MedicalApplyPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">LinkedIn</Label>
+                <Label className="user-app-ink">LinkedIn</Label>
                 <Input
                   value={formData.socialMedia.linkedin || ''}
                   onChange={(e) => setFormData({
@@ -707,7 +707,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">Website</Label>
+                <Label className="user-app-ink">Website</Label>
                 <Input
                   value={formData.socialMedia.website || ''}
                   onChange={(e) => setFormData({
@@ -718,7 +718,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">Instagram</Label>
+                <Label className="user-app-ink">Instagram</Label>
                 <Input
                   value={formData.socialMedia.instagram || ''}
                   onChange={(e) => setFormData({
@@ -729,7 +729,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">Facebook</Label>
+                <Label className="user-app-ink">Facebook</Label>
                 <Input
                   value={formData.socialMedia.facebook || ''}
                   onChange={(e) => setFormData({
@@ -740,7 +740,7 @@ export default function MedicalApplyPage() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label className="text-[var(--neumorphic-text)]">TikTok</Label>
+                <Label className="user-app-ink">TikTok</Label>
                 <Input
                   value={formData.socialMedia.twitter || ''}
                   onChange={(e) => setFormData({
@@ -758,18 +758,18 @@ export default function MedicalApplyPage() {
         {currentStep === 4 && (
           <NeumorphicCard variant="raised" className="p-6 space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-2 flex items-center gap-2">
+              <h2 className="text-2xl font-bold user-app-ink mb-2 flex items-center gap-2">
                 <Clock className="w-6 h-6 text-teal-500" />
                 Consultation Preferences
               </h2>
-              <p className="text-[var(--neumorphic-muted)]">
+              <p className="user-app-muted">
                 Tell us about your consultation preferences
               </p>
             </div>
 
             <div className='space-y-2'>
-              <Label className="text-[var(--neumorphic-text)]">Consult Types You Offer *</Label>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
+              <Label className="user-app-ink">Consult Types You Offer *</Label>
+              <p className="text-sm user-app-muted mb-3">
                 Select all that apply
               </p>
               <div className="flex flex-wrap gap-2">
@@ -780,7 +780,7 @@ export default function MedicalApplyPage() {
                     className={`cursor-pointer ${
                       formData.preferences.consultTypes.includes(type)
                         ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
-                        : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border border-[var(--neumorphic-muted)]/20'
+                        : 'user-app-paper user-app-ink border border-slate-200/50 dark:border-slate-600/40'
                     }`}
                   >
                     {type}
@@ -793,8 +793,8 @@ export default function MedicalApplyPage() {
             </div>
 
             <div className='space-y-2'>
-              <Label className="text-[var(--neumorphic-text)]">Availability</Label>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
+              <Label className="user-app-ink">Availability</Label>
+              <p className="text-sm user-app-muted mb-3">
                 When are you typically available for consultations?
               </p>
               <div className="flex flex-wrap gap-2">
@@ -805,7 +805,7 @@ export default function MedicalApplyPage() {
                     className={`cursor-pointer ${
                       formData.preferences.availability.includes(availability)
                         ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
-                        : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border border-[var(--neumorphic-muted)]/20'
+                        : 'user-app-paper user-app-ink border border-slate-200/50 dark:border-slate-600/40'
                     }`}
                   >
                     {availability}

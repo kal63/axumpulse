@@ -131,11 +131,11 @@ export function ExerciseTimer({
             ? 'text-green-500' 
             : progress >= 50 
             ? 'text-yellow-500' 
-            : 'text-[var(--neumorphic-text)]'
+            : 'user-app-ink'
         }`}>
           {formatTime(remainingSeconds)}
         </div>
-        <div className="text-xs text-[var(--neumorphic-muted)]">
+        <div className="text-xs user-app-muted">
           {thresholdReached ? 'Ready to complete' : 'remaining'}
         </div>
       </div>

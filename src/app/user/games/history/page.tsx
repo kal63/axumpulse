@@ -113,10 +113,10 @@ export default function GameHistoryPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading game history...</p>
+          <p className="mt-4 user-app-muted">Loading game history...</p>
         </div>
       </div>
     );
@@ -135,7 +135,7 @@ export default function GameHistoryPage() {
       });
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)] pb-20">
+    <div className="min-h-dvh min-h-full user-app-page pb-20">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -147,10 +147,10 @@ export default function GameHistoryPage() {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-2">
+          <h1 className="text-3xl font-bold user-app-ink mb-2">
             Game History
           </h1>
-          <p className="text-[var(--neumorphic-muted)]">
+          <p className="user-app-muted">
             View your past game sessions and achievements
           </p>
         </div>
@@ -193,11 +193,11 @@ export default function GameHistoryPage() {
         {/* History List */}
         {filteredHistory.length === 0 ? (
           <NeumorphicCard variant="raised" className="p-12 text-center">
-            <History className="h-16 w-16 text-[var(--neumorphic-muted)] mx-auto mb-4 opacity-50" />
-            <h3 className="text-xl font-semibold text-[var(--neumorphic-text)] mb-2">
+            <History className="h-16 w-16 user-app-muted mx-auto mb-4 opacity-50" />
+            <h3 className="text-xl font-semibold user-app-ink mb-2">
               No Game History
             </h3>
-            <p className="text-[var(--neumorphic-muted)] mb-4">
+            <p className="user-app-muted mb-4">
               {filter === 'all' 
                 ? "You haven't played any games yet. Start playing to see your history here!"
                 : `You haven't played any ${getGameName(filter)} games yet.`
@@ -223,10 +223,10 @@ export default function GameHistoryPage() {
                         <Icon className="h-6 w-6 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-lg font-bold text-[var(--neumorphic-text)] mb-1">
+                        <h3 className="text-lg font-bold user-app-ink mb-1">
                           {gameName}
                         </h3>
-                        <div className="flex items-center gap-4 text-sm text-[var(--neumorphic-muted)] mb-2">
+                        <div className="flex items-center gap-4 text-sm user-app-muted mb-2">
                           <div className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
                             <span>{formatDate(entry.completedAt)}</span>
@@ -240,13 +240,13 @@ export default function GameHistoryPage() {
                         <div className="flex items-center gap-6 mt-3">
                           <div className="flex items-center gap-2">
                             <Trophy className="h-4 w-4 text-yellow-500" />
-                            <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                            <span className="text-sm font-semibold user-app-ink">
                               Score: {entry.score}
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Zap className="h-4 w-4 text-yellow-500" />
-                            <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                            <span className="text-sm font-semibold user-app-ink">
                               +{entry.xpEarned} XP
                             </span>
                           </div>

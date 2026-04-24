@@ -56,7 +56,7 @@ export function ChallengeFilters({ activeFilter, onFilterChange, counts }: Chall
               transition-all duration-200
               ${isActive
                 ? 'bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white shadow-[0_0_20px_rgba(0,230,255,0.3)]'
-                : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] shadow-[4px_4px_8px_rgba(15,23,42,0.15),-4px_-4px_8px_rgba(255,255,255,0.85)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.6),-4px_-4px_8px_rgba(255,255,255,0.06)] hover:shadow-[inset_2px_2px_4px_rgba(15,23,42,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] dark:hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.5),inset_-2px_-2px_4px_rgba(255,255,255,0.05)]'
+                : 'user-app-paper user-app-ink shadow-[4px_4px_8px_rgba(15,23,42,0.15),-4px_-4px_8px_rgba(255,255,255,0.85)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.6),-4px_-4px_8px_rgba(255,255,255,0.06)] hover:shadow-[inset_2px_2px_4px_rgba(15,23,42,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] dark:hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.5),inset_-2px_-2px_4px_rgba(255,255,255,0.05)]'
               }
             `}
           >
@@ -67,7 +67,7 @@ export function ChallengeFilters({ activeFilter, onFilterChange, counts }: Chall
                 ml-1 px-2 py-0.5 rounded-full text-xs font-bold
                 ${isActive 
                   ? 'bg-white/20' 
-                  : 'bg-gray-200 dark:bg-gray-700 text-[var(--neumorphic-muted)]'
+                  : 'bg-gray-200 dark:bg-gray-700 user-app-muted'
                 }
               `}>
                 {filter.count}

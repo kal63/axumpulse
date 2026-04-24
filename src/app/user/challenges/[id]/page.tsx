@@ -147,8 +147,8 @@ export default function ChallengeDetailPage() {
   if (!challenge) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <Trophy className="h-16 w-16 text-[var(--neumorphic-muted)] mb-4" />
-        <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-2">Challenge Not Found</h2>
+        <Trophy className="h-16 w-16 user-app-muted mb-4" />
+        <h2 className="text-2xl font-bold user-app-ink mb-2">Challenge Not Found</h2>
         <Button onClick={() => router.push('/user/challenges')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Challenges
@@ -258,7 +258,7 @@ export default function ChallengeDetailPage() {
           {/* Title and Status */}
           <div>
             <div className="flex items-start justify-between gap-4 mb-2">
-              <h1 className="text-3xl font-bold text-[var(--neumorphic-text)] flex-1">
+              <h1 className="text-3xl font-bold user-app-ink flex-1">
                 {challenge.title}
               </h1>
               {isCompleted && (
@@ -269,7 +269,7 @@ export default function ChallengeDetailPage() {
               )}
             </div>
             {challenge.trainer && (
-              <p className="text-sm text-[var(--neumorphic-muted)]">
+              <p className="text-sm user-app-muted">
                 by {challenge.trainer.User.name}
                 {challenge.trainer.verified && ' ✓'}
               </p>
@@ -283,8 +283,8 @@ export default function ChallengeDetailPage() {
                 <Target className="h-6 w-6 text-white" />
               </div>
               <div>
-                <p className="text-xs text-[var(--neumorphic-muted)]">Goal</p>
-                <p className="text-lg font-bold text-[var(--neumorphic-text)]">
+                <p className="text-xs user-app-muted">Goal</p>
+                <p className="text-lg font-bold user-app-ink">
                   {goalValue} {goalType}
                 </p>
               </div>
@@ -295,8 +295,8 @@ export default function ChallengeDetailPage() {
                 <Award className="h-6 w-6 text-white" />
               </div>
               <div>
-                <p className="text-xs text-[var(--neumorphic-muted)]">Reward</p>
-                <p className="text-lg font-bold text-[var(--neumorphic-text)]">
+                <p className="text-xs user-app-muted">Reward</p>
+                <p className="text-lg font-bold user-app-ink">
                   {challenge.xpReward} XP
                 </p>
               </div>
@@ -307,8 +307,8 @@ export default function ChallengeDetailPage() {
                 <Calendar className="h-6 w-6 text-white" />
               </div>
               <div>
-                <p className="text-xs text-[var(--neumorphic-muted)]">Ends</p>
-                <p className="text-sm font-bold text-[var(--neumorphic-text)]">
+                <p className="text-xs user-app-muted">Ends</p>
+                <p className="text-sm font-bold user-app-ink">
                   {challenge.endTime 
                     ? new Date(challenge.endTime).toLocaleDateString('en-US', {
                         month: 'short',
@@ -325,8 +325,8 @@ export default function ChallengeDetailPage() {
                 <Users className="h-6 w-6 text-white" />
               </div>
               <div>
-                <p className="text-xs text-[var(--neumorphic-muted)]">Participants</p>
-                <p className="text-lg font-bold text-[var(--neumorphic-text)]">
+                <p className="text-xs user-app-muted">Participants</p>
+                <p className="text-lg font-bold user-app-ink">
                   {participantCount}
                 </p>
               </div>
@@ -335,10 +335,10 @@ export default function ChallengeDetailPage() {
 
           {/* Description */}
           <div>
-            <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+            <h3 className="text-lg font-semibold user-app-ink mb-2">
               About This Challenge
             </h3>
-            <p className="text-[var(--neumorphic-muted)] leading-relaxed">
+            <p className="user-app-muted leading-relaxed">
               {challenge.description}
             </p>
           </div>
@@ -346,13 +346,13 @@ export default function ChallengeDetailPage() {
           {/* Difficulty and Category */}
           <div className="flex flex-wrap gap-3">
             <div className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-              <span className="text-xs text-[var(--neumorphic-muted)]">Category: </span>
-              <span className="text-sm font-medium text-[var(--neumorphic-text)] capitalize">
+              <span className="text-xs user-app-muted">Category: </span>
+              <span className="text-sm font-medium user-app-ink capitalize">
                 {(challenge as any).category || challenge.type || 'fitness'}
               </span>
             </div>
             <div className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-              <span className="text-xs text-[var(--neumorphic-muted)]">Difficulty: </span>
+              <span className="text-xs user-app-muted">Difficulty: </span>
               <span className={`text-sm font-bold capitalize ${difficultyColors[challenge.difficulty as keyof typeof difficultyColors]}`}>
                 {challenge.difficulty}
               </span>
@@ -415,11 +415,11 @@ export default function ChallengeDetailPage() {
           {hasJoined && userProgress && !isCompleted && isActive && (
             <div className="space-y-3">
               {timeGateSeconds !== null ? (
-                <p className="text-sm text-[var(--neumorphic-muted)]">
+                <p className="text-sm user-app-muted">
                   Hold until you reach the required duration. {completionEligible ? 'Ready to complete.' : `Time left: ${Math.max(0, timeGateSeconds - elapsedSeconds)}s.`}
                 </p>
               ) : (
-                <p className="text-sm text-[var(--neumorphic-muted)]">
+                <p className="text-sm user-app-muted">
                   Mark this challenge complete to claim your XP reward.
                 </p>
               )}

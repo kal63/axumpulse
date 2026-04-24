@@ -110,11 +110,11 @@ export default function ChangePackageDetailPage() {
     d === 'nineMonth' ? '9 Months' : '1 Year'
 
   if (loading) {
-    return <div className="min-h-screen bg-[var(--neumorphic-bg)] p-8 text-[var(--neumorphic-muted)]">Loading...</div>
+    return <div className="min-h-dvh min-h-full user-app-page p-8 user-app-muted">Loading...</div>
   }
   if (error || !plan) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)] p-8">
+      <div className="min-h-dvh min-h-full user-app-page p-8">
         <NeumorphicCard variant="raised" className="p-6">
           <div className="text-red-400">{error || 'Package not found'}</div>
           <Button className="mt-4" variant="outline" onClick={() => router.push('/user/subscription/change-package')}>
@@ -127,7 +127,7 @@ export default function ChangePackageDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <Button variant="outline" className="border-slate-600 text-slate-300" onClick={() => router.push('/user/subscription/change-package')}>
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -137,14 +137,14 @@ export default function ChangePackageDetailPage() {
         <NeumorphicCard variant="raised" className="p-6 space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="text-2xl font-bold text-[var(--neumorphic-text)]">{plan.name}</div>
-              <div className="text-sm text-[var(--neumorphic-muted)] capitalize">{plan.level} level</div>
+              <div className="text-2xl font-bold user-app-ink">{plan.name}</div>
+              <div className="text-sm user-app-muted capitalize">{plan.level} level</div>
             </div>
             <Badge className="bg-slate-700 text-slate-200 capitalize">{plan.minDuration}</Badge>
           </div>
 
           <div className="space-y-2">
-            <div className="text-sm font-semibold text-[var(--neumorphic-text)]">Select duration</div>
+            <div className="text-sm font-semibold user-app-ink">Select duration</div>
             <div className="flex flex-wrap gap-2">
               {durations.map((d) => (
                 <Button
@@ -157,20 +157,20 @@ export default function ChangePackageDetailPage() {
                 </Button>
               ))}
             </div>
-            <div className="text-sm text-[var(--neumorphic-muted)]">
-              Package price: <span className="text-[var(--neumorphic-text)] font-semibold">{formatPrice(getPriceForDuration(plan, duration))}</span>
+            <div className="text-sm user-app-muted">
+              Package price: <span className="user-app-ink font-semibold">{formatPrice(getPriceForDuration(plan, duration))}</span>
             </div>
           </div>
 
-          <div className="rounded-xl bg-[var(--neumorphic-surface)] p-4 border border-[var(--neumorphic-border)]">
+          <div className="rounded-xl user-app-paper p-4 border user-app-border">
             <div className="flex items-start gap-3">
               <Info className="w-5 h-5 text-cyan-400 mt-0.5" />
               <div className="space-y-1">
-                <div className="text-sm font-semibold text-[var(--neumorphic-text)]">Estimated amount due</div>
-                <div className="text-sm text-[var(--neumorphic-muted)]">
+                <div className="text-sm font-semibold user-app-ink">Estimated amount due</div>
+                <div className="text-sm user-app-muted">
                   {quoteLoading ? 'Calculating...' : quote ? (
                     <>
-                      <span className="text-[var(--neumorphic-text)] font-semibold">{formatPrice(Number(quote.amountDue || 0))}</span>
+                      <span className="user-app-ink font-semibold">{formatPrice(Number(quote.amountDue || 0))}</span>
                       {' '}({quote.isUpgrade ? 'prorated upgrade' : 'no extra payment'})
                     </>
                   ) : '—'}

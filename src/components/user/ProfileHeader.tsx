@@ -75,10 +75,10 @@ export function ProfileHeader({ user, stats, onEdit, isOwnProfile = true }: Prof
           <div className="flex-1 space-y-3">
             <div className="flex items-start justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-[var(--neumorphic-text)]">
+                <h1 className="text-3xl font-bold user-app-ink">
                   {user.name}
                 </h1>
-                <p className="text-[var(--neumorphic-muted)] mt-1">
+                <p className="user-app-muted mt-1">
                   {user.email}
                 </p>
               </div>
@@ -97,13 +97,13 @@ export function ProfileHeader({ user, stats, onEdit, isOwnProfile = true }: Prof
 
             {/* Bio */}
             {user.bio && (
-              <p className="text-[var(--neumorphic-text)] leading-relaxed">
+              <p className="user-app-ink leading-relaxed">
                 {user.bio}
               </p>
             )}
 
             {/* Meta Info */}
-            <div className="flex flex-wrap gap-4 text-sm text-[var(--neumorphic-muted)]">
+            <div className="flex flex-wrap gap-4 text-sm user-app-muted">
               {user.location && (
                 <div className="flex items-center gap-1.5">
                   <MapPin className="h-4 w-4" />
@@ -123,7 +123,7 @@ export function ProfileHeader({ user, stats, onEdit, isOwnProfile = true }: Prof
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-[var(--color-cyber-blue)]" />
-              <span className="font-semibold text-[var(--neumorphic-text)]">
+              <span className="font-semibold user-app-ink">
                 Level Progress
               </span>
             </div>
@@ -136,7 +136,7 @@ export function ProfileHeader({ user, stats, onEdit, isOwnProfile = true }: Prof
           
           <Progress value={user.levelProgress} className="h-3" />
           
-          <div className="flex items-center justify-between text-sm text-[var(--neumorphic-muted)]">
+          <div className="flex items-center justify-between text-sm user-app-muted">
             <span>{user.xp.toLocaleString()} XP</span>
             <span>{user.xpProgress}/{user.xpNeeded} to Level {user.level + 1}</span>
           </div>
@@ -145,38 +145,38 @@ export function ProfileHeader({ user, stats, onEdit, isOwnProfile = true }: Prof
         {/* Quick Stats */}
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-3 rounded-lg bg-[var(--neumorphic-bg)]">
-              <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+            <div className="text-center p-3 rounded-lg bg-slate-100 dark:bg-slate-800/70">
+              <div className="text-2xl font-bold user-app-ink">
                 {stats.contentWatched}
               </div>
-              <div className="text-xs text-[var(--neumorphic-muted)] mt-1">
+              <div className="text-xs user-app-muted mt-1">
                 Videos Watched
               </div>
             </div>
             
-            <div className="text-center p-3 rounded-lg bg-[var(--neumorphic-bg)]">
-              <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+            <div className="text-center p-3 rounded-lg bg-slate-100 dark:bg-slate-800/70">
+              <div className="text-2xl font-bold user-app-ink">
                 {stats.workoutPlansCompleted}
               </div>
-              <div className="text-xs text-[var(--neumorphic-muted)] mt-1">
+              <div className="text-xs user-app-muted mt-1">
                 Workouts Done
               </div>
             </div>
             
-            <div className="text-center p-3 rounded-lg bg-[var(--neumorphic-bg)]">
-              <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+            <div className="text-center p-3 rounded-lg bg-slate-100 dark:bg-slate-800/70">
+              <div className="text-2xl font-bold user-app-ink">
                 {stats.challengesCompleted}
               </div>
-              <div className="text-xs text-[var(--neumorphic-muted)] mt-1">
+              <div className="text-xs user-app-muted mt-1">
                 Challenges Won
               </div>
             </div>
             
-            <div className="text-center p-3 rounded-lg bg-[var(--neumorphic-bg)]">
-              <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+            <div className="text-center p-3 rounded-lg bg-slate-100 dark:bg-slate-800/70">
+              <div className="text-2xl font-bold user-app-ink">
                 {stats.achievementsUnlocked}
               </div>
-              <div className="text-xs text-[var(--neumorphic-muted)] mt-1">
+              <div className="text-xs user-app-muted mt-1">
                 Achievements
               </div>
             </div>

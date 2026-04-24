@@ -89,7 +89,7 @@ export function ContentCard({ content, onClick, showXP = true, xpAmount = 50 }: 
             {/* Content */}
             <div className="space-y-3">
                 {/* Title */}
-                <h3 className="font-bold text-lg text-[var(--neumorphic-text)] line-clamp-2 group-hover:text-cyan-600 transition-colors duration-300">
+                <h3 className="font-bold text-lg user-app-ink line-clamp-2 group-hover:text-cyan-600 transition-colors duration-300">
                     {content.title}
                 </h3>
                 
@@ -101,7 +101,7 @@ export function ContentCard({ content, onClick, showXP = true, xpAmount = 50 }: 
                                 {content.trainer.User?.name?.charAt(0) || 'T'}
                             </span>
                         </div>
-                        <span className="text-sm text-[var(--neumorphic-muted)] font-medium">
+                        <span className="text-sm user-app-muted font-medium">
                             {content.trainer.User?.name || 'Unknown Trainer'}
                         </span>
                         {content.trainer.verified && (
@@ -112,7 +112,7 @@ export function ContentCard({ content, onClick, showXP = true, xpAmount = 50 }: 
 
                 {/* Stats */}
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4 text-sm text-[var(--neumorphic-muted)]">
+                    <div className="flex items-center space-x-4 text-sm user-app-muted">
                         <div className="flex items-center space-x-1">
                             <Eye className="w-4 h-4" />
                             <span>{content.views || 0}</span>
@@ -126,7 +126,7 @@ export function ContentCard({ content, onClick, showXP = true, xpAmount = 50 }: 
                     {/* Rating */}
                     <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm font-medium text-[var(--neumorphic-text)]">4.8</span>
+                        <span className="text-sm font-medium user-app-ink">4.8</span>
                     </div>
                 </div>
 
@@ -136,13 +136,13 @@ export function ContentCard({ content, onClick, showXP = true, xpAmount = 50 }: 
                         {content.tags.slice(0, 2).map((tag, index) => (
                             <span 
                                 key={index}
-                                className="px-2 py-1 bg-[var(--neumorphic-surface)] text-[var(--neumorphic-muted)] text-xs rounded-full"
+                                className="px-2 py-1 user-app-paper user-app-muted text-xs rounded-full"
                             >
                                 {tag}
                             </span>
                         ))}
                         {content.tags.length > 2 && (
-                            <span className="px-2 py-1 bg-[var(--neumorphic-surface)] text-[var(--neumorphic-muted)] text-xs rounded-full">
+                            <span className="px-2 py-1 user-app-paper user-app-muted text-xs rounded-full">
                                 +{content.tags.length - 2}
                             </span>
                         )}
@@ -153,11 +153,11 @@ export function ContentCard({ content, onClick, showXP = true, xpAmount = 50 }: 
                 {showXP && (
                     <div className="pt-3 border-t border-gray-200/50 dark:border-gray-700/50">
                         <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-1 text-sm text-[var(--neumorphic-muted)]">
+                            <div className="flex items-center space-x-1 text-sm user-app-muted">
                                 <Zap className="w-4 h-4 text-cyan-500" />
                                 <span>Earn {xpAmount} XP</span>
                             </div>
-                            <div className="text-xs text-[var(--neumorphic-muted)]">
+                            <div className="text-xs user-app-muted">
                                 Click to start
                             </div>
                         </div>

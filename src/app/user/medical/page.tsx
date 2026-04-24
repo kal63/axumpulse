@@ -112,10 +112,10 @@ export default function MedicalHubPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -136,7 +136,7 @@ export default function MedicalHubPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
@@ -149,10 +149,10 @@ export default function MedicalHubPage() {
                   <Heart className="w-4 h-4" />
                   <span>Medical Hub</span>
                 </div>
-                <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+                <h1 className="text-4xl md:text-6xl font-bold user-app-ink mb-4">
                   Your Health & Wellness
                 </h1>
-                <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl">
+                <p className="text-xl user-app-muted max-w-2xl">
                   Manage your medical profile, track health data, and connect with medical professionals
                 </p>
               </div>
@@ -178,10 +178,10 @@ export default function MedicalHubPage() {
                   <XCircle className="w-6 h-6 text-orange-500" />
                 )}
               </div>
-              <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+              <h3 className="text-lg font-semibold user-app-ink mb-2">
                 Medical Profile
               </h3>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+              <p className="text-sm user-app-muted mb-4">
                 {profileStatus === 'complete' ? 'Profile complete' : 'Profile incomplete'}
               </p>
               <Button
@@ -204,10 +204,10 @@ export default function MedicalHubPage() {
                   </Badge>
                 )}
               </div>
-              <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+              <h3 className="text-lg font-semibold user-app-ink mb-2">
                 Recent Triage
               </h3>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+              <p className="text-sm user-app-muted mb-4">
                 {recentTriage 
                   ? `Last assessment: ${new Date(recentTriage.createdAt).toLocaleDateString()}`
                   : 'No assessments yet'
@@ -234,10 +234,10 @@ export default function MedicalHubPage() {
                   </Badge>
                 )}
               </div>
-              <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+              <h3 className="text-lg font-semibold user-app-ink mb-2">
                 Upcoming Consults
               </h3>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+              <p className="text-sm user-app-muted mb-4">
                 {upcomingConsults.length > 0 
                   ? `${upcomingConsults.length} scheduled`
                   : 'No upcoming consults'
@@ -264,10 +264,10 @@ export default function MedicalHubPage() {
                   </Badge>
                 )}
               </div>
-              <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+              <h3 className="text-lg font-semibold user-app-ink mb-2">
                 Health Alerts
               </h3>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+              <p className="text-sm user-app-muted mb-4">
                 {activeAlerts.length > 0 
                   ? `${activeAlerts.length} active alerts`
                   : 'No active alerts'
@@ -294,10 +294,10 @@ export default function MedicalHubPage() {
                   </Badge>
                 )}
               </div>
-              <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+              <h3 className="text-lg font-semibold user-app-ink mb-2">
                 Available Consults
               </h3>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-4">
+              <p className="text-sm user-app-muted mb-4">
                 {availableConsults > 0 
                   ? `${availableConsults} consult(s) available`
                   : 'No consults available'
@@ -316,19 +316,19 @@ export default function MedicalHubPage() {
 
           {/* Available Doctors Section */}
           <NeumorphicCard variant="raised" className="p-6">
-            <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-6 flex items-center gap-2">
+            <h2 className="text-2xl font-bold user-app-ink mb-6 flex items-center gap-2">
               <Stethoscope className="w-6 h-6 text-teal-500" />
               Available Doctors
             </h2>
             {loadingDoctors ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mx-auto"></div>
-                <p className="mt-4 text-[var(--neumorphic-muted)]">Loading doctors...</p>
+                <p className="mt-4 user-app-muted">Loading doctors...</p>
               </div>
             ) : doctors.length === 0 ? (
               <div className="text-center py-8">
                 <Stethoscope className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                <p className="text-[var(--neumorphic-muted)]">
+                <p className="user-app-muted">
                   No doctors available at the moment. Please check back later.
                 </p>
               </div>
@@ -343,11 +343,11 @@ export default function MedicalHubPage() {
                     <div className="space-y-3">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <h3 className="text-lg font-bold text-[var(--neumorphic-text)]">
+                          <h3 className="text-lg font-bold user-app-ink">
                             {doctor.name}
                           </h3>
                           {doctor.medicalProfessional?.professionalType && (
-                            <p className="text-sm text-[var(--neumorphic-muted)] capitalize">
+                            <p className="text-sm user-app-muted capitalize">
                               {doctor.medicalProfessional.professionalType.replace('_', ' ')}
                             </p>
                           )}
@@ -364,10 +364,10 @@ export default function MedicalHubPage() {
                         </div>
                       )}
 
-                      <div className="flex items-center justify-between pt-2 border-t border-[var(--neumorphic-border)]">
+                      <div className="flex items-center justify-between pt-2 border-t user-app-border">
                         <div>
-                          <p className="text-xs text-[var(--neumorphic-muted)]">Consult Fee</p>
-                          <p className="text-xl font-bold text-[var(--neumorphic-text)]">
+                          <p className="text-xs user-app-muted">Consult Fee</p>
+                          <p className="text-xl font-bold user-app-ink">
                             {doctor.medicalProfessional?.consultFee 
                               ? `${parseFloat(doctor.medicalProfessional.consultFee).toFixed(2)} ETB`
                               : 'N/A'
@@ -403,7 +403,7 @@ export default function MedicalHubPage() {
 
           {/* Quick Actions */}
           <NeumorphicCard variant="raised" className="p-6">
-            <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-6">
+            <h2 className="text-2xl font-bold user-app-ink mb-6">
               Quick Actions
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -466,7 +466,7 @@ export default function MedicalHubPage() {
             {/* Recent Triage Results */}
             <NeumorphicCard variant="raised" className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+                <h3 className="text-xl font-bold user-app-ink flex items-center gap-2">
                   <Stethoscope className="w-5 h-5 text-teal-500" />
                   Recent Triage Results
                 </h3>
@@ -481,20 +481,20 @@ export default function MedicalHubPage() {
               
               {recentTriage ? (
                 <div className="space-y-4">
-                  <div className="p-4 rounded-xl bg-[var(--neumorphic-surface)]">
+                  <div className="p-4 rounded-xl user-app-paper">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-[var(--neumorphic-muted)]">
+                      <span className="text-sm user-app-muted">
                         {new Date(recentTriage.createdAt).toLocaleDateString()}
                       </span>
                       <Badge className={getRiskLevelColor(recentTriage.riskLevel)}>
                         {recentTriage.riskLevel}
                       </Badge>
                     </div>
-                    <p className="text-sm font-semibold text-[var(--neumorphic-text)] mb-2">
+                    <p className="text-sm font-semibold user-app-ink mb-2">
                       Disposition: {recentTriage.disposition?.replace('_', ' ')}
                     </p>
                     {recentTriage.messages?.length > 0 && (
-                      <p className="text-sm text-[var(--neumorphic-muted)]">
+                      <p className="text-sm user-app-muted">
                         {recentTriage.messages[0]}
                       </p>
                     )}
@@ -503,7 +503,7 @@ export default function MedicalHubPage() {
               ) : (
                 <div className="text-center py-8">
                   <Stethoscope className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p className="text-[var(--neumorphic-muted)]">
+                  <p className="user-app-muted">
                     No triage assessments yet. Complete an intake form to get started.
                   </p>
                 </div>
@@ -513,7 +513,7 @@ export default function MedicalHubPage() {
             {/* Upcoming Consults */}
             <NeumorphicCard variant="raised" className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+                <h3 className="text-xl font-bold user-app-ink flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-blue-500" />
                   Upcoming Consults
                 </h3>
@@ -529,16 +529,16 @@ export default function MedicalHubPage() {
               {upcomingConsults.length > 0 ? (
                 <div className="space-y-4">
                   {upcomingConsults.map((consult) => (
-                    <div key={consult.id} className="p-4 rounded-xl bg-[var(--neumorphic-surface)]">
+                    <div key={consult.id} className="p-4 rounded-xl user-app-paper">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                        <span className="text-sm font-semibold user-app-ink">
                           {consult.consultType?.replace('_', ' ')}
                         </span>
                         <Badge className="bg-blue-500 text-white">
                           {new Date(consult.slot?.startAt).toLocaleDateString()}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
+                      <div className="flex items-center gap-2 text-sm user-app-muted">
                         <Clock className="w-4 h-4" />
                         <span>
                           {new Date(consult.slot?.startAt).toLocaleTimeString()}
@@ -550,7 +550,7 @@ export default function MedicalHubPage() {
               ) : (
                 <div className="text-center py-8">
                   <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p className="text-[var(--neumorphic-muted)] mb-4">
+                  <p className="user-app-muted mb-4">
                     No upcoming consults scheduled.
                   </p>
                   <Button

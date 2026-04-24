@@ -135,10 +135,10 @@ export default function DailyChallengesPage() {
     ((loading && hasAccess) || (subscriptionLoading && !isMedicalPro && !isTrainer))
   ) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading daily challenges...</p>
+          <p className="mt-4 user-app-muted">Loading daily challenges...</p>
         </div>
       </div>
     );
@@ -159,10 +159,10 @@ export default function DailyChallengesPage() {
           <Dumbbell className="w-4 h-4" />
           <span>Structured Fitness Programs</span>
         </div>
-        <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+        <h1 className="text-4xl md:text-6xl font-bold user-app-ink mb-4">
           🔥 Daily Challenges
         </h1>
-        <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+        <p className="text-xl user-app-muted max-w-2xl mx-auto">
           Complete daily micro-tasks to earn XP and build your streak
         </p>
       </div>
@@ -194,14 +194,14 @@ export default function DailyChallengesPage() {
               <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <UserCheck className="w-10 h-10 text-white" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[var(--neumorphic-text)] mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold user-app-ink mb-4">
                 Subscription Required
               </h2>
               <div className="space-y-4 mb-8">
-                <p className="text-lg text-[var(--neumorphic-muted)]">
+                <p className="text-lg user-app-muted">
                   You need an active subscription to access daily challenges.
                 </p>
-                <p className="text-base text-[var(--neumorphic-muted)]">
+                <p className="text-base user-app-muted">
                   Subscribe to a trainer to unlock daily micro-tasks, earn XP, and build streaks.
                 </p>
               </div>
@@ -220,7 +220,7 @@ export default function DailyChallengesPage() {
       )}
 
       {(subscriptionLoading || hasAccess) && (
-        <div className="min-h-screen bg-[var(--neumorphic-bg)] pb-20">
+        <div className="min-h-dvh min-h-full user-app-page pb-20">
           <div className="container mx-auto px-4 py-8">
             {/* Header */}
             <div className="mb-8">
@@ -230,7 +230,7 @@ export default function DailyChallengesPage() {
                   variant="ghost"
                   size="icon"
                   onClick={loadData}
-                  className="text-[var(--neumorphic-muted)] hover:text-[var(--neumorphic-text)]"
+                  className="user-app-muted hover:user-app-ink"
                 >
                   <RefreshCw className="h-5 w-5" />
                 </Button>
@@ -244,10 +244,10 @@ export default function DailyChallengesPage() {
                       <Flame className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                      <div className="text-2xl font-bold user-app-ink">
                         {streak}
                       </div>
-                      <div className="text-xs text-[var(--neumorphic-muted)]">
+                      <div className="text-xs user-app-muted">
                         Day Streak
                       </div>
                     </div>
@@ -260,10 +260,10 @@ export default function DailyChallengesPage() {
                       <CheckCircle className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                      <div className="text-2xl font-bold user-app-ink">
                         {completedCount}/{totalCount}
                       </div>
-                      <div className="text-xs text-[var(--neumorphic-muted)]">
+                      <div className="text-xs user-app-muted">
                         Completed Today
                       </div>
                     </div>
@@ -276,10 +276,10 @@ export default function DailyChallengesPage() {
                       <Zap className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                      <div className="text-2xl font-bold user-app-ink">
                         {challenges.reduce((sum, c) => sum + (c.completed ? (c.xpEarned || 0) : 0), 0)}
                       </div>
-                      <div className="text-xs text-[var(--neumorphic-muted)]">
+                      <div className="text-xs user-app-muted">
                         XP Earned Today
                       </div>
                     </div>
@@ -291,11 +291,11 @@ export default function DailyChallengesPage() {
             {/* Challenges List */}
             {challenges.length === 0 ? (
               <NeumorphicCard variant="raised" className="p-12 text-center">
-                <Target className="h-16 w-16 text-[var(--neumorphic-muted)] mx-auto mb-4 opacity-50" />
-                <h3 className="text-xl font-semibold text-[var(--neumorphic-text)] mb-2">
+                <Target className="h-16 w-16 user-app-muted mx-auto mb-4 opacity-50" />
+                <h3 className="text-xl font-semibold user-app-ink mb-2">
                   No Daily Challenges Available
                 </h3>
-                <p className="text-[var(--neumorphic-muted)]">
+                <p className="user-app-muted">
                   Check back tomorrow for new daily challenges!
                 </p>
               </NeumorphicCard>

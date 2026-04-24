@@ -452,22 +452,22 @@ export default function VideoPlayerPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[var(--neumorphic-bg)] p-4 md:p-8">
+            <div className="min-h-dvh min-h-full user-app-page p-4 md:p-8">
                 <div className="max-w-7xl mx-auto space-y-6">
                     {/* Back Button Skeleton */}
                     <div className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-[var(--neumorphic-surface)] rounded-lg animate-pulse" />
-                        <div className="w-24 h-6 bg-[var(--neumorphic-surface)] rounded animate-pulse" />
+                        <div className="w-8 h-8 user-app-paper rounded-lg animate-pulse" />
+                        <div className="w-24 h-6 user-app-paper rounded animate-pulse" />
                     </div>
                     
                     {/* Video Player Skeleton */}
                     <NeumorphicCard variant="recessed" size="lg" className="p-0 overflow-hidden">
                         <div className="aspect-video bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
                             <div className="text-center space-y-4">
-                                <div className="w-16 h-16 bg-[var(--neumorphic-surface)] rounded-full flex items-center justify-center mx-auto animate-pulse">
-                                    <Play className="w-8 h-8 text-[var(--neumorphic-muted)]" />
+                                <div className="w-16 h-16 user-app-paper rounded-full flex items-center justify-center mx-auto animate-pulse">
+                                    <Play className="w-8 h-8 user-app-muted" />
                                 </div>
-                                <div className="w-32 h-4 bg-[var(--neumorphic-surface)] rounded animate-pulse mx-auto" />
+                                <div className="w-32 h-4 user-app-paper rounded animate-pulse mx-auto" />
                             </div>
                         </div>
                     </NeumorphicCard>
@@ -475,9 +475,9 @@ export default function VideoPlayerPage() {
                     {/* Content Info Skeleton */}
                     <NeumorphicCard variant="raised" size="lg" className="p-6">
                         <div className="space-y-4">
-                            <div className="h-8 bg-[var(--neumorphic-surface)] rounded animate-pulse w-3/4" />
-                            <div className="h-4 bg-[var(--neumorphic-surface)] rounded animate-pulse w-1/2" />
-                            <div className="h-4 bg-[var(--neumorphic-surface)] rounded animate-pulse w-2/3" />
+                            <div className="h-8 user-app-paper rounded animate-pulse w-3/4" />
+                            <div className="h-4 user-app-paper rounded animate-pulse w-1/2" />
+                            <div className="h-4 user-app-paper rounded animate-pulse w-2/3" />
                         </div>
                     </NeumorphicCard>
                 </div>
@@ -487,7 +487,7 @@ export default function VideoPlayerPage() {
 
     if (!content) {
         return (
-            <div className="min-h-screen bg-[var(--neumorphic-bg)] p-4 md:p-8">
+            <div className="min-h-dvh min-h-full user-app-page p-4 md:p-8">
                 <div className="max-w-2xl mx-auto">
                     <NeumorphicCard variant="raised" size="lg" className="p-12 text-center">
                         <div className="space-y-6">
@@ -495,10 +495,10 @@ export default function VideoPlayerPage() {
                                 <Play className="w-10 h-10 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-2">
+                                <h2 className="text-2xl font-bold user-app-ink mb-2">
                                     Video Not Found
                                 </h2>
-                                <p className="text-[var(--neumorphic-muted)]">
+                                <p className="user-app-muted">
                                     This video might have been removed or doesn't exist.
                                 </p>
                             </div>
@@ -517,12 +517,12 @@ export default function VideoPlayerPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[var(--neumorphic-bg)] p-4 md:p-8">
+        <div className="min-h-dvh min-h-full user-app-page p-4 md:p-8">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Back Button */}
                 <button
                     onClick={() => router.push('/user/videos')}
-                    className="flex items-center space-x-2 text-[var(--neumorphic-text)] hover:text-[var(--neumorphic-accent)] transition-colors duration-200 group"
+                    className="flex items-center space-x-2 user-app-ink hover:user-app-link transition-colors duration-200 group"
                 >
                     <NeumorphicCard variant="raised" size="sm" className="p-2 group-hover:scale-105 transition-transform duration-200">
                         <ArrowLeft className="w-5 h-5" />
@@ -670,7 +670,7 @@ export default function VideoPlayerPage() {
                         <div className="relative z-10">
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                                 <div className="flex-1">
-                                    <h1 className="text-3xl md:text-4xl font-bold text-[var(--neumorphic-text)] leading-tight mb-4">
+                                    <h1 className="text-3xl md:text-4xl font-bold user-app-ink leading-tight mb-4">
                                         {content.title}
                                     </h1>
                                     
@@ -687,18 +687,18 @@ export default function VideoPlayerPage() {
                                         )}
                                         
                                         {content.duration && (
-                                            <div className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-[var(--neumorphic-text)]">
+                                            <div className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full user-app-ink">
                                                 <Clock className="h-4 w-4" />
                                                 <span>{formatDuration(content.duration)}</span>
                                             </div>
                                         )}
                                         
-                                        <div className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-[var(--neumorphic-text)]">
+                                        <div className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full user-app-ink">
                                             <Eye className="h-4 w-4" />
                                             <span>{content.views || 0} views</span>
                                         </div>
                                         
-                                        <div className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-[var(--neumorphic-text)]">
+                                        <div className="flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full user-app-ink">
                                             <Heart className="h-4 w-4" />
                                             <span>{content.likes || 0} likes</span>
                                         </div>
@@ -712,7 +712,7 @@ export default function VideoPlayerPage() {
                                         className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all duration-200 transform hover:scale-105 ${
                                             liked 
                                                 ? 'bg-gradient-to-r from-red-500 to-pink-600 text-white shadow-lg' 
-                                                : 'bg-white/20 backdrop-blur-sm text-[var(--neumorphic-text)] hover:bg-white/30'
+                                                : 'bg-white/20 backdrop-blur-sm user-app-ink hover:bg-white/30'
                                         }`}
                                     >
                                         <Heart className={`w-5 h-5 ${liked ? 'fill-white' : ''}`} />
@@ -724,14 +724,14 @@ export default function VideoPlayerPage() {
                                         className={`flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all duration-200 transform hover:scale-105 ${
                                             saved 
                                                 ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg' 
-                                                : 'bg-white/20 backdrop-blur-sm text-[var(--neumorphic-text)] hover:bg-white/30'
+                                                : 'bg-white/20 backdrop-blur-sm user-app-ink hover:bg-white/30'
                                         }`}
                                     >
                                         <Bookmark className={`w-5 h-5 ${saved ? 'fill-white' : ''}`} />
                                         <span>{saved ? 'Saved' : 'Save'}</span>
                                     </button>
                                     
-                                    <button className="flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all duration-200 transform hover:scale-105 bg-white/20 backdrop-blur-sm text-[var(--neumorphic-text)] hover:bg-white/30">
+                                    <button className="flex items-center space-x-2 px-6 py-3 rounded-full font-medium transition-all duration-200 transform hover:scale-105 bg-white/20 backdrop-blur-sm user-app-ink hover:bg-white/30">
                                         <Share2 className="w-5 h-5" />
                                         <span>Share</span>
                                     </button>
@@ -742,7 +742,7 @@ export default function VideoPlayerPage() {
                         {/* Description */}
                         {content.description && (
                             <div className="mt-8">
-                                <p className="text-[var(--neumorphic-text)] leading-relaxed text-lg whitespace-pre-wrap">
+                                <p className="user-app-ink leading-relaxed text-lg whitespace-pre-wrap">
                                     {content.description}
                                 </p>
                             </div>
@@ -756,7 +756,7 @@ export default function VideoPlayerPage() {
                                     {content.tags.map((tag, index) => (
                                         <span 
                                             key={index}
-                                            className="px-3 py-1 bg-white/10 backdrop-blur-sm text-[var(--neumorphic-text)] text-sm rounded-full border border-white/20 hover:bg-white/20 transition-all duration-200"
+                                            className="px-3 py-1 bg-white/10 backdrop-blur-sm user-app-ink text-sm rounded-full border border-white/20 hover:bg-white/20 transition-all duration-200"
                                         >
                                             #{tag}
                                         </span>
@@ -765,7 +765,7 @@ export default function VideoPlayerPage() {
                             )}
                             
                             {/* Video Details */}
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--neumorphic-muted)]">
+                            <div className="flex flex-wrap items-center gap-4 text-sm user-app-muted">
                                 <div className="flex items-center space-x-2">
                                     <Calendar className="h-4 w-4" />
                                     <span>Published {new Date(content.createdAt).toLocaleDateString()}</span>
@@ -799,7 +799,7 @@ export default function VideoPlayerPage() {
                 <div className="max-w-7xl mx-auto space-y-6">
                 {/* Trainer Section */}
                 {content.trainer && (
-                    <div className="p-8 rounded-2xl bg-[var(--neumorphic-bg)] shadow-[var(--neumorphic-shadow)]">
+                    <div className="user-app-surface p-8 shadow-sm">
                         <div className="flex items-start gap-6">
                             {/* Avatar */}
                             <div className="relative flex-shrink-0">
@@ -810,7 +810,7 @@ export default function VideoPlayerPage() {
                                         className="w-20 h-20 rounded-full object-cover"
                                     />
                                 ) : (
-                                    <div className="w-20 h-20 rounded-full bg-[var(--neumorphic-accent)] flex items-center justify-center text-white font-bold text-2xl">
+                                    <div className="w-20 h-20 rounded-full bg-[var(--ethio-deep-blue)] flex items-center justify-center text-white font-bold text-2xl">
                                         {(content.trainer.User?.name || 'T').charAt(0).toUpperCase()}
                                     </div>
                                 )}
@@ -824,16 +824,16 @@ export default function VideoPlayerPage() {
                             {/* Content */}
                             <div className="flex-1 space-y-4">
                                 <div>
-                                    <h3 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-1">
+                                    <h3 className="text-2xl font-bold user-app-ink mb-1">
                                         {content.trainer.User?.name || 'Unknown Trainer'}
                                     </h3>
-                                    <p className="text-[var(--neumorphic-muted)]">
+                                    <p className="user-app-muted">
                                         Certified Fitness Trainer
                                     </p>
                                 </div>
                                 
                                 {content.trainer.bio && (
-                                    <p className="text-[var(--neumorphic-muted)] leading-relaxed">
+                                    <p className="user-app-muted leading-relaxed">
                                         {content.trainer.bio}
                                     </p>
                                 )}
@@ -849,7 +849,7 @@ export default function VideoPlayerPage() {
                                             return (
                                                 <span 
                                                     key={index}
-                                                    className={`px-3 py-1 bg-[var(--neumorphic-bg)] border ${borderColors[index % borderColors.length]} text-[var(--neumorphic-text)] text-sm rounded-full shadow-sm`}
+                                                    className={`px-3 py-1 border bg-slate-100 dark:bg-slate-800 ${borderColors[index % borderColors.length]} user-app-ink text-sm rounded-full shadow-sm`}
                                                 >
                                                     {specialty.replace('_', ' ')}
                                                 </span>
@@ -877,7 +877,7 @@ export default function VideoPlayerPage() {
                                 size="lg"
                             />
                             <div className="mt-4 text-center">
-                                <div className="text-sm text-[var(--neumorphic-muted)]">
+                                <div className="text-sm user-app-muted">
                                     {xpToNextLevel - xpProgress} to next
                                 </div>
                             </div>
@@ -885,30 +885,30 @@ export default function VideoPlayerPage() {
                         
                         {/* Right: Progress and Action */}
                         <div className="flex-1 w-full md:w-auto">
-                            <h3 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-4 text-center md:text-left">
+                            <h3 className="text-2xl font-bold user-app-ink mb-4 text-center md:text-left">
                                 Complete Video for XP
                             </h3>
                             
                             {/* Watch Progress */}
                             <div className="mb-6 space-y-2">
-                                <div className="flex items-center justify-between text-sm text-[var(--neumorphic-muted)] mb-2">
+                                <div className="flex items-center justify-between text-sm user-app-muted mb-2">
                                     <span>Watch Progress</span>
-                                    <span className="font-semibold text-[var(--neumorphic-text)]">{Math.round(watchPercentage)}%</span>
+                                    <span className="font-semibold user-app-ink">{Math.round(watchPercentage)}%</span>
                                 </div>
-                                <div className="w-full bg-[var(--neumorphic-bg)] rounded-full h-3 overflow-hidden">
+                                <div className="h-3 w-full rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                                     <div 
                                         className="bg-gradient-to-r from-cyan-500 to-purple-600 h-3 rounded-full transition-all duration-500"
                                         style={{ width: `${Math.min(watchPercentage, 100)}%` }}
                                     />
                                 </div>
                                 {watchPercentage < 80 && !completed && (
-                                    <p className="text-sm text-[var(--neumorphic-muted)] text-center md:text-left">
+                                    <p className="text-sm user-app-muted text-center md:text-left">
                                         Watch {80 - Math.round(watchPercentage)}% more to complete
                                     </p>
                                 )}
                             </div>
                             
-                            <p className="text-[var(--neumorphic-muted)] mb-6 text-center md:text-left">
+                            <p className="user-app-muted mb-6 text-center md:text-left">
                                 {completed 
                                     ? '✅ You earned XP for completing this video!' 
                                     : 'Watch at least 80% to earn XP and complete this video'
@@ -959,7 +959,7 @@ export default function VideoPlayerPage() {
                 {relatedContent.length > 0 && (
                     <div className="space-y-6 mt-10 mb-10 pb-10 overflow-visible">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] flex items-center space-x-3">
+                            <h2 className="text-2xl font-bold user-app-ink flex items-center space-x-3">
                                 <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center">
                                     <Target className="w-4 h-4 text-white" />
                                 </div>
@@ -967,7 +967,7 @@ export default function VideoPlayerPage() {
                             </h2>
                             <button
                                 onClick={() => setShowRelated(!showRelated)}
-                                className="flex items-center space-x-2 text-[var(--neumorphic-accent)] hover:text-[var(--neumorphic-accent-hover)] transition-colors"
+                                className="flex items-center space-x-2 user-app-link hover:opacity-90 transition-colors"
                             >
                                 <span>{showRelated ? 'Hide' : 'Show'} Related</span>
                                 <ChevronRight className={`w-4 h-4 transition-transform duration-200 ${showRelated ? 'rotate-90' : ''}`} />
@@ -1033,7 +1033,7 @@ export default function VideoPlayerPage() {
                                         </div>
                                         
                                         <div className="p-4 space-y-3">
-                                            <h3 className="font-semibold text-lg line-clamp-2 text-[var(--neumorphic-text)] group-hover:text-[var(--neumorphic-accent)] transition-colors duration-300">
+                                            <h3 className="font-semibold text-lg line-clamp-2 user-app-ink group-hover:user-app-link transition-colors duration-300">
                                                 {item.title}
                                             </h3>
                                             
@@ -1042,17 +1042,17 @@ export default function VideoPlayerPage() {
                                                 <div className="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 font-bold text-xs">
                                                     {item.trainer?.User?.name ? item.trainer.User.name.charAt(0).toUpperCase() : 'U'}
                                                 </div>
-                                                <p className="text-sm text-[var(--neumorphic-muted)]">
+                                                <p className="text-sm user-app-muted">
                                                     {item.trainer?.User?.name || 'Unknown Trainer'}
                                                 </p>
                                                 <div className="flex items-center space-x-1 ml-auto">
                                                     <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                                    <span className="text-sm font-medium text-[var(--neumorphic-text)]">4.8</span>
+                                                    <span className="text-sm font-medium user-app-ink">4.8</span>
                                                 </div>
                                             </div>
                                             
                                             {/* Stats */}
-                                            <div className="flex items-center justify-between text-sm text-[var(--neumorphic-muted)]">
+                                            <div className="flex items-center justify-between text-sm user-app-muted">
                                                 <div className="flex items-center space-x-1">
                                                     <Eye className="w-4 h-4" />
                                                     <span>{item.views || 0}</span>

@@ -101,7 +101,7 @@ export default function FeaturedChallengesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Header */}
       <div className="px-4 md:px-8 py-8">
         <div className="max-w-7xl mx-auto">
@@ -120,10 +120,10 @@ export default function FeaturedChallengesPage() {
                   <Star className="w-5 h-5 text-white fill-current" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-[var(--neumorphic-text)]">
+                  <h1 className="text-3xl font-bold user-app-ink">
                     Featured Challenges
                   </h1>
-                  <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
+                  <p className="text-sm user-app-muted mt-1">
                     Discover our handpicked selection of featured challenges
                   </p>
                 </div>
@@ -176,10 +176,10 @@ export default function FeaturedChallengesPage() {
                             <Trophy className="h-6 w-6 text-white" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="font-bold text-lg text-[var(--neumorphic-text)] group-hover:text-[var(--neumorphic-accent)] transition-colors line-clamp-2">
+                            <h3 className="font-bold text-lg user-app-ink group-hover:user-app-link transition-colors line-clamp-2">
                               {challenge.title}
                             </h3>
-                            <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
+                            <p className="text-sm user-app-muted mt-1">
                               {challenge.category}
                             </p>
                           </div>
@@ -188,22 +188,22 @@ export default function FeaturedChallengesPage() {
 
                       {/* Description */}
                       {challenge.description && (
-                        <p className="text-sm text-[var(--neumorphic-muted)] line-clamp-2">
+                        <p className="text-sm user-app-muted line-clamp-2">
                           {challenge.description}
                         </p>
                       )}
 
                       {/* Meta Info */}
                       <div className="flex flex-wrap items-center gap-3 text-sm">
-                        <div className="flex items-center gap-1 text-[var(--neumorphic-muted)]">
+                        <div className="flex items-center gap-1 user-app-muted">
                           <Users className="h-4 w-4" />
                           <span>{challenge.participantCount || 0} participants</span>
                         </div>
-                        <div className="flex items-center gap-1 text-[var(--neumorphic-muted)]">
+                        <div className="flex items-center gap-1 user-app-muted">
                           <Clock className="h-4 w-4" />
                           <span>{challenge.duration || 0} days</span>
                         </div>
-                        <div className="flex items-center gap-1 text-[var(--neumorphic-muted)]">
+                        <div className="flex items-center gap-1 user-app-muted">
                           <Calendar className="h-4 w-4" />
                           <span>
                             {challenge.endTime 

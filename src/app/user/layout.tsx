@@ -108,10 +108,10 @@ export default function UserLayout({ children }: UserLayoutProps) {
   // Show loading while checking authentication
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center">
+      <div className="user-app-ethio flex min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-[var(--ethio-deep-blue)]" />
+          <p className="user-app-muted mt-4">Loading...</p>
         </div>
       </div>
     );
@@ -123,12 +123,12 @@ export default function UserLayout({ children }: UserLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="user-app-ethio min-h-screen min-h-dvh user-app-page">
       {/* Mobile Layout */}
       {isMobile ? (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex min-h-screen min-h-dvh flex-col">
           {/* Mobile Header */}
-          <header className="sticky top-0 z-40 bg-[var(--neumorphic-bg)]/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50">
+          <header className="sticky top-0 z-40 border-b border-slate-200/90 bg-white/90 backdrop-blur-md dark:border-gray-700/50 dark:bg-slate-900/90">
             <div className="px-4 py-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -147,7 +147,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
           </header>
 
           {/* Mobile Content */}
-          <main className="flex-1 pb-20">
+          <main className="min-h-0 flex-1 pb-20">
             {children}
           </main>
 
@@ -193,7 +193,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
         /* Desktop Layout */
         <div className="flex h-screen">
           {/* Desktop Sidebar */}
-          <div className="w-64 h-full bg-[var(--ethio-lemon)] dark:bg-[var(--neumorphic-surface)] border-r border-white/10 dark:border-gray-700/50">
+          <div className="w-64 h-full bg-[var(--ethio-lemon)] dark:user-app-paper border-r border-white/10 dark:border-gray-700/50">
             <div className="p-6 h-full flex flex-col">
               {/* Logo/Brand */}
               <div className="mb-8">
@@ -211,60 +211,45 @@ export default function UserLayout({ children }: UserLayoutProps) {
                 <div className="hidden dark:block">
                   <Logo size="sm" />
                 </div>
-                <p className="text-sm text-white/85 dark:text-[var(--neumorphic-muted)] mt-1">
+                <p className="text-sm text-white/85 dark:user-app-muted mt-1">
                   Gamified Fitness Platform
                 </p>
               </div>
 
               {/* User Profile Section */}
-              <NeumorphicCard variant="raised" size="sm" className="mb-6 p-4">
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center">
+              <NeumorphicCard
+                variant="flat"
+                size="md"
+                className="user-app-surface mb-6 border-slate-200/90 p-4 !bg-white/95 !shadow-md dark:!bg-card/95"
+              >
+                <div className="mb-3 flex items-center space-x-3">
+                  <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-[var(--ethio-deep-blue)] to-[#006aa8]">
                     {user?.profilePicture ? (
-                      <img 
-                        src={getImageUrl(user.profilePicture)} 
-                        alt={user.name || 'User'} 
-                        className="w-full h-full object-cover"
+                      <img
+                        src={getImageUrl(user.profilePicture)}
+                        alt={user.name || 'User'}
+                        className="h-full w-full object-cover"
                       />
                     ) : (
-                      <span className="text-white font-bold text-lg">
+                      <span className="text-lg font-bold text-white">
                         {user?.name?.charAt(0) || 'U'}
                       </span>
                     )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-[var(--neumorphic-text)] truncate">
-                      {user?.name || 'User'}
-                    </h3>
-                    <p className="text-sm text-[var(--neumorphic-muted)]">
-                      Level {userStats.level}
-                    </p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="user-app-ink truncate font-semibold">{user?.name || 'User'}</h3>
+                    <p className="user-app-muted text-sm">Level {userStats.level}</p>
                   </div>
                 </div>
-                
-                {/* XP Progress */}
-                {/* <div className="mb-3">
-                  <XPRing 
-                    currentXP={userStats.xp} 
-                    level={userStats.level} 
-                    xpToNextLevel={userStats.xpNeeded - userStats.xpProgress}
-                    size="sm"
-                  />
-                </div> */}
 
-                {/* Quick Stats */}
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="text-center">
-                    <div className="font-semibold text-[var(--neumorphic-text)]">
-                      {userStats.workoutsCompleted}
-                    </div>
-                    <div className="text-[var(--neumorphic-muted)]">Workouts</div>
+                    <div className="user-app-ink font-semibold">{userStats.workoutsCompleted}</div>
+                    <div className="user-app-muted">Workouts</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-semibold text-[var(--neumorphic-text)]">
-                      {userStats.challengesCompleted}
-                    </div>
-                    <div className="text-[var(--neumorphic-muted)]">Challenges</div>
+                    <div className="user-app-ink font-semibold">{userStats.challengesCompleted}</div>
+                    <div className="user-app-muted">Challenges</div>
                   </div>
                 </div>
               </NeumorphicCard>
@@ -302,7 +287,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
           {/* Desktop Content Area */}
           <div className="flex-1 flex flex-col">
             {/* Main Content */}
-            <main className="flex-1 overflow-y-auto relative">
+            <main className="relative min-h-0 flex-1 overflow-y-auto">
               {children}
               
               {/* Desktop Trainer Promotion - Right Side */}
@@ -342,10 +327,10 @@ export default function UserLayout({ children }: UserLayoutProps) {
             </main>
 
             {/* Desktop Footer */}
-            <footer className="hidden md:block border-t border-gray-200/50 dark:border-gray-700/50 bg-[var(--neumorphic-surface)]">
+            <footer className="hidden border-t border-slate-200/90 bg-white dark:border-gray-700/50 dark:user-app-paper md:block">
               <div className="px-6 py-3">
-                <p className="text-xs text-[var(--neumorphic-muted)] text-center">
-                  © {new Date().getFullYear()} Compunt BST. · App development by Bitapps Tech · Keep moving!
+                <p className="user-app-muted text-center text-xs">
+                  © {new Date().getFullYear()} Compound 360 · App development by Bitapps Tech · Keep moving!
                 </p>
               </div>
             </footer>

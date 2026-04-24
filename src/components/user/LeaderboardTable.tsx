@@ -44,7 +44,7 @@ export function LeaderboardTable({
       case 3:
         return <Award className="h-5 w-5 text-amber-600" />
       default:
-        return <span className="text-sm font-bold text-[var(--neumorphic-muted)]">#{rank}</span>
+        return <span className="text-sm font-bold user-app-muted">#{rank}</span>
     }
   }
 
@@ -64,12 +64,12 @@ export function LeaderboardTable({
   return (
     <NeumorphicCard>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+        <h2 className="text-xl font-bold user-app-ink flex items-center gap-2">
           <Trophy className="h-6 w-6 text-[var(--color-neon-magenta)]" />
           Leaderboard
         </h2>
         {totalParticipants && (
-          <span className="text-sm text-[var(--neumorphic-muted)]">
+          <span className="text-sm user-app-muted">
             {totalParticipants} participants
           </span>
         )}
@@ -79,7 +79,7 @@ export function LeaderboardTable({
       {currentUserId && userRank && userRank > 10 && (
         <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-[var(--color-cyber-blue)]/10 to-[var(--color-neon-magenta)]/10 border-2 border-[var(--color-cyber-blue)]">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[var(--neumorphic-text)]">
+            <span className="text-sm font-medium user-app-ink">
               Your Rank
             </span>
             <span className="text-lg font-bold text-[var(--color-cyber-blue)]">
@@ -92,7 +92,7 @@ export function LeaderboardTable({
       {/* Leaderboard List */}
       <div className="space-y-2">
         {leaderboard.length === 0 ? (
-          <div className="text-center py-8 text-[var(--neumorphic-muted)]">
+          <div className="text-center py-8 user-app-muted">
             <Trophy className="h-12 w-12 mx-auto mb-3 opacity-30" />
             <p>No participants yet. Be the first to join!</p>
           </div>
@@ -108,7 +108,7 @@ export function LeaderboardTable({
                   flex items-center gap-4 p-3 rounded-lg transition-all
                   ${isCurrentUser
                     ? 'bg-gradient-to-r from-[var(--color-cyber-blue)]/20 to-[var(--color-neon-magenta)]/20 border-2 border-[var(--color-cyber-blue)] shadow-[0_0_15px_rgba(0,230,255,0.2)]'
-                    : 'bg-[var(--neumorphic-bg)] hover:bg-[var(--neumorphic-surface)]'
+                    : 'bg-slate-100 dark:bg-slate-800/70 hover:user-app-paper'
                   }
                 `}
               >
@@ -116,7 +116,7 @@ export function LeaderboardTable({
                 <div className={`
                   flex items-center justify-center w-10 h-10 rounded-full shrink-0
                   ${getRankBadge(entry.rank)}
-                  ${entry.rank <= 3 ? 'text-white' : 'text-[var(--neumorphic-text)]'}
+                  ${entry.rank <= 3 ? 'text-white' : 'user-app-ink'}
                 `}>
                   {getRankIcon(entry.rank)}
                 </div>
@@ -136,7 +136,7 @@ export function LeaderboardTable({
                   )}
                   
                   <div className="flex-1 min-w-0">
-                    <p className={`font-medium truncate ${isCurrentUser ? 'text-black font-bold' : 'text-[var(--neumorphic-text)]'}`}>
+                    <p className={`font-medium truncate ${isCurrentUser ? 'text-black font-bold' : 'user-app-ink'}`}>
                       {entry.user.name}
                       {isCurrentUser && ' (You)'}
                     </p>
@@ -147,7 +147,7 @@ export function LeaderboardTable({
                           style={{ width: `${Math.min(progressPercentage, 100)}%` }}
                         />
                       </div>
-                      <span className={`text-xs ${isCurrentUser ? 'text-white/90' : 'text-[var(--neumorphic-muted)]'}`}>
+                      <span className={`text-xs ${isCurrentUser ? 'text-white/90' : 'user-app-muted'}`}>
                         {entry.progress}/{goalValue}
                       </span>
                     </div>
@@ -156,7 +156,7 @@ export function LeaderboardTable({
 
                 {/* Progress Score */}
                 <div className="text-right shrink-0">
-                  <div className={`text-lg font-bold ${isCurrentUser ? 'text-white' : 'text-[var(--neumorphic-text)]'}`}>
+                  <div className={`text-lg font-bold ${isCurrentUser ? 'text-white' : 'user-app-ink'}`}>
                     {entry.progress}
                   </div>
                   {entry.status === 'completed' && (

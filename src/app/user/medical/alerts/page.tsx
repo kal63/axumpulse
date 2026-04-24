@@ -62,10 +62,10 @@ export default function HealthAlertsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -76,7 +76,7 @@ export default function HealthAlertsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
         
@@ -96,7 +96,7 @@ export default function HealthAlertsPage() {
                   <AlertTriangle className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                  <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                     Health Alerts
                   </h1>
                 </div>
@@ -120,15 +120,15 @@ export default function HealthAlertsPage() {
                       <Badge className={alert.status === 'active' ? 'bg-red-500' : 'bg-gray-500'}>
                         {alert.status}
                       </Badge>
-                      <span className="text-sm text-[var(--neumorphic-muted)]">
+                      <span className="text-sm user-app-muted">
                         {alert.metric}
                       </span>
                     </div>
-                    <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+                    <h3 className="text-lg font-semibold user-app-ink mb-2">
                       {alert.message}
                     </h3>
                     {alert.threshold && (
-                      <p className="text-sm text-[var(--neumorphic-muted)]">
+                      <p className="text-sm user-app-muted">
                         Threshold: {alert.threshold.value} {alert.threshold.unit}
                       </p>
                     )}
@@ -150,10 +150,10 @@ export default function HealthAlertsPage() {
         ) : (
           <NeumorphicCard variant="raised" className="p-12 text-center">
             <AlertTriangle className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-semibold text-[var(--neumorphic-text)] mb-2">
+            <h3 className="text-xl font-semibold user-app-ink mb-2">
               No Active Alerts
             </h3>
-            <p className="text-[var(--neumorphic-muted)]">
+            <p className="user-app-muted">
               You're all caught up! No health alerts at this time.
             </p>
           </NeumorphicCard>

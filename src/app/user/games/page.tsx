@@ -129,10 +129,10 @@ export default function GamesHubPage() {
     ((loading && (subscription || isMedicalPro || isTrainer)) || (subscriptionLoading && !isMedicalPro && !isTrainer))
   ) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading games...</p>
+          <p className="mt-4 user-app-muted">Loading games...</p>
         </div>
       </div>
     );
@@ -156,10 +156,10 @@ export default function GamesHubPage() {
                                     <Dumbbell className="w-4 h-4" />
                                     <span>Structured Fitness Programs</span>
                                 </div> */}
-        <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+        <h1 className="text-4xl md:text-6xl font-bold user-app-ink mb-4">
           🎮 Fitness Games
         </h1>
-        <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+        <p className="text-xl user-app-muted max-w-2xl mx-auto">
           Play fun games to earn XP and learn about fitness!
         </p>
       </div>
@@ -188,14 +188,14 @@ export default function GamesHubPage() {
               <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <UserCheck className="w-10 h-10 text-white" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[var(--neumorphic-text)] mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold user-app-ink mb-4">
                 Subscription Required
               </h2>
               <div className="space-y-4 mb-8">
-                <p className="text-lg text-[var(--neumorphic-muted)]">
+                <p className="text-lg user-app-muted">
                   You need an active subscription to access games.
                 </p>
-                <p className="text-base text-[var(--neumorphic-muted)]">
+                <p className="text-base user-app-muted">
                   Subscribe to a trainer to unlock fun fitness games and earn XP.
                 </p>
               </div>
@@ -214,14 +214,14 @@ export default function GamesHubPage() {
       )}
 
       {(subscriptionLoading || hasAccess) && (
-        <div className="min-h-screen bg-[var(--neumorphic-bg)] pb-20">
+        <div className="min-h-dvh min-h-full user-app-page pb-20">
           <div className="container mx-auto px-4 py-8">
             {/* Header */}
             {/* <div className="mb-8">
-              <h1 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-2">
+              <h1 className="text-3xl font-bold user-app-ink mb-2">
                 🎮 Fitness Games
               </h1>
-              <p className="text-[var(--neumorphic-muted)]">
+              <p className="user-app-muted">
                 Play fun games to earn XP and learn about fitness!
               </p>
             </div> */}
@@ -252,22 +252,22 @@ export default function GamesHubPage() {
                       <Icon className="h-8 w-8 text-white" />
                     </div>
 
-                    <h3 className="text-xl font-bold text-[var(--neumorphic-text)] text-center mb-2">
+                    <h3 className="text-xl font-bold user-app-ink text-center mb-2">
                       {game.title}
                     </h3>
 
-                    <p className="text-sm text-[var(--neumorphic-muted)] text-center mb-4">
+                    <p className="text-sm user-app-muted text-center mb-4">
                       {description}
                     </p>
 
                     <div className="flex items-center justify-center gap-2 mb-4">
                       <Zap className="h-4 w-4 text-yellow-500" />
-                      <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                      <span className="text-sm font-semibold user-app-ink">
                         +{game.xpReward} XP
                       </span>
                       {game.difficulty && (
                         <>
-                          <span className="text-[var(--neumorphic-muted)]">•</span>
+                          <span className="user-app-muted">•</span>
                           <Badge variant="secondary" className="text-xs">
                             {game.difficulty}
                           </Badge>
@@ -299,7 +299,7 @@ export default function GamesHubPage() {
             {/* Game History Link */}
             <div className="text-center">
               <Link href="/user/games/history">
-                <Button variant="outline" className="text-[var(--neumorphic-text)]">
+                <Button variant="outline" className="user-app-ink">
                   <History className="h-4 w-4 mr-2" />
                   View Game History
                 </Button>

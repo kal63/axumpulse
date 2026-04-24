@@ -189,3 +189,34 @@
   letter-spacing: -0.04em;
   line-height: 0.92;
 }
+
+/* Trainee /user/* — Ethio light: grey page, white surfaces, ink type (dark: neumorphic fallback) */
+@layer utilities {
+  .user-app-page {
+    @apply bg-[#F3F4F6] dark:bg-[var(--neumorphic-bg)];
+  }
+  .user-app-ink {
+    @apply text-[hsl(222,47%,8%)] dark:text-slate-100;
+  }
+  .user-app-muted {
+    @apply text-slate-500 dark:text-slate-400;
+  }
+  .user-app-paper {
+    @apply bg-white dark:bg-card;
+  }
+  .user-app-surface {
+    @apply rounded-2xl border border-slate-200/90 bg-white shadow-sm dark:border-border dark:bg-card;
+  }
+  .user-app-border {
+    @apply border-slate-200/80 dark:border-slate-700;
+  }
+  .user-app-link {
+    @apply text-[var(--ethio-deep-blue)] dark:text-cyan-400;
+  }
+  .user-app-hover {
+    @apply hover:bg-slate-100/90 dark:hover:bg-slate-800/70;
+  }
+  .user-app-btn-primary {
+    @apply bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] font-semibold text-white shadow-sm hover:opacity-95;
+  }
+}

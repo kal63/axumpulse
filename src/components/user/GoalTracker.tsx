@@ -99,11 +99,11 @@ export function GoalTracker({ goals = [], user }: GoalTrackerProps) {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+          <h2 className="text-2xl font-bold user-app-ink flex items-center gap-2">
             <Target className="h-6 w-6 text-[var(--color-lime-pulse)]" />
             Goals & Milestones
           </h2>
-          <div className="text-sm text-[var(--neumorphic-muted)]">
+          <div className="text-sm user-app-muted">
             {displayGoals.filter(g => g.current >= g.target).length}/{displayGoals.length} completed
           </div>
         </div>
@@ -121,7 +121,7 @@ export function GoalTracker({ goals = [], user }: GoalTrackerProps) {
                   p-4 rounded-xl transition-all duration-300
                   ${isCompleted
                     ? 'bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-2 border-emerald-500'
-                    : 'bg-[var(--neumorphic-surface)] shadow-[2px_2px_4px_rgba(15,23,42,0.15),-2px_-2px_4px_rgba(255,255,255,0.85)] dark:shadow-[2px_2px_4px_rgba(0,0,0,0.6),-2px_-2px_4px_rgba(255,255,255,0.06)]'
+                    : 'user-app-paper shadow-[2px_2px_4px_rgba(15,23,42,0.15),-2px_-2px_4px_rgba(255,255,255,0.85)] dark:shadow-[2px_2px_4px_rgba(0,0,0,0.6),-2px_-2px_4px_rgba(255,255,255,0.06)]'
                   }
                 `}
               >
@@ -136,14 +136,14 @@ export function GoalTracker({ goals = [], user }: GoalTrackerProps) {
                     {/* Goal Info */}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className={`font-semibold ${isCompleted ? 'text-emerald-700 dark:text-emerald-400' : 'text-[var(--neumorphic-text)]'}`}>
+                        <h3 className={`font-semibold ${isCompleted ? 'text-emerald-700 dark:text-emerald-400' : 'user-app-ink'}`}>
                           {goal.title}
                         </h3>
                         {isCompleted && (
                           <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                         )}
                       </div>
-                      <p className="text-sm text-[var(--neumorphic-muted)]">
+                      <p className="text-sm user-app-muted">
                         {goal.description}
                       </p>
                     </div>
@@ -161,10 +161,10 @@ export function GoalTracker({ goals = [], user }: GoalTrackerProps) {
                 {/* Progress Bar */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className={`font-medium ${isCompleted ? 'text-emerald-700 dark:text-emerald-400' : 'text-[var(--neumorphic-text)]'}`}>
+                    <span className={`font-medium ${isCompleted ? 'text-emerald-700 dark:text-emerald-400' : 'user-app-ink'}`}>
                       {goal.current}/{goal.target}
                     </span>
-                    <span className={`text-xs ${isCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-[var(--neumorphic-muted)]'}`}>
+                    <span className={`text-xs ${isCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'user-app-muted'}`}>
                       {Math.min(Math.round(progress), 100)}%
                     </span>
                   </div>
@@ -177,7 +177,7 @@ export function GoalTracker({ goals = [], user }: GoalTrackerProps) {
 
                 {/* Deadline */}
                 {goal.deadline && !isCompleted && (
-                  <div className="mt-2 flex items-center gap-1 text-xs text-[var(--neumorphic-muted)]">
+                  <div className="mt-2 flex items-center gap-1 text-xs user-app-muted">
                     <Clock className="h-3 w-3" />
                     <span>
                       Due {new Date(goal.deadline).toLocaleDateString('en-US', {
@@ -195,7 +195,7 @@ export function GoalTracker({ goals = [], user }: GoalTrackerProps) {
         {/* Overall Progress */}
         <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-[var(--neumorphic-text)]">
+            <span className="text-sm font-medium user-app-ink">
               Overall Progress
             </span>
             <span className="text-sm font-bold text-[var(--color-cyber-blue)]">
@@ -211,7 +211,7 @@ export function GoalTracker({ goals = [], user }: GoalTrackerProps) {
         {/* Motivational Message */}
         <div className="text-center p-4 rounded-lg bg-gradient-to-r from-[var(--color-cyber-blue)]/10 to-[var(--color-neon-magenta)]/10">
           <TrendingUp className="h-6 w-6 mx-auto mb-2 text-[var(--color-cyber-blue)]" />
-          <p className="text-sm font-medium text-[var(--neumorphic-text)]">
+          <p className="text-sm font-medium user-app-ink">
             {displayGoals.filter(g => g.current >= g.target).length === displayGoals.length
               ? '🎉 All goals completed! Keep up the amazing work!'
               : displayGoals.filter(g => g.current >= g.target).length > displayGoals.length / 2

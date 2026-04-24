@@ -82,10 +82,10 @@ export default function MedicalQuestionsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -96,7 +96,7 @@ export default function MedicalQuestionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
@@ -118,10 +118,10 @@ export default function MedicalQuestionsPage() {
                     <MessageSquare className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                    <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                       Medical Q&A
                     </h1>
-                    <p className="text-lg text-[var(--neumorphic-muted)]">
+                    <p className="text-lg user-app-muted">
                       Ask questions to medical professionals
                     </p>
                   </div>
@@ -175,15 +175,15 @@ export default function MedicalQuestionsPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
                       {getStatusBadge(question.status)}
-                      <span className="text-sm text-[var(--neumorphic-muted)]">
+                      <span className="text-sm user-app-muted">
                         {new Date(question.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <p className="text-[var(--neumorphic-text)] mb-3 line-clamp-2">
+                    <p className="user-app-ink mb-3 line-clamp-2">
                       {question.text}
                     </p>
                     {question.answers?.length > 0 && (
-                      <p className="text-sm text-[var(--neumorphic-muted)]">
+                      <p className="text-sm user-app-muted">
                         {question.answers.length} answer(s)
                       </p>
                     )}
@@ -195,10 +195,10 @@ export default function MedicalQuestionsPage() {
         ) : (
           <NeumorphicCard variant="raised" className="p-12 text-center">
             <MessageSquare className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-semibold text-[var(--neumorphic-text)] mb-2">
+            <h3 className="text-xl font-semibold user-app-ink mb-2">
               No Questions Yet
             </h3>
-            <p className="text-[var(--neumorphic-muted)] mb-4">
+            <p className="user-app-muted mb-4">
               Ask your first question to get started.
             </p>
             <Button

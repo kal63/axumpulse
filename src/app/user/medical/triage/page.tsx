@@ -67,10 +67,10 @@ export default function TriageResultsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -81,7 +81,7 @@ export default function TriageResultsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
@@ -104,10 +104,10 @@ export default function TriageResultsPage() {
                   <Stethoscope className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                  <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                     Triage Results
                   </h1>
-                  <p className="text-lg text-[var(--neumorphic-muted)]">
+                  <p className="text-lg user-app-muted">
                     View your medical triage assessment history
                   </p>
                 </div>
@@ -144,31 +144,31 @@ export default function TriageResultsPage() {
                       <Badge className={getDispositionColor(run.disposition)}>
                         {run.disposition?.replace('_', ' ')}
                       </Badge>
-                      <span className="text-sm text-[var(--neumorphic-muted)] flex items-center gap-1">
+                      <span className="text-sm user-app-muted flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         {new Date(run.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                     {run.messages?.length > 0 && (
-                      <p className="text-[var(--neumorphic-text)] mb-3">
+                      <p className="user-app-ink mb-3">
                         {run.messages[0]}
                       </p>
                     )}
                     {expandedId === run.id && (
-                      <div className="mt-4 space-y-3 p-4 rounded-lg bg-[var(--neumorphic-surface)]">
+                      <div className="mt-4 space-y-3 p-4 rounded-lg user-app-paper">
                         {run.messages?.length > 1 && (
                           <div>
-                            <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">All Messages:</p>
+                            <p className="text-sm font-semibold user-app-muted mb-2">All Messages:</p>
                             {run.messages.map((msg: string, idx: number) => (
-                              <p key={idx} className="text-sm text-[var(--neumorphic-text)] mb-1">{msg}</p>
+                              <p key={idx} className="text-sm user-app-ink mb-1">{msg}</p>
                             ))}
                           </div>
                         )}
                         {run.ruleHits?.length > 0 && (
                           <div>
-                            <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">Rule Hits:</p>
+                            <p className="text-sm font-semibold user-app-muted mb-2">Rule Hits:</p>
                             {run.ruleHits.map((hit: any, idx: number) => (
-                              <div key={idx} className="text-sm text-[var(--neumorphic-text)] mb-1">
+                              <div key={idx} className="text-sm user-app-ink mb-1">
                                 • {hit.ruleName} ({hit.severity})
                               </div>
                             ))}
@@ -203,10 +203,10 @@ export default function TriageResultsPage() {
         ) : (
           <NeumorphicCard variant="raised" className="p-12 text-center">
             <Stethoscope className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-semibold text-[var(--neumorphic-text)] mb-2">
+            <h3 className="text-xl font-semibold user-app-ink mb-2">
               No Triage Results Yet
             </h3>
-            <p className="text-[var(--neumorphic-muted)] mb-4">
+            <p className="user-app-muted mb-4">
               Complete an intake form to receive your first triage assessment.
             </p>
             <Button
@@ -228,7 +228,7 @@ export default function TriageResultsPage() {
             >
               Previous
             </Button>
-            <span className="text-sm text-[var(--neumorphic-muted)]">
+            <span className="text-sm user-app-muted">
               Page {pagination.page} of {pagination.totalPages}
             </span>
             <Button

@@ -87,10 +87,10 @@ export default function ApplicationStatusPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center">
+      <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading application status...</p>
+          <p className="mt-4 user-app-muted">Loading application status...</p>
         </div>
       </div>
     );
@@ -98,14 +98,14 @@ export default function ApplicationStatusPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center p-4">
+      <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center p-4">
         <NeumorphicCard variant="raised" size="lg" className="max-w-md">
           <div className="text-center space-y-4">
             <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto">
               <AlertCircle className="h-8 w-8 text-white" />
             </div>
-            <h3 className="text-xl font-bold text-[var(--neumorphic-text)]">Authentication Required</h3>
-            <p className="text-[var(--neumorphic-muted)]">
+            <h3 className="text-xl font-bold user-app-ink">Authentication Required</h3>
+            <p className="user-app-muted">
               You must be logged in to view your application status.
             </p>
             <Button onClick={() => router.push('/login')} className="w-full bg-gradient-to-r from-cyan-500 to-purple-600">
@@ -119,14 +119,14 @@ export default function ApplicationStatusPage() {
 
   if (!application) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center p-4">
+      <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center p-4">
         <NeumorphicCard variant="raised" size="lg" className="max-w-md">
           <div className="text-center space-y-4">
             <div className="w-16 h-16 bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl flex items-center justify-center mx-auto">
               <FileText className="h-8 w-8 text-white" />
             </div>
-            <h3 className="text-xl font-bold text-[var(--neumorphic-text)]">No Application Found</h3>
-            <p className="text-[var(--neumorphic-muted)]">
+            <h3 className="text-xl font-bold user-app-ink">No Application Found</h3>
+            <p className="user-app-muted">
               You haven't submitted a trainer application yet.
             </p>
             <Button onClick={() => router.push('/user/apply')} className="w-full bg-gradient-to-r from-cyan-500 to-purple-600">
@@ -152,7 +152,7 @@ export default function ApplicationStatusPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10" />
         <div className="relative px-4 md:px-8 py-12">
@@ -163,10 +163,10 @@ export default function ApplicationStatusPage() {
                 <Award className="w-4 h-4" />
                 <span>Application Status</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)] mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold user-app-ink mb-4">
                 Track Your Application
               </h1>
-              <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+              <p className="text-xl user-app-muted max-w-2xl mx-auto">
                 Monitor your trainer application progress
               </p>
             </div>
@@ -177,7 +177,7 @@ export default function ApplicationStatusPage() {
                 variant="outline"
                 onClick={fetchApplicationStatus}
                 disabled={loading}
-                className="flex items-center border-[var(--neumorphic-border)] bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)]"
+                className="flex items-center user-app-border user-app-paper user-app-ink"
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                 Refresh
@@ -193,23 +193,23 @@ export default function ApplicationStatusPage() {
                       <Icon className="h-8 w-8" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-[var(--neumorphic-text)]">Application Status</h3>
-                      <p className="text-[var(--neumorphic-muted)]">{config.description}</p>
+                      <h3 className="text-2xl font-bold user-app-ink">Application Status</h3>
+                      <p className="user-app-muted">{config.description}</p>
                     </div>
                   </div>
                   <Badge className={`${config.color} text-sm font-semibold px-4 py-2`}>
                     {config.label}
                   </Badge>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-[var(--neumorphic-border)]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t user-app-border">
                   <div>
-                    <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Submitted</Label>
-                    <p className="text-sm text-[var(--neumorphic-text)] mt-1">{formatDate(application.submittedAt)}</p>
+                    <Label className="text-sm font-medium user-app-muted">Submitted</Label>
+                    <p className="text-sm user-app-ink mt-1">{formatDate(application.submittedAt)}</p>
                   </div>
                   {application.reviewedAt && (
                     <div>
-                      <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Reviewed</Label>
-                      <p className="text-sm text-[var(--neumorphic-text)] mt-1">{formatDate(application.reviewedAt)}</p>
+                      <Label className="text-sm font-medium user-app-muted">Reviewed</Label>
+                      <p className="text-sm user-app-ink mt-1">{formatDate(application.reviewedAt)}</p>
                     </div>
                   )}
                 </div>
@@ -222,13 +222,13 @@ export default function ApplicationStatusPage() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
-                    <h3 className="text-lg font-bold text-[var(--neumorphic-text)]">Rejection Reason</h3>
+                    <h3 className="text-lg font-bold user-app-ink">Rejection Reason</h3>
                   </div>
-                  <p className="text-[var(--neumorphic-text)]">{application.rejectionReason}</p>
+                  <p className="user-app-ink">{application.rejectionReason}</p>
                   {application.adminNotes && (
-                    <div className="mt-4 p-4 bg-[var(--neumorphic-surface)] rounded-xl">
-                      <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Admin Notes</Label>
-                      <p className="text-sm text-[var(--neumorphic-text)] mt-1">{application.adminNotes}</p>
+                    <div className="mt-4 p-4 user-app-paper rounded-xl">
+                      <Label className="text-sm font-medium user-app-muted">Admin Notes</Label>
+                      <p className="text-sm user-app-ink mt-1">{application.adminNotes}</p>
                     </div>
                   )}
                 </div>
@@ -241,9 +241,9 @@ export default function ApplicationStatusPage() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-                    <h3 className="text-lg font-bold text-[var(--neumorphic-text)]">Congratulations!</h3>
+                    <h3 className="text-lg font-bold user-app-ink">Congratulations!</h3>
                   </div>
-                  <p className="text-[var(--neumorphic-text)]">
+                  <p className="user-app-ink">
                     Your application has been approved! You can now access the trainer dashboard and start creating content.
                   </p>
                   <Button 
@@ -260,23 +260,23 @@ export default function ApplicationStatusPage() {
             <NeumorphicCard variant="raised" size="lg">
               <div className="space-y-6">
                 <div className="flex items-center gap-2 mb-6">
-                  <FileText className="h-5 w-5 text-[var(--neumorphic-text)]" />
-                  <h3 className="text-xl font-bold text-[var(--neumorphic-text)]">Application Details</h3>
+                  <FileText className="h-5 w-5 user-app-ink" />
+                  <h3 className="text-xl font-bold user-app-ink">Application Details</h3>
                 </div>
 
                 {/* Professional Information */}
                 <div>
-                  <h4 className="text-lg font-semibold mb-4 flex items-center gap-2 text-[var(--neumorphic-text)]">
+                  <h4 className="text-lg font-semibold mb-4 flex items-center gap-2 user-app-ink">
                     <Award className="h-5 w-5" />
                     Professional Information
                   </h4>
                   <div className="space-y-4">
                     {application.specialties && application.specialties.length > 0 && (
                       <div>
-                        <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Specialties</Label>
+                        <Label className="text-sm font-medium user-app-muted">Specialties</Label>
                         <div className="flex flex-wrap gap-2 mt-1">
                           {application.specialties.map((specialty, index) => (
-                            <Badge key={index} variant="secondary" className="bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border-[var(--neumorphic-border)]">{specialty}</Badge>
+                            <Badge key={index} variant="secondary" className="user-app-paper user-app-ink user-app-border">{specialty}</Badge>
                           ))}
                         </div>
                       </div>
@@ -284,17 +284,17 @@ export default function ApplicationStatusPage() {
                     
                     {application.yearsOfExperience && (
                       <div>
-                        <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Years of Experience</Label>
-                        <p className="text-sm text-[var(--neumorphic-text)] mt-1">{application.yearsOfExperience}</p>
+                        <Label className="text-sm font-medium user-app-muted">Years of Experience</Label>
+                        <p className="text-sm user-app-ink mt-1">{application.yearsOfExperience}</p>
                       </div>
                     )}
 
                     {application.languages && application.languages.length > 0 && (
                       <div>
-                        <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Languages</Label>
+                        <Label className="text-sm font-medium user-app-muted">Languages</Label>
                         <div className="flex flex-wrap gap-2 mt-1">
                           {application.languages.map((language, index) => (
-                            <Badge key={index} variant="outline" className="border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]">{language}</Badge>
+                            <Badge key={index} variant="outline" className="user-app-border user-app-ink">{language}</Badge>
                           ))}
                         </div>
                       </div>
@@ -302,40 +302,40 @@ export default function ApplicationStatusPage() {
 
                     {application.bio && (
                       <div>
-                        <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Bio</Label>
-                        <p className="text-sm text-[var(--neumorphic-text)] mt-1">{application.bio}</p>
+                        <Label className="text-sm font-medium user-app-muted">Bio</Label>
+                        <p className="text-sm user-app-ink mt-1">{application.bio}</p>
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="border-t border-[var(--neumorphic-border)] my-4" />
+                <div className="border-t user-app-border my-4" />
 
                 {/* Certifications */}
                 {application.certifications && Array.isArray(application.certifications) && application.certifications.length > 0 && (
                   <>
                     <div>
-                      <h4 className="text-lg font-semibold mb-4 text-[var(--neumorphic-text)]">Certifications</h4>
+                      <h4 className="text-lg font-semibold mb-4 user-app-ink">Certifications</h4>
                       <div className="space-y-3">
                         {application.certifications.map((cert, index) => (
                           <NeumorphicCard key={index} variant="raised" className="p-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
-                                <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Certification</Label>
-                                <p className="text-sm font-medium text-[var(--neumorphic-text)] mt-1">{cert.name}</p>
+                                <Label className="text-sm font-medium user-app-muted">Certification</Label>
+                                <p className="text-sm font-medium user-app-ink mt-1">{cert.name}</p>
                               </div>
                               <div>
-                                <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Issuer</Label>
-                                <p className="text-sm text-[var(--neumorphic-text)] mt-1">{cert.issuer}</p>
+                                <Label className="text-sm font-medium user-app-muted">Issuer</Label>
+                                <p className="text-sm user-app-ink mt-1">{cert.issuer}</p>
                               </div>
                               <div>
-                                <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Issue Date</Label>
-                                <p className="text-sm text-[var(--neumorphic-text)] mt-1">{new Date(cert.date).toLocaleDateString()}</p>
+                                <Label className="text-sm font-medium user-app-muted">Issue Date</Label>
+                                <p className="text-sm user-app-ink mt-1">{new Date(cert.date).toLocaleDateString()}</p>
                               </div>
                               {cert.expiry && (
                                 <div>
-                                  <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Expiry Date</Label>
-                                  <p className="text-sm text-[var(--neumorphic-text)] mt-1">{new Date(cert.expiry).toLocaleDateString()}</p>
+                                  <Label className="text-sm font-medium user-app-muted">Expiry Date</Label>
+                                  <p className="text-sm user-app-ink mt-1">{new Date(cert.expiry).toLocaleDateString()}</p>
                                 </div>
                               )}
                             </div>
@@ -343,7 +343,7 @@ export default function ApplicationStatusPage() {
                         ))}
                       </div>
                     </div>
-                    <div className="border-t border-[var(--neumorphic-border)] my-4" />
+                    <div className="border-t user-app-border my-4" />
                   </>
                 )}
 
@@ -351,7 +351,7 @@ export default function ApplicationStatusPage() {
                 {application.certificationFiles && Array.isArray(application.certificationFiles) && application.certificationFiles.length > 0 && (
                   <>
                     <div>
-                      <h4 className="text-lg font-semibold mb-4 text-[var(--neumorphic-text)]">Certification Files</h4>
+                      <h4 className="text-lg font-semibold mb-4 user-app-ink">Certification Files</h4>
                       <div className="space-y-3">
                         {application.certificationFiles.map((file, index) => (
                           <NeumorphicCard key={index} variant="raised" className="p-4">
@@ -359,8 +359,8 @@ export default function ApplicationStatusPage() {
                               <div className="flex items-center gap-3">
                                 <FileText className="w-6 h-6 text-cyan-600" />
                                 <div>
-                                  <p className="font-medium text-[var(--neumorphic-text)]">{file.fileName}</p>
-                                  <p className="text-sm text-[var(--neumorphic-muted)]">
+                                  <p className="font-medium user-app-ink">{file.fileName}</p>
+                                  <p className="text-sm user-app-muted">
                                     {file.fileType === 'application/pdf' ? 'PDF Document' : 'Image File'} • 
                                     {(file.fileSize / 1024 / 1024).toFixed(2)} MB
                                   </p>
@@ -391,7 +391,7 @@ export default function ApplicationStatusPage() {
                                     toast.error('Failed to download file');
                                   }
                                 }}
-                                className="border-[var(--neumorphic-border)]"
+                                className="user-app-border"
                               >
                                 <Download className="w-4 h-4 mr-1" />
                                 Download
@@ -401,7 +401,7 @@ export default function ApplicationStatusPage() {
                         ))}
                       </div>
                     </div>
-                    <div className="border-t border-[var(--neumorphic-border)] my-4" />
+                    <div className="border-t user-app-border my-4" />
                   </>
                 )}
 
@@ -409,21 +409,21 @@ export default function ApplicationStatusPage() {
                 {application.portfolio && Array.isArray(application.portfolio) && application.portfolio.length > 0 && (
                   <>
                     <div>
-                      <h4 className="text-lg font-semibold mb-4 text-[var(--neumorphic-text)]">Portfolio</h4>
+                      <h4 className="text-lg font-semibold mb-4 user-app-ink">Portfolio</h4>
                       <div className="space-y-3">
                         {application.portfolio.map((item, index) => (
                           <NeumorphicCard key={index} variant="raised" className="p-4">
                             <div>
-                              <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Title</Label>
-                              <p className="text-sm font-medium text-[var(--neumorphic-text)] mt-1">{item.title}</p>
+                              <Label className="text-sm font-medium user-app-muted">Title</Label>
+                              <p className="text-sm font-medium user-app-ink mt-1">{item.title}</p>
                             </div>
                             <div className="mt-2">
-                              <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Description</Label>
-                              <p className="text-sm text-[var(--neumorphic-text)] mt-1">{item.description}</p>
+                              <Label className="text-sm font-medium user-app-muted">Description</Label>
+                              <p className="text-sm user-app-ink mt-1">{item.description}</p>
                             </div>
                             {item.url && (
                               <div className="mt-2">
-                                <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">URL</Label>
+                                <Label className="text-sm font-medium user-app-muted">URL</Label>
                                 <a 
                                   href={item.url} 
                                   target="_blank" 
@@ -438,7 +438,7 @@ export default function ApplicationStatusPage() {
                         ))}
                       </div>
                     </div>
-                    <div className="border-t border-[var(--neumorphic-border)] my-4" />
+                    <div className="border-t user-app-border my-4" />
                   </>
                 )}
 
@@ -446,38 +446,38 @@ export default function ApplicationStatusPage() {
                 {application.socialMedia && Object.keys(application.socialMedia).length > 0 && (
                   <>
                     <div>
-                      <h4 className="text-lg font-semibold mb-4 flex items-center gap-2 text-[var(--neumorphic-text)]">
+                      <h4 className="text-lg font-semibold mb-4 flex items-center gap-2 user-app-ink">
                         <Globe className="h-5 w-5" />
                         Social Media
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {application.socialMedia.instagram && (
                           <div>
-                            <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Instagram</Label>
-                            <p className="text-sm text-[var(--neumorphic-text)] mt-1">{application.socialMedia.instagram}</p>
+                            <Label className="text-sm font-medium user-app-muted">Instagram</Label>
+                            <p className="text-sm user-app-ink mt-1">{application.socialMedia.instagram}</p>
                           </div>
                         )}
                         {application.socialMedia.facebook && (
                           <div>
-                            <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Facebook</Label>
-                            <p className="text-sm text-[var(--neumorphic-text)] mt-1">{application.socialMedia.facebook}</p>
+                            <Label className="text-sm font-medium user-app-muted">Facebook</Label>
+                            <p className="text-sm user-app-ink mt-1">{application.socialMedia.facebook}</p>
                           </div>
                         )}
                         {application.socialMedia.twitter && (
                           <div>
-                            <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">TikTok</Label>
-                            <p className="text-sm text-[var(--neumorphic-text)] mt-1">{application.socialMedia.twitter}</p>
+                            <Label className="text-sm font-medium user-app-muted">TikTok</Label>
+                            <p className="text-sm user-app-ink mt-1">{application.socialMedia.twitter}</p>
                           </div>
                         )}
                         {application.socialMedia.linkedin && (
                           <div>
-                            <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">LinkedIn</Label>
-                            <p className="text-sm text-[var(--neumorphic-text)] mt-1">{application.socialMedia.linkedin}</p>
+                            <Label className="text-sm font-medium user-app-muted">LinkedIn</Label>
+                            <p className="text-sm user-app-ink mt-1">{application.socialMedia.linkedin}</p>
                           </div>
                         )}
                         {application.socialMedia.website && (
                           <div className="md:col-span-2">
-                            <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Website</Label>
+                            <Label className="text-sm font-medium user-app-muted">Website</Label>
                             <a 
                               href={application.socialMedia.website} 
                               target="_blank" 
@@ -490,42 +490,42 @@ export default function ApplicationStatusPage() {
                         )}
                       </div>
                     </div>
-                    <div className="border-t border-[var(--neumorphic-border)] my-4" />
+                    <div className="border-t user-app-border my-4" />
                   </>
                 )}
 
                 {/* Content Preferences */}
                 {application.preferences && (
                   <div>
-                    <h4 className="text-lg font-semibold mb-4 flex items-center gap-2 text-[var(--neumorphic-text)]">
+                    <h4 className="text-lg font-semibold mb-4 flex items-center gap-2 user-app-ink">
                       <Target className="h-5 w-5" />
                       Content Preferences
                     </h4>
                     <div className="space-y-4">
                       {application.preferences.contentTypes && application.preferences.contentTypes.length > 0 && (
                         <div>
-                          <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Content Types</Label>
+                          <Label className="text-sm font-medium user-app-muted">Content Types</Label>
                           <div className="flex flex-wrap gap-2 mt-1">
                             {application.preferences.contentTypes.map((type, index) => (
-                              <Badge key={index} variant="secondary" className="bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border-[var(--neumorphic-border)]">{type}</Badge>
+                              <Badge key={index} variant="secondary" className="user-app-paper user-app-ink user-app-border">{type}</Badge>
                             ))}
                           </div>
                         </div>
                       )}
                       {application.preferences.targetAudience && application.preferences.targetAudience.length > 0 && (
                         <div>
-                          <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Target Audience</Label>
+                          <Label className="text-sm font-medium user-app-muted">Target Audience</Label>
                           <div className="flex flex-wrap gap-2 mt-1">
                             {application.preferences.targetAudience.map((audience, index) => (
-                              <Badge key={index} variant="outline" className="border-[var(--neumorphic-border)] text-[var(--neumorphic-text)]">{audience}</Badge>
+                              <Badge key={index} variant="outline" className="user-app-border user-app-ink">{audience}</Badge>
                             ))}
                           </div>
                         </div>
                       )}
                       {application.preferences.experienceLevel && (
                         <div>
-                          <Label className="text-sm font-medium text-[var(--neumorphic-muted)]">Experience Level</Label>
-                          <p className="text-sm text-[var(--neumorphic-text)] mt-1">{application.preferences.experienceLevel}</p>
+                          <Label className="text-sm font-medium user-app-muted">Experience Level</Label>
+                          <p className="text-sm user-app-ink mt-1">{application.preferences.experienceLevel}</p>
                         </div>
                       )}
                     </div>

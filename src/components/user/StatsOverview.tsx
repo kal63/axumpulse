@@ -92,10 +92,10 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
             <NeumorphicCard key={index} className="p-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-xs text-[var(--neumorphic-muted)] mb-1">
+                  <p className="text-xs user-app-muted mb-1">
                     {stat.label}
                   </p>
-                  <p className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                  <p className="text-2xl font-bold user-app-ink">
                     {stat.value}
                   </p>
                 </div>
@@ -117,7 +117,7 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
         {/* Workout Completion */}
         <NeumorphicCard className="p-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-[var(--neumorphic-text)] flex items-center gap-2">
+            <h3 className="font-semibold user-app-ink flex items-center gap-2">
               <Dumbbell className="h-5 w-5 text-[var(--color-neon-magenta)]" />
               Workout Completion
             </h3>
@@ -134,7 +134,7 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
             />
           </div>
           
-          <div className="flex items-center justify-between mt-2 text-xs text-[var(--neumorphic-muted)]">
+          <div className="flex items-center justify-between mt-2 text-xs user-app-muted">
             <span>{stats.workoutPlansCompleted} completed</span>
             <span>{stats.workoutPlansStarted} started</span>
           </div>
@@ -143,7 +143,7 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
         {/* Challenge Completion */}
         <NeumorphicCard className="p-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-[var(--neumorphic-text)] flex items-center gap-2">
+            <h3 className="font-semibold user-app-ink flex items-center gap-2">
               <Trophy className="h-5 w-5 text-[var(--color-amber-warning)]" />
               Challenge Completion
             </h3>
@@ -160,7 +160,7 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
             />
           </div>
           
-          <div className="flex items-center justify-between mt-2 text-xs text-[var(--neumorphic-muted)]">
+          <div className="flex items-center justify-between mt-2 text-xs user-app-muted">
             <span>{stats.challengesCompleted} completed</span>
             <span>{stats.challengesJoined} joined</span>
           </div>
@@ -169,31 +169,31 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
 
       {/* Quick Stats Summary */}
       <NeumorphicCard className="p-5">
-        <h3 className="font-semibold text-[var(--neumorphic-text)] mb-4">
+        <h3 className="font-semibold user-app-ink mb-4">
           Activity Summary
         </h3>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--neumorphic-muted)]">
+            <span className="text-sm user-app-muted">
               Saved Content
             </span>
-            <span className="text-sm font-medium text-[var(--neumorphic-text)]">
+            <span className="text-sm font-medium user-app-ink">
               {stats.contentSaved} items
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--neumorphic-muted)]">
+            <span className="text-sm user-app-muted">
               Active Challenges
             </span>
-            <span className="text-sm font-medium text-[var(--neumorphic-text)]">
+            <span className="text-sm font-medium user-app-ink">
               {stats.challengesJoined - stats.challengesCompleted} ongoing
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--neumorphic-muted)]">
+            <span className="text-sm user-app-muted">
               Active Workouts
             </span>
-            <span className="text-sm font-medium text-[var(--neumorphic-text)]">
+            <span className="text-sm font-medium user-app-ink">
               {stats.workoutPlansStarted - stats.workoutPlansCompleted} in progress
             </span>
           </div>

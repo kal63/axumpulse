@@ -50,8 +50,8 @@ export function PaginationControls({
                             'flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200',
                             'hover:scale-105 active:scale-95',
                             currentPage === 1
-                                ? 'text-[var(--neumorphic-muted)] cursor-not-allowed opacity-50'
-                                : 'text-[var(--neumorphic-text)] hover:bg-[var(--neumorphic-hover)] hover:shadow-md'
+                                ? 'user-app-muted cursor-not-allowed opacity-50'
+                                : 'user-app-ink user-app-hover hover:shadow-md'
                         )}
                     >
                         <ChevronLeft className="w-5 h-5" />
@@ -62,13 +62,13 @@ export function PaginationControls({
                         <>
                             <button
                                 onClick={() => onPageChange(1)}
-                                className="flex items-center justify-center w-10 h-10 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 text-[var(--neumorphic-text)] hover:bg-[var(--neumorphic-hover)] hover:shadow-md"
+                                className="flex items-center justify-center w-10 h-10 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 user-app-ink user-app-hover hover:shadow-md"
                             >
                                 1
                             </button>
                             {pages[0] > 2 && (
                                 <div className="flex items-center justify-center w-10 h-10">
-                                    <MoreHorizontal className="w-4 h-4 text-[var(--neumorphic-muted)]" />
+                                    <MoreHorizontal className="w-4 h-4 user-app-muted" />
                                 </div>
                             )}
                         </>
@@ -83,7 +83,7 @@ export function PaginationControls({
                                 'flex items-center justify-center w-10 h-10 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95',
                                 currentPage === pageNumber
                                     ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg shadow-cyan-500/25'
-                                    : 'text-[var(--neumorphic-text)] hover:bg-[var(--neumorphic-hover)] hover:shadow-md'
+                                    : 'user-app-ink user-app-hover hover:shadow-md'
                             )}
                         >
                             {pageNumber}
@@ -95,12 +95,12 @@ export function PaginationControls({
                         <>
                             {pages[pages.length - 1] < totalPages - 1 && (
                                 <div className="flex items-center justify-center w-10 h-10">
-                                    <MoreHorizontal className="w-4 h-4 text-[var(--neumorphic-muted)]" />
+                                    <MoreHorizontal className="w-4 h-4 user-app-muted" />
                                 </div>
                             )}
                             <button
                                 onClick={() => onPageChange(totalPages)}
-                                className="flex items-center justify-center w-10 h-10 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 text-[var(--neumorphic-text)] hover:bg-[var(--neumorphic-hover)] hover:shadow-md"
+                                className="flex items-center justify-center w-10 h-10 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 user-app-ink user-app-hover hover:shadow-md"
                             >
                                 {totalPages}
                             </button>
@@ -115,8 +115,8 @@ export function PaginationControls({
                             'flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200',
                             'hover:scale-105 active:scale-95',
                             currentPage === totalPages
-                                ? 'text-[var(--neumorphic-muted)] cursor-not-allowed opacity-50'
-                                : 'text-[var(--neumorphic-text)] hover:bg-[var(--neumorphic-hover)] hover:shadow-md'
+                                ? 'user-app-muted cursor-not-allowed opacity-50'
+                                : 'user-app-ink user-app-hover hover:shadow-md'
                         )}
                     >
                         <ChevronRight className="w-5 h-5" />

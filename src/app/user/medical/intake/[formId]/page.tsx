@@ -84,10 +84,10 @@ export default function IntakeFormSubmissionPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -109,38 +109,38 @@ export default function IntakeFormSubmissionPage() {
     }
 
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+      <div className="min-h-dvh min-h-full user-app-page">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <NeumorphicCard variant="raised" className="p-8 text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-teal-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <FileText className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-4">
+            <h2 className="text-3xl font-bold user-app-ink mb-4">
               Form Submitted Successfully
             </h2>
-            <p className="text-[var(--neumorphic-muted)] mb-8">
+            <p className="user-app-muted mb-8">
               Your intake form has been processed. Here's your triage assessment:
             </p>
 
             <div className="space-y-4 mb-8">
-              <div className="p-6 rounded-xl bg-[var(--neumorphic-surface)]">
+              <div className="p-6 rounded-xl user-app-paper">
                 <div className="flex items-center justify-center gap-3 mb-4">
-                  <span className="text-sm font-medium text-[var(--neumorphic-muted)]">Risk Level:</span>
+                  <span className="text-sm font-medium user-app-muted">Risk Level:</span>
                   <span className={`px-4 py-2 rounded-full text-white font-semibold ${getRiskColor(triageResult.riskLevel)}`}>
                     {triageResult.riskLevel?.toUpperCase()}
                   </span>
                 </div>
                 <div className="mb-4">
-                  <span className="text-sm font-medium text-[var(--neumorphic-muted)]">Disposition: </span>
-                  <span className="text-lg font-semibold text-[var(--neumorphic-text)]">
+                  <span className="text-sm font-medium user-app-muted">Disposition: </span>
+                  <span className="text-lg font-semibold user-app-ink">
                     {triageResult.disposition?.replace('_', ' ')}
                   </span>
                 </div>
                 {triageResult.messages?.length > 0 && (
                   <div className="space-y-2">
-                    <p className="text-sm font-medium text-[var(--neumorphic-muted)]">Messages:</p>
+                    <p className="text-sm font-medium user-app-muted">Messages:</p>
                     {triageResult.messages.map((msg: string, idx: number) => (
-                      <p key={idx} className="text-[var(--neumorphic-text)]">{msg}</p>
+                      <p key={idx} className="user-app-ink">{msg}</p>
                     ))}
                   </div>
                 )}
@@ -168,7 +168,7 @@ export default function IntakeFormSubmissionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
@@ -190,11 +190,11 @@ export default function IntakeFormSubmissionPage() {
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                   {form.title || `Form v${form.version || 'N/A'}`}
                 </h1>
                 {form.description && (
-                  <p className="text-lg text-[var(--neumorphic-muted)]">
+                  <p className="text-lg user-app-muted">
                     {form.description}
                   </p>
                 )}

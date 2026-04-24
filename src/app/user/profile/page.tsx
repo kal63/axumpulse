@@ -83,7 +83,7 @@ export default function ProfilePage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-cyber-blue)] mx-auto mb-4"></div>
-          <p className="text-[var(--neumorphic-text)]">Loading profile...</p>
+          <p className="user-app-ink">Loading profile...</p>
         </div>
       </div>
     )
@@ -94,10 +94,10 @@ export default function ProfilePage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <User className="h-16 w-16 mx-auto mb-4 text-red-500 opacity-50" />
-          <p className="text-[var(--neumorphic-text)] text-xl font-semibold mb-2">
+          <p className="user-app-ink text-xl font-semibold mb-2">
             Failed to load profile
           </p>
-          <p className="text-[var(--neumorphic-muted)] mb-4">{error}</p>
+          <p className="user-app-muted mb-4">{error}</p>
           <Button
             onClick={fetchProfile}
             className="bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white"
@@ -110,7 +110,7 @@ export default function ProfilePage() {
   }
 
   const content = (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {/* Background Gradient */}
@@ -124,10 +124,10 @@ export default function ProfilePage() {
                 <Sparkles className="w-4 h-4" />
                 <span>Your Personal Profile</span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+              <h1 className="text-4xl md:text-6xl font-bold user-app-ink mb-4">
                 👤 My Profile
               </h1>
-              <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+              <p className="text-xl user-app-muted max-w-2xl mx-auto">
                 Showcase your fitness journey, achievements, and personal information
               </p>
             </div>
@@ -154,7 +154,7 @@ export default function ProfilePage() {
               {/* Profile Info */}
               <div className="flex-1 text-center md:text-left">
                 <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                  <h2 className="text-3xl font-bold text-[var(--neumorphic-text)]">
+                  <h2 className="text-3xl font-bold user-app-ink">
                     {profileData?.name || 'User'}
                   </h2>
                   <Badge variant="secondary" className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white">
@@ -163,12 +163,12 @@ export default function ProfilePage() {
                 </div>
                 
                 {profileData?.bio && (
-                  <p className="text-[var(--neumorphic-muted)] mb-4 max-w-md">
+                  <p className="user-app-muted mb-4 max-w-md">
                     {profileData.bio}
                   </p>
                 )}
 
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm text-[var(--neumorphic-muted)]">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm user-app-muted">
                   {profileData?.location && (
                     <div className="flex items-center gap-1">
                       <MapPin className="w-4 h-4" />
@@ -190,7 +190,7 @@ export default function ProfilePage() {
                   xpToNextLevel={(profileData?.xpNeeded || 100) - (profileData?.xpProgress || 0)}
                   size="lg"
                 />
-                <p className="text-sm text-[var(--neumorphic-muted)] mt-2 text-center">
+                <p className="text-sm user-app-muted mt-2 text-center">
                   {profileData?.xpProgress || 0}/{profileData?.xpNeeded || 100} XP to next level
                 </p>
               </div>
@@ -203,51 +203,51 @@ export default function ProfilePage() {
               <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl">
                 <Trophy className="h-6 w-6 text-white" />
               </div>
-              <div className="text-3xl font-bold text-[var(--neumorphic-text)] mb-1">
+              <div className="text-3xl font-bold user-app-ink mb-1">
                 {stats?.challengesCompleted || 0}
               </div>
-              <div className="text-sm text-[var(--neumorphic-muted)]">Challenges</div>
+              <div className="text-sm user-app-muted">Challenges</div>
             </NeumorphicCard>
 
             <NeumorphicCard variant="raised" className="p-6 text-center">
               <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
                 <Dumbbell className="h-6 w-6 text-white" />
               </div>
-              <div className="text-3xl font-bold text-[var(--neumorphic-text)] mb-1">
+              <div className="text-3xl font-bold user-app-ink mb-1">
                 {stats?.workoutPlansCompleted || 0}
               </div>
-              <div className="text-sm text-[var(--neumorphic-muted)]">Workouts</div>
+              <div className="text-sm user-app-muted">Workouts</div>
             </NeumorphicCard>
 
             <NeumorphicCard variant="raised" className="p-6 text-center">
               <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl">
                 <Flame className="h-6 w-6 text-white" />
               </div>
-              <div className="text-3xl font-bold text-[var(--neumorphic-text)] mb-1">
+              <div className="text-3xl font-bold user-app-ink mb-1">
                 {stats?.streak || 0}
               </div>
-              <div className="text-sm text-[var(--neumorphic-muted)]">Day Streak</div>
+              <div className="text-sm user-app-muted">Day Streak</div>
             </NeumorphicCard>
 
             <NeumorphicCard variant="raised" className="p-6 text-center">
               <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl">
                 <Award className="h-6 w-6 text-white" />
               </div>
-              <div className="text-3xl font-bold text-[var(--neumorphic-text)] mb-1">
+              <div className="text-3xl font-bold user-app-ink mb-1">
                 {stats?.achievementsUnlocked || 0}
               </div>
-              <div className="text-sm text-[var(--neumorphic-muted)]">Achievements</div>
+              <div className="text-sm user-app-muted">Achievements</div>
             </NeumorphicCard>
           </div>
 
           {/* Recent Achievements */}
           <NeumorphicCard variant="raised" className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+              <h3 className="text-xl font-bold user-app-ink flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-yellow-500" />
                 Recent Achievements
               </h3>
-              <button className="flex items-center gap-2 text-[var(--neumorphic-accent)] hover:text-[var(--neumorphic-accent-hover)] transition-colors">
+              <button className="flex items-center gap-2 user-app-link hover:opacity-90 transition-colors">
                 <span>View All</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -259,19 +259,19 @@ export default function ProfilePage() {
                 { title: "Week Warrior", description: "Completed 7 workouts in a week", icon: Calendar, color: "from-purple-500 to-pink-500", date: "1 week ago" },
                 { title: "Challenge Master", description: "Completed your first challenge", icon: Target, color: "from-orange-500 to-red-500", date: "3 days ago" }
               ].map((achievement, index) => (
-                <div key={index} className="p-4 bg-[var(--neumorphic-surface)] rounded-xl">
+                <div key={index} className="p-4 user-app-paper rounded-xl">
                   <div className="flex items-start gap-3">
                     <div className={`w-10 h-10 bg-gradient-to-br ${achievement.color} rounded-xl flex items-center justify-center`}>
                       <achievement.icon className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-[var(--neumorphic-text)]">
+                      <h4 className="font-semibold user-app-ink">
                         {achievement.title}
                       </h4>
-                      <p className="text-sm text-[var(--neumorphic-muted)]">
+                      <p className="text-sm user-app-muted">
                         {achievement.description}
                       </p>
-                      <p className="text-xs text-[var(--neumorphic-muted)] mt-1">
+                      <p className="text-xs user-app-muted mt-1">
                         {achievement.date}
                       </p>
                     </div>
@@ -289,10 +289,10 @@ export default function ProfilePage() {
                 <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Award className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-2">
+                <h3 className="text-xl font-bold user-app-ink mb-2">
                   Become a Trainer
                 </h3>
-                <p className="text-[var(--neumorphic-muted)] mb-6">
+                <p className="user-app-muted mb-6">
                   Share your fitness expertise and help others achieve their goals
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">

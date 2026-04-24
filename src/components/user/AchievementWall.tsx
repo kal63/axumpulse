@@ -43,11 +43,11 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+            <h2 className="text-2xl font-bold user-app-ink flex items-center gap-2">
               <Trophy className="h-6 w-6 text-[var(--color-neon-magenta)]" />
               Achievements
             </h2>
-            <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
+            <p className="text-sm user-app-muted mt-1">
               {totalUnlocked} of {totalAchievements} unlocked
             </p>
           </div>
@@ -84,7 +84,7 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
               </defs>
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-sm font-bold text-[var(--neumorphic-text)]">
+              <span className="text-sm font-bold user-app-ink">
                 {Math.round(progressPercentage)}%
               </span>
             </div>
@@ -99,8 +99,8 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
               className={`
                 relative p-4 rounded-xl transition-all duration-300
                 ${achievement.unlocked
-                  ? 'bg-[var(--neumorphic-surface)] shadow-[4px_4px_8px_rgba(15,23,42,0.15),-4px_-4px_8px_rgba(255,255,255,0.85)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.6),-4px_-4px_8px_rgba(255,255,255,0.06)] hover:shadow-[6px_6px_12px_rgba(15,23,42,0.2),-6px_-6px_12px_rgba(255,255,255,0.9)] cursor-pointer'
-                  : 'bg-[var(--neumorphic-bg)] opacity-50'
+                  ? 'user-app-paper shadow-[4px_4px_8px_rgba(15,23,42,0.15),-4px_-4px_8px_rgba(255,255,255,0.85)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.6),-4px_-4px_8px_rgba(255,255,255,0.06)] hover:shadow-[6px_6px_12px_rgba(15,23,42,0.2),-6px_-6px_12px_rgba(255,255,255,0.9)] cursor-pointer'
+                  : 'bg-slate-100 dark:bg-slate-800/70 opacity-50'
                 }
               `}
               title={achievement.description}
@@ -139,8 +139,8 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
               <h3 className={`
                 text-center text-sm font-semibold mb-1 line-clamp-2
                 ${achievement.unlocked 
-                  ? 'text-[var(--neumorphic-text)]' 
-                  : 'text-[var(--neumorphic-muted)]'
+                  ? 'user-app-ink' 
+                  : 'user-app-muted'
                 }
               `}>
                 {achievement.unlocked ? achievement.name : '???'}
@@ -155,7 +155,7 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
 
               {/* Unlock Date */}
               {achievement.unlocked && achievement.unlockedAt && (
-                <p className="text-center text-xs text-[var(--neumorphic-muted)] mt-1">
+                <p className="text-center text-xs user-app-muted mt-1">
                   {new Date(achievement.unlockedAt).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric'
@@ -168,7 +168,7 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
 
         {/* Empty State */}
         {achievements.length === 0 && (
-          <div className="py-12 text-center text-[var(--neumorphic-muted)]">
+          <div className="py-12 text-center user-app-muted">
             <Trophy className="h-16 w-16 mx-auto mb-4 opacity-30" />
             <p className="text-lg font-medium">No achievements yet</p>
             <p className="text-sm mt-2">Complete activities to unlock achievements!</p>
@@ -180,19 +180,19 @@ export function AchievementWall({ achievements, totalUnlocked, totalAchievements
           <div className="flex flex-wrap gap-4 justify-center pt-4 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded-full bg-gradient-to-br ${rarityColors.common}`} />
-              <span className="text-xs text-[var(--neumorphic-muted)]">Common</span>
+              <span className="text-xs user-app-muted">Common</span>
             </div>
             <div className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded-full bg-gradient-to-br ${rarityColors.rare}`} />
-              <span className="text-xs text-[var(--neumorphic-muted)]">Rare</span>
+              <span className="text-xs user-app-muted">Rare</span>
             </div>
             <div className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded-full bg-gradient-to-br ${rarityColors.epic}`} />
-              <span className="text-xs text-[var(--neumorphic-muted)]">Epic</span>
+              <span className="text-xs user-app-muted">Epic</span>
             </div>
             <div className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded-full bg-gradient-to-br ${rarityColors.legendary}`} />
-              <span className="text-xs text-[var(--neumorphic-muted)]">Legendary</span>
+              <span className="text-xs user-app-muted">Legendary</span>
             </div>
           </div>
         )}

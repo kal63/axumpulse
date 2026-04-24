@@ -77,11 +77,11 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
           {/* Header */}
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex-1">
-              <h3 className="font-bold text-lg text-[var(--neumorphic-text)] group-hover:text-[var(--color-cyber-blue)] transition-colors line-clamp-2">
+              <h3 className="font-bold text-lg user-app-ink group-hover:text-[var(--color-cyber-blue)] transition-colors line-clamp-2">
                 {challenge.title}
               </h3>
               {challenge.trainer && (
-                <p className="text-xs text-[var(--neumorphic-muted)] mt-1">
+                <p className="text-xs user-app-muted mt-1">
                   by {challenge.trainer.User.name}
                   {challenge.trainer.verified && ' ✓'}
                 </p>
@@ -97,23 +97,23 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
           </div>
 
           {/* Description */}
-          <p className="text-sm text-[var(--neumorphic-muted)] line-clamp-2 mb-4">
+          <p className="text-sm user-app-muted line-clamp-2 mb-4">
             {challenge.description}
           </p>
 
           {/* Details Grid */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="flex items-center gap-2 text-xs text-[var(--neumorphic-muted)]">
+            <div className="flex items-center gap-2 text-xs user-app-muted">
               <Target className="h-4 w-4 text-[var(--color-cyber-blue)]" />
               <span>{challenge.goalValue} {challenge.goalType}</span>
             </div>
             
-            <div className="flex items-center gap-2 text-xs text-[var(--neumorphic-muted)]">
+            <div className="flex items-center gap-2 text-xs user-app-muted">
               <Trophy className="h-4 w-4 text-[var(--color-neon-magenta)]" />
               <span>{challenge.xpReward} XP</span>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-[var(--neumorphic-muted)]">
+            <div className="flex items-center gap-2 text-xs user-app-muted">
               <Calendar className="h-4 w-4 text-[var(--color-lime-pulse)]" />
               <span>
                 {endDate 
@@ -135,7 +135,7 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
           {hasJoined && showProgress && userProgress && (
             <div className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-[var(--neumorphic-text)]">
+                <span className="text-xs font-medium user-app-ink">
                   Your Progress
                 </span>
                 <span className="text-xs font-bold text-[var(--color-cyber-blue)]">
@@ -144,7 +144,7 @@ export function ChallengeCard({ challenge, showProgress = true }: ChallengeCardP
               </div>
               <Progress value={progressPercentage} className="h-2" />
               {userProgress.rank && (
-                <div className="flex items-center gap-1 mt-2 text-xs text-[var(--neumorphic-muted)]">
+                <div className="flex items-center gap-1 mt-2 text-xs user-app-muted">
                   <Trophy className="h-3 w-3" />
                   <span>Rank #{userProgress.rank}</span>
                 </div>

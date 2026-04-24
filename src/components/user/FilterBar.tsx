@@ -29,7 +29,7 @@ export function FilterBar({
     return (
         <div className="space-y-3">
             {label && (
-                <label className="text-sm font-semibold text-[var(--neumorphic-text)] tracking-wide">
+                <label className="text-sm font-semibold user-app-ink tracking-wide">
                     {label}
                 </label>
             )}
@@ -47,7 +47,7 @@ export function FilterBar({
                                 'border border-gray-200/50 dark:border-gray-700/50',
                                 isSelected
                                     ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg border-transparent dark:from-cyan-500 dark:to-purple-600 dark:shadow-cyan-500/25'
-                                    : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)] hover:shadow-md'
+                                    : 'user-app-paper user-app-hover user-app-ink hover:shadow-md'
                             )}
                         >
                             {isSelected && (
@@ -65,7 +65,7 @@ export function FilterBar({
             <div className="md:hidden relative">
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="w-full flex items-center justify-between px-4 py-3 bg-[var(--neumorphic-surface)] border border-gray-200/50 dark:border-gray-700/50 rounded-xl text-[var(--neumorphic-text)] font-medium hover:bg-[var(--neumorphic-hover)] transition-all duration-200"
+                    className="w-full flex items-center justify-between px-4 py-3 user-app-paper border border-gray-200/50 dark:border-gray-700/50 rounded-xl user-app-ink font-medium user-app-hover transition-all duration-200"
                 >
                     <span>{selectedOption?.label || 'Select option'}</span>
                     <ChevronDown className={cn(
@@ -75,7 +75,7 @@ export function FilterBar({
                 </button>
                 
                 {isOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--neumorphic-surface)] border border-gray-200/50 dark:border-gray-700/50 rounded-xl shadow-lg z-50">
+                    <div className="absolute top-full left-0 right-0 mt-2 user-app-paper border border-gray-200/50 dark:border-gray-700/50 rounded-xl shadow-lg z-50">
                         {options.map((option) => {
                             const isSelected = selectedValue === option.value
                             return (
@@ -86,7 +86,7 @@ export function FilterBar({
                                         setIsOpen(false)
                                     }}
                                     className={cn(
-                                        'w-full flex items-center justify-between px-4 py-3 text-left text-[var(--neumorphic-text)] font-medium hover:bg-[var(--neumorphic-hover)] transition-all duration-200',
+                                        'w-full flex items-center justify-between px-4 py-3 text-left user-app-ink font-medium user-app-hover transition-all duration-200',
                                         isSelected && 'bg-gradient-to-r from-[var(--ethio-lemon)]/12 to-[var(--ethio-deep-blue)]/10 dark:from-cyan-500/10 dark:to-purple-600/10'
                                     )}
                                 >

@@ -206,7 +206,7 @@ export default function WorkoutPlansPage() {
     const hasActiveFilters = selectedCategory || selectedDifficulty || selectedDuration || searchQuery
 
     return (
-        <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+        <div className="min-h-dvh min-h-full user-app-page">
             {/* Hero Section */}
             <div className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/18 via-[var(--ethio-deep-blue)]/10 to-transparent dark:from-cyan-500/10 dark:via-purple-500/10 dark:to-pink-500/10" />
@@ -217,10 +217,10 @@ export default function WorkoutPlansPage() {
                                 <Dumbbell className="w-4 h-4" />
                                 <span>Structured Fitness Programs</span>
                             </div>
-                            <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+                            <h1 className="text-4xl md:text-6xl font-bold user-app-ink mb-4">
                                 💪 Workout Plans
                             </h1>
-                            <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+                            <p className="text-xl user-app-muted max-w-2xl mx-auto">
                                 Transform your fitness journey with structured programs designed by certified trainers
                             </p>
                         </div>
@@ -252,14 +252,14 @@ export default function WorkoutPlansPage() {
                                         <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                                             <UserCheck className="w-10 h-10 text-white" />
                                         </div>
-                                        <h2 className="text-3xl md:text-4xl font-bold text-[var(--neumorphic-text)] mb-4">
+                                        <h2 className="text-3xl md:text-4xl font-bold user-app-ink mb-4">
                                             Subscription Required
                                         </h2>
                                         <div className="space-y-4 mb-8">
-                                            <p className="text-lg text-[var(--neumorphic-muted)]">
+                                            <p className="text-lg user-app-muted">
                                                 You need an active subscription to access workout plans.
                                             </p>
-                                            <p className="text-base text-[var(--neumorphic-muted)]">
+                                            <p className="text-base user-app-muted">
                                                 Subscribe to a trainer to unlock personalized workout programs, track your progress, and achieve your fitness goals.
                                             </p>
                                         </div>
@@ -274,7 +274,7 @@ export default function WorkoutPlansPage() {
                                             {/*}
                                             <button
                                                 onClick={() => router.push('/user/subscriptions')}
-                                                className="px-8 py-4 bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] rounded-xl font-semibold hover:bg-[var(--neumorphic-hover)] transition-all duration-200 flex items-center justify-center gap-2"
+                                                className="px-8 py-4 user-app-paper user-app-ink rounded-xl font-semibold user-app-hover transition-all duration-200 flex items-center justify-center gap-2"
                                             >
                                                 <CheckCircle className="w-5 h-5" />
                                                 My Subscriptions
@@ -302,7 +302,7 @@ export default function WorkoutPlansPage() {
                                         className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
                                             showFilters 
                                                 ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-lg dark:from-cyan-500 dark:to-purple-600' 
-                                                : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)]'
+                                                : 'user-app-paper user-app-hover'
                                         }`}
                                     >
                                         <Filter className="w-4 h-4" />
@@ -326,10 +326,10 @@ export default function WorkoutPlansPage() {
                                 <NeumorphicCard variant="recessed" size="lg" className="p-6">
                                     <div className="space-y-6">
                                         <div className="flex items-center justify-between">
-                                            <h3 className="text-lg font-semibold text-[var(--neumorphic-text)]">Filter Plans</h3>
+                                            <h3 className="text-lg font-semibold user-app-ink">Filter Plans</h3>
                                             <button
                                                 onClick={() => setShowFilters(false)}
-                                                className="text-[var(--neumorphic-muted)] hover:text-[var(--neumorphic-text)] transition-colors"
+                                                className="user-app-muted hover:user-app-ink transition-colors"
                                             >
                                                 ✕
                                             </button>
@@ -339,14 +339,14 @@ export default function WorkoutPlansPage() {
                                             {/* Category Filter */}
                                             {categories.length > 0 && (
                                                 <div className="space-y-2">
-                                                    <label className="text-sm font-medium text-[var(--neumorphic-text)]">Category</label>
+                                                    <label className="text-sm font-medium user-app-ink">Category</label>
                                                     <div className="flex flex-wrap gap-2">
                                                         <button
                                                             onClick={() => setSelectedCategory('')}
                                                             className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                                                 selectedCategory === '' 
                                                                     ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-cyan-500 dark:to-purple-600' 
-                                                                    : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                                                                    : 'user-app-paper user-app-hover user-app-ink'
                                                             }`}
                                                         >
                                                             All Categories
@@ -358,7 +358,7 @@ export default function WorkoutPlansPage() {
                                                                 className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                                                     selectedCategory === category 
                                                                         ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-cyan-500 dark:to-purple-600' 
-                                                                        : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                                                                        : 'user-app-paper user-app-hover user-app-ink'
                                                                 }`}
                                                             >
                                                                 {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -370,7 +370,7 @@ export default function WorkoutPlansPage() {
 
                                             {/* Difficulty Filter */}
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium text-[var(--neumorphic-text)]">Difficulty</label>
+                                                <label className="text-sm font-medium user-app-ink">Difficulty</label>
                                                 <div className="flex flex-wrap gap-2">
                                                     {difficultyOptions.map((option) => (
                                                         <button
@@ -379,7 +379,7 @@ export default function WorkoutPlansPage() {
                                                             className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                                                 selectedDifficulty === option.value 
                                                                     ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-cyan-500 dark:to-purple-600' 
-                                                                    : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                                                                    : 'user-app-paper user-app-hover user-app-ink'
                                                             }`}
                                                         >
                                                             {option.label}
@@ -390,7 +390,7 @@ export default function WorkoutPlansPage() {
 
                                             {/* Duration Filter */}
                                             <div className="space-y-2">
-                                                <label className="text-sm font-medium text-[var(--neumorphic-text)]">Duration</label>
+                                                <label className="text-sm font-medium user-app-ink">Duration</label>
                                                 <div className="flex flex-wrap gap-2">
                                                     {durationOptions.map((option) => (
                                                         <button
@@ -399,7 +399,7 @@ export default function WorkoutPlansPage() {
                                                             className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                                                                 selectedDuration === option.value 
                                                                     ? 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white dark:from-cyan-500 dark:to-purple-600' 
-                                                                    : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-hover)] text-[var(--neumorphic-text)]'
+                                                                    : 'user-app-paper user-app-hover user-app-ink'
                                                             }`}
                                                         >
                                                             {option.label}
@@ -437,12 +437,12 @@ export default function WorkoutPlansPage() {
                                 <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center">
                                     <Star className="w-4 h-4 text-white fill-current" />
                                 </div>
-                                <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">Featured Plans</h2>
+                                <h2 className="text-2xl font-bold user-app-ink">Featured Plans</h2>
                             </div>
                             {featuredPlans.length > 3 && (
                                 <button 
                                     onClick={() => router.push('/user/workout-plans/featured')}
-                                    className="flex items-center space-x-2 text-[var(--neumorphic-accent)] hover:text-[var(--neumorphic-accent-hover)] transition-colors"
+                                    className="flex items-center space-x-2 user-app-link hover:opacity-90 transition-colors"
                                 >
                                     <span>View All</span>
                                     <ChevronRight className="w-4 h-4" />
@@ -462,7 +462,7 @@ export default function WorkoutPlansPage() {
                             </div>
                         ) : (
                             <div className="text-center py-12">
-                                <p className="text-[var(--neumorphic-muted)]">No featured plans at the moment. Check back soon!</p>
+                                <p className="user-app-muted">No featured plans at the moment. Check back soon!</p>
                             </div>
                         )}
                     </div>
@@ -476,21 +476,21 @@ export default function WorkoutPlansPage() {
                     {/* Content Section Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center space-x-4">
-                            <h2 className="text-3xl font-bold text-[var(--neumorphic-text)]">
+                            <h2 className="text-3xl font-bold user-app-ink">
                                 Workout Plans
                             </h2>
-                            <div className="bg-[var(--neumorphic-surface)] px-4 py-2 rounded-full shadow-[var(--neumorphic-shadow)]">
-                                <span className="text-sm text-[var(--neumorphic-muted)]">
+                            <div className="user-app-paper px-4 py-2 rounded-full shadow-sm">
+                                <span className="text-sm user-app-muted">
                                     {activeTab === 'all' ? `${totalItems} plans` : `${myPlans.length} active`}
                                 </span>
                             </div>
                         </div>
                         
                         <div className="flex items-center space-x-2">
-                            <div className="bg-[var(--neumorphic-surface)] px-4 py-2 rounded-full shadow-[var(--neumorphic-shadow)]">
+                            <div className="user-app-paper px-4 py-2 rounded-full shadow-sm">
                                 <div className="flex items-center space-x-2">
                                     <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                    <span className="text-sm text-[var(--neumorphic-text)]">4.8 avg rating</span>
+                                    <span className="text-sm user-app-ink">4.8 avg rating</span>
                                 </div>
                             </div>
                         </div>
@@ -499,7 +499,7 @@ export default function WorkoutPlansPage() {
                     {/* Beautiful Tabs with Sliding Background */}
                     <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'all' | 'active')} className="mb-8">
                         <div className="flex justify-center mb-8">
-                            <div className="relative bg-[var(--neumorphic-surface)] p-2 rounded-2xl shadow-lg dark:shadow-xl">
+                            <div className="relative user-app-paper p-2 rounded-2xl shadow-lg dark:shadow-xl">
                                 {/* Sliding Background */}
                                 <div 
                                     className={`absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] dark:from-cyan-500 dark:to-purple-600 transition-all duration-500 ease-out ${
@@ -515,7 +515,7 @@ export default function WorkoutPlansPage() {
                                         className={`flex items-center space-x-3 px-6 py-3 rounded-xl transition-all duration-300 transform relative z-10 ${
                                             activeTab === 'all'
                                                 ? 'text-white'
-                                                : 'text-[var(--neumorphic-text)] hover:text-[var(--neumorphic-accent)]'
+                                                : 'user-app-ink hover:user-app-link'
                                         }`}
                                     >
                                         <Dumbbell className="w-5 h-5" />
@@ -532,7 +532,7 @@ export default function WorkoutPlansPage() {
                                         className={`flex items-center space-x-3 px-6 py-3 rounded-xl transition-all duration-300 transform relative z-10 ${
                                             activeTab === 'active'
                                                 ? 'text-white'
-                                                : 'text-[var(--neumorphic-text)] hover:text-[var(--neumorphic-accent)]'
+                                                : 'user-app-ink hover:user-app-link'
                                         }`}
                                     >
                                         <Target className="w-5 h-5" />

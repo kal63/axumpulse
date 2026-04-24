@@ -23,10 +23,10 @@ export function LevelProgress({
     <NeumorphicCard variant="raised" size="md" className={className}>
       <div className="space-y-3">
         <div>
-          <h3 className="text-lg font-semibold text-[var(--neumorphic-text)]">
+          <h3 className="text-lg font-semibold user-app-ink">
             Level {currentLevel} Progress
           </h3>
-          <p className="text-sm text-[var(--neumorphic-muted)]">
+          <p className="text-sm user-app-muted">
             {xpToNextLevel} XP to next level
           </p>
         </div>

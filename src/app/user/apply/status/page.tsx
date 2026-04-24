@@ -11,11 +11,11 @@ import { Stethoscope, ArrowLeft, CheckCircle, XCircle, Clock, FileText, Download
 
 function NoApplication({ router }: { router: any }) {
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center">
+    <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center">
       <div className="max-w-xl w-full px-4">
         <div className="text-center space-y-4">
           <h2 className="text-2xl font-bold">No Application Found</h2>
-          <p className="text-[var(--neumorphic-muted)]">We couldn't find any application on your account. You can start a new application now.</p>
+          <p className="user-app-muted">We couldn't find any application on your account. You can start a new application now.</p>
           <div className="flex items-center justify-center gap-2">
             <Button onClick={() => router.push('/user/medical/apply')} className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white">Start Application</Button>
             <Button variant="ghost" onClick={() => router.push('/user/medical')}>Back</Button>
@@ -114,10 +114,10 @@ export default function MedicalApplicationStatusPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -132,7 +132,7 @@ export default function MedicalApplicationStatusPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
         
@@ -153,7 +153,7 @@ export default function MedicalApplicationStatusPage() {
                 <Stethoscope className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                   Application Status
                 </h1>
               </div>
@@ -165,7 +165,7 @@ export default function MedicalApplicationStatusPage() {
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <NeumorphicCard variant="raised" className="p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-[var(--neumorphic-text)]">
+            <h2 className="text-2xl font-bold user-app-ink">
               Your Application
             </h2>
             {getStatusBadge(application.status)}
@@ -173,17 +173,17 @@ export default function MedicalApplicationStatusPage() {
 
           <div className="space-y-4">
             <div>
-              <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-1">
+              <p className="text-sm font-semibold user-app-muted mb-1">
                 Professional Type
               </p>
-              <p className="text-[var(--neumorphic-text)]">
+              <p className="user-app-ink">
                 {application.professionalType?.replace('_', ' ')}
               </p>
             </div>
 
             {application.specialties && application.specialties.length > 0 && (
               <div>
-                <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-2">
+                <p className="text-sm font-semibold user-app-muted mb-2">
                   Specialties
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -198,18 +198,18 @@ export default function MedicalApplicationStatusPage() {
 
             {application.bio && (
               <div>
-                <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-1">
+                <p className="text-sm font-semibold user-app-muted mb-1">
                   Bio
                 </p>
-                <p className="text-[var(--neumorphic-text)]">{application.bio}</p>
+                <p className="user-app-ink">{application.bio}</p>
               </div>
             )}
 
             <div>
-              <p className="text-sm font-semibold text-[var(--neumorphic-muted)] mb-1">
+              <p className="text-sm font-semibold user-app-muted mb-1">
                 Submitted
               </p>
-              <p className="text-[var(--neumorphic-text)]">
+              <p className="user-app-ink">
                 {new Date(application.submittedAt).toLocaleString()}
               </p>
             </div>
@@ -221,10 +221,10 @@ export default function MedicalApplicationStatusPage() {
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
               <div>
-                <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+                <h3 className="text-lg font-semibold user-app-ink mb-2">
                   Rejection Reason
                 </h3>
-                <p className="text-[var(--neumorphic-text)]">{application.rejectionReason}</p>
+                <p className="user-app-ink">{application.rejectionReason}</p>
                 <Button
                   onClick={() => router.push('/user/medical/apply')}
                   className="mt-4 bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
@@ -241,10 +241,10 @@ export default function MedicalApplicationStatusPage() {
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
               <div>
-                <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-2">
+                <h3 className="text-lg font-semibold user-app-ink mb-2">
                   Congratulations!
                 </h3>
-                <p className="text-[var(--neumorphic-text)] mb-4">
+                <p className="user-app-ink mb-4">
                   Your application has been approved. You can now access your professional dashboard.
                 </p>
                 <Button
@@ -265,20 +265,20 @@ export default function MedicalApplicationStatusPage() {
 
         {application.credentialFiles && application.credentialFiles.length > 0 && (
           <NeumorphicCard variant="raised" className="p-6">
-            <h3 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4 flex items-center gap-2">
+            <h3 className="text-xl font-bold user-app-ink mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5" />
               Uploaded Credentials
             </h3>
             <div className="space-y-2">
               {application.credentialFiles.map((file: any) => (
-                <div key={file.id} className="flex items-center justify-between p-3 rounded-lg bg-[var(--neumorphic-surface)]">
+                <div key={file.id} className="flex items-center justify-between p-3 rounded-lg user-app-paper">
                   <div className="flex items-center gap-3">
-                    <FileText className="w-5 h-5 text-[var(--neumorphic-muted)]" />
+                    <FileText className="w-5 h-5 user-app-muted" />
                     <div>
-                      <p className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                      <p className="text-sm font-semibold user-app-ink">
                         {file.fileName}
                       </p>
-                      <p className="text-xs text-[var(--neumorphic-muted)]">
+                      <p className="text-xs user-app-muted">
                         {(file.fileSize / 1024).toFixed(2)} KB
                       </p>
                     </div>

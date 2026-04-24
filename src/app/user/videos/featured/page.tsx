@@ -56,7 +56,7 @@ export default function FeaturedVideosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Header */}
       <div className="px-4 md:px-8 py-8">
         <div className="max-w-7xl mx-auto">
@@ -75,10 +75,10 @@ export default function FeaturedVideosPage() {
                   <Star className="w-5 h-5 text-white fill-current" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-[var(--neumorphic-text)]">
+                  <h1 className="text-3xl font-bold user-app-ink">
                     Featured Videos
                   </h1>
-                  <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
+                  <p className="text-sm user-app-muted mt-1">
                     Discover our handpicked selection of featured videos
                   </p>
                 </div>

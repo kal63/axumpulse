@@ -32,7 +32,7 @@ export function DailyChallengeCard({ challenge, onComplete, completing = false }
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-lg font-bold text-[var(--neumorphic-text)]">
+            <h3 className="text-lg font-bold user-app-ink">
               {challenge.title}
             </h3>
             {challenge.completed && (
@@ -40,7 +40,7 @@ export function DailyChallengeCard({ challenge, onComplete, completing = false }
             )}
           </div>
           {challenge.description && (
-            <p className="text-sm text-[var(--neumorphic-muted)] mb-3">
+            <p className="text-sm user-app-muted mb-3">
               {challenge.description}
             </p>
           )}
@@ -50,12 +50,12 @@ export function DailyChallengeCard({ challenge, onComplete, completing = false }
       {challenge.requirements && (
         <div className="mb-4">
           <div className="flex items-center gap-2 mb-2">
-            <Target className="h-4 w-4 text-[var(--neumorphic-muted)]" />
-            <span className="text-sm font-medium text-[var(--neumorphic-text)]">
+            <Target className="h-4 w-4 user-app-muted" />
+            <span className="text-sm font-medium user-app-ink">
               Requirements:
             </span>
           </div>
-          <p className="text-sm text-[var(--neumorphic-muted)] ml-6">
+          <p className="text-sm user-app-muted ml-6">
             {challenge.requirements}
           </p>
         </div>
@@ -65,7 +65,7 @@ export function DailyChallengeCard({ challenge, onComplete, completing = false }
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
             <Zap className="h-4 w-4 text-yellow-500" />
-            <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+            <span className="text-sm font-semibold user-app-ink">
               +{challenge.xpReward || 0} XP
             </span>
           </div>

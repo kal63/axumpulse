@@ -93,10 +93,10 @@ export default function ConsultsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -107,7 +107,7 @@ export default function ConsultsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
         
@@ -128,7 +128,7 @@ export default function ConsultsPage() {
                     <Calendar className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                    <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                       Consultations
                     </h1>
                   </div>
@@ -193,12 +193,12 @@ export default function ConsultsPage() {
                           {booking.status}
                         </Badge>
                         {booking.slot?.provider && (
-                          <span className="text-sm text-[var(--neumorphic-muted)]">
+                          <span className="text-sm user-app-muted">
                             Provider: {booking.slot.provider.name}
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
+                      <div className="flex items-center gap-2 text-sm user-app-muted">
                         <Clock className="w-4 h-4" />
                         <span>
                           {booking.slot?.startAt || booking.slot?.startTime
@@ -220,7 +220,7 @@ export default function ConsultsPage() {
           ) : (
             <NeumorphicCard variant="raised" className="p-12 text-center">
               <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-xl font-semibold text-[var(--neumorphic-text)] mb-2">
+              <h3 className="text-xl font-semibold user-app-ink mb-2">
                 {activeTab === 'upcoming' ? 'No Upcoming Consultations' : 'No Completed Consultations'}
               </h3>
               {activeTab === 'upcoming' && (

@@ -14,10 +14,10 @@ export function MobileHeader({ title, subtitle, className }: MobileHeaderProps) 
     <div className={cn('mb-6', className)}>
       <NeumorphicCard variant="flat" size="sm" className="p-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-[var(--neumorphic-text)] font-orbitron">
+          <h1 className="text-2xl font-bold user-app-ink font-orbitron">
             {title}
           </h1>
-          <p className="text-[var(--neumorphic-muted)] mt-1 text-sm">
+          <p className="user-app-muted mt-1 text-sm">
             {subtitle}
           </p>
         </div>

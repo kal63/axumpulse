@@ -261,10 +261,10 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center">
+      <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
-          <p className="text-[var(--neumorphic-text)]">Loading settings...</p>
+          <p className="user-app-ink">Loading settings...</p>
         </div>
       </div>
     )
@@ -272,13 +272,13 @@ export default function SettingsPage() {
 
   if (error || !settings) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center">
+      <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center">
         <div className="text-center">
           <SettingsIcon className="h-16 w-16 mx-auto mb-4 text-red-500 opacity-50" />
-          <p className="text-[var(--neumorphic-text)] text-xl font-semibold mb-2">
+          <p className="user-app-ink text-xl font-semibold mb-2">
             Failed to load settings
           </p>
-          <p className="text-[var(--neumorphic-muted)] mb-4">{error}</p>
+          <p className="user-app-muted mb-4">{error}</p>
           <Button
             onClick={fetchSettings}
             className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white"
@@ -291,7 +291,7 @@ export default function SettingsPage() {
   }
 
   const content = (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-pink-500/10" />
@@ -304,10 +304,10 @@ export default function SettingsPage() {
                   <SettingsIcon className="w-4 h-4" />
                   <span>Account Management</span>
                 </div>
-                <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+                <h1 className="text-4xl md:text-6xl font-bold user-app-ink mb-4">
                   ⚙️ Settings
                 </h1>
-                <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl">
+                <p className="text-xl user-app-muted max-w-2xl">
                   Manage your account, preferences, and fitness goals
                 </p>
               </div>
@@ -330,7 +330,7 @@ export default function SettingsPage() {
         <div className="space-y-8">
           {/* Custom Tab Navigation with Sliding Background */}
           <div className="max-w-4xl mx-auto">
-            <div className="relative bg-[var(--neumorphic-surface)] p-2 rounded-2xl shadow-lg dark:shadow-xl">
+            <div className="relative user-app-paper p-2 rounded-2xl shadow-lg dark:shadow-xl">
               {/* Sliding Background */}
               <div 
                 className={`absolute top-2 bottom-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 transition-all duration-500 ease-out ${
@@ -350,7 +350,7 @@ export default function SettingsPage() {
                   className={`flex items-center justify-center md:space-x-3 px-3 md:px-6 py-3 rounded-xl transition-all duration-300 transform relative z-10 flex-1 ${
                     activeTab === 'account'
                       ? 'text-white'
-                      : 'text-[var(--neumorphic-text)] hover:text-[var(--neumorphic-accent)]'
+                      : 'user-app-ink hover:user-app-link'
                   }`}
                 >
                   <User className="w-5 h-5" />
@@ -367,7 +367,7 @@ export default function SettingsPage() {
                   className={`flex items-center justify-center md:space-x-3 px-3 md:px-6 py-3 rounded-xl transition-all duration-300 transform relative z-10 flex-1 ${
                     activeTab === 'preferences'
                       ? 'text-white'
-                      : 'text-[var(--neumorphic-text)] hover:text-[var(--neumorphic-accent)]'
+                      : 'user-app-ink hover:user-app-link'
                   }`}
                 >
                   <Palette className="w-5 h-5" />
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                   className={`flex items-center justify-center md:space-x-3 px-3 md:px-6 py-3 rounded-xl transition-all duration-300 transform relative z-10 flex-1 ${
                     activeTab === 'notifications'
                       ? 'text-white'
-                      : 'text-[var(--neumorphic-text)] hover:text-[var(--neumorphic-accent)]'
+                      : 'user-app-ink hover:user-app-link'
                   }`}
                 >
                   <Bell className="w-5 h-5" />
@@ -401,7 +401,7 @@ export default function SettingsPage() {
                   className={`flex items-center justify-center md:space-x-3 px-3 md:px-6 py-3 rounded-xl transition-all duration-300 transform relative z-10 flex-1 ${
                     activeTab === 'fitness'
                       ? 'text-white'
-                      : 'text-[var(--neumorphic-text)] hover:text-[var(--neumorphic-accent)]'
+                      : 'user-app-ink hover:user-app-link'
                   }`}
                 >
                   <Target className="w-5 h-5" />
@@ -420,7 +420,7 @@ export default function SettingsPage() {
           {activeTab === 'account' && (
             <div className="space-y-6">
             <NeumorphicCard variant="raised" className="p-6">
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-6 flex items-center gap-2">
+              <h2 className="text-2xl font-bold user-app-ink mb-6 flex items-center gap-2">
                 <User className="h-6 w-6 text-cyan-500" />
                 Account Information
               </h2>
@@ -460,7 +460,7 @@ export default function SettingsPage() {
                         </Button>
                       )}
                     </div>
-                    <p className="text-sm text-[var(--neumorphic-muted)]">
+                    <p className="text-sm user-app-muted">
                       JPG, PNG, GIF or WebP. Max size 10MB.
                     </p>
                     <input
@@ -511,7 +511,7 @@ export default function SettingsPage() {
                       className="bg-gray-100 dark:bg-gray-800 cursor-not-allowed"
                       placeholder="Phone number cannot be changed"
                     />
-                    <p className="text-xs text-[var(--neumorphic-muted)]">
+                    <p className="text-xs user-app-muted">
                       Phone number cannot be changed for security reasons
                     </p>
                   </div>
@@ -557,7 +557,7 @@ export default function SettingsPage() {
           {activeTab === 'preferences' && (
             <div className="space-y-6">
             <NeumorphicCard variant="raised" className="p-6">
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-6 flex items-center gap-2">
+              <h2 className="text-2xl font-bold user-app-ink mb-6 flex items-center gap-2">
                 <Palette className="h-6 w-6 text-purple-500" />
                 App Preferences
               </h2>
@@ -649,22 +649,22 @@ export default function SettingsPage() {
             </NeumorphicCard>
 
             <NeumorphicCard variant="raised" className="p-6">
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-2 flex items-center gap-2">
+              <h2 className="text-2xl font-bold user-app-ink mb-2 flex items-center gap-2">
                 <Bot className="h-6 w-6 text-cyan-500" />
                 AI coach data sharing
               </h2>
-              <p className="text-sm text-[var(--neumorphic-muted)] mb-6">
+              <p className="text-sm user-app-muted mb-6">
                 The in-app AI coach only receives categories you enable below. Medical options stay off by default.
               </p>
               <div className="space-y-4">
                 {AI_SHARING_ROWS.map(({ key, label, desc }) => (
                   <div
                     key={key}
-                    className="flex items-center justify-between gap-4 py-2 border-b border-[var(--neumorphic-border)] last:border-0"
+                    className="flex items-center justify-between gap-4 py-2 border-b user-app-border last:border-0"
                   >
                     <div>
-                      <p className="font-medium text-[var(--neumorphic-text)]">{label}</p>
-                      <p className="text-sm text-[var(--neumorphic-muted)]">{desc}</p>
+                      <p className="font-medium user-app-ink">{label}</p>
+                      <p className="text-sm user-app-muted">{desc}</p>
                     </div>
                     <Switch
                       checked={Boolean(formData.preferences?.aiContextSharing?.[key])}
@@ -693,7 +693,7 @@ export default function SettingsPage() {
           {activeTab === 'notifications' && (
             <div className="space-y-6">
             <NeumorphicCard variant="raised" className="p-6">
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-6 flex items-center gap-2">
+              <h2 className="text-2xl font-bold user-app-ink mb-6 flex items-center gap-2">
                 <Bell className="h-6 w-6 text-orange-500" />
                 Notification Settings
               </h2>
@@ -701,7 +701,7 @@ export default function SettingsPage() {
               <div className="space-y-6">
                 {/* Email Notifications */}
                 <div>
-                  <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold user-app-ink mb-4 flex items-center gap-2">
                     <Mail className="h-5 w-5" />
                     Email Notifications
                   </h3>
@@ -709,7 +709,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium">Challenge Reminders</p>
-                        <p className="text-sm text-[var(--neumorphic-muted)]">Get reminded about active challenges</p>
+                        <p className="text-sm user-app-muted">Get reminded about active challenges</p>
                       </div>
                       <Switch
                         checked={formData.notifications?.email?.challengeReminders || false}
@@ -726,7 +726,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium">Achievement Notifications</p>
-                        <p className="text-sm text-[var(--neumorphic-muted)]">Get notified when you unlock achievements</p>
+                        <p className="text-sm user-app-muted">Get notified when you unlock achievements</p>
                       </div>
                       <Switch
                         checked={formData.notifications?.email?.achievementNotifications || false}
@@ -743,7 +743,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium">Weekly Reports</p>
-                        <p className="text-sm text-[var(--neumorphic-muted)]">Receive weekly progress summaries</p>
+                        <p className="text-sm user-app-muted">Receive weekly progress summaries</p>
                       </div>
                       <Switch
                         checked={formData.notifications?.email?.weeklyReports || false}
@@ -760,7 +760,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium">Marketing Emails</p>
-                        <p className="text-sm text-[var(--neumorphic-muted)]">Receive updates about new features and offers</p>
+                        <p className="text-sm user-app-muted">Receive updates about new features and offers</p>
                       </div>
                       <Switch
                         checked={formData.notifications?.email?.marketing || false}
@@ -784,7 +784,7 @@ export default function SettingsPage() {
           {activeTab === 'fitness' && (
             <div className="space-y-6">
             <NeumorphicCard variant="raised" className="p-6">
-              <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-6 flex items-center gap-2">
+              <h2 className="text-2xl font-bold user-app-ink mb-6 flex items-center gap-2">
                 <Target className="h-6 w-6 text-green-500" />
                 Fitness Goals & Health
               </h2>
@@ -792,7 +792,7 @@ export default function SettingsPage() {
               <div className="space-y-6">
                 {/* Fitness Goals */}
                 <div>
-                  <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold user-app-ink mb-4 flex items-center gap-2">
                     <Heart className="h-5 w-5" />
                     Fitness Goals
                   </h3>
@@ -843,7 +843,7 @@ export default function SettingsPage() {
 
                 {/* Health Metrics */}
                 <div>
-                  <h3 className="text-lg font-semibold text-[var(--neumorphic-text)] mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold user-app-ink mb-4 flex items-center gap-2">
                     <Activity className="h-5 w-5" />
                     Health Metrics
                   </h3>

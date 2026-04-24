@@ -148,10 +148,10 @@ export default function UserDashboardPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--ethio-deep-blue)] dark:border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -163,13 +163,13 @@ export default function UserDashboardPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <AlertCircle className="h-16 w-16 mx-auto mb-4 text-red-500 opacity-50" />
-          <p className="text-[var(--neumorphic-text)] text-xl font-semibold mb-2">
+          <p className="user-app-ink text-xl font-semibold mb-2">
             Oops! Something went wrong
           </p>
-          <p className="text-[var(--neumorphic-muted)] mb-4">{error}</p>
+          <p className="user-app-muted mb-4">{error}</p>
           <Button onClick={fetchDashboardData}>
             Try Again
           </Button>
@@ -221,7 +221,7 @@ export default function UserDashboardPage() {
     : 1
 
   const content = (
-    <div className="min-h-full bg-[#F3F4F6] dark:bg-[var(--neumorphic-bg)]">
+    <div className="min-h-full">
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-8">
         {/* Co-brand — demo: clean white/ink on soft grey page */}
         <header className="mb-6 md:mb-8 flex items-center justify-between gap-3">

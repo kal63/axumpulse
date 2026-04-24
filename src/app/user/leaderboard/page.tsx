@@ -104,7 +104,7 @@ export default function LeaderboardPage() {
       case 3:
         return <Award className="h-6 w-6 text-amber-600" />;
       default:
-        return <span className="text-sm font-bold text-[var(--neumorphic-muted)]">#{rank}</span>;
+        return <span className="text-sm font-bold user-app-muted">#{rank}</span>;
     }
   };
 
@@ -117,7 +117,7 @@ export default function LeaderboardPage() {
       case 3:
         return 'bg-gradient-to-r from-amber-500 to-amber-700';
       default:
-        return 'bg-[var(--neumorphic-surface)]';
+        return 'user-app-paper';
     }
   };
 
@@ -128,10 +128,10 @@ export default function LeaderboardPage() {
     ((loading && hasAccess) || (subscriptionLoading && !isMedicalPro && !isTrainer))
   ) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading leaderboard...</p>
+          <p className="mt-4 user-app-muted">Loading leaderboard...</p>
         </div>
       </div>
     );
@@ -149,10 +149,10 @@ export default function LeaderboardPage() {
                                     <Dumbbell className="w-4 h-4" />
                                     <span>Structured Fitness Programs</span>
                                 </div> */}
-        <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+        <h1 className="text-4xl md:text-6xl font-bold user-app-ink mb-4">
           🏆 Global Leaderboard
         </h1>
-        <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+        <p className="text-xl user-app-muted max-w-2xl mx-auto">
           Compete with users worldwide and climb the ranks!
         </p>
       </div>
@@ -181,14 +181,14 @@ export default function LeaderboardPage() {
               <div className="w-20 h-20 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <UserCheck className="w-10 h-10 text-white" />
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[var(--neumorphic-text)] mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold user-app-ink mb-4">
                 Subscription Required
               </h2>
               <div className="space-y-4 mb-8">
-                <p className="text-lg text-[var(--neumorphic-muted)]">
+                <p className="text-lg user-app-muted">
                   You need an active subscription to view the leaderboard.
                 </p>
-                <p className="text-base text-[var(--neumorphic-muted)]">
+                <p className="text-base user-app-muted">
                   Subscribe to a trainer to compete with other users and track your rank.
                 </p>
               </div>
@@ -207,14 +207,14 @@ export default function LeaderboardPage() {
       )}
 
       {(subscriptionLoading || hasAccess) && (
-        <div className="min-h-screen bg-[var(--neumorphic-bg)] pb-20">
+        <div className="min-h-dvh min-h-full user-app-page pb-20">
           <div className="container mx-auto px-4 py-8">
             {/* Header */}
             {/* <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-2">
+          <h1 className="text-3xl font-bold user-app-ink mb-2">
             🏆 Global Leaderboard
           </h1>
-          <p className="text-[var(--neumorphic-muted)]">
+          <p className="user-app-muted">
             Compete with users worldwide and climb the ranks!
           </p>
         </div> */}
@@ -223,7 +223,7 @@ export default function LeaderboardPage() {
             <NeumorphicCard variant="raised" className="p-4 mb-6">
               <div className="flex flex-col md:flex-row gap-4 items-end">
                 <div className="flex-1">
-                  <label className="text-sm font-medium text-[var(--neumorphic-text)] mb-2 block">
+                  <label className="text-sm font-medium user-app-ink mb-2 block">
                     Filter By
                   </label>
                   <Select
@@ -245,7 +245,7 @@ export default function LeaderboardPage() {
                 </div>
 
                 <div className="flex-1">
-                  <label className="text-sm font-medium text-[var(--neumorphic-text)] mb-2 block">
+                  <label className="text-sm font-medium user-app-ink mb-2 block">
                     Period
                   </label>
                   <Select
@@ -269,7 +269,7 @@ export default function LeaderboardPage() {
                 <Button
                   variant="outline"
                   onClick={loadLeaderboard}
-                  className="text-[var(--neumorphic-text)]"
+                  className="user-app-ink"
                 >
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Refresh
@@ -282,17 +282,17 @@ export default function LeaderboardPage() {
               <NeumorphicCard variant="raised" className="p-4 mb-6 bg-gradient-to-r from-cyan-500/10 to-purple-600/10 border-2 border-cyan-500">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-sm text-[var(--neumorphic-muted)] mb-1">Your Rank</div>
-                    <div className="text-3xl font-bold text-[var(--neumorphic-text)]">
+                    <div className="text-sm user-app-muted mb-1">Your Rank</div>
+                    <div className="text-3xl font-bold user-app-ink">
                       #{userRank}
                     </div>
-                    <div className="text-sm text-[var(--neumorphic-muted)] mt-1">
+                    <div className="text-sm user-app-muted mt-1">
                       out of {totalUsers} users
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-[var(--neumorphic-muted)] mb-1">Total Users</div>
-                    <div className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                    <div className="text-sm user-app-muted mb-1">Total Users</div>
+                    <div className="text-2xl font-bold user-app-ink">
                       {totalUsers}
                     </div>
                   </div>
@@ -302,13 +302,13 @@ export default function LeaderboardPage() {
 
             {/* Leaderboard */}
             <NeumorphicCard variant="raised" className="p-6">
-              <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-6 flex items-center gap-2">
+              <h2 className="text-xl font-bold user-app-ink mb-6 flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-yellow-500" />
                 Top Players
               </h2>
 
               {leaderboard.length === 0 ? (
-                <div className="text-center py-12 text-[var(--neumorphic-muted)]">
+                <div className="text-center py-12 user-app-muted">
                   <Trophy className="h-16 w-16 mx-auto mb-4 opacity-30" />
                   <p>No players found</p>
                 </div>
@@ -324,7 +324,7 @@ export default function LeaderboardPage() {
                       flex items-center gap-4 p-4 rounded-lg transition-all
                       ${isCurrentUser
                             ? 'bg-gradient-to-r from-cyan-500/20 to-purple-600/20 border-2 border-cyan-500 shadow-lg'
-                            : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-bg)]'
+                            : 'user-app-paper user-app-hover'
                           }
                     `}
                       >
@@ -332,7 +332,7 @@ export default function LeaderboardPage() {
                         <div className={`
                       flex items-center justify-center w-12 h-12 rounded-full shrink-0
                       ${getRankBadge(entry.rank)}
-                      ${entry.rank <= 3 ? 'text-white' : 'text-[var(--neumorphic-text)]'}
+                      ${entry.rank <= 3 ? 'text-white' : 'user-app-ink'}
                     `}>
                           {getRankIcon(entry.rank)}
                         </div>
@@ -351,13 +351,13 @@ export default function LeaderboardPage() {
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-[var(--neumorphic-text)] truncate">
+                            <div className="font-semibold user-app-ink truncate">
                               {entry.name}
                               {isCurrentUser && (
                                 <Badge variant="secondary" className="ml-2 text-xs">You</Badge>
                               )}
                             </div>
-                            <div className="flex items-center gap-2 text-xs text-[var(--neumorphic-muted)]">
+                            <div className="flex items-center gap-2 text-xs user-app-muted">
                               {entry.city && (
                                 <span className="flex items-center gap-1">
                                   <MapPin className="h-3 w-3" />
@@ -374,18 +374,18 @@ export default function LeaderboardPage() {
                         {/* Stats */}
                         <div className="flex items-center gap-6 text-right">
                           <div>
-                            <div className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                            <div className="text-sm font-semibold user-app-ink">
                               {entry.xp.toLocaleString()} XP
                             </div>
-                            <div className="text-xs text-[var(--neumorphic-muted)]">
+                            <div className="text-xs user-app-muted">
                               Level {entry.level}
                             </div>
                           </div>
                           <div>
-                            <div className="text-sm font-semibold text-[var(--neumorphic-text)]">
+                            <div className="text-sm font-semibold user-app-ink">
                               {entry.streak}
                             </div>
-                            <div className="text-xs text-[var(--neumorphic-muted)]">
+                            <div className="text-xs user-app-muted">
                               Streak
                             </div>
                           </div>
@@ -406,7 +406,7 @@ export default function LeaderboardPage() {
                   >
                     Previous
                   </Button>
-                  <span className="text-sm text-[var(--neumorphic-muted)]">
+                  <span className="text-sm user-app-muted">
                     Showing {offset + 1}-{offset + leaderboard.length} of {totalUsers}
                   </span>
                   <Button

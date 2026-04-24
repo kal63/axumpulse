@@ -152,10 +152,10 @@ export default function ConsultPurchasePage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -163,14 +163,14 @@ export default function ConsultPurchasePage() {
 
   if (!doctor) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+      <div className="min-h-dvh min-h-full user-app-page">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <NeumorphicCard variant="raised" className="p-8 text-center">
             <Stethoscope className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <h2 className="text-2xl font-bold text-[var(--neumorphic-text)] mb-4">
+            <h2 className="text-2xl font-bold user-app-ink mb-4">
               Doctor Not Found
             </h2>
-            <p className="text-[var(--neumorphic-muted)] mb-6">
+            <p className="user-app-muted mb-6">
               {error || 'The doctor you are looking for is not available.'}
             </p>
             <Button
@@ -192,7 +192,7 @@ export default function ConsultPurchasePage() {
   const total = calculateTotal()
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
         
@@ -212,10 +212,10 @@ export default function ConsultPurchasePage() {
                 <DollarSign className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                   Purchase Consults
                 </h1>
-                <p className="text-lg text-[var(--neumorphic-muted)]">
+                <p className="text-lg user-app-muted">
                   Buy consultation credits from {doctor.name}
                 </p>
               </div>
@@ -229,31 +229,31 @@ export default function ConsultPurchasePage() {
           {/* Doctor Info & Summary */}
           <div className="lg:col-span-2 space-y-6">
             <NeumorphicCard variant="raised" className="p-6">
-              <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-bold user-app-ink mb-4 flex items-center gap-2">
                 <Stethoscope className="w-5 h-5 text-teal-500" />
                 Doctor Information
               </h2>
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-[var(--neumorphic-muted)]">Doctor Name</p>
-                  <p className="text-lg font-semibold text-[var(--neumorphic-text)]">
+                  <p className="text-sm user-app-muted">Doctor Name</p>
+                  <p className="text-lg font-semibold user-app-ink">
                     {doctor.name}
                   </p>
                 </div>
                 {doctor.medicalProfessional?.professionalType && (
                   <div>
-                    <p className="text-sm text-[var(--neumorphic-muted)]">Professional Type</p>
-                    <p className="text-lg font-semibold text-[var(--neumorphic-text)] capitalize">
+                    <p className="text-sm user-app-muted">Professional Type</p>
+                    <p className="text-lg font-semibold user-app-ink capitalize">
                       {doctor.medicalProfessional.professionalType.replace('_', ' ')}
                     </p>
                   </div>
                 )}
                 {doctor.medicalProfessional?.specialties && doctor.medicalProfessional.specialties.length > 0 && (
                   <div>
-                    <p className="text-sm text-[var(--neumorphic-muted)] mb-2">Specialties</p>
+                    <p className="text-sm user-app-muted mb-2">Specialties</p>
                     <div className="flex flex-wrap gap-2">
                       {doctor.medicalProfessional.specialties.map((specialty: string, idx: number) => (
-                        <span key={idx} className="px-2 py-1 bg-[var(--neumorphic-surface)] rounded text-sm">
+                        <span key={idx} className="px-2 py-1 user-app-paper rounded text-sm">
                           {specialty}
                         </span>
                       ))}
@@ -264,12 +264,12 @@ export default function ConsultPurchasePage() {
             </NeumorphicCard>
 
             <NeumorphicCard variant="raised" className="p-6">
-              <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">
+              <h2 className="text-xl font-bold user-app-ink mb-4">
                 Purchase Details
               </h2>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="quantity" className="text-[var(--neumorphic-text)]">
+                  <Label htmlFor="quantity" className="user-app-ink">
                     Number of Consults
                   </Label>
                   <Input
@@ -285,13 +285,13 @@ export default function ConsultPurchasePage() {
                     }}
                     className="w-full"
                   />
-                  <p className="text-sm text-[var(--neumorphic-muted)]">
+                  <p className="text-sm user-app-muted">
                     Each consult costs {consultFee.toFixed(2)} ETB
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-[var(--neumorphic-text)]">
+                  <Label htmlFor="phone" className="user-app-ink">
                     Phone Number *
                   </Label>
                   <Input
@@ -302,13 +302,13 @@ export default function ConsultPurchasePage() {
                     placeholder="0912345678"
                     className="w-full"
                   />
-                  <p className="text-sm text-[var(--neumorphic-muted)]">
+                  <p className="text-sm user-app-muted">
                     Must start with 09 or 07 followed by 8 digits
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-[var(--neumorphic-text)]">
+                  <Label htmlFor="email" className="user-app-ink">
                     Email Address *
                   </Label>
                   <Input
@@ -327,25 +327,25 @@ export default function ConsultPurchasePage() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <NeumorphicCard variant="raised" className="p-6 sticky top-4">
-              <h2 className="text-xl font-bold text-[var(--neumorphic-text)] mb-4">
+              <h2 className="text-xl font-bold user-app-ink mb-4">
                 Order Summary
               </h2>
               <div className="space-y-4">
                 <div className="flex justify-between">
-                  <span className="text-[var(--neumorphic-muted)]">Consult Fee</span>
-                  <span className="font-semibold text-[var(--neumorphic-text)]">
+                  <span className="user-app-muted">Consult Fee</span>
+                  <span className="font-semibold user-app-ink">
                     {consultFee.toFixed(2)} ETB
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[var(--neumorphic-muted)]">Quantity</span>
-                  <span className="font-semibold text-[var(--neumorphic-text)]">
+                  <span className="user-app-muted">Quantity</span>
+                  <span className="font-semibold user-app-ink">
                     {quantity}
                   </span>
                 </div>
-                <div className="border-t border-[var(--neumorphic-border)] pt-4">
+                <div className="border-t user-app-border pt-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-bold text-[var(--neumorphic-text)]">Total</span>
+                    <span className="text-lg font-bold user-app-ink">Total</span>
                     <span className="text-2xl font-bold text-teal-500">
                       {total.toFixed(2)} ETB
                     </span>

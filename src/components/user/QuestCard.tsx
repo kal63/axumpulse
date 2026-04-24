@@ -50,10 +50,10 @@ export function QuestCard({
             <Icon className={cn('w-5 h-5', getIconColor())} />
           </div>
           <div className="flex-1">
-            <h4 className="font-semibold text-[var(--neumorphic-text)]">
+            <h4 className="font-semibold user-app-ink">
               {title}
             </h4>
-            <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
+            <p className="text-sm user-app-muted mt-1">
               {description}
             </p>
           </div>
@@ -61,7 +61,7 @@ export function QuestCard({
         
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-[var(--neumorphic-muted)]">
+            <span className="text-sm user-app-muted">
               {completed ? 'Completed!' : `${progress}/${maxProgress}`}
             </span>
             <span className="text-sm font-semibold text-green-600 dark:text-green-400">

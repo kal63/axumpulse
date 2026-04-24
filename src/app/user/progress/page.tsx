@@ -150,7 +150,7 @@ export default function ProgressPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-cyber-blue)] mx-auto mb-4"></div>
-          <p className="text-[var(--neumorphic-text)]">Loading your progress...</p>
+          <p className="user-app-ink">Loading your progress...</p>
         </div>
       </div>
     )
@@ -161,10 +161,10 @@ export default function ProgressPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <TrendingUp className="h-16 w-16 mx-auto mb-4 text-red-500 opacity-50" />
-          <p className="text-[var(--neumorphic-text)] text-xl font-semibold mb-2">
+          <p className="user-app-ink text-xl font-semibold mb-2">
             Oops! Something went wrong
           </p>
-          <p className="text-[var(--neumorphic-muted)] mb-4">{error}</p>
+          <p className="user-app-muted mb-4">{error}</p>
           <button
             onClick={fetchAllData}
             className="px-6 py-2 bg-gradient-to-r from-[var(--color-cyber-blue)] to-[var(--color-neon-magenta)] text-white rounded-lg font-medium"
@@ -177,7 +177,7 @@ export default function ProgressPage() {
   }
 
   const content = (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {/* Background Gradient */}
@@ -191,10 +191,10 @@ export default function ProgressPage() {
                 <Sparkles className="w-4 h-4" />
                 <span>Track Your Journey</span>
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+              <h1 className="text-4xl md:text-6xl font-bold user-app-ink mb-4">
                 📊 Progress Dashboard
               </h1>
-              <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl mx-auto">
+              <p className="text-xl user-app-muted max-w-2xl mx-auto">
                 Monitor your fitness journey, achievements, and growth with beautiful analytics
               </p>
             </div>
@@ -217,13 +217,13 @@ export default function ProgressPage() {
                     size="lg"
                   />
                 </div>
-                <h2 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-2">
+                <h2 className="text-3xl font-bold user-app-ink mb-2">
                   Level {userInfo.level}
                 </h2>
-                <p className="text-[var(--neumorphic-muted)] mb-4">
+                <p className="user-app-muted mb-4">
                   {userInfo.xp.toLocaleString()} XP • {userInfo.xpProgress}/{userInfo.xpNeeded} to next level
                 </p>
-                <div className="w-full bg-[var(--neumorphic-bg)] rounded-full h-3 mb-2">
+                <div className="mb-2 h-3 w-full rounded-full bg-slate-200 dark:bg-slate-700">
                   <div 
                     className="bg-gradient-to-r from-cyan-500 to-purple-600 h-3 rounded-full transition-all duration-1000"
                     style={{ width: `${Math.round((userInfo.xpProgress / userInfo.xpNeeded) * 100)}%` }}
@@ -242,11 +242,11 @@ export default function ProgressPage() {
               <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl">
                 <Trophy className="h-6 w-6 text-white" />
               </div>
-              <div className="text-3xl font-bold text-[var(--neumorphic-text)] mb-1">
+              <div className="text-3xl font-bold user-app-ink mb-1">
                 {stats?.challengesCompleted || 0}
               </div>
-              <div className="text-sm text-[var(--neumorphic-muted)]">Challenges</div>
-              <div className="text-xs text-[var(--neumorphic-muted)] mt-2">
+              <div className="text-sm user-app-muted">Challenges</div>
+              <div className="text-xs user-app-muted mt-2">
                 {userInfo?.challengeStreak || 0} challenge streak
               </div>
             </NeumorphicCard>
@@ -255,11 +255,11 @@ export default function ProgressPage() {
               <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
                 <Dumbbell className="h-6 w-6 text-white" />
               </div>
-              <div className="text-3xl font-bold text-[var(--neumorphic-text)] mb-1">
+              <div className="text-3xl font-bold user-app-ink mb-1">
                 {stats?.workoutPlansCompleted || 0}
               </div>
-              <div className="text-sm text-[var(--neumorphic-muted)]">Workouts</div>
-              <div className="text-xs text-[var(--neumorphic-muted)] mt-2">
+              <div className="text-sm user-app-muted">Workouts</div>
+              <div className="text-xs user-app-muted mt-2">
                 {userInfo?.workoutStreak || 0} workout streak
               </div>
             </NeumorphicCard>
@@ -268,10 +268,10 @@ export default function ProgressPage() {
               <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl">
                 <Flame className="h-6 w-6 text-white" />
               </div>
-              <div className="text-3xl font-bold text-[var(--neumorphic-text)] mb-1">
+              <div className="text-3xl font-bold user-app-ink mb-1">
                 {userInfo?.dailyStreak || 0}
               </div>
-              <div className="text-sm text-[var(--neumorphic-muted)]">Day Streak</div>
+              <div className="text-sm user-app-muted">Day Streak</div>
               {(userInfo?.dailyStreak || 0) > 0 && (
                 <div className="flex items-center justify-center gap-1 mt-2 text-green-500">
                   <Flame className="h-4 w-4" />
@@ -284,11 +284,11 @@ export default function ProgressPage() {
               <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl">
                 <Award className="h-6 w-6 text-white" />
               </div>
-              <div className="text-3xl font-bold text-[var(--neumorphic-text)] mb-1">
+              <div className="text-3xl font-bold user-app-ink mb-1">
                 {achievementStats.totalUnlocked || 0}
               </div>
-              <div className="text-sm text-[var(--neumorphic-muted)]">Achievements</div>
-              <div className="text-xs text-[var(--neumorphic-muted)] mt-2">
+              <div className="text-sm user-app-muted">Achievements</div>
+              <div className="text-xs user-app-muted mt-2">
                 {achievementStats.progress || 0}% complete
               </div>
             </NeumorphicCard>
@@ -297,7 +297,7 @@ export default function ProgressPage() {
           {/* XP Progress Chart */}
           <NeumorphicCard variant="raised" className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+              <h3 className="text-xl font-bold user-app-ink flex items-center gap-2">
                 <BarChart3 className="h-5 w-5 text-cyan-500" />
                 XP Progress
               </h3>
@@ -316,7 +316,7 @@ export default function ProgressPage() {
                     className={`px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                       xpPeriod === period 
                         ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg' 
-                        : 'bg-[var(--neumorphic-surface)] hover:bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)]'
+                        : 'user-app-paper hover:user-app-paper user-app-ink'
                     }`}
                   >
                     {period}d
@@ -327,15 +327,15 @@ export default function ProgressPage() {
             
             {/* Real XP Chart Data */}
             {chartLoading ? (
-              <div className="h-64 bg-[var(--neumorphic-surface)] rounded-xl p-4 flex items-center justify-center">
+              <div className="h-64 user-app-paper rounded-xl p-4 flex items-center justify-center">
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500 mx-auto mb-2"></div>
-                  <p className="text-sm text-[var(--neumorphic-muted)]">Loading chart data...</p>
+                  <p className="text-sm user-app-muted">Loading chart data...</p>
                 </div>
               </div>
             ) : xpHistory && xpHistory.length > 0 ? (
               <div className="relative">
-                <div className="h-64 bg-[var(--neumorphic-surface)] rounded-xl p-4 flex items-end justify-between gap-1 min-h-[200px]">
+                <div className="h-64 user-app-paper rounded-xl p-4 flex items-end justify-between gap-1 min-h-[200px]">
                   {xpHistory.map((entry, index) => {
                     const maxXP = Math.max(...xpHistory.map(e => e.xp || 0), 1)
                     const heightPercent = maxXP > 0 ? ((entry.xp || 0) / maxXP) * 100 : 0
@@ -358,7 +358,7 @@ export default function ProgressPage() {
                             {entry.xp || 0} XP
                           </div>
                         </div>
-                        <span className="text-xs text-[var(--neumorphic-muted)] mt-2 truncate w-full text-center">
+                        <span className="text-xs user-app-muted mt-2 truncate w-full text-center">
                           {new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </span>
                       </div>
@@ -370,34 +370,34 @@ export default function ProgressPage() {
                   {[0, 25, 50, 75, 100].map((percent) => (
                     <div
                       key={percent}
-                      className="absolute left-0 right-0 border-t border-[var(--neumorphic-border)] opacity-30"
+                      className="absolute left-0 right-0 border-t user-app-border opacity-30"
                       style={{ bottom: `${percent}%` }}
                     />
                   ))}
                 </div>
               </div>
             ) : (
-              <div className="h-64 bg-[var(--neumorphic-surface)] rounded-xl p-4 flex items-center justify-center">
+              <div className="h-64 user-app-paper rounded-xl p-4 flex items-center justify-center">
                 <div className="text-center">
-                  <BarChart3 className="h-12 w-12 mx-auto mb-2 text-[var(--neumorphic-muted)] opacity-50" />
-                  <p className="text-[var(--neumorphic-muted)]">No XP data available for this period</p>
-                  <p className="text-xs text-[var(--neumorphic-muted)] mt-1">Start earning XP to see your progress!</p>
+                  <BarChart3 className="h-12 w-12 mx-auto mb-2 user-app-muted opacity-50" />
+                  <p className="user-app-muted">No XP data available for this period</p>
+                  <p className="text-xs user-app-muted mt-1">Start earning XP to see your progress!</p>
                 </div>
               </div>
             )}
             {xpSummary && (
               <div className="mt-4 grid grid-cols-3 gap-4 text-center">
                 <div>
-                  <div className="text-sm text-[var(--neumorphic-muted)]">Total XP</div>
-                  <div className="text-xl font-bold text-[var(--neumorphic-text)]">{xpSummary.totalXP?.toLocaleString() || 0}</div>
+                  <div className="text-sm user-app-muted">Total XP</div>
+                  <div className="text-xl font-bold user-app-ink">{xpSummary.totalXP?.toLocaleString() || 0}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-[var(--neumorphic-muted)]">Avg Daily</div>
-                  <div className="text-xl font-bold text-[var(--neumorphic-text)]">{Math.round(xpSummary.avgDailyXP || 0)}</div>
+                  <div className="text-sm user-app-muted">Avg Daily</div>
+                  <div className="text-xl font-bold user-app-ink">{Math.round(xpSummary.avgDailyXP || 0)}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-[var(--neumorphic-muted)]">Days Active</div>
-                  <div className="text-xl font-bold text-[var(--neumorphic-text)]">{xpSummary.entries || 0}</div>
+                  <div className="text-sm user-app-muted">Days Active</div>
+                  <div className="text-xl font-bold user-app-ink">{xpSummary.entries || 0}</div>
                 </div>
               </div>
             )}
@@ -406,11 +406,11 @@ export default function ProgressPage() {
           {/* Recent Achievements */}
           <NeumorphicCard variant="raised" className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+              <h3 className="text-xl font-bold user-app-ink flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-yellow-500" />
                 Recent Achievements
               </h3>
-              <button className="flex items-center gap-2 text-[var(--neumorphic-accent)] hover:text-[var(--neumorphic-accent-hover)] transition-colors">
+              <button className="flex items-center gap-2 user-app-link hover:opacity-90 transition-colors">
                 <span>View All</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -455,25 +455,25 @@ export default function ProgressPage() {
                     const timeAgo = unlockedDate ? getTimeAgo(unlockedDate) : 'Recently'
                     
                     return (
-                      <div key={achievement.id} className="p-4 bg-[var(--neumorphic-surface)] rounded-xl">
+                      <div key={achievement.id} className="p-4 user-app-paper rounded-xl">
                         <div className="flex items-start gap-3">
                           <div className={`w-10 h-10 bg-gradient-to-br ${getRarityColor(achievement.rarity)} rounded-xl flex items-center justify-center`}>
                             <IconComponent className="h-5 w-5 text-white" />
                           </div>
                           <div className="flex-1">
-                            <h4 className="font-semibold text-[var(--neumorphic-text)]">
+                            <h4 className="font-semibold user-app-ink">
                               {achievement.name}
                             </h4>
-                            <p className="text-sm text-[var(--neumorphic-muted)]">
+                            <p className="text-sm user-app-muted">
                               {achievement.description}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
                               <span className="text-xs text-cyan-500 font-semibold">+{achievement.xpReward} XP</span>
-                              <span className="text-xs text-[var(--neumorphic-muted)]">•</span>
-                              <span className="text-xs text-[var(--neumorphic-muted)] capitalize">{achievement.rarity}</span>
+                              <span className="text-xs user-app-muted">•</span>
+                              <span className="text-xs user-app-muted capitalize">{achievement.rarity}</span>
                             </div>
                             {unlockedDate && (
-                              <p className="text-xs text-[var(--neumorphic-muted)] mt-1">
+                              <p className="text-xs user-app-muted mt-1">
                                 {timeAgo}
                               </p>
                             )}
@@ -484,7 +484,7 @@ export default function ProgressPage() {
                     )
                   })
               ) : (
-                <div className="col-span-full text-center py-8 text-[var(--neumorphic-muted)]">
+                <div className="col-span-full text-center py-8 user-app-muted">
                   No achievements unlocked yet. Keep going!
                 </div>
               )}
@@ -493,7 +493,7 @@ export default function ProgressPage() {
 
           {/* Activity Timeline */}
           <NeumorphicCard variant="raised" className="p-6">
-            <h3 className="text-xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2 mb-6">
+            <h3 className="text-xl font-bold user-app-ink flex items-center gap-2 mb-6">
               <Activity className="h-5 w-5 text-green-500" />
               Recent Activity
             </h3>
@@ -530,15 +530,15 @@ export default function ProgressPage() {
                   const timeAgo = getTimeAgo(activityDate)
                   
                   return (
-                    <div key={activity.id} className="flex items-center gap-4 p-3 bg-[var(--neumorphic-surface)] rounded-xl">
+                    <div key={activity.id} className="flex items-center gap-4 p-3 user-app-paper rounded-xl">
                       <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
                         <IconComponent className="h-4 w-4 text-white" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-[var(--neumorphic-text)]">
+                        <p className="font-medium user-app-ink">
                           {getActivityLabel(activity.activityType)}
                         </p>
-                        <p className="text-sm text-[var(--neumorphic-muted)]">
+                        <p className="text-sm user-app-muted">
                           {timeAgo}
                         </p>
                       </div>
@@ -552,7 +552,7 @@ export default function ProgressPage() {
                   )
                 })
               ) : (
-                <div className="text-center py-8 text-[var(--neumorphic-muted)]">
+                <div className="text-center py-8 user-app-muted">
                   No recent activity. Start your fitness journey!
                 </div>
               )}

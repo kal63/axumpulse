@@ -83,14 +83,14 @@ export default function TraineeCoachPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[var(--neumorphic-bg)] flex items-center justify-center pt-16">
+      <div className="min-h-dvh min-h-full user-app-page flex items-center justify-center pt-16">
         <Loader2 className="w-10 h-10 animate-spin text-cyan-500" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)] px-4 md:px-6 pt-14 pb-8 md:pt-20 md:pb-10">
+    <div className="min-h-dvh min-h-full user-app-page px-4 md:px-6 pt-14 pb-8 md:pt-20 md:pb-10">
       <div className="max-w-3xl mx-auto space-y-4">
         <div className="flex items-center gap-4">
           <Button variant="outline" size="icon" asChild>
@@ -99,11 +99,11 @@ export default function TraineeCoachPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+            <h1 className="text-2xl font-bold user-app-ink flex items-center gap-2">
               <MessageCircle className="w-7 h-7 text-cyan-500" />
               AI coach
             </h1>
-            <p className="text-sm text-[var(--neumorphic-muted)]">
+            <p className="text-sm user-app-muted">
               Fitness and habit support — not medical advice. Adjust data sharing in{' '}
               <Link href="/user/settings" className="text-cyan-500 underline">
                 Settings
@@ -116,7 +116,7 @@ export default function TraineeCoachPage() {
         <NeumorphicCard variant="raised" className="p-0 overflow-hidden flex flex-col min-h-[420px] max-h-[70vh]">
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && (
-              <p className="text-[var(--neumorphic-muted)] text-center py-12 text-sm">
+              <p className="user-app-muted text-center py-12 text-sm">
                 Ask anything about workouts, consistency, or how to use the app.
               </p>
             )}
@@ -129,7 +129,7 @@ export default function TraineeCoachPage() {
                   className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm ${
                     msg.role === 'user'
                       ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white'
-                      : 'bg-[var(--neumorphic-surface)] text-[var(--neumorphic-text)] border border-[var(--neumorphic-border)]'
+                      : 'user-app-paper user-app-ink border user-app-border'
                   }`}
                 >
                   <p className="whitespace-pre-wrap">{msg.content}</p>
@@ -138,7 +138,7 @@ export default function TraineeCoachPage() {
             ))}
             <div ref={bottomRef} />
           </div>
-          <div className="p-3 border-t border-[var(--neumorphic-border)] flex gap-2 bg-[var(--neumorphic-surface)]">
+          <div className="p-3 border-t user-app-border flex gap-2 user-app-paper">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}

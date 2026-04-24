@@ -118,7 +118,7 @@ export function Sidebar({ className }: SidebarProps) {
               'w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left',
               // Light mode: sidebar is green, so use white text + subtle white hover
               'text-white hover:bg-white/10',
-              // Dark mode: keep existing neumorphic behavior
+              // Dark mode: elevated sidebar surface
               'dark:text-gray-300 dark:hover:bg-gray-800/50',
               isActive && 'bg-[var(--ethio-deep-blue)] text-white shadow-sm dark:bg-gradient-to-r dark:from-cyan-500 dark:to-purple-600 dark:text-white dark:shadow-lg'
             )}

@@ -220,10 +220,10 @@ export default function BookConsultPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -234,7 +234,7 @@ export default function BookConsultPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
         
@@ -255,7 +255,7 @@ export default function BookConsultPage() {
                 <Calendar className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                   Book Consultation
                 </h1>
               </div>
@@ -341,7 +341,7 @@ export default function BookConsultPage() {
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </Button>
-                  <span className="text-sm font-medium text-[var(--neumorphic-text)]">
+                  <span className="text-sm font-medium user-app-ink">
                     Week of {formatDate(weekStart)}
                   </span>
                   <Button
@@ -366,11 +366,11 @@ export default function BookConsultPage() {
                   }
 
                   return (
-                    <div key={dayIndex} className="border border-[var(--neumorphic-border)] rounded-lg p-3">
-                      <div className="font-semibold text-[var(--neumorphic-text)] mb-2">
+                    <div key={dayIndex} className="border user-app-border rounded-lg p-3">
+                      <div className="font-semibold user-app-ink mb-2">
                         {dayName}
                       </div>
-                      <div className="text-xs text-[var(--neumorphic-muted)] mb-3">
+                      <div className="text-xs user-app-muted mb-3">
                         {formatDate(targetDate)}
                       </div>
                       <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -384,7 +384,7 @@ export default function BookConsultPage() {
                                 className={`w-full text-left p-2 rounded text-sm transition-colors ${
                                   isSelected
                                     ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white'
-                                    : 'bg-[var(--neumorphic-bg)] hover:bg-[var(--neumorphic-inset)] text-[var(--neumorphic-text)]'
+                                    : 'bg-slate-100 user-app-ink hover:bg-slate-200/90 dark:bg-slate-800 dark:hover:bg-slate-700/80'
                                 }`}
                               >
                                 <div className="flex items-center gap-1">
@@ -398,7 +398,7 @@ export default function BookConsultPage() {
                             )
                           })
                         ) : (
-                          <p className="text-xs text-[var(--neumorphic-muted)] italic">
+                          <p className="text-xs user-app-muted italic">
                             No slots
                           </p>
                         )}

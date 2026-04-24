@@ -46,23 +46,23 @@ export function ChallengeProgress({
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-[var(--neumorphic-text)] flex items-center gap-2">
+          <h3 className="text-lg font-bold user-app-ink flex items-center gap-2">
             <Target className="h-5 w-5 text-[var(--color-cyber-blue)]" />
             Track Your Progress
           </h3>
           <div className="text-right">
             <p className="text-2xl font-bold text-[var(--color-cyber-blue)]">
               {currentProgress}
-              <span className="text-sm text-[var(--neumorphic-muted)]">/{goalValue}</span>
+              <span className="text-sm user-app-muted">/{goalValue}</span>
             </p>
-            <p className="text-xs text-[var(--neumorphic-muted)]">{goalType}</p>
+            <p className="text-xs user-app-muted">{goalType}</p>
           </div>
         </div>
 
         {/* Progress Bar */}
         <div className="space-y-2">
           <Progress value={progressPercentage} className="h-3" />
-          <div className="flex items-center justify-between text-xs text-[var(--neumorphic-muted)]">
+          <div className="flex items-center justify-between text-xs user-app-muted">
             <span>{progressPercentage.toFixed(1)}% Complete</span>
             <span>{goalValue - currentProgress} remaining</span>
           </div>
@@ -70,7 +70,7 @@ export function ChallengeProgress({
 
         {/* Quick Add Buttons */}
         <div className="space-y-3">
-          <p className="text-sm font-medium text-[var(--neumorphic-text)]">Quick Add</p>
+          <p className="text-sm font-medium user-app-ink">Quick Add</p>
           <div className="grid grid-cols-4 gap-2">
             {quickIncrements.map((amount) => (
               <button
@@ -79,7 +79,7 @@ export function ChallengeProgress({
                 disabled={isUpdating || currentProgress >= goalValue}
                 className="
                   flex flex-col items-center justify-center p-3 rounded-lg
-                  bg-[var(--neumorphic-surface)] 
+                  user-app-paper 
                   shadow-[4px_4px_8px_rgba(15,23,42,0.15),-4px_-4px_8px_rgba(255,255,255,0.85)] 
                   dark:shadow-[4px_4px_8px_rgba(0,0,0,0.6),-4px_-4px_8px_rgba(255,255,255,0.06)]
                   hover:shadow-[inset_2px_2px_4px_rgba(15,23,42,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.8)]
@@ -91,7 +91,7 @@ export function ChallengeProgress({
                 "
               >
                 <Plus className="h-4 w-4 text-[var(--color-lime-pulse)] mb-1" />
-                <span className="text-sm font-bold text-[var(--neumorphic-text)]">{amount}</span>
+                <span className="text-sm font-bold user-app-ink">{amount}</span>
               </button>
             ))}
           </div>
@@ -99,7 +99,7 @@ export function ChallengeProgress({
 
         {/* Custom Value Input */}
         <div className="space-y-3">
-          <p className="text-sm font-medium text-[var(--neumorphic-text)]">Set Custom Value</p>
+          <p className="text-sm font-medium user-app-ink">Set Custom Value</p>
           <div className="flex gap-2">
             <input
               type="number"
@@ -111,8 +111,8 @@ export function ChallengeProgress({
               disabled={isUpdating}
               className="
                 flex-1 px-4 py-2 rounded-lg text-sm
-                bg-[var(--neumorphic-surface)] 
-                text-[var(--neumorphic-text)]
+                user-app-paper 
+                user-app-ink
                 border-none
                 shadow-[inset_4px_4px_8px_rgba(15,23,42,0.12),inset_-4px_-4px_8px_rgba(255,255,255,0.9)]
                 dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.65),inset_-4px_-4px_8px_rgba(255,255,255,0.05)]
@@ -137,8 +137,8 @@ export function ChallengeProgress({
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-xs text-[var(--neumorphic-muted)]">Daily Avg</p>
-              <p className="text-sm font-bold text-[var(--neumorphic-text)]">
+              <p className="text-xs user-app-muted">Daily Avg</p>
+              <p className="text-sm font-bold user-app-ink">
                 {(currentProgress / 7).toFixed(1)}
               </p>
             </div>
@@ -149,8 +149,8 @@ export function ChallengeProgress({
               <Calendar className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-xs text-[var(--neumorphic-muted)]">Days Active</p>
-              <p className="text-sm font-bold text-[var(--neumorphic-text)]">7</p>
+              <p className="text-xs user-app-muted">Days Active</p>
+              <p className="text-sm font-bold user-app-ink">7</p>
             </div>
           </div>
         </div>

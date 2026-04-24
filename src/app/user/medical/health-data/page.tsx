@@ -75,10 +75,10 @@ export default function HealthDataPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading...</p>
+          <p className="mt-4 user-app-muted">Loading...</p>
         </div>
       </div>
     )
@@ -89,7 +89,7 @@ export default function HealthDataPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
         
@@ -110,7 +110,7 @@ export default function HealthDataPage() {
                     <Activity className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-4xl md:text-5xl font-bold text-[var(--neumorphic-text)]">
+                    <h1 className="text-4xl md:text-5xl font-bold user-app-ink">
                       Health Data
                     </h1>
                   </div>
@@ -191,21 +191,21 @@ export default function HealthDataPage() {
               <NeumorphicCard key={point.id} variant="raised" className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-[var(--neumorphic-text)]">
+                    <h3 className="text-lg font-semibold user-app-ink">
                       {point.metric?.replace('_', ' ')}
                     </h3>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-2xl font-bold text-[var(--neumorphic-text)]">
+                      <span className="text-2xl font-bold user-app-ink">
                         {point.value}
                       </span>
                       {point.unit && (
-                        <span className="text-sm text-[var(--neumorphic-muted)]">
+                        <span className="text-sm user-app-muted">
                           {point.unit}
                         </span>
                       )}
                     </div>
                   </div>
-                  <div className="text-sm text-[var(--neumorphic-muted)] flex items-center gap-1">
+                  <div className="text-sm user-app-muted flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
                     {new Date(point.timestamp).toLocaleDateString()}
                   </div>
@@ -216,10 +216,10 @@ export default function HealthDataPage() {
         ) : (
           <NeumorphicCard variant="raised" className="p-12 text-center">
             <Activity className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-semibold text-[var(--neumorphic-text)] mb-2">
+            <h3 className="text-xl font-semibold user-app-ink mb-2">
               No Health Data Yet
             </h3>
-            <p className="text-[var(--neumorphic-muted)] mb-4">
+            <p className="user-app-muted mb-4">
               Start logging your health metrics to track your progress.
             </p>
             <Button

@@ -30,17 +30,17 @@ export function SummaryCard({
       )}
       
       <div className="space-y-4">
-        <h4 className="font-semibold text-[var(--neumorphic-text)]">
+        <h4 className="font-semibold user-app-ink">
           {title}
         </h4>
         
         <div className="space-y-3">
           {items.map((item, index) => (
             <div key={index} className="flex justify-between items-center">
-              <span className="text-sm text-[var(--neumorphic-muted)]">
+              <span className="text-sm user-app-muted">
                 {item.label}
               </span>
-              <span className="text-sm font-semibold text-[var(--neumorphic-text)]">
+              <span className="text-sm font-semibold user-app-ink">
                 {item.value}
               </span>
             </div>

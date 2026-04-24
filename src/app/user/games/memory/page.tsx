@@ -114,10 +114,10 @@ export default function MemoryPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading game...</p>
+          <p className="mt-4 user-app-muted">Loading game...</p>
         </div>
       </div>
     );
@@ -128,7 +128,7 @@ export default function MemoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)] pb-20">
+    <div className="min-h-dvh min-h-full user-app-page pb-20">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -140,10 +140,10 @@ export default function MemoryPage() {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-2">
+          <h1 className="text-3xl font-bold user-app-ink mb-2">
             {game.title}
           </h1>
-          <p className="text-[var(--neumorphic-muted)]">
+          <p className="user-app-muted">
             {game.description || 'Match exercise pairs to win!'}
           </p>
         </div>
@@ -152,7 +152,7 @@ export default function MemoryPage() {
         {loadingPairs ? (
           <NeumorphicCard variant="raised" className="p-12 text-center">
             <Loader2 className="h-12 w-12 animate-spin text-cyan-500 mx-auto mb-4" />
-            <p className="text-[var(--neumorphic-muted)]">
+            <p className="user-app-muted">
               Generating exercise pairs...
             </p>
           </NeumorphicCard>
@@ -166,7 +166,7 @@ export default function MemoryPage() {
           </NeumorphicCard>
         ) : (
           <NeumorphicCard variant="raised" className="p-12 text-center">
-            <p className="text-[var(--neumorphic-muted)] mb-4">
+            <p className="user-app-muted mb-4">
               Failed to load exercise pairs
             </p>
             <Button onClick={() => loadPairs(game)}>

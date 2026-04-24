@@ -201,10 +201,10 @@ export default function SpinWinPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--neumorphic-bg)]">
+      <div className="flex min-h-dvh min-h-screen items-center justify-center user-app-page">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
-          <p className="mt-4 text-[var(--neumorphic-muted)]">Loading game...</p>
+          <p className="mt-4 user-app-muted">Loading game...</p>
         </div>
       </div>
     );
@@ -215,7 +215,7 @@ export default function SpinWinPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)] pb-20">
+    <div className="min-h-dvh min-h-full user-app-page pb-20">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -229,10 +229,10 @@ export default function SpinWinPage() {
           </Button>
           <div className="flex items-start justify-between gap-4 mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-[var(--neumorphic-text)] mb-2">
+              <h1 className="text-3xl font-bold user-app-ink mb-2">
                 {game.title}
               </h1>
-              <p className="text-[var(--neumorphic-muted)]">
+              <p className="user-app-muted">
                 {game.description || 'Spin the wheel to get a random exercise!'}
               </p>
             </div>
@@ -241,13 +241,13 @@ export default function SpinWinPage() {
               <div className="flex flex-col items-center gap-2">
                 <div className="flex items-center gap-2">
                   <Gift className="h-5 w-5 text-cyan-500" />
-                  <span className="text-sm font-semibold text-[var(--neumorphic-muted)]">Spins</span>
+                  <span className="text-sm font-semibold user-app-muted">Spins</span>
                 </div>
                 <div className="text-3xl font-bold text-cyan-500">
                   {availableSpins}
                 </div>
                 {availableSpins === 0 && (
-                  <p className="text-xs text-[var(--neumorphic-muted)] text-center">
+                  <p className="text-xs user-app-muted text-center">
                     Come back tomorrow!
                   </p>
                 )}
@@ -273,7 +273,7 @@ export default function SpinWinPage() {
 
         {/* Info */}
         <div className="mt-6 text-center">
-          <div className="inline-flex items-center gap-2 text-sm text-[var(--neumorphic-muted)]">
+          <div className="inline-flex items-center gap-2 text-sm user-app-muted">
             <Zap className="h-4 w-4 text-yellow-500" />
             <span>
               {exercise?.xpReward 

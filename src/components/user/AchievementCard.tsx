@@ -33,10 +33,10 @@ export function AchievementCard({
         </div>
         
         <div className="flex-1">
-          <h4 className="font-semibold text-[var(--neumorphic-text)]">
+          <h4 className="font-semibold user-app-ink">
             {title}
           </h4>
-          <p className="text-sm text-[var(--neumorphic-muted)] mt-1">
+          <p className="text-sm user-app-muted mt-1">
             {description}
           </p>
         </div>

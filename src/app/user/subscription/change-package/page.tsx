@@ -41,7 +41,7 @@ export default function ChangePackagePage() {
     new Intl.NumberFormat('en-ET', { style: 'currency', currency: 'ETB', minimumFractionDigits: 0 }).format(price)
 
   return (
-    <div className="min-h-screen bg-[var(--neumorphic-bg)]">
+    <div className="min-h-dvh min-h-full user-app-page">
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
         <div className="flex items-center justify-between gap-4">
           <Button variant="outline" className="border-slate-600 text-slate-300" onClick={() => router.push('/user/dashboard')}>
@@ -49,15 +49,15 @@ export default function ChangePackagePage() {
             Back
           </Button>
           <div className="text-right">
-            <h1 className="text-2xl font-bold text-[var(--neumorphic-text)]">Change package</h1>
-            <p className="text-sm text-[var(--neumorphic-muted)]">Select a new package. Upgrades are prorated by remaining time.</p>
+            <h1 className="text-2xl font-bold user-app-ink">Change package</h1>
+            <p className="text-sm user-app-muted">Select a new package. Upgrades are prorated by remaining time.</p>
           </div>
         </div>
 
         {loading ? (
-          <div className="text-[var(--neumorphic-muted)]">Loading packages...</div>
+          <div className="user-app-muted">Loading packages...</div>
         ) : plans.length === 0 ? (
-          <div className="text-[var(--neumorphic-muted)]">No packages available.</div>
+          <div className="user-app-muted">No packages available.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {plans.map((plan) => {
@@ -71,16 +71,16 @@ export default function ChangePackagePage() {
                         <Package className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <div className="text-lg font-bold text-[var(--neumorphic-text)]">{plan.name}</div>
-                        <div className="text-xs text-[var(--neumorphic-muted)] capitalize">{plan.level} level</div>
+                        <div className="text-lg font-bold user-app-ink">{plan.name}</div>
+                        <div className="text-xs user-app-muted capitalize">{plan.level} level</div>
                       </div>
                     </div>
                     <Badge className="bg-slate-700 text-slate-200 capitalize">{plan.minDuration}</Badge>
                   </div>
 
                   <div className="mt-4 space-y-1">
-                    <div className="text-sm text-[var(--neumorphic-muted)]">{formatPrice(daily)} / day</div>
-                    <div className="text-sm text-[var(--neumorphic-muted)]">{formatPrice(monthly)} / month</div>
+                    <div className="text-sm user-app-muted">{formatPrice(daily)} / day</div>
+                    <div className="text-sm user-app-muted">{formatPrice(monthly)} / month</div>
                   </div>
 
                   <div className="mt-6">
