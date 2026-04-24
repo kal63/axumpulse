@@ -26,10 +26,11 @@ import { apiClient, TrainerSettings, UpdateSettingsRequest } from '@/lib/api-cli
 import { cn, getImageUrl } from '@/lib/utils'
 import { uploadProfileImage, removeProfileImage, validateFileSize, validateImageType, FILE_SIZE_LIMITS, ALLOWED_FILE_TYPES } from '@/lib/upload-utils'
 import { useAuth } from '@/contexts/auth-context'
+import { applyAppTheme, DEFAULT_USER_THEME, normalizeUserTheme, themeStorageKeyForUser } from '@/lib/app-theme'
 import { toast } from 'sonner'
 
 export default function TrainerSettingsPage() {
-  const { refreshUser } = useAuth()
+  const { refreshUser, user: authUser } = useAuth()
   const [settings, setSettings] = useState<TrainerSettings | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -83,27 +84,11 @@ export default function TrainerSettingsPage() {
     fetchSettings()
   }, [])
 
-  // Apply theme helper (immediately applies when user changes theme)
-  const applyTheme = (theme: string) => {
-    if (typeof window === 'undefined') return
-    if (theme === 'system') {
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      if (systemPrefersDark) {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
-    } else if (theme === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }
-
   // Apply theme when settings or formData change
   useEffect(() => {
-    const theme = formData.profile?.preferences?.theme || settings?.profile?.preferences?.theme
-    if (theme) applyTheme(theme)
+    const raw = formData.profile?.preferences?.theme ?? settings?.profile?.preferences?.theme
+    const theme = normalizeUserTheme(raw)
+    applyAppTheme(theme)
   }, [settings, formData.profile?.preferences?.theme])
 
   const handleInputChange = (section: keyof UpdateSettingsRequest, field: string, value: any) => {
@@ -137,6 +122,16 @@ export default function TrainerSettingsPage() {
       const response = await apiClient.updateTrainerSettings(formData)
       if (response.success && response.data) {
         setSettings(response.data.settings)
+        if (formData.profile?.preferences?.theme) {
+          const t = normalizeUserTheme(formData.profile.preferences.theme)
+          if (authUser?.id) {
+            try {
+              localStorage.setItem(themeStorageKeyForUser(authUser.id), t)
+            } catch {
+              /* ignore */
+            }
+          }
+        }
         // Refresh user data in auth context to update header
         await refreshUser()
         toast.success('Settings updated successfully')
@@ -587,13 +582,13 @@ export default function TrainerSettingsPage() {
                 <div className="space-y-2">
                   <Label htmlFor="theme">Theme</Label>
                   <Select
-                    value={formData.profile?.preferences?.theme || 'system'}
+                    value={formData.profile?.preferences?.theme || DEFAULT_USER_THEME}
                     onValueChange={(value) => {
                       setFormData((prev: any) => ({
                         ...prev,
                         profile: { ...prev.profile, preferences: { ...prev.profile?.preferences, theme: value } }
                       }))
-                      applyTheme(value)
+                      applyAppTheme(value)
                     }}
                   >
                     <SelectTrigger>

@@ -37,6 +37,7 @@ import {
 } from 'lucide-react'
 import { uploadUserProfileImage, removeUserProfileImage, validateFileSize, validateImageType, FILE_SIZE_LIMITS, ALLOWED_FILE_TYPES, getImageUrl } from '@/lib/upload-utils'
 import { useToast } from '@/hooks/use-toast'
+import { applyAppTheme, DEFAULT_USER_THEME, normalizeUserTheme, themeStorageKeyForUser } from '@/lib/app-theme'
 
 const DEFAULT_AI_CONTEXT_SHARING = {
   goalsAndMetrics: true,
@@ -79,22 +80,6 @@ export default function SettingsPage() {
   const [formData, setFormData] = useState<any>({})
   const [languages, setLanguages] = useState<any[]>([])
 
-  // Apply theme function
-  const applyTheme = (theme: string) => {
-    if (theme === 'system') {
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      if (systemPrefersDark) {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
-    } else if (theme === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }
-
   useEffect(() => {
     fetchSettings()
     fetchLanguages()
@@ -102,16 +87,15 @@ export default function SettingsPage() {
 
   // Apply theme when settings are loaded
   useEffect(() => {
-    if (settings?.preferences?.theme) {
-      applyTheme(settings.preferences.theme)
-      
-      // Listen for system theme changes if theme is set to 'system'
-      if (settings.preferences.theme === 'system') {
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-        const handleChange = () => applyTheme('system')
-        mediaQuery.addEventListener('change', handleChange)
-        return () => mediaQuery.removeEventListener('change', handleChange)
-      }
+    if (!settings) return
+    const theme = normalizeUserTheme(settings.preferences?.theme)
+    applyAppTheme(theme)
+
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      const handleChange = () => applyAppTheme('system')
+      mediaQuery.addEventListener('change', handleChange)
+      return () => mediaQuery.removeEventListener('change', handleChange)
     }
   }, [settings])
 
@@ -242,9 +226,16 @@ export default function SettingsPage() {
       
       if (response.success) {
         setSettings(formData)
-        // Ensure theme is applied after save
         if (formData.preferences?.theme) {
-          applyTheme(formData.preferences.theme)
+          const t = normalizeUserTheme(formData.preferences.theme)
+          applyAppTheme(t)
+          if (authUser?.id) {
+            try {
+              localStorage.setItem(themeStorageKeyForUser(authUser.id), t)
+            } catch {
+              /* ignore */
+            }
+          }
         }
         toast({
           title: 'Settings Updated!',
@@ -597,14 +588,13 @@ export default function SettingsPage() {
                 <div className="space-y-2">
                   <Label htmlFor="theme">Theme</Label>
                   <Select
-                    value={formData.preferences?.theme || 'system'}
+                    value={formData.preferences?.theme || DEFAULT_USER_THEME}
                     onValueChange={(value) => {
                       setFormData((prev: any) => ({
                         ...prev,
                         preferences: { ...prev.preferences, theme: value }
                       }))
-                      // Apply theme immediately when changed
-                      applyTheme(value)
+                      applyAppTheme(value)
                     }}
                   >
                     <SelectTrigger>
