@@ -56,17 +56,17 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative z-10 min-h-screen flex items-center overflow-hidden scroll-mt-24 md:scroll-mt-28"
+      className="relative z-10 min-h-screen flex items-center overflow-hidden scroll-mt-24 md:scroll-mt-28 bg-[hsl(78,88%,55%)]"
     >
-      <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute inset-0 opacity-50"
-          style={{
-            background:
-              'radial-gradient(circle at 20% 20%, hsl(78 88% 55% / 0.18) 0%, transparent 50%)',
-          }}
-        />
-      </div>
+      {/* Radiant Stride: solid brand primary + soft radial glow (see radiant-stride-app Hero + --gradient-glow) */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-60"
+        style={{
+          background:
+            'radial-gradient(circle at 30% 30%, hsl(78 95% 65% / 0.4), transparent 70%)',
+        }}
+        aria-hidden
+      />
 
       <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-24 md:py-28 lg:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center min-h-[min(100vh,860px)]">
