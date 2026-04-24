@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth-context';
+import { Button } from '@/components/ui/button';
 import { BottomNavigation } from '@/components/user/BottomNavigation';
 import { Sidebar } from '@/components/user/Sidebar';
 import { NeumorphicCard } from '@/components/user/NeumorphicCard';
@@ -27,7 +28,7 @@ interface UserLayoutProps {
 }
 
 export default function UserLayout({ children }: UserLayoutProps) {
-  const { user, logout, isLoading: authLoading } = useAuth();
+  const { user, logout, isLoading: authLoading, sessionLoadError, retrySession } = useAuth();
   const [isMobile, setIsMobile] = useState(false);
   const [showTrainerPromo, setShowTrainerPromo] = useState(true);
   const [userStats, setUserStats] = useState({
@@ -88,12 +89,14 @@ export default function UserLayout({ children }: UserLayoutProps) {
     localStorage.setItem('trainerPromoDismissed', Date.now().toString());
   };
 
-  // Authentication check - redirect to login if not authenticated
+  // Redirect only when there is no session to recover (avoid kicking users off on transient API errors)
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (authLoading || user || sessionLoadError) return;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+    if (!token) {
       window.location.href = '/login';
     }
-  }, [authLoading, user]);
+  }, [authLoading, user, sessionLoadError]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -117,7 +120,30 @@ export default function UserLayout({ children }: UserLayoutProps) {
     );
   }
 
-  // Don't render anything if not authenticated (will redirect)
+  if (!user && sessionLoadError) {
+    return (
+      <div className="user-app-ethio user-app-page flex min-h-screen min-h-dvh items-center justify-center p-6">
+        <div className="user-app-surface max-w-md space-y-4 p-8 text-center">
+          <p className="user-app-ink text-lg font-semibold">Can&apos;t reach the server</p>
+          <p className="user-app-muted text-sm">
+            Your connection is fine, but the app could not load your profile. This often happens when the API URL is
+            wrong for this environment or the service is restarting. Your login is still saved — try again, or sign
+            out to use a different account.
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+            <Button type="button" className="user-app-btn-primary" onClick={() => retrySession()}>
+              Try again
+            </Button>
+            <Button type="button" variant="outline" onClick={() => logout()}>
+              Sign out
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render shell if not authenticated (redirect effect handles no-token case)
   if (!user) {
     return null;
   }

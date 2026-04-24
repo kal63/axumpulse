@@ -1,13 +1,34 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiClient, type User, type LoginRequest } from '@/lib/api-client'
+
+type SessionLoadError = 'network' | null
+
+type GetMeResponse = Awaited<ReturnType<typeof apiClient.getMe>>
+
+/** Reduces false logouts when the API is briefly unreachable (common on mobile / strict hosting). */
+async function getMeWithRetries(maxAttempts = 3): Promise<GetMeResponse> {
+  let last: GetMeResponse | null = null
+  for (let i = 0; i < maxAttempts; i++) {
+    last = await apiClient.getMe()
+    if (last.success && last.data?.user) return last
+    if (last.error?.code !== 'NETWORK_ERROR') return last
+    if (i < maxAttempts - 1) {
+      await new Promise((r) => setTimeout(r, 400 * (i + 1)))
+    }
+  }
+  return last!
+}
 
 interface AuthContextType {
   user: User | null
   isLoading: boolean
   isAuthenticated: boolean
+  /** Set when a token exists but /auth/me could not be reached (do not send user to login). */
+  sessionLoadError: SessionLoadError
+  retrySession: () => void
   login: (credentials: LoginRequest) => Promise<{ success: boolean; error?: string; user?: User }>
   dev_login: (role: string) => Promise<{ success: boolean; error?: string; user?: User }>
   logout: () => void
@@ -19,66 +40,65 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [sessionLoadError, setSessionLoadError] = useState<SessionLoadError>(null)
   const router = useRouter()
 
   const isAuthenticated = !!user
 
+  const runSessionBootstrap = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('authToken')
+      if (!token) {
+        setSessionLoadError(null)
+        return
+      }
+
+      apiClient.setToken(token)
+      const response = await getMeWithRetries()
+
+      if (response.success && response.data?.user) {
+        setUser(response.data.user)
+        setSessionLoadError(null)
+        return
+      }
+
+      const status = response.error?.status
+      if (status === 401) {
+        console.error('Failed to fetch user data (unauthorized):', response.error)
+        apiClient.clearToken()
+        setSessionLoadError(null)
+        return
+      }
+
+      console.error('Failed to fetch user data (session kept for retry):', response.error)
+      setSessionLoadError('network')
+    } catch (error) {
+      console.error('Auth check failed:', error)
+      setSessionLoadError('network')
+    }
+  }, [])
+
+  const retrySession = useCallback(() => {
+    setSessionLoadError(null)
+    setIsLoading(true)
+    void (async () => {
+      await runSessionBootstrap()
+      setIsLoading(false)
+    })()
+  }, [runSessionBootstrap])
+
   // Check for existing token on mount
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('authToken')
-        if (token) {
-          // Set the token in the API client
-          apiClient.setToken(token)
-          
-          // Fetch complete user data from /auth/me endpoint
-          const response = await apiClient.getMe()
-          if (response.success && response.data?.user) {
-            setUser(response.data.user)
-          } else {
-            // Provide more detailed error information
-            let errorInfo: Record<string, unknown>
-            
-            if (response.error) {
-              // Extract meaningful error properties, filtering out empty objects
-              const error = response.error
-              errorInfo = {
-                message: error.message || 'Unknown error',
-                code: error.code || 'UNKNOWN',
-                ...(error.status && { status: error.status }),
-                ...(error.statusText && { statusText: error.statusText }),
-              }
-              
-              // If error object is essentially empty, provide a default message
-              if (!error.message && !error.code && !error.status) {
-                errorInfo.message = 'Authentication failed - token may be invalid or expired'
-              }
-            } else {
-              errorInfo = { 
-                message: 'Failed to fetch user data - no error details available',
-                code: 'UNKNOWN_ERROR'
-              }
-            }
-            
-            console.error('Failed to fetch user data:', errorInfo)
-            apiClient.clearToken()
-          }
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error)
-        apiClient.clearToken()
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    checkAuth()
-  }, [])
+    void (async () => {
+      await runSessionBootstrap()
+      setIsLoading(false)
+    })()
+  }, [runSessionBootstrap])
 
   const login = async (credentials: LoginRequest) => {
     try {
       setIsLoading(true)
+      setSessionLoadError(null)
       const response = await apiClient.login(credentials)
       
       if (response.success && response.data) {
@@ -119,6 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const dev_login = async (role: string) => {
     try {
       setIsLoading(true)
+      setSessionLoadError(null)
       const response = await apiClient.dev_login(role)
       
       if (response.success && response.data) {
@@ -158,24 +179,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     setUser(null)
+    setSessionLoadError(null)
     apiClient.clearToken()
     router.push('/login')
   }
 
   const refreshUser = async () => {
-    // Fetch fresh user data from the server using the /me endpoint
     try {
       const response = await apiClient.getMe()
       if (response.success && response.data) {
         setUser(response.data.user)
-      } else {
-        // If we can't fetch user data, the token might be invalid
+        setSessionLoadError(null)
+      } else if (response.error?.status === 401) {
         logout()
+      } else {
+        setSessionLoadError('network')
       }
     } catch (error) {
       console.error('Failed to refresh user data:', error)
-      // If we can't fetch user data, the token might be invalid
-      logout()
+      setSessionLoadError('network')
     }
   }
 
@@ -183,6 +205,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     isLoading,
     isAuthenticated,
+    sessionLoadError,
+    retrySession,
     login,
     dev_login,
     logout,

@@ -19,6 +19,47 @@ function isLocalDevApiUrl(url: string): boolean {
   }
 }
 
+/** Loopback / LAN / mDNS API hosts — invalid when the app is opened on a public deploy host. */
+function isNonPublicApiHostname(hostname: string): boolean {
+  const h = hostname.replace(/^\[|\]$/g, '')
+  if (isLocalDevHostname(h)) return true
+  if (h.endsWith('.local')) return true
+
+  const ipv4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(h)
+  if (ipv4) {
+    const a = Number(ipv4[1])
+    const b = Number(ipv4[2])
+    if (a === 10) return true
+    if (a === 172 && b >= 16 && b <= 31) return true
+    if (a === 192 && b === 168) return true
+    if (a === 169 && b === 254) return true
+    if (a === 127) return true
+    if (a === 0) return true
+  }
+
+  if (h.includes(':')) {
+    const hl = h.toLowerCase()
+    if (hl === '::1') return true
+    if (hl.startsWith('fe80:')) return true
+    if (hl.startsWith('fc') || hl.startsWith('fd')) return true
+  }
+  return false
+}
+
+/**
+ * Drop stored API base when it clearly cannot be reached from the current browser tab
+ * (e.g. leftover localhost / 192.168.x / Docker internal from dev).
+ */
+function shouldDiscardStoredApiBaseUrl(overrideNormalized: string, onLocalhostPage: boolean): boolean {
+  if (onLocalhostPage) return false
+  try {
+    const host = new URL(overrideNormalized).hostname
+    return isNonPublicApiHostname(host)
+  } catch {
+    return false
+  }
+}
+
 /**
  * Prefer localStorage override only when it still makes sense for this origin.
  * A common prod bug: dev left `apiBaseUrl` → http://localhost:... in storage; `/auth/me` then
@@ -30,6 +71,7 @@ function getInitialApiBaseUrl(): string {
   const override = localStorage.getItem(API_BASE_URL_STORAGE_KEY)
   if (!override) return DEFAULT_API_BASE_URL
 
+  const normalized = override.replace(/\/$/, '')
   const onLocalhostPage = isLocalDevHostname(window.location.hostname)
   if (isLocalDevApiUrl(override) && !onLocalhostPage) {
     try {
@@ -40,7 +82,16 @@ function getInitialApiBaseUrl(): string {
     return DEFAULT_API_BASE_URL
   }
 
-  return override.replace(/\/$/, '')
+  if (shouldDiscardStoredApiBaseUrl(normalized, onLocalhostPage)) {
+    try {
+      localStorage.removeItem(API_BASE_URL_STORAGE_KEY)
+    } catch {
+      /* ignore */
+    }
+    return DEFAULT_API_BASE_URL
+  }
+
+  return normalized
 }
 
 // Helper function to create pagination query string
@@ -975,7 +1026,10 @@ class ApiClient {
     let normalized = String(baseURL || '').replace(/\/$/, '')
     if (typeof window !== 'undefined') {
       const onLocalhostPage = isLocalDevHostname(window.location.hostname)
-      if (isLocalDevApiUrl(normalized) && !onLocalhostPage) {
+      if (
+        (isLocalDevApiUrl(normalized) && !onLocalhostPage) ||
+        shouldDiscardStoredApiBaseUrl(normalized, onLocalhostPage)
+      ) {
         try {
           localStorage.removeItem(API_BASE_URL_STORAGE_KEY)
         } catch {
