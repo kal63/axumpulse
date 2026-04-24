@@ -100,16 +100,19 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* Ethio telecom / mobile-aligned light mode tokens */
-  --ethio-lemon: #8EC63F;
-  --ethio-lemon-dark: #5B8C2E;
-  --ethio-deep-blue: #0082C6;
-  /* Large areas (e.g. desktop sidebar): same hue as --ethio-lemon, clearly green — not flat grey/white */
-  --ethio-rail: color-mix(in srgb, var(--ethio-lemon) 48%, #dde0d6);
-  --ethio-rail-border: color-mix(in srgb, var(--ethio-lemon) 36%, #9daa8c);
-  /* Small pill chips: same family as --ethio-lemon, “light lime” (dashboard Welcome Back, etc.) */
-  --ethio-pill: color-mix(in srgb, var(--ethio-lemon) 88%, #f2faeb);
-  --ethio-pill-shadow: 0 4px 14px hsl(80 50% 35% / 0.2);
+  /* EthioTells brand lime — exact from design: rgb(181, 241, 39) */
+  --ethio-lemon: #b5f127;
+  /* Darker accent (borders, ink-on-lime, hover) — same hue family */
+  --ethio-lemon-dark: color-mix(in srgb, var(--ethio-lemon) 48%, #141a08);
+  --ethio-deep-blue: #0082c6;
+  /* Desktop sidebar rail = full brand green */
+  --ethio-rail: var(--ethio-lemon);
+  --ethio-rail-border: color-mix(in srgb, var(--ethio-lemon-dark) 36%, #ffffff);
+  /* Active nav item on rail: deep blue, white type */
+  --ethio-nav-active: #005d9a;
+  /* Pills: soft tint of the same brand green */
+  --ethio-pill: color-mix(in srgb, var(--ethio-lemon) 88%, #f4fbe8);
+  --ethio-pill-shadow: 0 4px 14px hsl(72 65% 22% / 0.22);
 
   /* Neumorphic Light Mode */
   --neumorphic-bg: #F3F4F6;
@@ -240,10 +243,9 @@
   .user-app-gradient {
     @apply bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)];
   }
-  /* Desktop trainee sidebar: matches Ethio pill / --ethio-lemon family */
   .user-app-sidebar-rail {
-    border-right: 1px solid var(--ethio-rail-border);
     background-color: var(--ethio-rail);
+    border-right: 1px solid var(--ethio-rail-border);
   }
   .dark .user-app-sidebar-rail {
     @apply border-slate-700/55 bg-card;

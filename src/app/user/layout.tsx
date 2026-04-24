@@ -211,7 +211,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
                 <div className="hidden dark:block">
                   <Logo size="sm" />
                 </div>
-                <p className="text-sm user-app-muted mt-1">
+                <p className="user-app-ink/90 mt-1 text-sm">
                   Gamified Fitness Platform
                 </p>
               </div>
@@ -256,30 +256,30 @@ export default function UserLayout({ children }: UserLayoutProps) {
 
               {/* Navigation Items flex-1 space-y-2 */}
 
-              <nav className="flex-1 space-y-2 overflow-y-auto pr-2 no-scrollbar">
+              <nav className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-0 no-scrollbar">
                 <Sidebar />
               </nav>
 
-              {/* Settings & Logout */}
-              <div className="space-y-2">
-                <button
-                  onClick={() => window.location.href = '/user/settings'}
-                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left user-app-ink hover:bg-white/80 dark:text-gray-300 dark:hover:bg-gray-800/50"
-                >
-                  <Settings className="w-5 h-5 text-slate-600 dark:text-gray-400" />
-                  <span className="font-medium">
-                    Settings
-                  </span>
-                </button>
-                <button
-                  onClick={logout}
-                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 text-left text-slate-800 hover:bg-red-50 dark:hover:bg-red-900/20 dark:text-red-400"
-                >
-                  <LogOut className="w-5 h-5 text-slate-600 dark:text-red-400" />
-                  <span className="font-medium">
-                    Logout
-                  </span>
-                </button>
+              {/* Settings & Logout — EthioTells: ink on brand lime, same pill rhythm as nav */}
+              <div className="mt-3 space-y-1.5 border-t border-[hsl(222,47%,8%)]/10 pt-4 dark:border-slate-600/50">
+                <div className="px-2">
+                  <button
+                    onClick={() => (window.location.href = '/user/settings')}
+                    className="flex w-full items-center gap-3 rounded-full py-2.5 pl-3 pr-3 text-left text-[hsl(222,47%,8%)] transition-all hover:bg-white/20 dark:text-slate-300 dark:hover:bg-white/10"
+                    type="button"
+                  >
+                    <Settings className="h-5 w-5 shrink-0" strokeWidth={1.5} />
+                    <span className="font-medium">Settings</span>
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="mt-1 flex w-full items-center gap-3 rounded-full py-2.5 pl-3 pr-3 text-left text-[hsl(222,47%,8%)] transition-all hover:bg-white/20 dark:text-red-400 dark:hover:bg-red-950/30"
+                    type="button"
+                  >
+                    <LogOut className="h-5 w-5 shrink-0" strokeWidth={1.5} />
+                    <span className="font-medium">Logout</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
