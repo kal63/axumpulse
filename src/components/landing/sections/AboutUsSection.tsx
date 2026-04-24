@@ -148,7 +148,7 @@ export function AboutUsSection({ onLoaded }: AboutUsSectionProps) {
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)'
+          background: 'radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(12, 74, 110, 0.08) 0%, transparent 50%)'
         }}
       />
 
@@ -161,15 +161,15 @@ export function AboutUsSection({ onLoaded }: AboutUsSectionProps) {
           >
             {/* Animated background text - using CSS animation for better performance */}
             <span
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20 gradient-animation"
+              className="absolute inset-0 bg-gradient-to-r from-lime-500 via-sky-600 to-sky-900 bg-clip-text text-transparent opacity-20 gradient-animation"
             >
               About Compound 360
             </span>
             
             {/* Main text */}
-            <span className="relative z-10 text-white">About</span>
+            <span className="relative z-10 text-slate-900">About</span>
             <br />
-            <span className="relative z-10 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="relative z-10 bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
               Compound 360
             </span>
             
@@ -190,7 +190,7 @@ export function AboutUsSection({ onLoaded }: AboutUsSectionProps) {
 
           <motion.p
             ref={subtitleRef}
-            className="text-xl text-white/80 leading-relaxed max-w-3xl mx-auto"
+            className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto"
           >
             Ethiopia's first end-to-end, AI-driven fitness and wellness platform that empowers trainees, certified trainers, and medical professionals within a unified, multilingual ecosystem.
           </motion.p>
@@ -199,113 +199,113 @@ export function AboutUsSection({ onLoaded }: AboutUsSectionProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
           <div>
             <h3 className="text-3xl font-bold mb-6">
-              <span className="text-white">Our </span>
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-slate-900">Our </span>
+              <span className="bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
                 Vision
               </span>
             </h3>
-            <p className="text-white/80 mb-8 leading-relaxed text-lg">
+            <p className="text-slate-600 mb-8 leading-relaxed text-lg">
               An Ethiopia where safe, culturally tuned fitness guidance is accessible to everyone—at home, at work, outdoors, or in the gym.
             </p>
             <h3 className="text-3xl font-bold mb-6">
-              <span className="text-white">Our </span>
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-slate-900">Our </span>
+              <span className="bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
                 Mission
               </span>
             </h3>
-            <p className="text-white/80 leading-relaxed text-lg">
+            <p className="text-slate-600 leading-relaxed text-lg">
               Deliver trustworthy coaching and motivating programs through a hybrid model (on-ground classes + digital guidance), removing barriers of cost, language, location, and time.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-6" ref={cardsRef}>
-            <Card className="p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/5 backdrop-blur-sm border-white/10 group relative overflow-hidden">
+            <Card className="p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/95 backdrop-blur-sm border-slate-200/90 shadow-sm group relative overflow-hidden">
               {/* Glowing effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <Users className="w-12 h-12 text-blue-400 mx-auto mb-4 relative z-10" />
-              <h4 className="font-semibold text-white mb-2 relative z-10">24/7 AI Coach</h4>
-              <p className="text-sm text-white/70 relative z-10">Personalized guidance anytime</p>
+              <div className="absolute inset-0 bg-gradient-to-r from-lime-500/8 to-sky-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <Users className="w-12 h-12 text-sky-700 mx-auto mb-4 relative z-10" />
+              <h4 className="font-semibold text-slate-900 mb-2 relative z-10">24/7 AI Coach</h4>
+              <p className="text-sm text-slate-600 relative z-10">Personalized guidance anytime</p>
             </Card>
-            <Card className="p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/5 backdrop-blur-sm border-white/10 group relative overflow-hidden">
+            <Card className="p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/95 backdrop-blur-sm border-slate-200/90 shadow-sm group relative overflow-hidden">
               {/* Glowing effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <Globe className="w-12 h-12 text-cyan-400 mx-auto mb-4 relative z-10" />
-              <h4 className="font-semibold text-white mb-2 relative z-10">4 Languages</h4>
-              <p className="text-sm text-white/70 relative z-10">Amharic, Oromifa, Tigrigna, English</p>
+              <div className="absolute inset-0 bg-gradient-to-r from-sky-500/8 to-lime-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <Globe className="w-12 h-12 text-sky-600 mx-auto mb-4 relative z-10" />
+              <h4 className="font-semibold text-slate-900 mb-2 relative z-10">4 Languages</h4>
+              <p className="text-sm text-slate-600 relative z-10">Amharic, Oromifa, Tigrigna, English</p>
             </Card>
-            <Card className="p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/5 backdrop-blur-sm border-white/10 group relative overflow-hidden">
+            <Card className="p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/95 backdrop-blur-sm border-slate-200/90 shadow-sm group relative overflow-hidden">
               {/* Glowing effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <Heart className="w-12 h-12 text-red-400 mx-auto mb-4 relative z-10" />
-              <h4 className="font-semibold text-white mb-2 relative z-10">Medical Integration</h4>
-              <p className="text-sm text-white/70 relative z-10">Licensed doctors on platform</p>
+              <div className="absolute inset-0 bg-gradient-to-r from-rose-500/8 to-red-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <Heart className="w-12 h-12 text-rose-500 mx-auto mb-4 relative z-10" />
+              <h4 className="font-semibold text-slate-900 mb-2 relative z-10">Medical Integration</h4>
+              <p className="text-sm text-slate-600 relative z-10">Licensed doctors on platform</p>
             </Card>
-            <Card className="p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/5 backdrop-blur-sm border-white/10 group relative overflow-hidden">
+            <Card className="p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/95 backdrop-blur-sm border-slate-200/90 shadow-sm group relative overflow-hidden">
               {/* Glowing effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <Smartphone className="w-12 h-12 text-purple-400 mx-auto mb-4 relative z-10" />
-              <h4 className="font-semibold text-white mb-2 relative z-10">SMS Onboarding</h4>
-              <p className="text-sm text-white/70 relative z-10">Text "OK" to get started</p>
+              <div className="absolute inset-0 bg-gradient-to-r from-violet-500/8 to-sky-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <Smartphone className="w-12 h-12 text-violet-600 mx-auto mb-4 relative z-10" />
+              <h4 className="font-semibold text-slate-900 mb-2 relative z-10">SMS Onboarding</h4>
+              <p className="text-sm text-slate-600 relative z-10">Text "OK" to get started</p>
             </Card>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm rounded-2xl p-8 mb-16 border border-white/10">
+        <div className="bg-gradient-to-r from-lime-500/8 to-sky-500/8 backdrop-blur-sm rounded-2xl p-8 mb-16 border border-slate-200/90">
           <div className="text-center">
-            <h3 className="text-3xl font-bold text-white mb-8">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <h3 className="text-3xl font-bold text-slate-900 mb-8">
+              <span className="bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
                 Why Choose Compound 360?
               </span>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <div className="text-center group">
-                <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Users className="w-10 h-10 text-blue-400" />
+                <div className="w-20 h-20 bg-sky-500/15 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Users className="w-10 h-10 text-sky-700" />
                 </div>
-                <h4 className="font-semibold text-white mb-3 text-lg">Hybrid Delivery</h4>
-                <p className="text-white/70">Proven on-ground coaching plus scalable digital guidance</p>
+                <h4 className="font-semibold text-slate-900 mb-3 text-lg">Hybrid Delivery</h4>
+                <p className="text-slate-600">Proven on-ground coaching plus scalable digital guidance</p>
               </div>
               <div className="text-center group">
-                <div className="w-20 h-20 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Globe className="w-10 h-10 text-cyan-400" />
+                <div className="w-20 h-20 bg-lime-500/15 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Globe className="w-10 h-10 text-lime-700" />
                 </div>
-                <h4 className="font-semibold text-white mb-3 text-lg">Culturally Tuned</h4>
-                <p className="text-white/70">Programs aligned with Ethiopian foods and routines</p>
+                <h4 className="font-semibold text-slate-900 mb-3 text-lg">Culturally Tuned</h4>
+                <p className="text-slate-600">Programs aligned with Ethiopian foods and routines</p>
               </div>
               <div className="text-center group">
-                <div className="w-20 h-20 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <MessageSquare className="w-10 h-10 text-purple-400" />
+                <div className="w-20 h-20 bg-violet-500/12 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <MessageSquare className="w-10 h-10 text-violet-600" />
                 </div>
-                <h4 className="font-semibold text-white mb-3 text-lg">Language Inclusion</h4>
-                <p className="text-white/70">Multilingual content for clarity and comfort</p>
+                <h4 className="font-semibold text-slate-900 mb-3 text-lg">Language Inclusion</h4>
+                <p className="text-slate-600">Multilingual content for clarity and comfort</p>
               </div>
               <div className="text-center group">
-                <div className="w-20 h-20 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Zap className="w-10 h-10 text-pink-400" />
+                <div className="w-20 h-20 bg-amber-500/12 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <Zap className="w-10 h-10 text-amber-600" />
                 </div>
-                <h4 className="font-semibold text-white mb-3 text-lg">Frictionless Start</h4>
-                <p className="text-white/70">SMS onboarding and DCB-only subscriptions</p>
+                <h4 className="font-semibold text-slate-900 mb-3 text-lg">Frictionless Start</h4>
+                <p className="text-slate-600">SMS onboarding and DCB-only subscriptions</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="text-center">
-          <h3 className="text-3xl font-bold text-white mb-8">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+          <h3 className="text-3xl font-bold text-slate-900 mb-8">
+            <span className="bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
               Our Location
             </span>
           </h3>
-          <Card className="max-w-2xl mx-auto p-8 bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 transition-all duration-300 group relative overflow-hidden">
+          <Card className="max-w-2xl mx-auto p-8 bg-white/95 backdrop-blur-sm border-slate-200/90 hover:shadow-md transition-all duration-300 group relative overflow-hidden shadow-sm">
             {/* Glowing effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-r from-sky-500/8 to-lime-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="flex items-center space-x-6 relative z-10">
-              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center">
-                <MapPin className="w-8 h-8 text-blue-400" />
+              <div className="w-16 h-16 bg-sky-500/15 rounded-full flex items-center justify-center">
+                <MapPin className="w-8 h-8 text-sky-700" />
               </div>
               <div className="text-left">
-                <h4 className="font-semibold text-white text-xl mb-2">Compound BST Gym</h4>
-                <p className="text-white/80 text-lg">Bole, Rwanda Area</p>
-                <p className="text-white/80 text-lg">Addis Ababa, Ethiopia</p>
+                <h4 className="font-semibold text-slate-900 text-xl mb-2">Compound BST Gym</h4>
+                <p className="text-slate-600 text-lg">Bole, Rwanda Area</p>
+                <p className="text-slate-600 text-lg">Addis Ababa, Ethiopia</p>
               </div>
             </div>
           </Card>

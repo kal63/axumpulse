@@ -171,3 +171,21 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;             /* Chrome, Safari */
 }
+
+/* Light marketing / Radiant Stride–inspired shell (scoped to .landing-ethio only) */
+.landing-ethio {
+  --landing-ink: 222 47% 6%;
+  --landing-muted: 222 20% 40%;
+  --landing-cream: 80 30% 97%;
+  --landing-lemon: 78 88% 52%;
+  --landing-blue: 210 95% 28%;
+  font-family: var(--font-landing), var(--font-geist-sans), system-ui, sans-serif;
+  background-color: hsl(var(--landing-cream));
+  color: hsl(var(--landing-ink));
+}
+
+.font-landing-display {
+  font-family: var(--font-landing-display), var(--font-landing), var(--font-geist-sans), sans-serif;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+}

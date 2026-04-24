@@ -207,28 +207,28 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
   // Get unique background color for each card
   const getCardBackground = (index: number): string => {
     const backgrounds = [
-      'from-blue-500/10 via-blue-600/10 to-purple-600/10',
-      'from-purple-500/10 via-purple-600/10 to-pink-600/10',
-      'from-cyan-500/10 via-cyan-600/10 to-blue-600/10',
-      'from-pink-500/10 via-pink-600/10 to-purple-600/10',
-      'from-indigo-500/10 via-indigo-600/10 to-blue-600/10',
-      'from-violet-500/10 via-violet-600/10 to-purple-600/10',
-      'from-emerald-500/10 via-emerald-600/10 to-cyan-600/10',
-      'from-rose-500/10 via-rose-600/10 to-pink-600/10',
+      'from-sky-500/8 via-sky-400/8 to-lime-500/8',
+      'from-lime-500/8 via-lime-400/8 to-sky-600/8',
+      'from-emerald-500/8 via-emerald-400/8 to-sky-500/8',
+      'from-amber-500/8 via-amber-400/8 to-lime-500/8',
+      'from-violet-500/8 via-violet-400/8 to-sky-500/8',
+      'from-rose-500/8 via-rose-400/8 to-sky-500/8',
+      'from-sky-600/8 via-sky-500/8 to-emerald-500/8',
+      'from-lime-500/8 via-lime-400/8 to-emerald-500/8',
     ];
     return backgrounds[index % backgrounds.length];
   };
 
   const getCardBorder = (index: number): string => {
     const borders = [
-      'border-blue-500/30',
-      'border-purple-500/30',
-      'border-cyan-500/30',
-      'border-pink-500/30',
-      'border-indigo-500/30',
-      'border-violet-500/30',
-      'border-emerald-500/30',
-      'border-rose-500/30',
+      'border-sky-400/35',
+      'border-lime-400/35',
+      'border-emerald-400/35',
+      'border-amber-400/35',
+      'border-violet-400/35',
+      'border-rose-400/35',
+      'border-sky-500/35',
+      'border-lime-500/35',
     ];
     return borders[index % borders.length];
   };
@@ -244,7 +244,7 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)',
+          background: 'radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(12, 74, 110, 0.08) 0%, transparent 50%)',
           maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 100%)',
           WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 100%)'
         }}
@@ -252,9 +252,9 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
       
       {/* Bottom overlay to blend seamlessly with ForTrainersSection */}
       <div 
-        className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none z-0"
+        className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none z-0"
         style={{
-          background: 'linear-gradient(to top, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.4) 25%, rgba(15, 23, 42, 0.2) 50%, rgba(15, 23, 42, 0.1) 75%, transparent 100%)'
+          background: 'linear-gradient(to top, hsl(80 30% 96% / 0.95) 0%, transparent 100%)'
         }}
       />
 
@@ -267,15 +267,15 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
           >
             {/* Animated background text - using CSS animation for better performance */}
             <span
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20 gradient-animation"
+              className="absolute inset-0 bg-gradient-to-r from-lime-500 via-sky-600 to-sky-900 bg-clip-text text-transparent opacity-20 gradient-animation"
             >
               Our Trainers
             </span>
             
             {/* Main text */}
-            <span className="relative z-10 text-white">Our</span>
+            <span className="relative z-10 text-slate-900">Our</span>
             <br />
-            <span className="relative z-10 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="relative z-10 bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
               Expert Trainers
             </span>
             
@@ -296,7 +296,7 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
 
           <motion.p
             ref={subtitleRef}
-            className="text-xl text-white/80 leading-relaxed max-w-3xl mx-auto"
+            className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto"
           >
             Meet our certified trainers ready to guide you on your fitness journey
           </motion.p>
@@ -305,11 +305,11 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
         {/* Trainers Horizontal Scroll */}
         {loading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="text-white/60">Loading trainers...</div>
+            <div className="text-slate-500">Loading trainers...</div>
           </div>
         ) : trainers.length === 0 ? (
           <div className="flex justify-center items-center py-12">
-            <div className="text-white/60">No trainers available at the moment.</div>
+            <div className="text-slate-500">No trainers available at the moment.</div>
           </div>
         ) : (
           <div className="relative">
@@ -330,7 +330,7 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
                     key={trainer.userId}
                     className="group flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px]"
                   >
-                    <Card className={`bg-gradient-to-br ${cardBg} backdrop-blur-sm border-transparent hover:bg-white/10 transition-all duration-300 hover:scale-105 relative overflow-hidden hover:shadow-lg hover:shadow-blue-500/20 h-full min-h-[100px] !rounded-md`}>
+                    <Card className={`bg-gradient-to-br ${cardBg} from-white/90 to-white/70 backdrop-blur-sm border-slate-200/80 border hover:shadow-md transition-all duration-300 hover:scale-[1.02] relative overflow-hidden h-full min-h-[100px] !rounded-2xl shadow-sm`}>
                       {/* Enhanced glowing effect with unique color */}
                       <div className={`absolute inset-0 bg-gradient-to-r ${cardBg} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                       
@@ -350,12 +350,12 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
                                 quality={85}
                               />
                               ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-                                  <User className="w-8 h-8 text-white/60" />
+                                <div className="w-full h-full bg-gradient-to-br from-sky-500/15 to-lime-500/15 flex items-center justify-center">
+                                  <User className="w-8 h-8 text-slate-400" />
                                 </div>
                               )}
                               {/* Verified badge */}
-                              <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-0.5 border-2 border-slate-900">
+                              <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full p-0.5 border-2 border-white">
                                 <UserCheck className="w-3 h-3 text-white" />
                               </div>
                             </div>
@@ -364,7 +364,7 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
                           {/* Trainer Info - Right Side */}
                           <div className="flex-1 min-w-0">
                             {/* Trainer Name */}
-                            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors truncate">
+                            <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-sky-800 transition-colors truncate">
                               {trainer.name}
                             </h3>
                             
@@ -374,19 +374,19 @@ export function TrainersSection({ onLoaded }: TrainersSectionProps) {
                                 {trainer.specialties.slice(0, 2).map((specialty, idx) => (
                                   <span
                                     key={idx}
-                                    className="px-2 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full"
+                                    className="px-2 py-0.5 text-xs font-medium bg-sky-100 text-sky-800 border border-sky-200/80 rounded-full"
                                   >
                                     {formatSpecialty(specialty)}
                                   </span>
                                 ))}
                                 {trainer.specialties.length > 2 && (
-                                  <span className="px-2 py-0.5 text-xs font-medium text-white/60">
+                                  <span className="px-2 py-0.5 text-xs font-medium text-slate-500">
                                     +{trainer.specialties.length - 2}
                                   </span>
                                 )}
                               </div>
                             ) : (
-                              <span className="text-xs text-white/40">No specialties listed</span>
+                              <span className="text-xs text-slate-400">No specialties listed</span>
                             )}
                           </div>
                         </Link>

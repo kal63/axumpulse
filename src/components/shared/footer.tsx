@@ -18,7 +18,10 @@ import {useState} from 'react';
 import { apiClient} from '@/lib/api-client'
 
 
-export default function Footer() {
+type FooterProps = { variant?: 'default' | 'ethio' };
+
+export default function Footer({ variant = 'default' }: FooterProps) {
+  const isEthio = variant === 'ethio';
   const currentYear = new Date().getFullYear();
 
   const [email, setEmail] = useState('');
@@ -74,11 +77,25 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
-      {/* Animated background particles */}
+    <footer
+      className={
+        isEthio
+          ? "relative bg-[hsl(80,30%,97%)] text-slate-900 overflow-hidden border-t border-slate-200/80"
+          : "relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden"
+      }
+    >
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
+        {isEthio ? (
+          <>
+            <div className="absolute top-0 right-0 w-96 h-96 bg-lime-400/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
+          </>
+        ) : (
+          <>
+            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
+          </>
+        )}
       </div>
 
       <div className="relative z-10">
@@ -96,7 +113,13 @@ export default function Footer() {
                 <div className="flex items-center mb-6">
                   <Logo />
                 </div>
-                <p className="text-white/80 mb-6 leading-relaxed">
+                <p
+                  className={
+                    isEthio
+                      ? "text-slate-600 mb-6 leading-relaxed"
+                      : "text-white/80 mb-6 leading-relaxed"
+                  }
+                >
                   Ethiopia's premier AI-driven fitness and health platform. Transform your life with personalized coaching in your language.
                 </p>
                 <div className="flex gap-4">
@@ -104,11 +127,21 @@ export default function Footer() {
                     <motion.a
                       key={index}
                       href={social.href}
-                      className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-500/20 flex items-center justify-center transition-all duration-300 group"
+                      className={
+                        isEthio
+                          ? "w-10 h-10 rounded-full bg-white/80 border border-slate-200/90 hover:bg-lime-100/80 flex items-center justify-center transition-all duration-300 group shadow-sm"
+                          : "w-10 h-10 rounded-full bg-white/10 hover:bg-blue-500/20 flex items-center justify-center transition-all duration-300 group"
+                      }
                       whileHover={{ scale: 1.1, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <social.icon className="w-5 h-5 group-hover:text-blue-400 transition-colors" />
+                      <social.icon
+                        className={
+                          isEthio
+                            ? "w-5 h-5 text-slate-700 group-hover:text-sky-800 transition-colors"
+                            : "w-5 h-5 group-hover:text-blue-400 transition-colors"
+                        }
+                      />
                     </motion.a>
                   ))}
                 </div>
@@ -122,13 +155,25 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <h4 className="text-lg font-semibold text-white mb-6">Product</h4>
+              <h4
+                className={
+                  isEthio
+                    ? "text-lg font-semibold text-slate-900 mb-6"
+                    : "text-lg font-semibold text-white mb-6"
+                }
+              >
+                Product
+              </h4>
               <ul className="space-y-3">
                 {footerLinks.product.map((link, index) => (
                   <li key={index}>
                     <Link
                       href={link.href}
-                      className="text-white/70 hover:text-blue-400 transition-colors duration-300 flex items-center group"
+                      className={
+                        isEthio
+                          ? "text-slate-600 hover:text-sky-800 transition-colors duration-300 flex items-center group"
+                          : "text-white/70 hover:text-blue-400 transition-colors duration-300 flex items-center group"
+                      }
                     >
                       <span>{link.label}</span>
                       <ArrowRight className="w-3 h-3 ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
@@ -145,13 +190,25 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <h4 className="text-lg font-semibold text-white mb-6">Company</h4>
+              <h4
+                className={
+                  isEthio
+                    ? "text-lg font-semibold text-slate-900 mb-6"
+                    : "text-lg font-semibold text-white mb-6"
+                }
+              >
+                Company
+              </h4>
               <ul className="space-y-3">
                 {footerLinks.company.map((link, index) => (
                   <li key={index}>
                     <Link
                       href={link.href}
-                      className="text-white/70 hover:text-blue-400 transition-colors duration-300 flex items-center group"
+                      className={
+                        isEthio
+                          ? "text-slate-600 hover:text-sky-800 transition-colors duration-300 flex items-center group"
+                          : "text-white/70 hover:text-blue-400 transition-colors duration-300 flex items-center group"
+                      }
                     >
                       <span>{link.label}</span>
                       <ArrowRight className="w-3 h-3 ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
@@ -168,13 +225,25 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <h4 className="text-lg font-semibold text-white mb-6">Support</h4>
+              <h4
+                className={
+                  isEthio
+                    ? "text-lg font-semibold text-slate-900 mb-6"
+                    : "text-lg font-semibold text-white mb-6"
+                }
+              >
+                Support
+              </h4>
               <ul className="space-y-3 mb-6">
                 {footerLinks.support.map((link, index) => (
                   <li key={index}>
                     <Link
                       href={link.href}
-                      className="text-white/70 hover:text-blue-400 transition-colors duration-300 flex items-center group"
+                      className={
+                        isEthio
+                          ? "text-slate-600 hover:text-sky-800 transition-colors duration-300 flex items-center group"
+                          : "text-white/70 hover:text-blue-400 transition-colors duration-300 flex items-center group"
+                      }
                     >
                       <span>{link.label}</span>
                       <ArrowRight className="w-3 h-3 ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
@@ -185,15 +254,33 @@ export default function Footer() {
 
               {/* Contact Info */}
               <div className="space-y-3">
-                <div className="flex items-center text-white/70 hover:text-blue-400 transition-colors duration-300">
+                <div
+                  className={
+                    isEthio
+                      ? "flex items-center text-slate-600 hover:text-sky-800 transition-colors duration-300"
+                      : "flex items-center text-white/70 hover:text-blue-400 transition-colors duration-300"
+                  }
+                >
                   <Mail className="w-4 h-4 mr-3" />
                   <span className="text-sm">support@compound-360.com</span>
                 </div>
-                <div className="flex items-center text-white/70 hover:text-blue-400 transition-colors duration-300">
+                <div
+                  className={
+                    isEthio
+                      ? "flex items-center text-slate-600 hover:text-sky-800 transition-colors duration-300"
+                      : "flex items-center text-white/70 hover:text-blue-400 transition-colors duration-300"
+                  }
+                >
                   <Phone className="w-4 h-4 mr-3" />
                   <span className="text-sm">+251 911 234 567</span>
                 </div>
-                <div className="flex items-center text-white/70 hover:text-blue-400 transition-colors duration-300">
+                <div
+                  className={
+                    isEthio
+                      ? "flex items-center text-slate-600 hover:text-sky-800 transition-colors duration-300"
+                      : "flex items-center text-white/70 hover:text-blue-400 transition-colors duration-300"
+                  }
+                >
                   <MapPin className="w-4 h-4 mr-3" />
                   <span className="text-sm">Bole, Addis Ababa</span>
                 </div>
@@ -207,24 +294,48 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
-            className="mt-16 pt-8 border-t border-white/10"
+            className={
+              isEthio ? "mt-16 pt-8 border-t border-slate-200/90" : "mt-16 pt-8 border-t border-white/10"
+            }
           >
             <div className="max-w-2xl mx-auto text-center">
-              <h4 className="text-xl font-semibold text-white mb-4">Stay Updated</h4>
-              <p className="text-white/70 mb-6">Get the latest fitness tips, updates, and exclusive offers delivered to your inbox.</p>
+              <h4
+                className={
+                  isEthio
+                    ? "text-xl font-semibold text-slate-900 mb-4"
+                    : "text-xl font-semibold text-white mb-4"
+                }
+              >
+                Stay Updated
+              </h4>
+              <p
+                className={
+                  isEthio ? "text-slate-600 mb-6" : "text-white/70 mb-6"
+                }
+              >
+                Get the latest fitness tips, updates, and exclusive offers delivered to your inbox.
+              </p>
               <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                 <input
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className={
+                    isEthio
+                      ? "flex-1 px-4 py-3 rounded-xl bg-white border border-slate-200/90 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-transparent shadow-sm"
+                      : "flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  }
                   disabled={submitting}
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-semibold transition-all duration-300 flex items-center justify-center"
+                  className={
+                    isEthio
+                      ? "px-6 py-3 bg-[hsl(222,47%,8%)] hover:bg-[hsl(222,47%,12%)] text-white rounded-full font-semibold transition-all duration-300 flex items-center justify-center shadow-md"
+                      : "px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-semibold transition-all duration-300 flex items-center justify-center"
+                  }
                   onClick={handleSubscribe}
                   disabled={submitting}
                 >
@@ -233,33 +344,74 @@ export default function Footer() {
                 </motion.button>
               </div>
               {message && (
-                <div className="mt-3 text-sm text-white/80">{message}</div>
+                <div
+                  className={
+                    isEthio ? "mt-3 text-sm text-slate-600" : "mt-3 text-sm text-white/80"
+                  }
+                >
+                  {message}
+                </div>
               )}
             </div>
           </motion.div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/10">
+        <div
+          className={isEthio ? "border-t border-slate-200/90" : "border-t border-white/10"}
+        >
           <div
             className="block cursor-pointer"
             onClick={() => window.open('https://bitappstech.com/', '_blank')}
           >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
               <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div className="flex flex-col md:flex-row items-center gap-4 text-sm text-white/60">
+                <div
+                  className={
+                    isEthio
+                      ? "flex flex-col md:flex-row items-center gap-4 text-sm text-slate-500"
+                      : "flex flex-col md:flex-row items-center gap-4 text-sm text-white/60"
+                  }
+                >
                   <p>© {currentYear} Compound 360. All rights reserved.</p>
-                  <div className="hidden md:block w-1 h-1 bg-white/30 rounded-full" />
+                  <div
+                    className={
+                      isEthio
+                        ? "hidden md:block w-1 h-1 bg-slate-300 rounded-full"
+                        : "hidden md:block w-1 h-1 bg-white/30 rounded-full"
+                    }
+                  />
                   <p>Designed and developed by BitApps Tech.</p>
                 </div>
                 <div className="flex items-center gap-6 text-sm">
-                  <Link href="#privacy" className="text-white/60 hover:text-blue-400 transition-colors">
+                  <Link
+                    href="#privacy"
+                    className={
+                      isEthio
+                        ? "text-slate-500 hover:text-sky-800 transition-colors"
+                        : "text-white/60 hover:text-blue-400 transition-colors"
+                    }
+                  >
                     Privacy Policy
                   </Link>
-                  <Link href="#terms" className="text-white/60 hover:text-blue-400 transition-colors">
+                  <Link
+                    href="#terms"
+                    className={
+                      isEthio
+                        ? "text-slate-500 hover:text-sky-800 transition-colors"
+                        : "text-white/60 hover:text-blue-400 transition-colors"
+                    }
+                  >
                     Terms of Service
                   </Link>
-                  <Link href="#cookies" className="text-white/60 hover:text-blue-400 transition-colors">
+                  <Link
+                    href="#cookies"
+                    className={
+                      isEthio
+                        ? "text-slate-500 hover:text-sky-800 transition-colors"
+                        : "text-white/60 hover:text-blue-400 transition-colors"
+                    }
+                  >
                     Cookie Policy
                   </Link>
                 </div>

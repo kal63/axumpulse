@@ -9,6 +9,7 @@ import { NeumorphicCard } from '@/components/user/NeumorphicCard'
 import { XPRing } from '@/components/user/XPRing'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import Image from 'next/image'
 import { 
   Trophy, 
   Target, 
@@ -214,13 +215,52 @@ export default function UserDashboardPage() {
         
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-7xl mx-auto">
+            {/* Dashboard-only co-brand header (light mode only) */}
+            <div className="mb-6 dark:hidden">
+              <div className="flex items-center justify-between gap-4">
+                {/* Ethio telecom - left */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-20 w-20 md:h-24 md:w-24 rounded-2xl border border-black/5 shadow-sm flex items-center justify-center overflow-hidden shrink-0">
+                    <Image
+                      src="/ethiotell.png"
+                      alt="Ethio telecom"
+                      width={96}
+                      height={96}
+                      className="h-full w-full object-contain p-1"
+                      priority
+                    />
+                  </div>
+                  <div className="hidden sm:block">
+                    <div className="text-[11px] font-semibold text-[var(--ethio-deep-blue)] tracking-wide">
+                      Ethio telecom
+                    </div>
+                    <div className="text-[11px] text-[var(--neumorphic-muted)]">
+                      Powered by Compound 360
+                    </div>
+                  </div>
+                </div>
+
+                {/* Compound 360 - right */}
+                <div className="flex items-center justify-end">
+                  <Image
+                    src="/logo.png"
+                    alt="Compound 360 logo"
+                    width={150}
+                    height={36}
+                    className="h-9 md:h-10 w-auto rounded-[10px] shadow-sm px-2 py-1"
+                    priority
+                  />
+                </div>
+              </div>
+            </div>
+
             <div className="flex items-center justify-between mb-8">
               <div>
                 <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white px-4 py-2 rounded-full text-sm font-medium mb-4 dark:from-cyan-500 dark:to-purple-600">
                   <Sparkles className="w-4 h-4" />
                   <span>Welcome Back</span>
                 </div>
-                <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4">
+                <h1 className="text-4xl md:text-6xl font-bold text-[var(--neumorphic-text)] mb-4 font-landing-display dark:font-sans dark:tracking-normal dark:leading-tight">
                   {greeting.text}, {user.name?.split(' ')[0] || 'User'}! {greeting.emoji}
                 </h1>
                 <p className="text-xl text-[var(--neumorphic-muted)] max-w-2xl">

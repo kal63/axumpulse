@@ -5,7 +5,12 @@ import { motion } from 'framer-motion';
 
 type PulseTiming = { duration: string; delay: string };
 
-export function UnifiedBackground() {
+type UnifiedBackgroundProps = {
+  /** `ethio` = light lemon/blue glow (Radiant-style). Default keeps legacy dark slate. */
+  variant?: "slate" | "ethio";
+};
+
+export function UnifiedBackground({ variant = "slate" }: UnifiedBackgroundProps) {
   const particlesRef = useRef<HTMLDivElement>(null);
   const squaresRef = useRef<HTMLDivElement>(null);
   const [pulseTimings, setPulseTimings] = useState<PulseTiming[]>([]);
@@ -22,6 +27,7 @@ export function UnifiedBackground() {
 
   // Create floating particles with performance optimizations
   useEffect(() => {
+    if (variant === "ethio") return;
     let particleCount = 0;
     const MAX_PARTICLES = 15; // Limit concurrent particles
     
@@ -67,10 +73,11 @@ export function UnifiedBackground() {
     // Reduced frequency from 500ms to 1500ms for better performance
     const interval = setInterval(createParticle, 1500);
     return () => clearInterval(interval);
-  }, []);
+  }, [variant]);
 
   // Create bigger squares with very low opacity - optimized
   useEffect(() => {
+    if (variant === "ethio") return;
     let squareCount = 0;
     const MAX_SQUARES = 8; // Limit concurrent squares
     
@@ -123,7 +130,24 @@ export function UnifiedBackground() {
     // Reduced frequency from 1200ms to 2500ms
     const interval = setInterval(createSquare, 2500);
     return () => clearInterval(interval);
-  }, []);
+  }, [variant]);
+
+  if (variant === "ethio") {
+    return (
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[hsl(80,30%,97%)]" />
+        <div
+          className="absolute inset-0 opacity-70"
+          style={{
+            background:
+              "radial-gradient(circle at 30% 25%, hsl(78 88% 55% / 0.35) 0%, transparent 55%), radial-gradient(circle at 85% 15%, hsl(210 95% 28% / 0.12) 0%, transparent 45%)",
+          }}
+        />
+        <div className="absolute top-1/3 right-0 w-[min(100vw,42rem)] h-[min(100vw,42rem)] rounded-full bg-[hsl(78_88%_55%_/_0.12)] blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-[hsl(210_95%_28%_/_0.08)] blur-3xl" />
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">

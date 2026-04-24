@@ -1,18 +1,14 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
-  // Get the pathname of the request (e.g. /, /dashboard, /login)
-  const path = request.nextUrl.pathname
-
-  // Define paths that are considered public (no auth required)
-  const isPublicPath = path === '/login' || path === '/' || path.startsWith('/api/')
-
-  // NOTE: Since we're using localStorage for auth (client-side only), 
-  // middleware can't check auth status. We rely on client-side checks.
-  // Protected routes will check authentication in their components.
-
-  return NextResponse.next()
+export function middleware(_request: NextRequest) {
+  // NOTE: Auth uses client-side checks (localStorage); this file only sets global headers.
+  const response = NextResponse.next()
+  response.headers.set('X-Frame-Options', 'DENY')
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('Referrer-Policy', 'origin-when-cross-origin')
+  response.headers.set('X-DNS-Prefetch-Control', 'on')
+  return response
 }
 
 // See "Matching Paths" below to learn more

@@ -214,7 +214,7 @@ export function CompanySection({ onLoaded }: CompanySectionProps) {
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)'
+          background: 'radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(12, 74, 110, 0.08) 0%, transparent 50%)'
         }}
       />
 
@@ -227,15 +227,15 @@ export function CompanySection({ onLoaded }: CompanySectionProps) {
           >
             {/* Animated background text - using CSS animation for better performance */}
             <span
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20 gradient-animation"
+              className="absolute inset-0 bg-gradient-to-r from-lime-500 via-sky-600 to-sky-900 bg-clip-text text-transparent opacity-20 gradient-animation"
             >
               About Compound BST
             </span>
             
             {/* Main text */}
-            <span className="relative z-10 text-white">About</span>
+            <span className="relative z-10 text-slate-900">About</span>
             <br />
-            <span className="relative z-10 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="relative z-10 bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
               Compound BST
             </span>
             
@@ -256,7 +256,7 @@ export function CompanySection({ onLoaded }: CompanySectionProps) {
 
           <motion.p
             ref={subtitleRef}
-            className="text-xl text-white/80 leading-relaxed max-w-3xl mx-auto"
+            className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto"
           >
             The driving force behind Compound 360 - Ethiopia's premier fitness and wellness company
           </motion.p>
@@ -267,35 +267,35 @@ export function CompanySection({ onLoaded }: CompanySectionProps) {
           {/* Company Description */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
             <div>
-              <h3 className="text-2xl font-bold text-white mb-4">Our Mission</h3>
-              <p className="text-white/80 leading-relaxed mb-6">
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">Our Mission</h3>
+              <p className="text-slate-600 leading-relaxed mb-6">
                 At Compound BST, we believe fitness should be accessible, culturally relevant, and technologically advanced. 
                 We're building Ethiopia's first comprehensive fitness ecosystem that combines the best of traditional 
                 training methods with cutting-edge AI technology.
               </p>
-              <p className="text-white/80 leading-relaxed">
+              <p className="text-slate-600 leading-relaxed">
                 Our hybrid approach ensures that every Ethiopian can access world-class fitness guidance, whether they 
                 prefer in-person training at our state-of-the-art gym or digital coaching through our AI-powered platform.
               </p>
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl p-8 backdrop-blur-sm border border-white/10">
-                <h4 className="text-xl font-bold text-white mb-4">Why Choose Compound BST?</h4>
-                <ul className="space-y-3 text-white/80">
+              <div className="bg-gradient-to-br from-lime-500/8 to-sky-500/8 rounded-2xl p-8 backdrop-blur-sm border border-slate-200/90 shadow-sm">
+                <h4 className="text-xl font-bold text-slate-900 mb-4">Why Choose Compound BST?</h4>
+                <ul className="space-y-3 text-slate-600">
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0" />
+                    <div className="w-2 h-2 bg-sky-500 rounded-full mt-2 mr-3 flex-shrink-0" />
                     <span>Proven track record in Ethiopian fitness market</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 mr-3 flex-shrink-0" />
+                    <div className="w-2 h-2 bg-lime-500 rounded-full mt-2 mr-3 flex-shrink-0" />
                     <span>Cultural understanding and local expertise</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 mr-3 flex-shrink-0" />
+                    <div className="w-2 h-2 bg-violet-500 rounded-full mt-2 mr-3 flex-shrink-0" />
                     <span>Innovation in fitness technology and delivery</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="w-2 h-2 bg-orange-400 rounded-full mt-2 mr-3 flex-shrink-0" />
+                    <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 mr-3 flex-shrink-0" />
                     <span>Commitment to community health and wellness</span>
                   </li>
                 </ul>

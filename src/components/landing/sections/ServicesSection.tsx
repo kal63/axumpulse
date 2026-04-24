@@ -201,34 +201,46 @@ export function ServicesSection({ onLoaded }: ServicesSectionProps) {
   const getColorClasses = (color: string) => {
     const colorMap = {
       blue: {
-        icon: 'text-blue-400',
-        bg: 'from-blue-500/10 to-purple-500/10',
-        border: 'border-blue-500/20'
+        icon: 'text-sky-600',
+        iconBox: 'bg-sky-500/15',
+        bg: 'from-sky-500/8 to-sky-600/8',
+        border: 'border-sky-500/25',
+        dot: 'bg-sky-500',
       },
       cyan: {
-        icon: 'text-cyan-400',
-        bg: 'from-cyan-500/10 to-blue-500/10',
-        border: 'border-cyan-500/20'
+        icon: 'text-sky-500',
+        iconBox: 'bg-sky-500/15',
+        bg: 'from-sky-500/8 to-lime-500/8',
+        border: 'border-sky-500/25',
+        dot: 'bg-sky-500',
       },
       red: {
-        icon: 'text-red-400',
-        bg: 'from-red-500/10 to-pink-500/10',
-        border: 'border-red-500/20'
+        icon: 'text-rose-500',
+        iconBox: 'bg-rose-500/15',
+        bg: 'from-rose-500/8 to-pink-500/8',
+        border: 'border-rose-500/25',
+        dot: 'bg-rose-500',
       },
       green: {
-        icon: 'text-green-400',
-        bg: 'from-green-500/10 to-emerald-500/10',
-        border: 'border-green-500/20'
+        icon: 'text-emerald-600',
+        iconBox: 'bg-emerald-500/15',
+        bg: 'from-emerald-500/8 to-lime-500/8',
+        border: 'border-emerald-500/25',
+        dot: 'bg-emerald-500',
       },
       purple: {
-        icon: 'text-purple-400',
-        bg: 'from-purple-500/10 to-pink-500/10',
-        border: 'border-purple-500/20'
+        icon: 'text-violet-600',
+        iconBox: 'bg-violet-500/15',
+        bg: 'from-violet-500/8 to-sky-500/8',
+        border: 'border-violet-500/25',
+        dot: 'bg-violet-500',
       },
       orange: {
-        icon: 'text-orange-400',
-        bg: 'from-orange-500/10 to-yellow-500/10',
-        border: 'border-orange-500/20'
+        icon: 'text-amber-600',
+        iconBox: 'bg-amber-500/15',
+        bg: 'from-amber-500/8 to-lime-500/8',
+        border: 'border-amber-500/25',
+        dot: 'bg-amber-500',
       }
     };
     return colorMap[color as keyof typeof colorMap] || colorMap.blue;
@@ -245,7 +257,7 @@ export function ServicesSection({ onLoaded }: ServicesSectionProps) {
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)'
+          background: 'radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(12, 74, 110, 0.08) 0%, transparent 50%)'
         }}
       />
 
@@ -258,7 +270,7 @@ export function ServicesSection({ onLoaded }: ServicesSectionProps) {
           >
             {/* Animated background text */}
             <motion.span
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20"
+              className="absolute inset-0 bg-gradient-to-r from-lime-500 via-sky-600 to-sky-900 bg-clip-text text-transparent opacity-20"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
               }}
@@ -275,9 +287,9 @@ export function ServicesSection({ onLoaded }: ServicesSectionProps) {
             </motion.span>
             
             {/* Main text */}
-            <span className="relative z-10 text-white">Our</span>
+            <span className="relative z-10 text-slate-900">Our</span>
             <br />
-            <span className="relative z-10 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="relative z-10 bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
               Services
             </span>
             
@@ -298,7 +310,7 @@ export function ServicesSection({ onLoaded }: ServicesSectionProps) {
 
           <motion.p
             ref={subtitleRef}
-            className="text-xl text-white/80 leading-relaxed max-w-3xl mx-auto"
+            className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto"
           >
             Comprehensive fitness and health solutions for every need
           </motion.p>
@@ -313,26 +325,26 @@ export function ServicesSection({ onLoaded }: ServicesSectionProps) {
             return (
               <Card 
                 key={index}
-                className={`bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105 group relative overflow-hidden ${colors.border}`}
+                className={`bg-white/90 backdrop-blur-sm border-slate-200/90 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] group relative overflow-hidden ${colors.border}`}
               >
                 {/* Glowing effect */}
                 <div className={`absolute inset-0 bg-gradient-to-r ${colors.bg} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                 
                 <CardContent className="p-6 relative z-10">
-                  <div className={`w-14 h-14 ${colors.icon.replace('text-', 'bg-').replace('-400', '-500/20')} rounded-2xl flex items-center justify-center mb-4`}>
+                  <div className={`w-14 h-14 ${'iconBox' in colors ? colors.iconBox : ''} rounded-2xl flex items-center justify-center mb-4`}>
                     <IconComponent className={`w-7 h-7 ${colors.icon}`} />
                   </div>
                   
-                  <h3 className="text-xl font-bold text-white mb-3">{service.title}</h3>
+                  <h3 className="text-xl font-bold text-slate-900 mb-3">{service.title}</h3>
                   
-                  <p className="text-white/80 leading-relaxed mb-4">
+                  <p className="text-slate-600 leading-relaxed mb-4">
                     {service.description}
                   </p>
                   
-                  <ul className="text-white/70 text-sm space-y-1">
+                  <ul className="text-slate-600 text-sm space-y-1">
                     {service.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center">
-                        <div className={`w-1.5 h-1.5 ${colors.icon.replace('text-', 'bg-')} rounded-full mr-2 flex-shrink-0`} />
+                        <div className={`w-1.5 h-1.5 ${'dot' in colors ? colors.dot : 'bg-slate-400'} rounded-full mr-2 flex-shrink-0`} />
                         {feature}
                       </li>
                     ))}

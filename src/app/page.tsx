@@ -272,7 +272,7 @@ export default function AxumPulseLandingPage() {
   console.log(`Rendering main content - loadedSections: ${loadedSections.size}, isLoading: ${isLoading}`);
 
   return (
-    <main className="min-h-screen relative">
+    <main className="landing-ethio min-h-screen relative">
       {/* Loading Screen Overlay 
           - Blocks interactions while loading
           - Becomes non-interactive & invisible after loading */}
@@ -285,14 +285,15 @@ export default function AxumPulseLandingPage() {
           progress={Math.round((loadedSections.size / 9) * 100)}
           loadedSections={loadedSections.size}
           totalSections={9}
+          theme="ethio"
         />
       </div>
 
       {/* Unified Background */}
-      <UnifiedBackground />
+      <UnifiedBackground variant="ethio" />
 
       {/* Navigation Bar */}
-      <Header scrolled={scrolled} showLogin={true} />
+      <Header scrolled={scrolled} showLogin={true} variant="ethio" />
 
       {/* Hero Section */}
       <HeroSection onLoaded={() => onSectionLoaded('hero')} />
@@ -323,7 +324,7 @@ export default function AxumPulseLandingPage() {
 
 
       {/* Footer */}
-      <Footer />
+      <Footer variant="ethio" />
     </main>
   );
 }

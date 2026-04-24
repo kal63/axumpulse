@@ -24,27 +24,27 @@ const steps = [
     icon: Smartphone,
     title: "Subscribe via SMS",
     description: "Simply text 'OK' to our short code to get started with your daily fitness journey.",
-    color: "from-blue-500 to-cyan-400",
-    bgColor: "bg-blue-500/10",
-    borderColor: "border-blue-500/20"
+    color: "from-sky-600 to-sky-400",
+    bgColor: "bg-sky-500/8",
+    borderColor: "border-sky-500/25"
   },
   {
     number: "02", 
     icon: Target,
     title: "Set Your Goals",
     description: "Define your fitness aspirations, and our AI will craft a personalized plan for you.",
-    color: "from-purple-500 to-pink-400",
-    bgColor: "bg-purple-500/10",
-    borderColor: "border-purple-500/20"
+    color: "from-lime-500 to-lime-400",
+    bgColor: "bg-lime-500/8",
+    borderColor: "border-lime-500/25"
   },
   {
     number: "03",
     icon: Activity,
     title: "Start Training",
     description: "Follow your custom workouts, track progress, and connect with trainers and community.",
-    color: "from-green-500 to-emerald-400",
-    bgColor: "bg-green-500/10",
-    borderColor: "border-green-500/20"
+    color: "from-emerald-600 to-emerald-400",
+    bgColor: "bg-emerald-500/8",
+    borderColor: "border-emerald-500/25"
   }
 ];
 
@@ -67,7 +67,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
   useEffect(() => {
     const createFlowingParticle = (startX: number, startY: number, endX: number, endY: number, delay: number) => {
       const particle = document.createElement('div');
-      particle.className = 'absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full pointer-events-none z-30';
+      particle.className = 'absolute w-2 h-2 bg-gradient-to-r from-lime-400 to-sky-600 rounded-full pointer-events-none z-30';
       particle.style.left = startX + '%';
       particle.style.top = startY + '%';
       
@@ -373,9 +373,9 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
     >
       {/* INSANE Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-lime-400/12 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-sky-400/10 rounded-full blur-3xl animate-pulse" />
         
 
         {/* Flowing particles container */}
@@ -391,7 +391,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
           >
             {/* Animated background text */}
             <motion.span
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20"
+              className="absolute inset-0 bg-gradient-to-r from-lime-500 via-sky-600 to-sky-900 bg-clip-text text-transparent opacity-20"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
               }}
@@ -408,9 +408,9 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
             </motion.span>
             
             {/* Main text */}
-            <span className="relative z-10 text-white">Get Started in</span>
+            <span className="relative z-10 text-slate-900">Get Started in</span>
             <br />
-            <span className="relative z-10 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="relative z-10 bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
               Minutes
             </span>
             
@@ -436,7 +436,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
           <div className="relative">
             <motion.p
               ref={subtitleRef}
-              className="text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto"
+              className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto"
             >
               Three simple steps to transform your health and fitness. 
               No complex setup, no lengthy forms—just pure results.
@@ -444,7 +444,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
             
             {/* Animated underline */}
             <motion.div
-              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-lime-500 to-sky-700 rounded-full"
               animate={{
                 scaleX: [0, 1, 0],
                 opacity: [0, 1, 0]
@@ -461,17 +461,17 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
         {/* INSANE Steps with Continuity */}
         <div className="relative max-w-6xl mx-auto">
           {/* Enhanced Connector Line with flowing effect */}
-          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 transform -translate-y-1/2 z-0 rounded-full">
+          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-sky-600 via-lime-500 to-emerald-600 transform -translate-y-1/2 z-0 rounded-full">
             <div 
               ref={connectorRef}
-              className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 origin-left rounded-full"
+              className="h-full bg-gradient-to-r from-sky-600 via-lime-500 to-emerald-600 origin-left rounded-full"
             />
             
             {/* Flowing particles on the line */}
             {isAnimating && (
               <>
                 <motion.div
-                  className="absolute top-1/2 left-0 w-3 h-3 bg-blue-400 rounded-full transform -translate-y-1/2"
+                  className="absolute top-1/2 left-0 w-3 h-3 bg-sky-500 rounded-full transform -translate-y-1/2"
                   animate={{
                     x: ['0%', '100%'],
                     scale: [1, 1.5, 1]
@@ -483,7 +483,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
                   }}
                 />
                 <motion.div
-                  className="absolute top-1/2 left-0 w-2 h-2 bg-purple-400 rounded-full transform -translate-y-1/2"
+                  className="absolute top-1/2 left-0 w-2 h-2 bg-sky-500 rounded-full transform -translate-y-1/2"
                   animate={{
                     x: ['0%', '100%'],
                     scale: [1, 1.2, 1]
@@ -504,7 +504,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
             <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-32 transform -translate-y-1/2 z-5 pointer-events-none">
               {/* Main flowing glow */}
               <motion.div
-                className="absolute top-1/2 left-0 w-96 h-32 bg-gradient-to-r from-blue-500/20 via-purple-500/30 to-cyan-500/20 rounded-full blur-2xl transform -translate-y-1/2"
+                className="absolute top-1/2 left-0 w-96 h-32 bg-gradient-to-r from-sky-500/15 via-lime-400/25 to-emerald-500/20 rounded-full blur-2xl transform -translate-y-1/2"
                 style={{
                   left: `${glowPosition * 100}%`,
                   transform: 'translateX(-50%) translateY(-50%)',
@@ -514,7 +514,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
               
               {/* Secondary trailing glow */}
               <motion.div
-                className="absolute top-1/2 left-0 w-64 h-24 bg-gradient-to-r from-cyan-400/15 via-purple-400/25 to-blue-400/15 rounded-full blur-xl transform -translate-y-1/2"
+                className="absolute top-1/2 left-0 w-64 h-24 bg-gradient-to-r from-sky-400/12 via-lime-300/20 to-sky-500/12 rounded-full blur-xl transform -translate-y-1/2"
                 style={{
                   left: `${Math.max(0, glowPosition - 0.1) * 100}%`,
                   transform: 'translateX(-50%) translateY(-50%)',
@@ -524,7 +524,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
               
               {/* Pulsing center glow */}
               <motion.div
-                className="absolute top-1/2 left-0 w-48 h-16 bg-gradient-to-r from-blue-400/40 via-purple-400/50 to-cyan-400/40 rounded-full blur-lg transform -translate-y-1/2"
+                className="absolute top-1/2 left-0 w-48 h-16 bg-gradient-to-r from-sky-400/30 via-lime-400/35 to-emerald-500/30 rounded-full blur-lg transform -translate-y-1/2"
                 style={{
                   left: `${glowPosition * 100}%`,
                   transform: 'translateX(-50%) translateY(-50%)',
@@ -546,17 +546,17 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
                 transition={{ duration: 0.3 }}
               >
                 <div className={`
-                  relative p-8 rounded-2xl border backdrop-blur-sm text-center transform-gpu
+                  relative p-8 rounded-2xl border backdrop-blur-sm bg-white/90 shadow-sm text-center transform-gpu
                   ${step.bgColor} ${step.borderColor}
                   hover:shadow-2xl transition-all duration-300
                   h-full flex flex-col items-center overflow-hidden
-                  ${activeStep === index ? 'ring-2 ring-blue-400/50' : ''}
+                  ${activeStep === index ? 'ring-2 ring-sky-400/45' : ''}
                 `}>
                   {/* Animated background pattern */}
                   <div className="absolute inset-0 opacity-10">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
                     <motion.div
-                      className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-xl"
+                      className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-lime-300/25 to-sky-500/20 rounded-full blur-xl"
                       animate={{
                         scale: [1, 1.2, 1],
                         opacity: [0.2, 0.4, 0.2]
@@ -574,7 +574,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
                     {step.number}
                     
                     {/* Rotating ring around number - using CSS animation for better performance */}
-                    <div className="absolute inset-0 border-2 border-blue-400/30 rounded-full rotate-slow" />
+                    <div className="absolute inset-0 border-2 border-sky-500/30 rounded-full rotate-slow" />
                   </div>
 
                   {/* Icon with INSANE animations */}
@@ -599,11 +599,11 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
                   </div>
 
                   {/* Content */}
-                  <h3 className="step-title text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-300">
+                  <h3 className="step-title text-2xl font-bold text-slate-900 mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-sky-800 group-hover:to-lime-600 transition-all duration-300">
                     {step.title}
                   </h3>
                   
-                  <p className="step-description text-slate-300 leading-relaxed flex-grow">
+                  <p className="step-description text-slate-600 leading-relaxed flex-grow">
                     {step.description}
                   </p>
 
@@ -611,7 +611,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
                   {index < steps.length - 1 && (
                     <div className="step-arrow hidden lg:block absolute -right-6 top-1/2 transform -translate-y-1/2 z-20 opacity-0">
                       <motion.div 
-                        className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center shadow-lg"
+                        className="w-14 h-14 rounded-full bg-gradient-to-r from-slate-900 to-sky-800 flex items-center justify-center shadow-lg"
                         animate={{
                           scale: [1, 1.1, 1],
                           boxShadow: [
@@ -633,7 +633,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
 
 
                   {/* Hover Effect */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-lime-500/8 to-sky-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   
                   {/* Flowing Glow Effect on Card */}
                   {isAnimating && (
@@ -664,7 +664,7 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
           className="text-center mt-20 relative"
         >
           {/* Animated background */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-cyan-500/5 rounded-3xl blur-xl" />
+          <div className="absolute inset-0 bg-gradient-to-r from-lime-500/8 via-sky-500/8 to-emerald-500/8 rounded-3xl blur-xl" />
           
           <div className="relative z-10 p-8">
             <motion.button
@@ -673,11 +673,11 @@ export function HowItWorksSection({ onLoaded }: HowItWorksSectionProps) {
                 boxShadow: '0 20px 40px -12px rgba(59, 130, 246, 0.4)'
               }}
               whileTap={{ scale: 0.95 }}
-              className="relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-12 py-6 text-xl rounded-2xl shadow-2xl transition-all duration-300 overflow-hidden group"
+              className="relative bg-[hsl(222,47%,8%)] hover:bg-[hsl(222,47%,12%)] text-white font-semibold px-12 py-6 text-xl rounded-full shadow-xl transition-all duration-300 overflow-hidden group"
             >
               {/* Animated background */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute inset-0 bg-gradient-to-r from-lime-400/90 to-sky-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 animate={{
                   backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
                 }}

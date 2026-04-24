@@ -13,6 +13,8 @@ interface HeaderProps {
   showLogin?: boolean;
   onMenuClick?: () => void;
   showMenuButton?: boolean;
+  /** Light Ethio / Radiant-style nav on the marketing home */
+  variant?: "default" | "ethio";
 }
 
 const languages = [
@@ -22,7 +24,8 @@ const languages = [
   { code: 'ti', name: 'Tigrigna' }
 ];
 
-export default function Header({ scrolled = false, showLogin = true, onMenuClick, showMenuButton = false }: HeaderProps) {
+export default function Header({ scrolled = false, showLogin = true, onMenuClick, showMenuButton = false, variant = "default" }: HeaderProps) {
+  const isEthio = variant === "ethio";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
@@ -69,9 +72,14 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-        ? 'bg-slate-900/95 backdrop-blur-xl shadow-2xl border-b border-blue-500/20'
-        : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isEthio
+          ? scrolled
+            ? 'bg-white/90 backdrop-blur-xl shadow-sm border-b border-slate-200/80'
+            : 'bg-transparent'
+          : scrolled
+            ? 'bg-slate-900/95 backdrop-blur-xl shadow-2xl border-b border-blue-500/20'
+            : 'bg-transparent'
         }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -96,9 +104,14 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
                 onClick={() => scrollToSection(item.id)}
-                className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-300 ${scrolled
-                  ? 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                  : 'text-white/90 hover:text-white hover:bg-white/10'
+                className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition-all duration-300 ${
+                  isEthio
+                    ? scrolled
+                      ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90'
+                      : 'text-slate-800/95 hover:text-slate-900 hover:bg-white/30'
+                    : scrolled
+                      ? 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                      : 'text-white/90 hover:text-white hover:bg-white/10'
                   }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -114,9 +127,14 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3, delay: 0.7 }}
                 onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-                className={`p-2 rounded-lg font-medium cursor-pointer transition-all duration-300 ${scrolled
-                  ? 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                  : 'text-white/90 hover:text-white hover:bg-white/10'
+                className={`p-2 rounded-lg font-medium cursor-pointer transition-all duration-300 ${
+                  isEthio
+                    ? scrolled
+                      ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90'
+                      : 'text-slate-800/95 hover:text-slate-900 hover:bg-white/30'
+                    : scrolled
+                      ? 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                      : 'text-white/90 hover:text-white hover:bg-white/10'
                   }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -131,18 +149,26 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className={`absolute right-0 mt-2 w-40 rounded-lg shadow-lg border z-50 overflow-hidden ${scrolled
-                      ? 'bg-slate-800 border-blue-500/20'
-                      : 'bg-slate-900/95 border-blue-500/20'
+                    className={`absolute right-0 mt-2 w-40 rounded-lg shadow-lg border z-50 overflow-hidden ${
+                      isEthio
+                        ? 'bg-white border-slate-200 shadow-xl'
+                        : scrolled
+                          ? 'bg-slate-800 border-blue-500/20'
+                          : 'bg-slate-900/95 border-blue-500/20'
                       }`}
                   >
                     {languages.map((lang) => (
                       <motion.button
                         key={lang.code}
                         onClick={() => handleLanguageSelect(lang.code)}
-                        className={`w-full px-4 py-3 text-left transition-all duration-200 ${selectedLanguage === lang.code
-                          ? 'bg-blue-500/20 text-white'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
+                        className={`w-full px-4 py-3 text-left transition-all duration-200 ${
+                          isEthio
+                            ? selectedLanguage === lang.code
+                              ? 'bg-lime-100/90 text-slate-900'
+                              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                            : selectedLanguage === lang.code
+                              ? 'bg-blue-500/20 text-white'
+                              : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                           }`}
                         whileHover={{ x: 4 }}
                         whileTap={{ scale: 0.98 }}
@@ -166,7 +192,11 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
               >
                 <Button
                   asChild
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+                  className={
+                    isEthio
+                      ? "bg-[hsl(222,47%,8%)] hover:bg-[hsl(222,47%,12%)] text-white font-semibold px-6 py-2 rounded-full shadow-md transition-all duration-300"
+                      : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+                  }
                 >
                   <Link href="/login">
                     Login
@@ -182,9 +212,14 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onMenuClick}
-              className={`p-3 rounded-xl cursor-pointer transition-all duration-300 ${scrolled
-                ? 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                : 'text-white hover:bg-white/10'
+              className={`p-3 rounded-xl cursor-pointer transition-all duration-300 ${
+                isEthio
+                  ? scrolled
+                    ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90'
+                    : 'text-slate-800/95 hover:bg-white/30'
+                  : scrolled
+                    ? 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                    : 'text-white hover:bg-white/10'
                 }`}
             >
               <Menu className="w-6 h-6" />
@@ -194,9 +229,14 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`md:hidden p-3 rounded-xl cursor-pointer transition-all duration-300 ${scrolled
-                ? 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                : 'text-white hover:bg-white/10'
+              className={`md:hidden p-3 rounded-xl cursor-pointer transition-all duration-300 ${
+                isEthio
+                  ? scrolled
+                    ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/90'
+                    : 'text-slate-800/95 hover:bg-white/30'
+                  : scrolled
+                    ? 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                    : 'text-white hover:bg-white/10'
                 }`}
             >
               <AnimatePresence mode="wait">
@@ -240,7 +280,11 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
-                className="px-4 pt-4 pb-6 space-y-2 bg-slate-900/95 backdrop-blur-xl rounded-2xl mt-4 shadow-2xl border border-blue-500/20"
+                className={
+                  isEthio
+                    ? "px-4 pt-4 pb-6 space-y-2 bg-white/95 backdrop-blur-xl rounded-2xl mt-4 shadow-xl border border-slate-200/90"
+                    : "px-4 pt-4 pb-6 space-y-2 bg-slate-900/95 backdrop-blur-xl rounded-2xl mt-4 shadow-2xl border border-blue-500/20"
+                }
               >
                 {[
                   { id: 'about', label: 'About Us' },
@@ -257,7 +301,11 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ duration: 0.3, delay: 0.1 + index * 0.05 }}
                     onClick={() => scrollToSection(item.id)}
-                    className="relative block w-full px-4 py-3 text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 font-medium text-left rounded-lg group overflow-hidden"
+                    className={
+                      isEthio
+                        ? "relative block w-full px-4 py-3 text-slate-700 hover:text-slate-900 hover:bg-slate-100/90 transition-all duration-300 font-medium text-left rounded-lg group overflow-hidden"
+                        : "relative block w-full px-4 py-3 text-slate-300 hover:text-white hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10 transition-all duration-300 font-medium text-left rounded-lg group overflow-hidden"
+                    }
                     whileHover={{ x: 5 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -271,10 +319,10 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ duration: 0.3, delay: 0.5 + 7 * 0.05 }}
-                  className="border-t border-slate-700 mt-2 pt-2"
+                  className={isEthio ? "border-t border-slate-200 mt-2 pt-2" : "border-t border-slate-700 mt-2 pt-2"}
                 >
                   <div className="px-4 py-2">
-                    <p className="text-xs text-slate-400 mb-2 flex items-center gap-2">
+                    <p className={isEthio ? "text-xs text-slate-500 mb-2 flex items-center gap-2" : "text-xs text-slate-400 mb-2 flex items-center gap-2"}>
                       <Globe className="w-4 h-4" />
                       Language
                     </p>
@@ -283,9 +331,14 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
                         <motion.button
                           key={lang.code}
                           onClick={() => handleLanguageSelect(lang.code)}
-                          className={`px-3 py-2 rounded-lg text-sm transition-all duration-200 ${selectedLanguage === lang.code
-                            ? 'bg-blue-500/20 text-white'
-                            : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
+                          className={`px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                            isEthio
+                              ? selectedLanguage === lang.code
+                                ? 'bg-lime-100/90 text-slate-900'
+                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                              : selectedLanguage === lang.code
+                                ? 'bg-blue-500/20 text-white'
+                                : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                             }`}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
@@ -314,7 +367,11 @@ export default function Header({ scrolled = false, showLogin = true, onMenuClick
                         setIsMenuOpen(false);
                         router.push('/login');
                       }}
-                      className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+                      className={
+                        isEthio
+                          ? "w-full bg-[hsl(222,47%,8%)] hover:bg-[hsl(222,47%,12%)] text-white font-semibold py-3 rounded-full shadow-md transition-all duration-300"
+                          : "w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+                      }
                     >
                       Login
                     </Button>

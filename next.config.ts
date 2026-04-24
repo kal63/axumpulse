@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
-import path from "path";
 
-const nextConfig: NextConfig = {
-  outputFileTracingRoot: path.join(__dirname, '../../'),
-  /* config options here */
-};
+// Optional: for Docker / monorepo deploys, set `outputFileTracingRoot` to your workspace root.
+// Do not point this at a broad folder like the user Desktop (breaks dev + tracing).
+const nextConfig: NextConfig = {};
 
 export default nextConfig;

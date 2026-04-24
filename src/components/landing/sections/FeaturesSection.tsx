@@ -28,49 +28,49 @@ const features = [
     icon: Brain,
     title: "AI-Powered Coaching",
     description: "Personalized workout plans and real-time feedback tailored to your goals and performance.",
-    color: "from-blue-500 to-cyan-400",
-    bgColor: "bg-blue-500/10",
-    borderColor: "border-blue-500/20"
+    color: "from-lime-500 to-lime-400",
+    bgColor: "bg-lime-500/8",
+    borderColor: "border-lime-500/25"
   },
   {
     icon: Users,
     title: "Expert Trainers",
     description: "Access to certified Ethiopian trainers for in-person or digital guidance.",
-    color: "from-purple-500 to-pink-400",
-    bgColor: "bg-purple-500/10",
-    borderColor: "border-purple-500/20"
+    color: "from-sky-700 to-sky-500",
+    bgColor: "bg-sky-500/8",
+    borderColor: "border-sky-500/25"
   },
   {
     icon: Globe,
     title: "Multilingual Platform",
     description: "Available in Amharic, Oromifa, Tigrigna, and English for a truly local experience.",
-    color: "from-green-500 to-emerald-400",
-    bgColor: "bg-green-500/10",
-    borderColor: "border-green-500/20"
+    color: "from-emerald-600 to-emerald-400",
+    bgColor: "bg-emerald-500/8",
+    borderColor: "border-emerald-500/25"
   },
   {
     icon: Heart,
     title: "Medical Integration",
     description: "Seamlessly integrate health data from wearables and medical records for holistic wellness.",
-    color: "from-red-500 to-rose-400",
-    bgColor: "bg-red-500/10",
-    borderColor: "border-red-500/20"
+    color: "from-rose-500 to-rose-400",
+    bgColor: "bg-rose-500/8",
+    borderColor: "border-rose-500/25"
   },
   {
     icon: TrendingUp,
     title: "Progress Tracking",
     description: "Visualize your fitness journey with detailed analytics, charts, and achievement badges.",
-    color: "from-orange-500 to-yellow-400",
-    bgColor: "bg-orange-500/10",
-    borderColor: "border-orange-500/20"
+    color: "from-amber-500 to-lime-400",
+    bgColor: "bg-amber-500/8",
+    borderColor: "border-amber-500/25"
   },
   {
     icon: MessageSquare,
     title: "Community Support",
     description: "Connect with a vibrant community, join challenges, and find workout partners.",
-    color: "from-indigo-500 to-purple-400",
-    bgColor: "bg-indigo-500/10",
-    borderColor: "border-indigo-500/20"
+    color: "from-violet-600 to-sky-500",
+    bgColor: "bg-violet-500/8",
+    borderColor: "border-violet-500/25"
   }
 ];
 
@@ -224,7 +224,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
             ease: 'power2.out'
           }, 0.2)
           .to(cardElement, {
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(59, 130, 246, 0.5)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(20, 60, 100, 0.15)',
             duration: 0.3,
             ease: 'power2.out'
           }, 0);
@@ -301,9 +301,9 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
       {/* INSANE Background Effects */}
       <div className="absolute inset-0">
         {/* Multiple animated gradient orbs */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-lime-400/15 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-sky-600/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-lime-300/10 rounded-full blur-3xl animate-pulse" />
         
         {/* Animated grid pattern */}
         {/* <div className="absolute inset-0 opacity-5">
@@ -339,7 +339,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
           >
             {/* Animated background text */}
             <motion.span
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20"
+              className="absolute inset-0 bg-gradient-to-r from-lime-500 via-sky-600 to-sky-800 bg-clip-text text-transparent opacity-20"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
               }}
@@ -356,11 +356,11 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
             </motion.span>
             
             {/* Main text */}
-            <span className="relative z-10 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="relative z-10 bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
               Everything You Need
             </span>
             <br />
-            <span className="text-white relative z-10">to Succeed</span>
+            <span className="text-slate-900 relative z-10">to Succeed</span>
             
             {/* Floating sparkles */}
             {/*
@@ -384,7 +384,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
           <div className="relative">
             <motion.p
               ref={subtitleRef}
-              className="text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto"
+              className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto"
             >
               A complete fitness ecosystem designed specifically for Ethiopian users, 
               combining cutting-edge AI technology with local expertise and cultural understanding.
@@ -392,7 +392,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
             
             {/* Animated underline */}
             <motion.div
-              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-lime-500 to-sky-700 rounded-full"
               animate={{
                 scaleX: [0, 1, 0],
                 opacity: [0, 1, 0]
@@ -420,17 +420,17 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
             >
               {/* Card */}
               <div className={`
-                relative p-8 rounded-2xl border backdrop-blur-sm transform-gpu
+                relative p-8 rounded-2xl border backdrop-blur-sm transform-gpu bg-white/90 shadow-sm
                 ${feature.bgColor} ${feature.borderColor}
                 hover:shadow-2xl transition-all duration-300
                 h-full flex flex-col overflow-hidden
-                ${hoveredCard === index ? 'ring-2 ring-blue-400/50' : ''}
+                ${hoveredCard === index ? 'ring-2 ring-sky-400/40' : ''}
               `}>
                 {/* Animated background pattern */}
                 <div className="absolute inset-0 opacity-10">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
                   <motion.div
-                    className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-xl"
+                    className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-lime-300/30 to-sky-500/20 rounded-full blur-xl"
                     animate={{
                       scale: [1, 1.2, 1],
                       opacity: [0.2, 0.4, 0.2]
@@ -444,7 +444,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
                 </div>
 
                 {/* Feature number */}
-                <div className="absolute top-4 right-4 text-6xl font-bold text-white/10 group-hover:text-white/20 transition-colors duration-300">
+                <div className="absolute top-4 right-4 text-6xl font-bold text-slate-200 group-hover:text-slate-300/80 transition-colors duration-300">
                   {String(index + 1).padStart(2, '0')}
                 </div>
 
@@ -486,11 +486,11 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-300 feature-title">
+                <h3 className="text-2xl font-bold text-slate-900 mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-sky-800 group-hover:to-lime-600 transition-all duration-300 feature-title">
                   {feature.title}
                 </h3>
                 
-                <p className="text-slate-300 leading-relaxed flex-grow feature-description">
+                <p className="text-slate-600 leading-relaxed flex-grow feature-description">
                   {feature.description}
                 </p>
 
@@ -506,7 +506,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
                     delay: 0.5
                   }}
                 >
-                  <ArrowRight className="w-6 h-6 text-blue-400" />
+                  <ArrowRight className="w-6 h-6 text-sky-700" />
                 </motion.div>
 
                 {/* Sparkles effect */}
@@ -541,7 +541,7 @@ export function FeaturesSection({ onLoaded }: FeaturesSectionProps) {
                 </div>
 
                 {/* Hover Effect */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-lime-500/8 to-sky-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             </motion.div>
           ))}

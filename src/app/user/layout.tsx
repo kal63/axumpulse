@@ -20,6 +20,7 @@ import {
   X
 } from 'lucide-react';
 import { Logo } from '@/components/shared/Logo';
+import Image from 'next/image';
 
 interface UserLayoutProps {
   children: React.ReactNode;
@@ -196,7 +197,20 @@ export default function UserLayout({ children }: UserLayoutProps) {
             <div className="p-6 h-full flex flex-col">
               {/* Logo/Brand */}
               <div className="mb-8">
-                <Logo size="sm" />
+                {/* Keep sidebar branding simple; co-brand header lives on Dashboard only */}
+                <div className="dark:hidden">
+                  <Image
+                    src="/logo.png"
+                    alt="Compound 360 logo"
+                    width={120}
+                    height={32}
+                    className="h-7 w-auto bg-white rounded-[7px]"
+                    priority
+                  />
+                </div>
+                <div className="hidden dark:block">
+                  <Logo size="sm" />
+                </div>
                 <p className="text-sm text-white/85 dark:text-[var(--neumorphic-muted)] mt-1">
                   Gamified Fitness Platform
                 </p>

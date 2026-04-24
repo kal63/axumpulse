@@ -148,19 +148,22 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
   const getColorClasses = (color: string) => {
     const colorMap = {
       blue: {
-        icon: 'text-blue-400',
-        bg: 'from-blue-500/10 to-purple-500/10',
-        border: 'border-blue-500/20'
+        icon: 'text-sky-600',
+        iconBox: 'bg-sky-500/15',
+        bg: 'from-sky-500/8 to-lime-500/8',
+        border: 'border-sky-500/25'
       },
       cyan: {
-        icon: 'text-cyan-400',
-        bg: 'from-cyan-500/10 to-blue-500/10',
-        border: 'border-cyan-500/20'
+        icon: 'text-emerald-600',
+        iconBox: 'bg-emerald-500/15',
+        bg: 'from-emerald-500/8 to-sky-500/8',
+        border: 'border-emerald-500/25'
       },
       purple: {
-        icon: 'text-purple-400',
-        bg: 'from-purple-500/10 to-pink-500/10',
-        border: 'border-purple-500/20'
+        icon: 'text-violet-600',
+        iconBox: 'bg-violet-500/15',
+        bg: 'from-violet-500/8 to-sky-500/8',
+        border: 'border-violet-500/25'
       }
     };
     return colorMap[color as keyof typeof colorMap] || colorMap.blue;
@@ -177,15 +180,15 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)'
+          background: 'radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(12, 74, 110, 0.08) 0%, transparent 50%)'
         }}
       />
       
       {/* Top overlay to blend seamlessly with TrainersSection - matching its bottom overlay */}
       <div 
-        className="absolute top-0 left-0 right-0 h-64 pointer-events-none z-0"
+        className="absolute top-0 left-0 right-0 h-48 pointer-events-none z-0"
         style={{
-          background: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.4) 25%, rgba(15, 23, 42, 0.2) 50%, rgba(15, 23, 42, 0.1) 75%, transparent 100%)'
+          background: 'linear-gradient(to bottom, hsl(80 30% 96% / 0.95) 0%, transparent 100%)'
         }}
       />
 
@@ -198,15 +201,15 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
           >
             {/* Animated background text - using CSS animation for better performance */}
             <span
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20 gradient-animation"
+              className="absolute inset-0 bg-gradient-to-r from-lime-500 via-sky-600 to-sky-900 bg-clip-text text-transparent opacity-20 gradient-animation"
             >
               For Trainers
             </span>
             
             {/* Main text */}
-            <span className="relative z-10 text-white">For</span>
+            <span className="relative z-10 text-slate-900">For</span>
             <br />
-            <span className="relative z-10 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="relative z-10 bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
               Trainers
             </span>
             
@@ -227,7 +230,7 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
 
           <motion.p
             ref={subtitleRef}
-            className="text-xl text-white/80 leading-relaxed max-w-3xl mx-auto"
+            className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto"
           >
             Join Compound 360 as a certified trainer. Reach more clients, publish content, and grow your brand—all with local support and tools.
           </motion.p>
@@ -242,17 +245,17 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
             return (
               <Card 
                 key={index}
-                className={`p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105 bg-white/5 backdrop-blur-sm border-white/10 group relative overflow-hidden ${colors.border}`}
+                className={`p-6 text-center hover:shadow-md transition-all duration-300 hover:scale-[1.02] bg-white/90 backdrop-blur-sm border-slate-200/90 shadow-sm group relative overflow-hidden ${colors.border}`}
               >
                 {/* Glowing effect */}
                 <div className={`absolute inset-0 bg-gradient-to-r ${colors.bg} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                 
                 <div className="relative z-10">
-                  <div className={`w-10 h-10 ${colors.icon.replace('text-', 'bg-').replace('-400', '-500/20')} rounded-full flex items-center justify-center mx-auto mb-3`}>
+                  <div className={`w-10 h-10 ${'iconBox' in colors ? colors.iconBox : ''} rounded-full flex items-center justify-center mx-auto mb-3`}>
                     <IconComponent className={`w-5 h-5 ${colors.icon}`} />
                   </div>
-                  <h4 className="font-semibold text-white mb-2">{feature.title}</h4>
-                  <p className="text-sm text-white/70">{feature.description}</p>
+                  <h4 className="font-semibold text-slate-900 mb-2">{feature.title}</h4>
+                  <p className="text-sm text-slate-600">{feature.description}</p>
                 </div>
               </Card>
             );
@@ -289,7 +292,7 @@ export function ForTrainersSection({ onLoaded }: ForTrainersSectionProps) {
           <Link href="/user/apply">
             <Button 
               size="lg" 
-              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 text-lg px-8 py-6 rounded-xl font-semibold group relative overflow-hidden"
+              className="bg-[hsl(222,47%,8%)] hover:bg-[hsl(222,47%,12%)] text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 text-lg px-8 py-6 rounded-full font-semibold group relative overflow-hidden"
             >
               <span className="relative z-10 flex items-center justify-center">
                 <Award className="mr-2 h-5 w-5" />

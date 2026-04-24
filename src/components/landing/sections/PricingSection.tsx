@@ -52,7 +52,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
   useEffect(() => {
     const createParticle = () => {
       const particle = document.createElement('div');
-      particle.className = 'absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-60';
+      particle.className = 'absolute w-2 h-2 bg-gradient-to-r from-lime-400 to-sky-600 rounded-full opacity-50';
       particle.style.left = Math.random() * 100 + '%';
       particle.style.top = Math.random() * 100 + '%';
       particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
@@ -213,11 +213,11 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
 
   const getPackageTextColor = (level: string) => {
     switch (level) {
-      case 'silver': return 'text-slate-300'
-      case 'gold': return 'text-yellow-300'
-      case 'diamond': return 'text-cyan-300'
-      case 'platinum': return 'text-purple-300'
-      default: return 'text-blue-300'
+      case 'silver': return 'text-slate-700'
+      case 'gold': return 'text-amber-700'
+      case 'diamond': return 'text-sky-800'
+      case 'platinum': return 'text-violet-800'
+      default: return 'text-sky-800'
     }
   }
 
@@ -232,7 +232,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
         ref={particlesRef}
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)'
+          background: 'radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(12, 74, 110, 0.08) 0%, transparent 50%)'
         }}
       />
 
@@ -245,7 +245,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
           >
             {/* Animated background text */}
             <motion.span
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent opacity-20"
+              className="absolute inset-0 bg-gradient-to-r from-lime-500 via-sky-600 to-sky-900 bg-clip-text text-transparent opacity-20"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
               }}
@@ -262,9 +262,9 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
             </motion.span>
             
             {/* Main text */}
-            <span className="relative z-10 text-white">Simple, Affordable</span>
+            <span className="relative z-10 text-slate-900">Simple, Affordable</span>
             <br />
-            <span className="relative z-10 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="relative z-10 bg-gradient-to-r from-lime-600 via-sky-600 to-sky-900 bg-clip-text text-transparent">
               Pricing
             </span>
             
@@ -307,7 +307,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
 
           <motion.p
             ref={subtitleRef}
-            className="text-xl text-white/80 leading-relaxed max-w-3xl mx-auto"
+            className="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto"
           >
             Choose the perfect plan for your fitness journey. Flexible pricing with multiple subscription options.
           </motion.p>
@@ -316,11 +316,11 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
         {/* Pricing Cards Grid */}
         {loading ? (
           <div className="flex justify-center items-center py-20">
-            <div className="text-white/60">Loading packages...</div>
+            <div className="text-slate-500">Loading packages...</div>
           </div>
         ) : plans.length === 0 ? (
           <div className="flex justify-center items-center py-20">
-            <div className="text-white/60">No packages available at the moment.</div>
+            <div className="text-slate-500">No packages available at the moment.</div>
           </div>
         ) : (
           <div 
@@ -342,11 +342,11 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
                   whileTap={{ scale: 0.98 }}
                   className="h-full"
                 >
-                  <Card className={`bg-gradient-to-br ${getPackageGradient(plan.level)} backdrop-blur-sm border ${getPackageBorder(plan.level)} hover:border-opacity-100 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 relative overflow-hidden group h-full flex flex-col`}>
+                  <Card className={`bg-white/95 bg-gradient-to-br ${getPackageGradient(plan.level)} backdrop-blur-sm border border-slate-200/80 ${getPackageBorder(plan.level)} hover:border-opacity-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-300/30 relative overflow-hidden group h-full flex flex-col`}>
                     {/* Popular Badge */}
                     {isPopular && (
                       <div className="absolute top-4 right-4 z-10">
-                        <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full px-3 py-1">
+                        <div className="bg-gradient-to-r from-amber-400 to-orange-500 rounded-full px-3 py-1">
                           <span className="text-xs font-bold text-white">Popular</span>
                         </div>
                       </div>
@@ -359,7 +359,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
                         <h3 className={`text-2xl font-bold ${getPackageTextColor(plan.level)} mb-1`}>
                           {plan.name}
                         </h3>
-                        <p className="text-white/60 text-sm capitalize">{plan.level} Level</p>
+                        <p className="text-slate-500 text-sm capitalize">{plan.level} Level</p>
                       </div>
 
                       {/* Price Display */}
@@ -368,9 +368,9 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
                           <span className={`text-4xl font-bold ${getPackageTextColor(plan.level)}`}>
                             {formatPrice(dailyPrice)}
                           </span>
-                          <span className="text-white/60 text-lg ml-1">/day</span>
+                          <span className="text-slate-500 text-lg ml-1">/day</span>
                         </div>
-                        <div className="text-white/70 text-sm">
+                        <div className="text-slate-600 text-sm">
                           or {formatPrice(monthlyPrice)}/month
                         </div>
                       </div>
@@ -380,11 +380,11 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
                         {features.slice(0, 4).map((feature: string, idx: number) => (
                           <li key={idx} className="flex items-start">
                             <Check className={`w-5 h-5 ${getPackageTextColor(plan.level)} mr-2 flex-shrink-0 mt-0.5`} />
-                            <span className="text-white/90 text-sm">{feature}</span>
+                            <span className="text-slate-800 text-sm">{feature}</span>
                           </li>
                         ))}
                         {features.length > 4 && (
-                          <li className="text-white/60 text-xs italic">
+                          <li className="text-slate-500 text-xs italic">
                             +{features.length - 4} more features
                           </li>
                         )}
@@ -393,7 +393,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
                       {/* CTA Button */}
                       <Link href={`/packages/${plan.id}`} className="mt-auto">
                         <Button 
-                          className={`w-full bg-gradient-to-r ${plan.level === 'silver' ? 'from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800' : plan.level === 'gold' ? 'from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700' : plan.level === 'diamond' ? 'from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700' : 'from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'} text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold`}
+                          className={`w-full bg-gradient-to-r ${plan.level === 'silver' ? 'from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900' : plan.level === 'gold' ? 'from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700' : plan.level === 'diamond' ? 'from-sky-600 to-sky-800 hover:from-sky-700 hover:to-sky-900' : 'from-violet-600 to-sky-700 hover:from-violet-700 hover:to-sky-800'} text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold rounded-full`}
                         >
                           Get Started
                           <ArrowRight className="w-4 h-4 ml-2" />
@@ -414,7 +414,7 @@ export function PricingSection({ onLoaded }: PricingSectionProps) {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 mx-auto"
+                className="bg-[hsl(222,47%,8%)] hover:bg-[hsl(222,47%,12%)] text-white font-semibold px-8 py-4 rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2 mx-auto"
               >
                 <Sparkles className="w-5 h-5" />
                 View All Packages & Details
