@@ -1697,6 +1697,10 @@ class ApiClient {
     return this.request<Language[]>(`/public/languages`)
   }
 
+  async getClientConfig(): Promise<ApiResponse<{ devLoginEnabled: boolean }>> {
+    return this.request<{ devLoginEnabled: boolean }>('/public/client-config')
+  }
+
   async getAdminLanguages(): Promise<ApiResponse<{ items: Language[] }>> {
     // Use admin endpoint to get all languages (active and inactive)
     return this.request<{ items: Language[] }>(`/admin/languages`)

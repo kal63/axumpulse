@@ -172,8 +172,8 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
             )}
 
             <div data-hero-in className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
-              <motion.button
-                type="button"
+              <motion.a
+                href="sms:6313?body=OK"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="group inline-flex items-center gap-3 bg-[hsl(222,47%,8%)] text-white px-8 py-5 rounded-full text-base font-bold shadow-lg hover:shadow-xl transition-shadow"
@@ -183,7 +183,7 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                 <span className="w-8 h-8 rounded-full bg-lime-400 text-[hsl(222,47%,8%)] grid place-items-center group-hover:rotate-12 transition-transform">
                   <ArrowRight className="w-4 h-4" />
                 </span>
-              </motion.button>
+              </motion.a>
               <Link href="/user/apply">
                 <motion.button
                   type="button"

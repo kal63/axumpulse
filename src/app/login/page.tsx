@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Eye, EyeOff, Phone, Lock, LogIn, Shield, UserCheck, Users, Star, Globe, Activity } from 'lucide-react'
 import { useAuth } from '@/contexts/auth-context'
+import { apiClient } from '@/lib/api-client'
 import Header from '@/components/shared/header'
 import { Logo } from '@/components/shared/Logo'
 import { motion } from 'framer-motion'
@@ -23,8 +24,22 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [scrolled, setScrolled] = useState(false)
+  const [devLoginEnabled, setDevLoginEnabled] = useState(false)
   const { login, dev_login, isLoading } = useAuth()
   const router = useRouter()
+
+  useEffect(() => {
+    let cancelled = false
+    void (async () => {
+      const res = await apiClient.getClientConfig()
+      if (!cancelled && res.success && res.data?.devLoginEnabled === true) {
+        setDevLoginEnabled(true)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -380,97 +395,99 @@ const handleQuickSubmit = async (
               </CardContent>
             </Card>
 
-            {/* Demo / quick login (dev-style roles) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.28, duration: 0.55 }}
-              className="mt-8"
-            >
-              <Card className="rounded-2xl border border-slate-200/90 bg-white/90 shadow-lg backdrop-blur-sm">
-                <CardContent className="pb-6 pt-6">
-                  <div className="mb-6 text-center">
-                    <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[hsl(78,88%,55%)] text-[hsl(222,47%,8%)] shadow-md ring-1 ring-[hsl(222,47%,8%)]/8">
-                      <Star className="h-6 w-6" />
+            {devLoginEnabled ? (
+              /* Demo / quick login (only when API ENABLE_DEV_LOGIN=true) */
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.28, duration: 0.55 }}
+                className="mt-8"
+              >
+                <Card className="rounded-2xl border border-slate-200/90 bg-white/90 shadow-lg backdrop-blur-sm">
+                  <CardContent className="pb-6 pt-6">
+                    <div className="mb-6 text-center">
+                      <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[hsl(78,88%,55%)] text-[hsl(222,47%,8%)] shadow-md ring-1 ring-[hsl(222,47%,8%)]/8">
+                        <Star className="h-6 w-6" />
+                      </div>
+                      <h3 className="font-landing-display mb-2 text-lg uppercase tracking-tight text-[hsl(222,47%,8%)]">
+                        Quick login
+                      </h3>
+                      <p className="text-sm text-[hsl(222,20%,40%)]">Try demo accounts when your API exposes them</p>
                     </div>
-                    <h3 className="font-landing-display mb-2 text-lg uppercase tracking-tight text-[hsl(222,47%,8%)]">
-                      Quick login
-                    </h3>
-                    <p className="text-sm text-[hsl(222,20%,40%)]">Try demo accounts when your API exposes them</p>
-                  </div>
 
-                  <div className="grid grid-cols-1 gap-3">
-                    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="lg"
-                        className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-slate-50 hover:text-[hsl(210,95%,28%)]"
-                        onClick={() => handleQuickLogin('admin')}
-                        disabled={isLoading}
-                      >
-                        <Shield className="mr-3 h-5 w-5 text-[hsl(210,95%,32%)]" />
-                        Admin
-                      </Button>
+                    <div className="grid grid-cols-1 gap-3">
+                      <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="lg"
+                          className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-slate-50 hover:text-[hsl(210,95%,28%)]"
+                          onClick={() => handleQuickLogin('admin')}
+                          disabled={isLoading}
+                        >
+                          <Shield className="mr-3 h-5 w-5 text-[hsl(210,95%,32%)]" />
+                          Admin
+                        </Button>
+                      </motion.div>
+
+                      <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="lg"
+                          className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-slate-50 hover:text-[hsl(210,95%,28%)]"
+                          onClick={() => handleQuickLogin('trainer')}
+                          disabled={isLoading}
+                        >
+                          <UserCheck className="mr-3 h-5 w-5 text-[hsl(210,95%,32%)]" />
+                          Trainer
+                        </Button>
+                      </motion.div>
+
+                      <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="lg"
+                          className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-[hsl(78,88%,96%)] hover:text-[hsl(210,95%,28%)]"
+                          onClick={() => handleQuickLogin('user')}
+                          disabled={isLoading}
+                        >
+                          <Users className="mr-3 h-5 w-5 text-[hsl(78,80%,38%)]" />
+                          User
+                        </Button>
+                      </motion.div>
+
+                      <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="lg"
+                          className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-slate-50 hover:text-[hsl(210,95%,28%)]"
+                          onClick={() => handleQuickLogin('medical')}
+                          disabled={isLoading}
+                        >
+                          <Users className="mr-3 h-5 w-5 text-[hsl(210,95%,32%)]" />
+                          Medical professional
+                        </Button>
+                      </motion.div>
+                    </div>
+
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4, duration: 0.45 }}
+                      className="mt-5 rounded-xl border border-slate-200/90 bg-[hsl(80,30%,98%)] p-3"
+                    >
+                      <p className="text-center text-xs text-[hsl(222,20%,42%)]">
+                        <span className="font-semibold text-[hsl(210,95%,28%)]">Note:</span> quick login needs a reachable API
+                        (same host as in <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_API_URL</code>).
+                      </p>
                     </motion.div>
-
-                    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="lg"
-                        className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-slate-50 hover:text-[hsl(210,95%,28%)]"
-                        onClick={() => handleQuickLogin('trainer')}
-                        disabled={isLoading}
-                      >
-                        <UserCheck className="mr-3 h-5 w-5 text-[hsl(210,95%,32%)]" />
-                        Trainer
-                      </Button>
-                    </motion.div>
-
-                    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="lg"
-                        className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-[hsl(78,88%,96%)] hover:text-[hsl(210,95%,28%)]"
-                        onClick={() => handleQuickLogin('user')}
-                        disabled={isLoading}
-                      >
-                        <Users className="mr-3 h-5 w-5 text-[hsl(78,80%,38%)]" />
-                        User
-                      </Button>
-                    </motion.div>
-
-                    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="lg"
-                        className="h-11 w-full border-slate-200 bg-white text-sm font-semibold text-[hsl(222,47%,8%)] shadow-sm hover:bg-slate-50 hover:text-[hsl(210,95%,28%)]"
-                        onClick={() => handleQuickLogin('medical')}
-                        disabled={isLoading}
-                      >
-                        <Users className="mr-3 h-5 w-5 text-[hsl(210,95%,32%)]" />
-                        Medical professional
-                      </Button>
-                    </motion.div>
-                  </div>
-
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4, duration: 0.45 }}
-                    className="mt-5 rounded-xl border border-slate-200/90 bg-[hsl(80,30%,98%)] p-3"
-                  >
-                    <p className="text-center text-xs text-[hsl(222,20%,42%)]">
-                      <span className="font-semibold text-[hsl(210,95%,28%)]">Note:</span> quick login needs a reachable API
-                      (same host as in <code className="rounded bg-white/80 px-1">NEXT_PUBLIC_API_URL</code>).
-                    </p>
-                  </motion.div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ) : null}
           </motion.div>
         </div>
       </div>
