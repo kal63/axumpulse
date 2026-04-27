@@ -28,7 +28,7 @@ function QuickAction({
       className={cn(
         'cursor-pointer group',
         variant === 'primary' &&
-          'bg-gradient-to-r from-emerald-50/95 to-sky-50/90 dark:from-emerald-950/35 dark:to-sky-950/25',
+          'bg-gradient-to-r from-[hsl(78,88%,55%)]/18 to-[hsl(210,85%,96%)]',
         className
       )}
       onClick={onClick}
@@ -38,7 +38,7 @@ function QuickAction({
         <div className={cn(
           'p-3 rounded-full transition-colors duration-200',
           variant === 'primary' 
-            ? 'bg-emerald-100/90 dark:bg-emerald-900/40 group-hover:bg-emerald-200/90 dark:group-hover:bg-emerald-800/50'
+            ? 'bg-[hsl(78,88%,55%)]/40 group-hover:bg-[hsl(78,88%,55%)]/55'
             : 'bg-gray-100 dark:bg-gray-800 group-hover:bg-gray-200 dark:group-hover:bg-gray-700'
         )}>
           <Icon className={cn(
@@ -52,7 +52,7 @@ function QuickAction({
           <h3 className={cn(
             'font-semibold transition-colors duration-200',
             variant === 'primary'
-              ? 'text-emerald-950 dark:text-emerald-100'
+              ? 'text-[hsl(222,47%,8%)]'
               : 'text-gray-900 dark:text-white'
           )}>
             {title}
@@ -60,7 +60,7 @@ function QuickAction({
           <p className={cn(
             'text-sm transition-colors duration-200',
             variant === 'primary'
-              ? 'text-emerald-800 dark:text-emerald-200/90'
+              ? 'text-[hsl(222,20%,40%)]'
               : 'text-gray-600 dark:text-gray-400'
           )}>
             {description}

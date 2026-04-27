@@ -40,7 +40,6 @@ type MessagesType = { [key: string]: { [key: string]: string } };
 export function BottomNavigation() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user } = useAuth();
   const [language, setLanguage] = useState('en');
   const [loading, setLoading] = useState(true);
 
@@ -91,13 +90,9 @@ export function BottomNavigation() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t user-app-border dark:bg-slate-900/90">
-      <div className="max-w-md mx-auto px-4 py-2">
-        <NeumorphicCard
-          variant="raised"
-          size="sm"
-          className="flex overflow-x-auto no-scrollbar space-x-2 py-2 px-1"
-        >
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t user-app-border bg-white/92 backdrop-blur-md">
+      <div className="max-w-md mx-auto px-3 py-2">
+        <div className="flex overflow-x-auto no-scrollbar space-x-1.5 px-1">
           {navItems.map((item) => {
             const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
@@ -107,19 +102,19 @@ export function BottomNavigation() {
                 key={item.id}
                 onClick={() => router.push(item.href)}
                 className={cn(
-                  'flex flex-col items-center space-y-1 rounded-xl px-3 py-2 text-[13px] transition-all duration-200',
-                  'user-app-hover',
+                  'flex flex-col items-center space-y-1 rounded-2xl px-3 py-2 text-[12px] font-medium transition-colors',
+                  'hover:bg-black/5',
                   isActive &&
-                    'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white shadow-md dark:from-[var(--ethio-lemon-dark)] dark:to-[#0069a3]'
+                    'user-app-gradient text-white shadow-sm'
                 )}
               >
                 <div className="relative">
                   <Icon
                     className={cn(
-                      'h-5 w-5 transition-colors duration-200',
+                      'h-5 w-5 transition-colors',
                       isActive
                         ? 'text-white'
-                        : 'text-[hsl(222,12%,38%)] dark:text-slate-400',
+                        : 'text-[hsl(222,20%,35%)]',
                     )}
                   />
                   {isActive && (
@@ -128,10 +123,10 @@ export function BottomNavigation() {
                 </div>
                 <span
                   className={cn(
-                    'max-w-[4.5rem] truncate text-center font-medium leading-tight transition-colors duration-200',
+                    'max-w-[4.5rem] truncate text-center leading-tight transition-colors',
                     isActive
                       ? 'text-white'
-                      : 'text-[hsl(222,20%,18%)] dark:text-slate-300',
+                      : 'text-[hsl(222,20%,18%)]',
                   )}
                 >
                   {item.label}
@@ -139,7 +134,7 @@ export function BottomNavigation() {
               </button>
             );
           })}
-        </NeumorphicCard>
+        </div>
       </div>
     </div>
   );

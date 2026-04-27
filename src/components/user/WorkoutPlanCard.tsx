@@ -58,12 +58,12 @@ export function WorkoutPlanCard({
         switch (category?.toLowerCase()) {
             case 'strength': return 'from-orange-500 to-red-600'
             case 'cardio': return 'from-red-500 to-pink-600'
-            case 'yoga': return 'from-green-500 to-emerald-600'
+            case 'yoga': return 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
             case 'cycling': return 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
             case 'martial_arts': return 'from-[var(--ethio-lemon-dark)] to-indigo-800'
             case 'hiit': return 'from-orange-500 to-yellow-600'
             case 'pilates': return 'from-teal-500 to-[var(--ethio-deep-blue)]'
-            case 'flexibility': return 'from-green-500 to-teal-600'
+            case 'flexibility': return 'from-[var(--ethio-lemon-dark)] to-[var(--ethio-deep-blue)]'
             case 'endurance': return 'from-red-500 to-orange-600'
             case 'rehabilitation': return 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
             default: return 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
@@ -205,7 +205,7 @@ export function WorkoutPlanCard({
                         <button 
                             className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg ${
                                 userProgress.status === 'completed'
-                                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700'
+                                    ? 'bg-gradient-to-r from-[var(--ethio-lemon-dark)] to-[var(--ethio-deep-blue)] text-white hover:opacity-95'
                                     : 'bg-gradient-to-r from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)] text-white hover:opacity-95 dark:from-[var(--ethio-lemon-dark)] dark:to-[var(--ethio-deep-blue)] dark:hover:opacity-95'
                             }`}
                             onClick={(e) => {

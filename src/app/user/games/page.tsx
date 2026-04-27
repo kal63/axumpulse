@@ -106,7 +106,7 @@ export default function GamesHubPage() {
       case 'quiz_battle':
         return 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]';
       case 'memory_game':
-        return 'from-green-500 to-emerald-500';
+        return 'from-[var(--ethio-lemon-dark)] to-[var(--ethio-deep-blue)]';
       default:
         return 'from-gray-500 to-gray-600';
     }

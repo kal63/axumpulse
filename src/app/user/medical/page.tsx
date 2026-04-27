@@ -139,13 +139,13 @@ export default function MedicalHubPage() {
     <div className="min-h-dvh min-h-full user-app-page">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-emerald-500/5 to-blue-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--ethio-lemon)]/14 via-[var(--ethio-deep-blue)]/8 to-transparent" />
         
         <div className="relative px-4 md:px-8 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-teal-500 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <div className="inline-flex items-center space-x-2 user-app-gradient text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
                   <Heart className="w-4 h-4" />
                   <span>Medical Hub</span>
                 </div>
@@ -169,7 +169,7 @@ export default function MedicalHubPage() {
             {/* Medical Profile Status */}
             <NeumorphicCard variant="raised" className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 user-app-gradient rounded-full flex items-center justify-center">
                   <FileText className="w-6 h-6 text-white" />
                 </div>
                 {profileStatus === 'complete' ? (
@@ -186,7 +186,7 @@ export default function MedicalHubPage() {
               </p>
               <Button
                 onClick={() => router.push('/user/medical/profile')}
-                className="w-full bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white"
+                className="w-full user-app-btn-primary"
               >
                 {profileStatus === 'complete' ? 'Update Profile' : 'Complete Profile'}
               </Button>
@@ -377,7 +377,7 @@ export default function MedicalHubPage() {
                         {doctor.medicalProfessional?.consultFee ? (
                           <Button
                             onClick={() => router.push(`/user/medical/consults/purchase?doctorId=${doctor.id}`)}
-                            className="bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white"
+                            className="user-app-btn-primary"
                             size="sm"
                           >
                             Purchase
@@ -409,7 +409,7 @@ export default function MedicalHubPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <Button
                 onClick={() => router.push('/user/medical/intake')}
-                className="h-20 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white text-lg font-semibold"
+                className="h-20 user-app-btn-primary text-lg font-semibold"
               >
                 <FileText className="w-6 h-6 mr-3" />
                 Take Intake Form

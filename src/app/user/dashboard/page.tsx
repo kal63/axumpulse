@@ -419,7 +419,7 @@ export default function UserDashboardPage() {
                   label: 'Workouts',
                   value: userStats.workoutsCompleted,
                   icon: Dumbbell,
-                  tone: 'from-emerald-500 to-[var(--ethio-deep-blue)]',
+                  tone: 'from-[var(--ethio-lemon-dark)] to-[var(--ethio-deep-blue)]',
                   extra:
                     userInfo?.workoutStreak > 0 ? (
                       <span className="mt-1 inline-flex items-center text-[10px] text-orange-500 sm:text-xs">
@@ -432,7 +432,7 @@ export default function UserDashboardPage() {
                   label: 'Challenges',
                   value: userStats.challengesCompleted,
                   icon: Trophy,
-                  tone: 'from-emerald-500 to-teal-600',
+                  tone: 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]',
                   extra:
                     userInfo?.challengeStreak > 0 ? (
                       <span className="mt-1 inline-flex items-center text-[10px] text-amber-500 sm:text-xs">
@@ -648,7 +648,7 @@ export default function UserDashboardPage() {
             <Button
               type="button"
               onClick={() => router.push('/user/progress')}
-              className="h-auto min-h-[4.5rem] flex-col gap-1 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 py-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:shadow-md sm:flex-row sm:gap-2 sm:py-5 sm:text-base"
+              className="h-auto min-h-[4.5rem] flex-col gap-1 rounded-2xl user-app-gradient py-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:shadow-md sm:flex-row sm:gap-2 sm:py-5 sm:text-base"
             >
               <BarChart3 className="size-5 shrink-0 sm:mr-1" />
               <span>Progress</span>

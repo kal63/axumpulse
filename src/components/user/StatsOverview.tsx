@@ -40,8 +40,8 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       icon: Clock,
       label: 'Total Watch Time',
       value: formatWatchTime(stats.totalWatchTime),
-      color: 'from-[var(--color-lime-pulse)] to-green-600',
-      gradient: 'bg-gradient-to-br from-lime-500 to-green-600'
+      color: 'from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]',
+      gradient: 'bg-gradient-to-br from-[var(--ethio-lemon)] to-[var(--ethio-deep-blue)]'
     },
     {
       icon: Dumbbell,
@@ -68,8 +68,8 @@ export function StatsOverview({ stats }: StatsOverviewProps) {
       icon: TrendingUp,
       label: 'Achievements',
       value: stats.achievementsUnlocked,
-      color: 'from-emerald-500 to-teal-600',
-      gradient: 'bg-gradient-to-br from-emerald-500 to-teal-600'
+      color: 'from-[var(--ethio-lemon-dark)] to-[var(--ethio-deep-blue)]',
+      gradient: 'bg-gradient-to-br from-[var(--ethio-lemon-dark)] to-[var(--ethio-deep-blue)]'
     },
   ]
 

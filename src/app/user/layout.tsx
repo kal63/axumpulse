@@ -180,7 +180,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
           {/* Mobile Trainer Promotion Banner */}
           {showTrainerPromo && !user?.isTrainer && (
             <div className="fixed bottom-20 left-4 right-4 z-30">
-              <NeumorphicCard variant="raised" size="sm" className="p-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">
+              <NeumorphicCard variant="raised" size="sm" className="p-4 user-app-gradient text-white">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Award className="w-4 h-4 text-white" />
@@ -307,7 +307,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
                 <div className="fixed top-20 right-6 z-30 w-80">
                   <NeumorphicCard variant="raised" size="sm" className="p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 user-app-gradient rounded-lg flex items-center justify-center flex-shrink-0">
                         <Award className="w-5 h-5 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -320,7 +320,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => window.location.href = '/user/apply'}
-                            className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg transition-colors duration-200"
+                            className="text-xs user-app-btn-primary px-3 py-2 rounded-lg transition-colors duration-200"
                           >
                             Apply Now
                           </button>
