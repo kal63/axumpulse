@@ -44,7 +44,7 @@ export default function ChangePackagePage() {
     <div className="min-h-dvh min-h-full user-app-page">
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
         <div className="flex items-center justify-between gap-4">
-          <Button variant="outline" className="border-slate-600 text-slate-300" onClick={() => router.push('/user/dashboard')}>
+          <Button variant="outline" className="border-slate-200 text-slate-700 hover:bg-slate-50" onClick={() => router.push('/user/dashboard')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
           </Button>
@@ -75,7 +75,7 @@ export default function ChangePackagePage() {
                         <div className="text-xs user-app-muted capitalize">{plan.level} level</div>
                       </div>
                     </div>
-                    <Badge className="bg-slate-700 text-slate-200 capitalize">{plan.minDuration}</Badge>
+                    <Badge className="bg-slate-100 text-slate-700 border border-slate-200 capitalize">{plan.minDuration}</Badge>
                   </div>
 
                   <div className="mt-4 space-y-1">

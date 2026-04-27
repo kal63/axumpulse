@@ -129,7 +129,7 @@ export default function ChangePackageDetailPage() {
   return (
     <div className="min-h-dvh min-h-full user-app-page">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-        <Button variant="outline" className="border-slate-600 text-slate-300" onClick={() => router.push('/user/subscription/change-package')}>
+        <Button variant="outline" className="border-slate-200 text-slate-700 hover:bg-slate-50" onClick={() => router.push('/user/subscription/change-package')}>
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back
         </Button>
@@ -140,7 +140,7 @@ export default function ChangePackageDetailPage() {
               <div className="text-2xl font-bold user-app-ink">{plan.name}</div>
               <div className="text-sm user-app-muted capitalize">{plan.level} level</div>
             </div>
-            <Badge className="bg-slate-700 text-slate-200 capitalize">{plan.minDuration}</Badge>
+            <Badge className="bg-slate-100 text-slate-700 border border-slate-200 capitalize">{plan.minDuration}</Badge>
           </div>
 
           <div className="space-y-2">
@@ -150,7 +150,7 @@ export default function ChangePackageDetailPage() {
                 <Button
                   key={d}
                   variant={duration === d ? 'default' : 'outline'}
-                  className={duration === d ? 'user-app-btn-primary' : 'border-slate-600 text-slate-300'}
+                  className={duration === d ? 'user-app-btn-primary' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}
                   onClick={() => setDuration(d)}
                 >
                   {durationLabel(d)}

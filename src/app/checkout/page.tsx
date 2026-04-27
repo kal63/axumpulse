@@ -20,6 +20,7 @@ function CheckoutContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, isAuthenticated } = useAuth()
+  const [scrolled, setScrolled] = useState(false)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -32,6 +33,12 @@ function CheckoutContent() {
   const [email, setEmail] = useState('')
   const [quote, setQuote] = useState<any>(null)
   const appRedirect = searchParams.get('app_redirect') || searchParams.get('amp;app_redirect')
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     if (!isAuthenticated || !user) return
@@ -231,11 +238,11 @@ function CheckoutContent() {
 
   if (!plan || (mode !== 'change' && !trainerId)) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col">
-        <UnifiedBackground />
-        <Header />
+      <div className="landing-ethio min-h-screen relative overflow-hidden flex flex-col">
+        <UnifiedBackground variant="ethio" />
+        <Header scrolled={scrolled} variant="ethio" />
         <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center relative z-10">
-          <Card className="max-w-2xl mx-auto w-full bg-slate-800/50 backdrop-blur-sm border-slate-700">
+          <Card className="max-w-2xl mx-auto w-full overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl backdrop-blur-sm">
             <CardContent className="pt-6">
               <Alert className="bg-red-500/10 border-red-500/50">
                 <AlertDescription className="text-red-400">
@@ -244,7 +251,7 @@ function CheckoutContent() {
               </Alert>
               <div className="mt-4">
                 <Link href="/">
-                  <Button variant="outline" className="border-slate-600 text-slate-300">
+                  <Button variant="outline" className="border-slate-200 text-slate-700 hover:bg-slate-50">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Go to Home
                   </Button>
@@ -262,9 +269,9 @@ function CheckoutContent() {
     : getPriceForDuration(plan, duration)
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col">
-      <UnifiedBackground />
-      <Header />
+    <div className="landing-ethio min-h-screen relative overflow-hidden flex flex-col">
+      <UnifiedBackground variant="ethio" />
+      <Header scrolled={scrolled} variant="ethio" />
       
       <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center relative z-10">
         <div className="max-w-3xl mx-auto w-full">
@@ -275,13 +282,13 @@ function CheckoutContent() {
             className="space-y-6"
           >
             {/* Order Summary */}
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+            <Card className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-2xl font-bold text-white flex items-center gap-2">
-                  <CreditCard className="w-6 h-6 text-blue-400" />
+                <CardTitle className="text-2xl font-bold text-[hsl(222,47%,8%)] flex items-center gap-2">
+                  <CreditCard className="w-6 h-6 text-[hsl(210,95%,28%)]" />
                   Checkout
                 </CardTitle>
-                <CardDescription className="text-slate-300">
+                <CardDescription className="text-[hsl(222,20%,40%)]">
                   Review your subscription details and complete payment
                 </CardDescription>
               </CardHeader>
@@ -294,28 +301,28 @@ function CheckoutContent() {
                 )}
 
                 {/* Subscription Plan Details */}
-                <div className="bg-slate-700/50 rounded-lg p-4 space-y-3">
-                  <h3 className="text-lg font-semibold text-white">Subscription Details</h3>
+                <div className="rounded-xl border border-slate-200/90 bg-white/80 p-4 shadow-sm space-y-3">
+                  <h3 className="text-lg font-semibold text-[hsl(222,47%,8%)]">Subscription Details</h3>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="text-slate-400">Package:</div>
-                    <div className="text-white font-medium">{plan.name}</div>
-                    <div className="text-slate-400">Trainer:</div>
-                    <div className="text-white font-medium">
+                    <div className="text-[hsl(222,20%,40%)]">Package:</div>
+                    <div className="text-[hsl(222,47%,8%)] font-semibold">{plan.name}</div>
+                    <div className="text-[hsl(222,20%,40%)]">Trainer:</div>
+                    <div className="text-[hsl(222,47%,8%)] font-semibold">
                       {trainerName || (trainerId ? `Trainer #${trainerId}` : 'Current trainer')}
                     </div>
-                    <div className="text-slate-400">Duration:</div>
-                    <div className="text-white font-medium capitalize">
+                    <div className="text-[hsl(222,20%,40%)]">Duration:</div>
+                    <div className="text-[hsl(222,47%,8%)] font-semibold capitalize">
                       {duration === 'daily' ? 'Daily' : 
                        duration === 'monthly' ? 'Monthly' : 
                        duration === 'threeMonth' ? '3 Months' :
                        duration === 'sixMonth' ? '6 Months' :
                        duration === 'nineMonth' ? '9 Months' : '1 Year'}
                     </div>
-                    <div className="text-slate-400">Total:</div>
-                    <div className="text-blue-400 font-bold text-lg">{formatPrice(totalPrice)}</div>
+                    <div className="text-[hsl(222,20%,40%)]">Total:</div>
+                    <div className="text-[hsl(210,95%,28%)] font-bold text-lg">{formatPrice(totalPrice)}</div>
                   </div>
                   {mode === 'change' && (
-                    <p className="text-xs text-slate-300 mt-2">
+                    <p className="text-xs text-[hsl(222,20%,40%)] mt-2">
                       This is a prorated amount based on your remaining subscription time.
                     </p>
                   )}
@@ -323,7 +330,7 @@ function CheckoutContent() {
 
                 {/* Email Input */}
                 <div>
-                  <Label htmlFor="email" className="text-slate-300 mb-2 block">
+                  <Label htmlFor="email" className="text-[hsl(222,20%,34%)] mb-2 block font-medium">
                     Email Address <span className="text-red-400">*</span>
                   </Label>
                   <Input
@@ -334,22 +341,22 @@ function CheckoutContent() {
                       setEmail(e.target.value)
                       if (error) setError('')
                     }}
-                    className="bg-slate-700 border-slate-600 text-white"
+                    className="bg-white border-slate-200 text-[hsl(222,47%,8%)] placeholder:text-[hsl(222,20%,55%)]"
                     placeholder="your.email@example.com"
                     required
                   />
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-[hsl(222,20%,45%)] mt-1">
                     Required for payment processing
                   </p>
                 </div>
 
                 {/* Phone Number Input */}
                 <div>
-                  <Label htmlFor="phone" className="text-slate-300 mb-2 block">
+                  <Label htmlFor="phone" className="text-[hsl(222,20%,34%)] mb-2 block font-medium">
                     Phone Number <span className="text-red-400">*</span>
                   </Label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(222,20%,55%)]" />
                     <Input
                       id="phone"
                       type="tel"
@@ -358,19 +365,19 @@ function CheckoutContent() {
                         setPhoneNumber(e.target.value)
                         if (error) setError('')
                       }}
-                      className="bg-slate-700 border-slate-600 text-white pl-10"
+                      className="bg-white border-slate-200 text-[hsl(222,47%,8%)] placeholder:text-[hsl(222,20%,55%)] pl-10"
                       placeholder="0912345678"
                       required
                     />
                   </div>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-[hsl(222,20%,45%)] mt-1">
                     Format: 09xxxxxxxx or 07xxxxxxxx (required for Chapa payment)
                   </p>
                 </div>
 
                 {/* Payment Method Info */}
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                  <p className="text-sm text-blue-300">
+                <div className="rounded-xl border border-[hsl(210,42%,88%)] bg-[hsl(210,85%,96%)] p-4">
+                  <p className="text-sm text-[hsl(210,95%,28%)]">
                     You will be redirected to Chapa payment gateway to complete your payment securely.
                     We support card payments, Telebirr, CBE Birr, Awash Birr, and bank transfers.
                   </p>
@@ -381,7 +388,7 @@ function CheckoutContent() {
                   <Link href="/register" className="flex-1">
                     <Button
                       variant="outline"
-                      className="w-full border-slate-600 text-slate-300"
+                      className="w-full border-slate-200 text-slate-700 hover:bg-slate-50"
                     >
                       <ArrowLeft className="w-4 h-4 mr-2" />
                       Back
@@ -390,7 +397,7 @@ function CheckoutContent() {
                   <Button
                     onClick={handlePayment}
                     disabled={loading || !phoneNumber || !validatePhoneNumber(phoneNumber) || !email || !validateEmail(email)}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                    className="flex-1 user-app-btn-primary"
                   >
                     {loading ? (
                       <>
@@ -417,10 +424,11 @@ function CheckoutContent() {
 export default function CheckoutPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+      <div className="landing-ethio min-h-screen relative overflow-hidden flex items-center justify-center">
+        <UnifiedBackground variant="ethio" />
+        <Card className="relative z-10 bg-white/95 backdrop-blur-sm border-slate-200/90 shadow-xl">
           <CardContent className="pt-6">
-            <p className="text-slate-300">Loading...</p>
+            <p className="text-[hsl(222,20%,40%)]">Loading...</p>
           </CardContent>
         </Card>
       </div>

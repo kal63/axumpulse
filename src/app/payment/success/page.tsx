@@ -17,6 +17,7 @@ function PaymentSuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, isAuthenticated } = useAuth()
+  const [scrolled, setScrolled] = useState(false)
 
   const [status, setStatus] = useState<'loading' | 'success' | 'failed'>('loading')
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
@@ -26,6 +27,12 @@ function PaymentSuccessContent() {
   const [availableConsults, setAvailableConsults] = useState<number>(0)
   const txRef = searchParams.get('tx_ref')
   const appRedirect = searchParams.get('app_redirect') || searchParams.get('amp;app_redirect')
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     if (!txRef) {
@@ -208,15 +215,15 @@ function PaymentSuccessContent() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col">
-        <UnifiedBackground />
-        <Header />
+      <div className="landing-ethio min-h-screen relative overflow-hidden flex flex-col">
+        <UnifiedBackground variant="ethio" />
+        <Header scrolled={scrolled} variant="ethio" />
         <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center relative z-10">
-          <Card className="max-w-2xl mx-auto w-full bg-slate-800/50 backdrop-blur-sm border-slate-700">
+          <Card className="max-w-2xl mx-auto w-full overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl backdrop-blur-sm">
             <CardContent className="pt-6 text-center">
-              <Loader2 className="w-12 h-12 animate-spin text-blue-400 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-white mb-2">Verifying your payment...</h2>
-              <p className="text-slate-400">Please wait while we confirm your subscription</p>
+              <Loader2 className="w-12 h-12 animate-spin text-[hsl(210,95%,28%)] mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-[hsl(222,47%,8%)] mb-2">Verifying your payment...</h2>
+              <p className="text-[hsl(222,20%,40%)]">Please wait while we confirm your subscription</p>
             </CardContent>
           </Card>
         </div>
@@ -225,9 +232,9 @@ function PaymentSuccessContent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col">
-      <UnifiedBackground />
-      <Header />
+    <div className="landing-ethio min-h-screen relative overflow-hidden flex flex-col">
+      <UnifiedBackground variant="ethio" />
+      <Header scrolled={scrolled} variant="ethio" />
       
       <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center relative z-10">
         <div className="max-w-2xl mx-auto w-full">
@@ -236,7 +243,7 @@ function PaymentSuccessContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+            <Card className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl backdrop-blur-sm">
               <CardHeader>
                 {status === 'success' ? (
                   <>
@@ -246,13 +253,13 @@ function PaymentSuccessContent() {
                         animate={{ scale: 1 }}
                         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
                       >
-                        <CheckCircle className="w-16 h-16 text-green-400" />
+                        <CheckCircle className="w-16 h-16 text-[hsl(210,95%,28%)]" />
                       </motion.div>
                     </div>
-                    <CardTitle className="text-3xl font-bold text-white text-center">
+                    <CardTitle className="text-3xl font-bold text-[hsl(222,47%,8%)] text-center">
                       Payment Successful!
                     </CardTitle>
-                    <CardDescription className="text-slate-300 text-center">
+                    <CardDescription className="text-[hsl(222,20%,40%)] text-center">
                       {isConsultPurchase 
                         ? `You have successfully purchased ${consultQuantity} consult(s)!`
                         : 'Your subscription has been activated successfully'
@@ -262,12 +269,12 @@ function PaymentSuccessContent() {
                 ) : (
                   <>
                     <div className="flex items-center justify-center mb-4">
-                      <CheckCircle className="w-16 h-16 text-yellow-400" />
+                      <CheckCircle className="w-16 h-16 text-[hsl(78,88%,55%)]" />
                     </div>
-                    <CardTitle className="text-3xl font-bold text-white text-center">
+                    <CardTitle className="text-3xl font-bold text-[hsl(222,47%,8%)] text-center">
                       Payment Successful!
                     </CardTitle>
-                    <CardDescription className="text-slate-300 text-center">
+                    <CardDescription className="text-[hsl(222,20%,40%)] text-center">
                       {error || "Your payment was successful! Your subscription is being activated and will be available shortly."}
                     </CardDescription>
                   </>
@@ -276,32 +283,32 @@ function PaymentSuccessContent() {
 
               <CardContent className="space-y-6">
                 {status === 'success' && isConsultPurchase && (
-                  <div className="bg-slate-700/50 rounded-lg p-4 space-y-3">
-                    <h3 className="text-lg font-semibold text-white">Consult Purchase Details</h3>
+                  <div className="rounded-xl border border-slate-200/90 bg-white/80 p-4 shadow-sm space-y-3">
+                    <h3 className="text-lg font-semibold text-[hsl(222,47%,8%)]">Consult Purchase Details</h3>
                     <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div className="text-slate-400">Consults Purchased:</div>
-                      <div className="text-white font-medium">{consultQuantity}</div>
-                      <div className="text-slate-400">Available Consults:</div>
-                      <div className="text-white font-medium">{availableConsults}</div>
+                      <div className="text-[hsl(222,20%,40%)]">Consults Purchased:</div>
+                      <div className="text-[hsl(222,47%,8%)] font-semibold">{consultQuantity}</div>
+                      <div className="text-[hsl(222,20%,40%)]">Available Consults:</div>
+                      <div className="text-[hsl(222,47%,8%)] font-semibold">{availableConsults}</div>
                     </div>
-                    <p className="text-sm text-slate-300 mt-3">
+                    <p className="text-sm text-[hsl(222,20%,40%)] mt-3">
                       You can now book consultations with medical professionals using your available consults.
                     </p>
                   </div>
                 )}
 
                 {status === 'success' && subscription && !isConsultPurchase && (
-                  <div className="bg-slate-700/50 rounded-lg p-4 space-y-3">
-                    <h3 className="text-lg font-semibold text-white">Subscription Details</h3>
+                  <div className="rounded-xl border border-slate-200/90 bg-white/80 p-4 shadow-sm space-y-3">
+                    <h3 className="text-lg font-semibold text-[hsl(222,47%,8%)]">Subscription Details</h3>
                     <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div className="text-slate-400">Plan:</div>
-                      <div className="text-white font-medium">{subscription.subscriptionPlan?.name || 'N/A'}</div>
-                      <div className="text-slate-400">Trainer:</div>
-                      <div className="text-white font-medium">
+                      <div className="text-[hsl(222,20%,40%)]">Plan:</div>
+                      <div className="text-[hsl(222,47%,8%)] font-semibold">{subscription.subscriptionPlan?.name || 'N/A'}</div>
+                      <div className="text-[hsl(222,20%,40%)]">Trainer:</div>
+                      <div className="text-[hsl(222,47%,8%)] font-semibold">
                         {subscription.trainer?.name || `Trainer #${subscription.trainerId}`}
                       </div>
-                      <div className="text-slate-400">Duration:</div>
-                      <div className="text-white font-medium capitalize">
+                      <div className="text-[hsl(222,20%,40%)]">Duration:</div>
+                      <div className="text-[hsl(222,47%,8%)] font-semibold capitalize">
                         {subscription.duration === 'daily' ? 'Daily' : 
                          subscription.duration === 'monthly' ? 'Monthly' : 
                          subscription.duration === 'threeMonth' ? '3 Months' :
@@ -312,7 +319,7 @@ function PaymentSuccessContent() {
                         <Calendar className="w-4 h-4" />
                         Expires:
                       </div>
-                      <div className="text-white font-medium">
+                      <div className="text-[hsl(222,47%,8%)] font-semibold">
                         {formatDate(subscription.expiresAt)}
                       </div>
                     </div>
@@ -320,9 +327,9 @@ function PaymentSuccessContent() {
                 )}
 
                 {txRef && (
-                  <div className="bg-slate-700/30 rounded-lg p-3">
-                    <p className="text-xs text-slate-400">Transaction Reference:</p>
-                    <p className="text-sm text-slate-300 font-mono">{txRef}</p>
+                  <div className="rounded-xl border border-slate-200/90 bg-white/80 p-3 shadow-sm">
+                    <p className="text-xs text-[hsl(222,20%,45%)]">Transaction Reference:</p>
+                    <p className="text-sm text-[hsl(222,47%,8%)] font-mono">{txRef}</p>
                   </div>
                 )}
 
@@ -345,7 +352,7 @@ function PaymentSuccessContent() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   {appRedirect && status === 'success' && (
                     <Button
-                      className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white"
+                      className="w-full sm:w-auto user-app-btn-primary"
                       onClick={() => {
                         if (!txRef) return
                         const target = appRedirect.includes('?')
@@ -360,7 +367,7 @@ function PaymentSuccessContent() {
                   <Link href="/" className="flex-1">
                     <Button
                       variant="outline"
-                      className="w-full border-slate-600 text-slate-300"
+                      className="w-full border-slate-200 text-slate-700 hover:bg-slate-50"
                     >
                       <Home className="w-4 h-4 mr-2" />
                       Go to Home
@@ -370,14 +377,14 @@ function PaymentSuccessContent() {
                     <>
                       {isConsultPurchase ? (
                         <Link href="/user/medical/consults/book" className="flex-1">
-                          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                          <Button className="w-full user-app-btn-primary">
                             <Calendar className="w-4 h-4 mr-2" />
                             Book Consult
                           </Button>
                         </Link>
                       ) : (
                         <Link href="/user/dashboard" className="flex-1">
-                          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                          <Button className="w-full user-app-btn-primary">
                             View Dashboard
                           </Button>
                         </Link>
@@ -397,13 +404,13 @@ function PaymentSuccessContent() {
 export default function PaymentSuccessPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-slate-900 flex flex-col">
-        <UnifiedBackground />
-        <Header />
+      <div className="landing-ethio min-h-screen relative overflow-hidden flex flex-col">
+        <UnifiedBackground variant="ethio" />
+        <Header scrolled variant="ethio" />
         <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center relative z-10">
           <div className="text-center">
-            <Loader2 className="w-12 h-12 animate-spin text-blue-400 mx-auto mb-4" />
-            <p className="text-slate-300">Loading payment status...</p>
+            <Loader2 className="w-12 h-12 animate-spin text-[hsl(210,95%,28%)] mx-auto mb-4" />
+            <p className="text-[hsl(222,20%,40%)]">Loading payment status...</p>
           </div>
         </div>
       </div>

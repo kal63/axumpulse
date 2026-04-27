@@ -18,6 +18,7 @@ function PackageDetailContent() {
   const params = useParams()
   const router = useRouter()
   const { user, isAuthenticated } = useAuth()
+  const [scrolled, setScrolled] = useState(false)
   
   const [plan, setPlan] = useState<SubscriptionPlan | null>(null)
   const [loading, setLoading] = useState(true)
@@ -34,6 +35,12 @@ function PackageDetailContent() {
       setLoading(false)
     }
   }, [planId])
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const loadPlan = async () => {
     try {
@@ -177,11 +184,11 @@ function PackageDetailContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col">
-        <UnifiedBackground />
-        <Header />
+      <div className="landing-ethio min-h-screen relative overflow-hidden flex flex-col">
+        <UnifiedBackground variant="ethio" />
+        <Header scrolled={scrolled} variant="ethio" />
         <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center justify-center relative z-10">
-          <div className="text-white">Loading package...</div>
+          <div className="text-[hsl(222,20%,38%)]">Loading package...</div>
         </div>
       </div>
     )
@@ -189,17 +196,17 @@ function PackageDetailContent() {
 
   if (error || !plan) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col">
-        <UnifiedBackground />
-        <Header />
+      <div className="landing-ethio min-h-screen relative overflow-hidden flex flex-col">
+        <UnifiedBackground variant="ethio" />
+        <Header scrolled={scrolled} variant="ethio" />
         <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center justify-center relative z-10">
-          <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700 max-w-md w-full">
+          <Card className="max-w-md w-full overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl backdrop-blur-sm">
             <CardContent className="p-6 text-center">
               <p className="text-red-400 mb-4">{error || 'Package not found'}</p>
               <Button
                 onClick={() => router.push('/')}
                 variant="outline"
-                className="border-slate-600 text-slate-300"
+                className="border-slate-200 text-slate-700 hover:bg-slate-50"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Home
@@ -216,9 +223,9 @@ function PackageDetailContent() {
     : plan.features || []
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col">
-      <UnifiedBackground />
-      <Header />
+    <div className="landing-ethio min-h-screen relative overflow-hidden flex flex-col">
+      <UnifiedBackground variant="ethio" />
+      <Header scrolled={scrolled} variant="ethio" />
       
       <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 relative z-10">
         <div className="max-w-4xl mx-auto">
@@ -226,7 +233,7 @@ function PackageDetailContent() {
           <Button
             onClick={() => router.push('/')}
             variant="ghost"
-            className="mb-6 text-slate-300 hover:text-white"
+            className="mb-6 text-slate-700 hover:text-slate-900 hover:bg-black/5"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
@@ -237,13 +244,13 @@ function PackageDetailContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className={`bg-gradient-to-br ${getPackageGradient(plan.level)} backdrop-blur-sm border ${getPackageBorder(plan.level)}`}>
+            <Card className={`overflow-hidden rounded-2xl border border-slate-200/90 bg-white/90 shadow-xl backdrop-blur-sm`}>
               <CardHeader className="text-center">
                 <div className="text-6xl mb-4">{getPackageIcon(plan.level)}</div>
-                <CardTitle className={`text-4xl font-bold ${getPackageTextColor(plan.level)} mb-2`}>
+                <CardTitle className="font-landing-display text-4xl uppercase tracking-tight text-[hsl(222,47%,8%)] mb-2">
                   {plan.name}
                 </CardTitle>
-                <CardDescription className="text-slate-300 text-lg capitalize">
+                <CardDescription className="text-[hsl(222,20%,40%)] text-lg capitalize">
                   {plan.level} Level Package
                 </CardDescription>
               </CardHeader>
@@ -251,19 +258,19 @@ function PackageDetailContent() {
               <CardContent className="space-y-6">
                 {/* Duration Selection */}
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-white">Select Subscription Duration</h3>
+                  <h3 className="text-lg font-semibold text-[hsl(222,47%,8%)]">Select Subscription Duration</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {plan.minDuration === 'daily' && (
                       <button
                         onClick={() => setSelectedDuration('daily')}
                         className={`p-4 rounded-lg border-2 transition-all ${
                           selectedDuration === 'daily'
-                            ? 'border-blue-500 bg-blue-500/20'
-                            : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                            ? 'border-[hsl(210,95%,28%)] bg-[hsl(210,85%,96%)]'
+                            : 'border-slate-200 bg-white/70 hover:border-slate-300'
                         }`}
                       >
-                        <div className="text-white font-semibold">Daily</div>
-                        <div className="text-blue-400 text-sm mt-1">
+                        <div className="text-[hsl(222,47%,8%)] font-semibold">Daily</div>
+                        <div className="text-[hsl(210,95%,28%)] text-sm mt-1">
                           {formatPrice(getPriceForDuration(plan, 'daily'))}
                         </div>
                       </button>
@@ -273,19 +280,19 @@ function PackageDetailContent() {
                         onClick={() => setSelectedDuration('monthly')}
                         className={`p-4 rounded-lg border-2 transition-all ${
                           selectedDuration === 'monthly'
-                            ? 'border-blue-500 bg-blue-500/20'
-                            : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                            ? 'border-[hsl(210,95%,28%)] bg-[hsl(210,85%,96%)]'
+                            : 'border-slate-200 bg-white/70 hover:border-slate-300'
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <div className="text-white font-semibold">Monthly</div>
+                          <div className="text-[hsl(222,47%,8%)] font-semibold">Monthly</div>
                           {getDiscountForDuration(plan, 'monthly') > 0 && (
-                            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                            <span className="text-xs bg-[hsl(78,88%,55%)]/35 text-[hsl(222,47%,8%)] px-2 py-0.5 rounded-full font-semibold">
                               -{getDiscountForDuration(plan, 'monthly')}%
                             </span>
                           )}
                         </div>
-                        <div className="text-blue-400 text-sm mt-1">
+                        <div className="text-[hsl(210,95%,28%)] text-sm mt-1">
                           {formatPrice(getPriceForDuration(plan, 'monthly'))}
                         </div>
                       </button>
@@ -295,19 +302,19 @@ function PackageDetailContent() {
                         onClick={() => setSelectedDuration('threeMonth')}
                         className={`p-4 rounded-lg border-2 transition-all ${
                           selectedDuration === 'threeMonth'
-                            ? 'border-blue-500 bg-blue-500/20'
-                            : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                            ? 'border-[hsl(210,95%,28%)] bg-[hsl(210,85%,96%)]'
+                            : 'border-slate-200 bg-white/70 hover:border-slate-300'
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <div className="text-white font-semibold">3 Months</div>
+                          <div className="text-[hsl(222,47%,8%)] font-semibold">3 Months</div>
                           {getDiscountForDuration(plan, 'threeMonth') > 0 && (
-                            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                            <span className="text-xs bg-[hsl(78,88%,55%)]/35 text-[hsl(222,47%,8%)] px-2 py-0.5 rounded-full font-semibold">
                               -{getDiscountForDuration(plan, 'threeMonth')}%
                             </span>
                           )}
                         </div>
-                        <div className="text-blue-400 text-sm mt-1">
+                        <div className="text-[hsl(210,95%,28%)] text-sm mt-1">
                           {formatPrice(getPriceForDuration(plan, 'threeMonth'))}
                         </div>
                       </button>
@@ -316,19 +323,19 @@ function PackageDetailContent() {
                       onClick={() => setSelectedDuration('sixMonth')}
                       className={`p-4 rounded-lg border-2 transition-all ${
                         selectedDuration === 'sixMonth'
-                          ? 'border-blue-500 bg-blue-500/20'
-                          : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                          ? 'border-[hsl(210,95%,28%)] bg-[hsl(210,85%,96%)]'
+                          : 'border-slate-200 bg-white/70 hover:border-slate-300'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <div className="text-white font-semibold">6 Months</div>
+                        <div className="text-[hsl(222,47%,8%)] font-semibold">6 Months</div>
                         {getDiscountForDuration(plan, 'sixMonth') > 0 && (
-                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                          <span className="text-xs bg-[hsl(78,88%,55%)]/35 text-[hsl(222,47%,8%)] px-2 py-0.5 rounded-full font-semibold">
                             -{getDiscountForDuration(plan, 'sixMonth')}%
                           </span>
                         )}
                       </div>
-                      <div className="text-blue-400 text-sm mt-1">
+                      <div className="text-[hsl(210,95%,28%)] text-sm mt-1">
                         {formatPrice(getPriceForDuration(plan, 'sixMonth'))}
                       </div>
                     </button>
@@ -336,19 +343,19 @@ function PackageDetailContent() {
                       onClick={() => setSelectedDuration('nineMonth')}
                       className={`p-4 rounded-lg border-2 transition-all ${
                         selectedDuration === 'nineMonth'
-                          ? 'border-blue-500 bg-blue-500/20'
-                          : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                          ? 'border-[hsl(210,95%,28%)] bg-[hsl(210,85%,96%)]'
+                          : 'border-slate-200 bg-white/70 hover:border-slate-300'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <div className="text-white font-semibold">9 Months</div>
+                        <div className="text-[hsl(222,47%,8%)] font-semibold">9 Months</div>
                         {getDiscountForDuration(plan, 'nineMonth') > 0 && (
-                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                          <span className="text-xs bg-[hsl(78,88%,55%)]/35 text-[hsl(222,47%,8%)] px-2 py-0.5 rounded-full font-semibold">
                             -{getDiscountForDuration(plan, 'nineMonth')}%
                           </span>
                         )}
                       </div>
-                      <div className="text-blue-400 text-sm mt-1">
+                      <div className="text-[hsl(210,95%,28%)] text-sm mt-1">
                         {formatPrice(getPriceForDuration(plan, 'nineMonth'))}
                       </div>
                     </button>
@@ -356,19 +363,19 @@ function PackageDetailContent() {
                       onClick={() => setSelectedDuration('yearly')}
                       className={`p-4 rounded-lg border-2 transition-all ${
                         selectedDuration === 'yearly'
-                          ? 'border-blue-500 bg-blue-500/20'
-                          : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                          ? 'border-[hsl(210,95%,28%)] bg-[hsl(210,85%,96%)]'
+                          : 'border-slate-200 bg-white/70 hover:border-slate-300'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <div className="text-white font-semibold">1 Year</div>
+                        <div className="text-[hsl(222,47%,8%)] font-semibold">1 Year</div>
                         {getDiscountForDuration(plan, 'yearly') > 0 && (
-                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                          <span className="text-xs bg-[hsl(78,88%,55%)]/35 text-[hsl(222,47%,8%)] px-2 py-0.5 rounded-full font-semibold">
                             -{getDiscountForDuration(plan, 'yearly')}%
                           </span>
                         )}
                       </div>
-                      <div className="text-blue-400 text-sm mt-1">
+                      <div className="text-[hsl(210,95%,28%)] text-sm mt-1">
                         {formatPrice(getPriceForDuration(plan, 'yearly'))}
                       </div>
                     </button>
@@ -376,24 +383,24 @@ function PackageDetailContent() {
                 </div>
 
                 {/* Selected Price Display */}
-                <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                <div className="rounded-xl border border-slate-200/90 bg-white/80 p-4 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-slate-400 text-sm">Selected Duration</div>
+                      <div className="text-[hsl(222,20%,40%)] text-sm">Selected Duration</div>
                       <div className="flex items-center gap-2">
-                        <div className="text-white font-semibold text-lg">
+                        <div className="text-[hsl(222,47%,8%)] font-semibold text-lg">
                           {getDurationLabel(selectedDuration)}
                         </div>
                         {getDiscountForDuration(plan, selectedDuration) > 0 && (
-                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full font-medium">
+                          <span className="text-xs bg-[hsl(78,88%,55%)]/35 text-[hsl(222,47%,8%)] px-2 py-1 rounded-full font-semibold">
                             Save {getDiscountForDuration(plan, selectedDuration)}%
                           </span>
                         )}
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-slate-400 text-sm">Total Price</div>
-                      <div className={`${getPackageTextColor(plan.level)} font-bold text-2xl`}>
+                      <div className="text-[hsl(222,20%,40%)] text-sm">Total Price</div>
+                      <div className="text-[hsl(210,95%,28%)] font-bold text-2xl">
                         {formatPrice(getPriceForDuration(plan, selectedDuration))}
                       </div>
                     </div>
@@ -403,12 +410,12 @@ function PackageDetailContent() {
                 {/* Features List */}
                 {features.length > 0 && (
                   <div className="space-y-3">
-                    <h3 className="text-lg font-semibold text-white">What's Included</h3>
+                    <h3 className="text-lg font-semibold text-[hsl(222,47%,8%)]">What&apos;s Included</h3>
                     <ul className="space-y-2">
                       {features.map((feature: string, index: number) => (
                         <li key={index} className="flex items-start gap-3">
-                          <Check className={`w-5 h-5 ${getPackageTextColor(plan.level)} mt-0.5 flex-shrink-0`} />
-                          <span className="text-slate-300">{feature}</span>
+                          <Check className="w-5 h-5 text-[hsl(210,95%,28%)] mt-0.5 flex-shrink-0" />
+                          <span className="text-[hsl(222,20%,40%)]">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -418,15 +425,7 @@ function PackageDetailContent() {
                 {/* CTA Button */}
                 <Button
                   onClick={handleContinue}
-                  className={`w-full bg-gradient-to-r ${
-                    plan.level === 'silver' 
-                      ? 'from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800' 
-                      : plan.level === 'gold' 
-                      ? 'from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700' 
-                      : plan.level === 'diamond' 
-                      ? 'from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700' 
-                      : 'from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
-                  } text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold text-lg py-6`}
+                  className="w-full user-app-btn-primary py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
                   size="lg"
                 >
                   {isAuthenticated ? (
@@ -453,8 +452,9 @@ function PackageDetailContent() {
 export default function PackageDetailPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div className="landing-ethio min-h-screen relative overflow-hidden flex items-center justify-center">
+        <UnifiedBackground variant="ethio" />
+        <div className="relative z-10 text-[hsl(222,20%,38%)]">Loading...</div>
       </div>
     }>
       <PackageDetailContent />

@@ -35,6 +35,7 @@ function RegisterPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { user, isAuthenticated, refreshUser } = useAuth()
+  const [scrolled, setScrolled] = useState(false)
   
   const [currentStep, setCurrentStep] = useState<Step>('user-info')
   const [loading, setLoading] = useState(false)
@@ -64,6 +65,12 @@ function RegisterPageContent() {
   })
   const [matchTrainers, setMatchTrainers] = useState<PublicTrainer[]>([])
   const [trainersLoading, setTrainersLoading] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Get trainer and package from URL params
   useEffect(() => {
@@ -382,9 +389,9 @@ function RegisterPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col">
-      <UnifiedBackground />
-      <Header />
+    <div className="landing-ethio min-h-screen relative overflow-hidden flex flex-col">
+      <UnifiedBackground variant="ethio" />
+      <Header scrolled={scrolled} variant="ethio" />
       
       <div className="container mx-auto px-4 py-8 md:py-12 lg:py-16 flex-1 flex items-center relative z-10">
         <div className="max-w-4xl mx-auto w-full">
@@ -393,13 +400,13 @@ function RegisterPageContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-slate-700">
+            <Card className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-3xl font-bold text-white flex items-center gap-2">
-                  <Sparkles className="w-6 h-6 text-blue-400" />
+                <CardTitle className="text-3xl font-bold text-[hsl(222,47%,8%)] flex items-center gap-2">
+                  <Sparkles className="w-6 h-6 text-[hsl(210,95%,28%)]" />
                   Register for Compound 360
                 </CardTitle>
-                <CardDescription className="text-slate-300">
+                <CardDescription className="text-[hsl(222,20%,40%)]">
                   {currentStep === 'user-info' && 'Create your account to get started'}
                   {currentStep === 'trainee-profile' && 'Tell us about your goals so we can match you with the right trainer'}
                   {currentStep === 'package' && 'Choose your subscription package'}
@@ -418,10 +425,10 @@ function RegisterPageContent() {
                         <div
                           className={`w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center font-semibold text-sm ${
                             currentStep === step
-                              ? 'bg-blue-600 text-white'
+                              ? 'bg-[hsl(78,88%,55%)] text-[hsl(222,47%,8%)] ring-1 ring-[hsl(222,47%,8%)]/10'
                               : order > index
-                              ? 'bg-green-600 text-white'
-                              : 'bg-slate-700 text-slate-400'
+                              ? 'bg-[hsl(210,95%,28%)] text-white'
+                              : 'bg-slate-200 text-slate-600'
                           }`}
                         >
                           {order > index ? (
@@ -430,12 +437,12 @@ function RegisterPageContent() {
                             index + 1
                           )}
                         </div>
-                        <span className="text-[10px] md:text-xs mt-2 text-slate-400 text-center leading-tight capitalize">
+                        <span className="text-[10px] md:text-xs mt-2 text-[hsl(222,20%,45%)] text-center leading-tight capitalize">
                           {step === 'trainee-profile' ? 'Goals' : step.replace('-', ' ')}
                         </span>
                       </div>
                       {index < arr.length - 1 && (
-                        <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-slate-600 mx-1 shrink-0" />
+                        <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-slate-200 mx-1 shrink-0" />
                       )}
                     </div>
                   )})}
@@ -452,26 +459,26 @@ function RegisterPageContent() {
                   <form onSubmit={handleUserInfoSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="name" className="text-slate-300">Full Name</Label>
+                        <Label htmlFor="name" className="text-[hsl(222,20%,34%)] font-medium">Full Name</Label>
                         <Input
                           id="name"
                           name="name"
                           type="text"
                           value={formData.name}
                           onChange={handleInputChange}
-                          className="bg-slate-700 border-slate-600 text-white"
+                          className="bg-white border-slate-200 text-[hsl(222,47%,8%)] placeholder:text-[hsl(222,20%,55%)]"
                           placeholder="John Doe"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="phone" className="text-slate-300">Phone Number *</Label>
+                        <Label htmlFor="phone" className="text-[hsl(222,20%,34%)] font-medium">Phone Number *</Label>
                         <Input
                           id="phone"
                           name="phone"
                           type="tel"
                           value={formData.phone}
                           onChange={handleInputChange}
-                          className="bg-slate-700 border-slate-600 text-white"
+                          className="bg-white border-slate-200 text-[hsl(222,47%,8%)] placeholder:text-[hsl(222,20%,55%)]"
                           placeholder="0912345678"
                           required
                         />
@@ -479,21 +486,21 @@ function RegisterPageContent() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-slate-300">Email (Optional)</Label>
+                      <Label htmlFor="email" className="text-[hsl(222,20%,34%)] font-medium">Email (Optional)</Label>
                       <Input
                         id="email"
                         name="email"
                         type="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="bg-slate-700 border-slate-600 text-white"
+                        className="bg-white border-slate-200 text-[hsl(222,47%,8%)] placeholder:text-[hsl(222,20%,55%)]"
                         placeholder="john@example.com"
                       />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="password" className="text-slate-300">Password *</Label>
+                        <Label htmlFor="password" className="text-[hsl(222,20%,34%)] font-medium">Password *</Label>
                         <div className="relative">
                           <Input
                             id="password"
@@ -501,28 +508,28 @@ function RegisterPageContent() {
                             type={showPassword ? 'text' : 'password'}
                             value={formData.password}
                             onChange={handleInputChange}
-                            className="bg-slate-700 border-slate-600 text-white pr-10"
+                            className="bg-white border-slate-200 text-[hsl(222,47%,8%)] placeholder:text-[hsl(222,20%,55%)] pr-10"
                             placeholder="••••••••"
                             required
                           />
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[hsl(222,20%,55%)] hover:text-[hsl(222,47%,8%)]"
                           >
                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                           </button>
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="confirmPassword" className="text-slate-300">Confirm Password *</Label>
+                        <Label htmlFor="confirmPassword" className="text-[hsl(222,20%,34%)] font-medium">Confirm Password *</Label>
                         <Input
                           id="confirmPassword"
                           name="confirmPassword"
                           type={showPassword ? 'text' : 'password'}
                           value={formData.confirmPassword}
                           onChange={handleInputChange}
-                          className="bg-slate-700 border-slate-600 text-white"
+                          className="bg-white border-slate-200 text-[hsl(222,47%,8%)] placeholder:text-[hsl(222,20%,55%)]"
                           placeholder="••••••••"
                           required
                         />
@@ -531,24 +538,24 @@ function RegisterPageContent() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="dateOfBirth" className="text-slate-300">Date of Birth (Optional)</Label>
+                        <Label htmlFor="dateOfBirth" className="text-[hsl(222,20%,34%)] font-medium">Date of Birth (Optional)</Label>
                         <Input
                           id="dateOfBirth"
                           name="dateOfBirth"
                           type="date"
                           value={formData.dateOfBirth}
                           onChange={handleInputChange}
-                          className="bg-slate-700 border-slate-600 text-white"
+                          className="bg-white border-slate-200 text-[hsl(222,47%,8%)]"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="gender" className="text-slate-300">Gender (Optional)</Label>
+                        <Label htmlFor="gender" className="text-[hsl(222,20%,34%)] font-medium">Gender (Optional)</Label>
                         <select
                           id="gender"
                           name="gender"
                           value={formData.gender}
                           onChange={handleInputChange}
-                          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-md text-[hsl(222,47%,8%)]"
                         >
                           <option value="">Select...</option>
                           <option value="male">Male</option>
@@ -560,7 +567,7 @@ function RegisterPageContent() {
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      className="w-full user-app-btn-primary"
                     >
                       {loading ? 'Creating Account...' : 'Continue'}
                     </Button>
@@ -571,7 +578,7 @@ function RegisterPageContent() {
                   <form onSubmit={handleTraineeProfileSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-slate-300">Height (cm) *</Label>
+                        <Label className="text-[hsl(222,20%,34%)] font-medium">Height (cm) *</Label>
                         <Input
                           type="number"
                           min={50}
@@ -579,12 +586,12 @@ function RegisterPageContent() {
                           step={0.1}
                           value={traineeForm.height}
                           onChange={(e) => setTraineeForm((p) => ({ ...p, height: e.target.value }))}
-                          className="bg-slate-700 border-slate-600 text-white"
+                          className="bg-white border-slate-200 text-[hsl(222,47%,8%)]"
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-slate-300">Weight (kg) *</Label>
+                        <Label className="text-[hsl(222,20%,34%)] font-medium">Weight (kg) *</Label>
                         <Input
                           type="number"
                           min={20}
@@ -592,17 +599,17 @@ function RegisterPageContent() {
                           step={0.1}
                           value={traineeForm.weight}
                           onChange={(e) => setTraineeForm((p) => ({ ...p, weight: e.target.value }))}
-                          className="bg-slate-700 border-slate-600 text-white"
+                          className="bg-white border-slate-200 text-[hsl(222,47%,8%)]"
                           required
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-slate-300">Primary goal *</Label>
+                      <Label className="text-[hsl(222,20%,34%)] font-medium">Primary goal *</Label>
                       <select
                         value={traineeForm.primaryGoal}
                         onChange={(e) => setTraineeForm((p) => ({ ...p, primaryGoal: e.target.value }))}
-                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-md text-[hsl(222,47%,8%)]"
                       >
                         {PRIMARY_GOAL_OPTIONS.map((o) => (
                           <option key={o.value} value={o.value}>{o.label}</option>
@@ -611,11 +618,11 @@ function RegisterPageContent() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-slate-300">Activity level</Label>
+                        <Label className="text-[hsl(222,20%,34%)] font-medium">Activity level</Label>
                         <select
                           value={traineeForm.activityLevel}
                           onChange={(e) => setTraineeForm((p) => ({ ...p, activityLevel: e.target.value }))}
-                          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-md text-[hsl(222,47%,8%)]"
                         >
                           <option value="sedentary">Sedentary</option>
                           <option value="light">Light</option>
@@ -625,7 +632,7 @@ function RegisterPageContent() {
                         </select>
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-slate-300">Fitness level</Label>
+                        <Label className="text-[hsl(222,20%,34%)] font-medium">Fitness level</Label>
                         <select
                           value={traineeForm.fitnessLevel}
                           onChange={(e) =>
@@ -634,7 +641,7 @@ function RegisterPageContent() {
                               fitnessLevel: e.target.value as 'beginner' | 'intermediate' | 'advanced'
                             }))
                           }
-                          className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-md text-[hsl(222,47%,8%)]"
                         >
                           <option value="beginner">Beginner</option>
                           <option value="intermediate">Intermediate</option>
@@ -648,7 +655,7 @@ function RegisterPageContent() {
                           type="button"
                           variant="outline"
                           onClick={() => router.push('/user/profile')}
-                          className="flex-1 border-slate-600 text-slate-300"
+                          className="flex-1 border-slate-200 text-slate-700 hover:bg-slate-50"
                         >
                           Cancel
                         </Button>
@@ -658,7 +665,7 @@ function RegisterPageContent() {
                             type="button"
                             variant="outline"
                             onClick={() => setCurrentStep('user-info')}
-                            className="flex-1 border-slate-600 text-slate-300"
+                            className="flex-1 border-slate-200 text-slate-700 hover:bg-slate-50"
                           >
                             Back
                           </Button>
@@ -667,7 +674,7 @@ function RegisterPageContent() {
                       <Button
                         type="submit"
                         disabled={loading}
-                        className={`${searchParams.get('traineeOnboarding') === '1' || !isAuthenticated ? 'flex-1' : 'w-full'} bg-blue-600 hover:bg-blue-700 text-white`}
+                        className={`${searchParams.get('traineeOnboarding') === '1' || !isAuthenticated ? 'flex-1' : 'w-full'} user-app-btn-primary`}
                       >
                         {loading ? 'Saving...' : 'Continue'}
                       </Button>
@@ -688,14 +695,14 @@ function RegisterPageContent() {
                           <Card
                             className={`cursor-pointer transition-all ${
                               selectedPlan?.id === plan.id
-                                ? 'border-blue-500 bg-blue-500/10'
-                                : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                                ? 'border-[hsl(210,95%,28%)] bg-[hsl(210,85%,96%)]'
+                                : 'border-slate-200 bg-white/80 hover:border-slate-300 hover:bg-white'
                             }`}
                             onClick={() => handlePackageSelect(plan)}
                           >
                             <CardHeader>
                               <div className="flex items-center justify-between">
-                                <CardTitle className="text-xl text-white flex items-center gap-2">
+                                <CardTitle className="text-xl text-[hsl(222,47%,8%)] flex items-center gap-2">
                                   <span className="text-2xl">{getPackageIcon(plan.level)}</span>
                                   {plan.name}
                                 </CardTitle>
@@ -703,7 +710,7 @@ function RegisterPageContent() {
                                   <Check className="w-6 h-6 text-blue-400" />
                                 )}
                               </div>
-                              <CardDescription className="text-slate-300">
+                              <CardDescription className="text-[hsl(222,20%,40%)]">
                                 {plan.level.charAt(0).toUpperCase() + plan.level.slice(1)} Level
                               </CardDescription>
                             </CardHeader>
@@ -719,11 +726,11 @@ function RegisterPageContent() {
                                   Starting from {formatPrice(parseFloat(plan.dailyPrice.toString()))}/day
                                 </div>
                                 <div className="mt-4">
-                                  <Label className="text-slate-300 text-sm">Duration:</Label>
+                                  <Label className="text-[hsl(222,20%,34%)] font-medium text-sm">Duration:</Label>
                                   <select
                                     value={selectedDuration}
                                     onChange={(e) => setSelectedDuration(e.target.value as any)}
-                                    className="w-full mt-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white text-sm"
+                                    className="w-full mt-1 px-3 py-2 bg-white border border-slate-200 rounded-md text-[hsl(222,47%,8%)] text-sm"
                                     onClick={(e) => e.stopPropagation()}
                                   >
                                     {plan.minDuration === 'daily' && <option value="daily">Daily - {formatPrice(parseFloat(plan.dailyPrice.toString()))}</option>}
@@ -764,14 +771,14 @@ function RegisterPageContent() {
                       <Button
                         variant="outline"
                         onClick={handlePackageBack}
-                        className="flex-1 border-slate-600 text-slate-300"
+                        className="flex-1 border-slate-200 text-slate-700 hover:bg-slate-50"
                       >
                         Back
                       </Button>
                       <Button
                         onClick={handlePackageNext}
                         disabled={!selectedPlan}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                        className="flex-1 user-app-btn-primary"
                       >
                         Continue to Trainer Selection
                       </Button>
@@ -795,12 +802,12 @@ function RegisterPageContent() {
                             }}
                             className={`text-left rounded-lg border p-3 transition-colors ${
                               selectedTrainerId === t.userId
-                                ? 'border-blue-500 bg-blue-500/20'
-                                : 'border-slate-600 bg-slate-800/50 hover:border-slate-500'
+                                ? 'border-[hsl(210,95%,28%)] bg-[hsl(210,85%,96%)]'
+                                : 'border-slate-200 bg-white/80 hover:border-slate-300 hover:bg-white'
                             }`}
                           >
                             <div className="flex items-center gap-3">
-                              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-slate-700 shrink-0">
+                              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-slate-100 shrink-0 ring-1 ring-slate-200">
                                 {t.profilePicture ? (
                                   <Image
                                     src={getImageUrl(t.profilePicture) || ''}
@@ -816,7 +823,7 @@ function RegisterPageContent() {
                                 )}
                               </div>
                               <div className="min-w-0">
-                                <p className="font-medium text-white truncate">{t.name}</p>
+                                <p className="font-semibold text-[hsl(222,47%,8%)] truncate">{t.name}</p>
                                 {typeof t.matchScore === 'number' && t.matchScore > 0 && (
                                   <Badge variant="outline" className="text-xs mt-1 border-cyan-500/50 text-cyan-300">
                                     Match score {t.matchScore}
@@ -844,7 +851,7 @@ function RegisterPageContent() {
                         <CardContent className="pt-6">
                           <div className="flex items-center justify-between">
                             <div>
-                              <h3 className="text-lg font-semibold text-white">{selectedTrainerName || 'Selected Trainer'}</h3>
+                              <h3 className="text-lg font-semibold text-[hsl(222,47%,8%)]">{selectedTrainerName || 'Selected Trainer'}</h3>
                               <p className="text-sm text-slate-400">Trainer ID: {selectedTrainerId}</p>
                             </div>
                             <Check className="w-6 h-6 text-blue-400" />
@@ -857,14 +864,14 @@ function RegisterPageContent() {
                       <Button
                         variant="outline"
                         onClick={() => setCurrentStep('package')}
-                        className="flex-1 border-slate-600 text-slate-300"
+                        className="flex-1 border-slate-200 text-slate-700 hover:bg-slate-50"
                       >
                         Back
                       </Button>
                       <Button
                         onClick={handleTrainerNext}
                         disabled={!selectedTrainerId}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                        className="flex-1 user-app-btn-primary"
                       >
                         Continue to Checkout
                       </Button>
@@ -890,8 +897,9 @@ function RegisterPageContent() {
 export default function RegisterPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div className="landing-ethio min-h-screen relative overflow-hidden flex items-center justify-center">
+        <UnifiedBackground variant="ethio" />
+        <div className="relative z-10 text-[hsl(222,20%,40%)]">Loading...</div>
       </div>
     }>
       <RegisterPageContent />

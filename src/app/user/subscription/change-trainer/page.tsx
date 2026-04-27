@@ -20,7 +20,7 @@ export default function ChangeTrainerPage() {
   return (
     <div className="min-h-dvh min-h-full user-app-page">
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <Button variant="outline" className="border-slate-600 text-slate-300" onClick={() => router.push('/user/dashboard')}>
+        <Button variant="outline" className="border-slate-200 text-slate-700 hover:bg-slate-50" onClick={() => router.push('/user/dashboard')}>
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back
         </Button>
