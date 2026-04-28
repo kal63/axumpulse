@@ -34,6 +34,7 @@ const PRIMARY_GOAL_OPTIONS: { value: string; label: string }[] = [
 function RegisterPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const telcoFlow = searchParams.get('telco') === '1'
   const { user, isAuthenticated, refreshUser } = useAuth()
   const [scrolled, setScrolled] = useState(false)
   
@@ -52,6 +53,7 @@ function RegisterPageContent() {
     email: '',
     password: '',
     confirmPassword: '',
+    telcoPassword: '',
     dateOfBirth: '',
     gender: '' as 'male' | 'female' | ''
   })
@@ -65,12 +67,25 @@ function RegisterPageContent() {
   })
   const [matchTrainers, setMatchTrainers] = useState<PublicTrainer[]>([])
   const [trainersLoading, setTrainersLoading] = useState(false)
+  const [hasActiveSubscriptionOnPackage, setHasActiveSubscriptionOnPackage] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (!telcoFlow) return
+    const rawPhone = searchParams.get('phone')
+    if (!rawPhone) return
+    try {
+      const decoded = decodeURIComponent(rawPhone)
+      setFormData((prev) => ({ ...prev, phone: decoded }))
+    } catch {
+      setFormData((prev) => ({ ...prev, phone: rawPhone }))
+    }
+  }, [telcoFlow, searchParams])
 
   // Get trainer and package from URL params
   useEffect(() => {
@@ -157,6 +172,22 @@ function RegisterPageContent() {
     }
   }, [currentStep, isAuthenticated])
 
+  useEffect(() => {
+    if (currentStep !== 'package' || !isAuthenticated) {
+      setHasActiveSubscriptionOnPackage(false)
+      return
+    }
+    let cancelled = false
+    void (async () => {
+      const r = await apiClient.getMySubscription()
+      if (cancelled) return
+      setHasActiveSubscriptionOnPackage(!!(r.success && r.data?.subscription))
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [currentStep, isAuthenticated])
+
   const loadPlans = async () => {
     try {
       const response = await apiClient.getSubscriptionPlans()
@@ -196,6 +227,11 @@ function RegisterPageContent() {
       return false
     }
 
+    if (telcoFlow && !String(formData.telcoPassword || '').trim()) {
+      setError('Enter the password you received from Ethiotell (6313)')
+      return false
+    }
+
     const phoneRegex = /^(\+251|251|0)?[79][0-9]{8}$/
     if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) {
       setError('Please enter a valid Ethiopian phone number')
@@ -227,14 +263,24 @@ function RegisterPageContent() {
           normalizedPhone = '+251' + normalizedPhone
         }
 
-        const response = await apiClient.registerUser({
-          phone: normalizedPhone,
-          email: formData.email || undefined,
-          password: formData.password,
-          name: formData.name || undefined,
-          dateOfBirth: formData.dateOfBirth || undefined,
-          gender: formData.gender || undefined
-        })
+        const response = telcoFlow
+          ? await apiClient.registerTelco({
+              phone: normalizedPhone,
+              email: formData.email || undefined,
+              password: formData.password,
+              telcoPassword: formData.telcoPassword,
+              name: formData.name || undefined,
+              dateOfBirth: formData.dateOfBirth || undefined,
+              gender: formData.gender ? (formData.gender as 'male' | 'female') : undefined
+            })
+          : await apiClient.registerUser({
+              phone: normalizedPhone,
+              email: formData.email || undefined,
+              password: formData.password,
+              name: formData.name || undefined,
+              dateOfBirth: formData.dateOfBirth || undefined,
+              gender: formData.gender || undefined
+            })
 
         if (response.success) {
           try {
@@ -288,6 +334,13 @@ function RegisterPageContent() {
         router.push('/user/dashboard')
         return
       }
+      if (telcoFlow) {
+        const subRes = await apiClient.getMySubscription()
+        if (subRes.success && subRes.data?.subscription) {
+          router.push('/user/dashboard')
+          return
+        }
+      }
       if (selectedPlan) {
         setCurrentStep('trainer')
       } else {
@@ -313,6 +366,10 @@ function RegisterPageContent() {
   }
 
   const handlePackageNext = () => {
+    if (hasActiveSubscriptionOnPackage) {
+      router.push('/user/dashboard')
+      return
+    }
     if (!selectedPlan) {
       setError('Please select a subscription package')
       return
@@ -407,7 +464,10 @@ function RegisterPageContent() {
                   Register for Compound 360
                 </CardTitle>
                 <CardDescription className="text-[hsl(222,20%,40%)]">
-                  {currentStep === 'user-info' && 'Create your account to get started'}
+                  {currentStep === 'user-info' &&
+                    (telcoFlow
+                      ? 'Complete your account — you already paid via Ethiotell (6313)'
+                      : 'Create your account to get started')}
                   {currentStep === 'trainee-profile' && 'Tell us about your goals so we can match you with the right trainer'}
                   {currentStep === 'package' && 'Choose your subscription package'}
                   {currentStep === 'trainer' && 'Select your trainer (ranked for your goals)'}
@@ -481,6 +541,7 @@ function RegisterPageContent() {
                           className="bg-white border-slate-200 text-[hsl(222,47%,8%)] placeholder:text-[hsl(222,20%,55%)]"
                           placeholder="0912345678"
                           required
+                          readOnly={telcoFlow}
                         />
                       </div>
                     </div>
@@ -498,9 +559,30 @@ function RegisterPageContent() {
                       />
                     </div>
 
+                    {telcoFlow && (
+                      <div className="space-y-2">
+                        <Label htmlFor="telcoPassword" className="text-[hsl(222,20%,34%)] font-medium">
+                          Ethiotell password (from SMS / 6313) *
+                        </Label>
+                        <Input
+                          id="telcoPassword"
+                          name="telcoPassword"
+                          type="password"
+                          value={formData.telcoPassword}
+                          onChange={handleInputChange}
+                          className="bg-white border-slate-200 text-[hsl(222,47%,8%)] placeholder:text-[hsl(222,20%,55%)]"
+                          placeholder="Password sent by Ethiotell"
+                          required
+                          autoComplete="off"
+                        />
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="password" className="text-[hsl(222,20%,34%)] font-medium">Password *</Label>
+                        <Label htmlFor="password" className="text-[hsl(222,20%,34%)] font-medium">
+                          {telcoFlow ? 'App password *' : 'Password *'}
+                        </Label>
                         <div className="relative">
                           <Input
                             id="password"
@@ -685,6 +767,16 @@ function RegisterPageContent() {
                 {/* Package Selection */}
                 {currentStep === 'package' && (
                   <div className="space-y-6">
+                    {hasActiveSubscriptionOnPackage && (
+                      <Alert className="border-emerald-200 bg-emerald-50 text-emerald-900">
+                        <AlertDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                          <span>You already have an active subscription. You can go straight to your dashboard.</span>
+                          <Button type="button" className="user-app-btn-primary shrink-0" onClick={() => router.push('/user/dashboard')}>
+                            Go to dashboard
+                          </Button>
+                        </AlertDescription>
+                      </Alert>
+                    )}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {plans.map((plan) => (
                         <motion.div
@@ -777,10 +869,12 @@ function RegisterPageContent() {
                       </Button>
                       <Button
                         onClick={handlePackageNext}
-                        disabled={!selectedPlan}
+                        disabled={!hasActiveSubscriptionOnPackage && !selectedPlan}
                         className="flex-1 user-app-btn-primary"
                       >
-                        Continue to Trainer Selection
+                        {hasActiveSubscriptionOnPackage
+                          ? 'Continue to dashboard'
+                          : 'Continue to Trainer Selection'}
                       </Button>
                     </div>
                   </div>

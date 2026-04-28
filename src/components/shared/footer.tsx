@@ -63,8 +63,8 @@ export default function Footer({ variant = 'default' }: FooterProps) {
     ],
     support: [
       { label: 'Help Center', href: '#help' },
-      { label: 'Privacy Policy', href: '#privacy' },
-      { label: 'Terms of Service', href: '#terms' },
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Terms of Service', href: '/terms' },
       { label: 'FAQ', href: '#faq' }
     ]
   };
@@ -385,7 +385,7 @@ export default function Footer({ variant = 'default' }: FooterProps) {
                 </div>
                 <div className="flex items-center gap-6 text-sm">
                   <Link
-                    href="#privacy"
+                    href="/privacy"
                     className={
                       isEthio
                         ? "text-slate-500 hover:text-sky-800 transition-colors"
@@ -395,7 +395,7 @@ export default function Footer({ variant = 'default' }: FooterProps) {
                     Privacy Policy
                   </Link>
                   <Link
-                    href="#terms"
+                    href="/terms"
                     className={
                       isEthio
                         ? "text-slate-500 hover:text-sky-800 transition-colors"

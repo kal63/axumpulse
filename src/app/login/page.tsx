@@ -140,8 +140,17 @@ const handleQuickSubmit = async (
     password: passwordInput
   })
 
+  if (result.success && result.telcoRegistrationPending && result.phone) {
+    router.push(`/register?telco=1&phone=${encodeURIComponent(result.phone)}`)
+    return
+  }
+
   if (result.success) {
     const currentUser = result.user
+    if (!currentUser) {
+      setError('Login failed')
+      return
+    }
 
     if (currentUser?.isAdmin) router.push('/admin/dashboard')
     else if (currentUser?.isTrainer) router.push('/trainer/dashboard')

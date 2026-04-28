@@ -29,7 +29,13 @@ interface AuthContextType {
   /** Set when a token exists but /auth/me could not be reached (do not send user to login). */
   sessionLoadError: SessionLoadError
   retrySession: () => void
-  login: (credentials: LoginRequest) => Promise<{ success: boolean; error?: string; user?: User }>
+  login: (credentials: LoginRequest) => Promise<{
+    success: boolean
+    error?: string
+    user?: User
+    telcoRegistrationPending?: boolean
+    phone?: string
+  }>
   dev_login: (role: string) => Promise<{ success: boolean; error?: string; user?: User }>
   logout: () => void
   refreshUser: () => Promise<void>
@@ -100,11 +106,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true)
       setSessionLoadError(null)
       const response = await apiClient.login(credentials)
-      
-      if (response.success && response.data) {
+
+      if (response.success && response.data?.telcoRegistrationPending) {
+        return {
+          success: true,
+          telcoRegistrationPending: true,
+          phone: response.data.phone,
+        }
+      }
+
+      if (response.success && response.data?.token && response.data.user) {
         // Set the basic user data first
         setUser(response.data.user)
-        
+
         // Try to fetch the full user data with profile
         let finalUser = response.data.user
         try {
@@ -118,7 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Continue with basic user data
           setUser(response.data.user)
         }
-        
+
         return { success: true, user: finalUser }
       } else {
         return { 
@@ -141,11 +155,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true)
       setSessionLoadError(null)
       const response = await apiClient.dev_login(role)
-      
-      if (response.success && response.data) {
+
+      if (response.success && response.data?.token && response.data.user) {
         // Set the basic user data first
         setUser(response.data.user)
-        
+
         // Try to fetch the full user data with profile
         let finalUser = response.data.user
         try {
@@ -159,7 +173,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Continue with basic user data
           setUser(response.data.user)
         }
-        
+
         return { success: true, user: finalUser }
       } else {
         return { 

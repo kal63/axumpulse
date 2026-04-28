@@ -862,9 +862,22 @@ export interface LoginRequest {
   password: string
 }
 
+/** Normal login, or Ethiotell pending: user must complete registration (no JWT). */
 export interface LoginResponse {
-  token: string
-  user: User
+  token?: string
+  user?: User
+  telcoRegistrationPending?: boolean
+  phone?: string
+}
+
+export interface RegisterTelcoRequest {
+  phone: string
+  password: string
+  telcoPassword: string
+  email?: string
+  name?: string
+  dateOfBirth?: string
+  gender?: 'male' | 'female'
 }
 
 export interface AdminStats {
@@ -1348,7 +1361,7 @@ class ApiClient {
       body: JSON.stringify(credentials),
     })
 
-    if (response.success && response.data) {
+    if (response.success && response.data?.token) {
       this.setToken(response.data.token)
     }
 
@@ -1362,7 +1375,7 @@ class ApiClient {
       body: JSON.stringify({ role }),
     })
 
-    if (response.success && response.data) {
+    if (response.success && response.data?.token) {
       this.setToken(response.data.token)
     }
 
@@ -3955,7 +3968,21 @@ class ApiClient {
       body: JSON.stringify(data)
     })
 
-    if (response.success && response.data) {
+    if (response.success && response.data?.token) {
+      this.setToken(response.data.token)
+    }
+
+    return response
+  }
+
+  /** Complete registration after Ethiotell 6313 purchase (pending row + subscription). */
+  async registerTelco(data: RegisterTelcoRequest): Promise<ApiResponse<LoginResponse>> {
+    const response = await this.request<LoginResponse>('/auth/register-telco', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+
+    if (response.success && response.data?.token) {
       this.setToken(response.data.token)
     }
 
