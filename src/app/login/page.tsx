@@ -393,10 +393,10 @@ const handleQuickSubmit = async (
                     </Link>
                     <span className="mx-2 text-[hsl(222,12%,70%)]">·</span>
                     <a
-                      href="sms:1234?body=OK"
+                      href="sms:6313?body=OK"
                       className="font-semibold text-[hsl(210,95%,28%)] hover:underline"
                     >
-                      SMS 1234
+                      SMS 6313
                     </a>
                   </p>
                   <p className="mt-1 text-xs text-[hsl(222,20%,45%)]">Send &quot;OK&quot; to get started via SMS</p>
