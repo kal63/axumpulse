@@ -107,7 +107,7 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                 </div>
               </div>
               <div>
-                <div className="font-landing-display text-2xl text-[hsl(78,80%,40%)]">ETB</div>
+                <div className="font-landing-display text-2xl text-[hsl(78,80%,40%)]">ETB 4</div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-[hsl(222,20%,40%)] mt-1">
                   Daily Subscription
                 </div>
