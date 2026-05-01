@@ -230,7 +230,7 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
             <div className="relative">
               <div className="relative aspect-[3/4] rounded-[2rem] overflow-hidden shadow-[0_30px_80px_-30px_hsl(222_47%_8%_/_0.35)] border border-slate-200/80">
                 <Image
-                  src="/hero-athlete.jpg"
+                  src="/hero-athlete.png"
                   alt="Athlete training with kettlebell"
                   fill
                   priority
