@@ -13,6 +13,29 @@ interface HeroSectionProps {
   onLoaded?: () => void;
 }
 
+/** Store listing URLs — override with NEXT_PUBLIC_APP_STORE_URL / NEXT_PUBLIC_PLAY_STORE_URL when published */
+const APP_STORE_URL =
+  process.env.NEXT_PUBLIC_APP_STORE_URL ?? 'https://apps.apple.com/search?term=Compound%20360';
+const PLAY_STORE_URL =
+  process.env.NEXT_PUBLIC_PLAY_STORE_URL ??
+  'https://play.google.com/store/apps/details?id=com.anonymous.compound360mobile';
+
+function StoreIconApple({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.09-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+    </svg>
+  );
+}
+
+function StoreIconPlay({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M8 5v14l11-7-11-7z" />
+    </svg>
+  );
+}
+
 export function HeroSection({ onLoaded }: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const leftColRef = useRef<HTMLDivElement>(null);
@@ -214,19 +237,27 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                   className="object-cover"
                   sizes="(max-width: 1024px) 90vw, 40vw"
                 />
-                <div className="absolute bottom-5 left-5 right-5 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-slate-100">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Live session</div>
-                      <div className="font-landing-display text-lg text-slate-900 mt-0.5">Compound 360 · Coach</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-landing-display text-2xl text-[hsl(210,95%,28%)]">4+</div>
-                      <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">langs</div>
-                    </div>
-                  </div>
-                  <div className="mt-3 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                    <div className="h-full w-2/3 bg-gradient-to-r from-lime-400 to-[hsl(210,95%,28%)] rounded-full" />
+                <div className="absolute bottom-5 left-5 right-5 bg-white/95 backdrop-blur-md rounded-2xl px-4 py-3.5 shadow-lg border border-slate-100">
+                  <p className="text-center text-xs font-medium text-[#6B6B6B] mb-2.5">Get the app on</p>
+                  <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[#6B6B6B]">
+                    <a
+                      href={APP_STORE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium tracking-tight hover:opacity-80 transition-opacity"
+                    >
+                      <StoreIconApple className="w-5 h-5 shrink-0" />
+                      App Store
+                    </a>
+                    <a
+                      href={PLAY_STORE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium tracking-tight hover:opacity-80 transition-opacity"
+                    >
+                      <StoreIconPlay className="w-5 h-5 shrink-0" />
+                      Google Play
+                    </a>
                   </div>
                 </div>
               </div>
