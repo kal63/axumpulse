@@ -237,27 +237,57 @@ export function HeroSection({ onLoaded }: HeroSectionProps) {
                   className="object-cover"
                   sizes="(max-width: 1024px) 90vw, 40vw"
                 />
-                <div className="absolute bottom-5 left-5 right-5 bg-white/95 backdrop-blur-md rounded-2xl px-4 py-3.5 shadow-lg border border-slate-100">
-                  <p className="text-center text-xs font-medium text-[#6B6B6B] mb-2.5">Get the app on</p>
-                  <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-[#6B6B6B]">
-                    <a
-                      href={APP_STORE_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium tracking-tight hover:opacity-80 transition-opacity"
-                    >
-                      <StoreIconApple className="w-5 h-5 shrink-0" />
-                      App Store
-                    </a>
-                    <a
-                      href={PLAY_STORE_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium tracking-tight hover:opacity-80 transition-opacity"
-                    >
-                      <StoreIconPlay className="w-5 h-5 shrink-0" />
-                      Google Play
-                    </a>
+                <div className="absolute bottom-5 left-5 right-5 overflow-hidden rounded-2xl border border-white/80 bg-white/[0.88] shadow-[0_16px_48px_-12px_rgb(15_23_42_/_0.28),0_0_0_1px_rgb(59_130_246_/_0.08)] backdrop-blur-xl">
+                  <div
+                    className="pointer-events-none absolute inset-0 opacity-90"
+                    style={{
+                      background: `
+                        radial-gradient(100% 90% at 15% 0%, hsl(78 90% 72% / 0.45), transparent 50%),
+                        radial-gradient(90% 80% at 85% 20%, hsl(210 95% 45% / 0.18), transparent 55%),
+                        radial-gradient(120% 100% at 50% 100%, hsl(142 65% 85% / 0.35), transparent 45%)
+                      `,
+                    }}
+                    aria-hidden
+                  />
+                  <div
+                    className="pointer-events-none absolute inset-x-4 top-0 h-px bg-gradient-to-r from-lime-200/0 via-white to-emerald-200/0"
+                    aria-hidden
+                  />
+                  <div className="relative px-3 py-2.5 sm:px-4 sm:py-3">
+                    <p className="text-center font-landing-display text-xs sm:text-sm font-bold tracking-tight text-balance mb-0.5 bg-gradient-to-r from-[hsl(210,95%,26%)] via-[hsl(142,55%,32%)] to-[hsl(78,75%,38%)] bg-clip-text text-transparent">
+                      Train on the go
+                    </p>
+                    <p className="text-center text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600/90 mb-2">
+                      iOS &amp; Android
+                    </p>
+                    <div className="flex flex-col sm:flex-row items-stretch justify-center gap-2 sm:gap-2.5">
+                      <motion.a
+                        href={APP_STORE_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="group flex flex-1 min-w-0 items-center justify-center gap-2 rounded-lg border border-indigo-200/80 bg-gradient-to-br from-indigo-50/95 via-white to-violet-50/80 px-2.5 py-1.5 text-indigo-950 shadow-sm shadow-indigo-200/40 transition-[box-shadow,border-color,transform] duration-300 hover:border-indigo-300 hover:shadow-lg hover:shadow-indigo-300/35"
+                      >
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow shadow-indigo-400/35 ring-1 ring-white/90 transition-transform duration-300 group-hover:scale-110">
+                          <StoreIconApple className="h-[14px] w-[14px]" />
+                        </span>
+                        <span className="text-xs font-bold tracking-tight">App Store</span>
+                      </motion.a>
+                      <motion.a
+                        href={PLAY_STORE_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="group flex flex-1 min-w-0 items-center justify-center gap-2 rounded-lg border border-emerald-200/90 bg-gradient-to-br from-emerald-50/95 via-white to-lime-50/90 px-2.5 py-1.5 text-emerald-950 shadow-sm shadow-emerald-200/50 transition-[box-shadow,border-color,transform] duration-300 hover:border-emerald-400/70 hover:shadow-lg hover:shadow-emerald-300/40"
+                      >
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-lime-500 text-white shadow shadow-emerald-400/40 ring-1 ring-white/90 transition-transform duration-300 group-hover:scale-110">
+                          <StoreIconPlay className="h-[14px] w-[14px] translate-x-[0.5px]" />
+                        </span>
+                        <span className="text-xs font-bold tracking-tight">Google Play</span>
+                      </motion.a>
+                    </div>
                   </div>
                 </div>
               </div>
